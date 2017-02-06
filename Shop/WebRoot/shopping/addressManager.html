@@ -1,0 +1,438 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>地址管理</title>
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+			name="viewport">
+	
+    <%- cssAJsPosStartTpl %>	
+    
+
+	<style>
+		a{
+			text-decoration: none !important;
+		}
+		
+		#bg{ 
+			display: none; 
+			position: absolute;  
+			left: 0%; 
+			top:0%; 
+			width: 100%; 
+			height: 100%; 
+			background-color: black; 
+			z-index:1001; 
+			-moz-opacity: 0.7; 
+			opacity:.70; 
+			filter: alpha(opacity=70);
+		}
+		 
+		 #selectProp{
+		 	display: none; 
+		 	position: fixed; 
+		 	bottom: 0%; 
+		 	/*top:60%;*/
+		 	/*left: 22%; */
+		 	width: 100%; 
+		 /*	height: 50%;*/
+		  	background-color: white; 
+		  	z-index:1002; 
+		  	/*overflow: auto;*/
+		  	}
+	
+	
+		.checkbox {
+			font-size: 10px;
+			color: #ccc;
+			outline:0px !important;
+			background: url(/ZingMH/img/box.png) 0 0 no-repeat;
+			background-size: 100%;
+			-webkit-appearance: none;
+			-moz-appearance: none;
+			border: 0;
+			border: none;
+			vertical-align: middle;
+			width: 20px;
+			height: 20px;
+		}
+		
+		.checked {
+			font-size: 10px;
+			color: #ccc;
+			background: url(/ZingMH/img/check.png) 0 0 no-repeat;
+			background-size: 100%;
+			-webkit-appearance: none;
+			-moz-appearance: none;
+			border: 0;
+			border: none;
+			vertical-align: middle;
+			width: 20px;
+			height:20px;
+		}
+		.col-padding{
+			padding-right:10px !important;
+			padding-left:10px !important;
+		}
+		.btn-class{
+			border: 1px solid #CCC;
+   			background: white;
+   			width: 60px;
+		}
+		.div-top-bottom{
+			margin-top: 5px;
+    		margin-bottom: 5px;
+		}
+		.form-select{
+			width: 32%;
+		    float: left;
+		    margin-left: 2px;
+		    margin-right: 2px;
+		}
+		.price-color{
+			color:red;
+		}
+	</style>
+
+  </head>
+  
+  <body class="no-skin">
+   <div class="container">
+     <div class="row" style="overflow:hidden;">
+			<div style="background-color:#f5f5f5;border-bottom:1px solid #afafae;margin: -1px -1px 0 0;" id="industry-list">
+                 <header id="common_hd" class="head_rel">
+                    <span class="glyphicon glyphicon-book"></span>
+                    <span class="hd_tle"> 地址管理 </span>
+                    <img src="/ZingMH/img/plus.png" class="img-icon-plus-style" onclick="openAddOrEditDiv('add','')">
+                </header>
+            </div>
+            <div>
+            	<ul class="list-group" id="addressList">
+            		<!--  
+            		<li class="list-group-item" style="margin-top: 3px;">
+            			<div class="row">
+            				<div class="col-xs-12 col-md-12 col-padding">
+	            				<p>
+		            				<span class="pull-left">裴军 &nbsp;18910547616</span>
+		            				<span class="pull-right">默认地址</span>
+	            				</p>
+	            			</div>
+            			</div>
+            			<div class="row">
+            				<div class="col-xs-12 col-md-12 col-padding">
+            					北京市海淀区上地七街国际创业园2号楼2号院23层吉萨都加哦为了考试都没了几点上课了对方
+            				</div>
+            			</div>	
+            			<div class="row" style="margin-top: 5px;border-top: 1px solid #ddd;">
+		            		<div class="col-xs-4 col-sm-4 col-md-4 col-padding div-top-bottom">
+								<span class="pull-left">
+									<input type="checkbox" class="checkbox" onclick="checkThis(this);">
+								</span>
+								<span class="pull-left" style="padding-top: 5px;padding-left: 2px;">设为默认</span>
+							</div>
+							<div class="col-xs-8 col-sm-8 col-md-8 col-padding div-top-bottom">
+								<span class="pull-right">
+									<button class="btn-class">修改</button>
+									<button class="btn-class">删除</button>
+								</span>	
+							</div>
+						</div>
+            		</li>-->
+            	</ul>
+        </div>
+     </div>
+    </div>        
+    
+    	<div id="bg"></div>
+		
+		<div id="selectProp">
+			<div class="container">
+				<div class="row">
+					<div class="col-xs-12">
+						<form id="addressForm"	class="form-horizontal" role="form">
+							<div class="form-group">
+								<label id="closedBtn" class="pull-right" style="font-size: 20px;margin-right: 15px;margin-bottom:-15px;">&times;</label>
+							</div>
+							<input  type="hidden" id="isDefaultAddress" name="isDefaultAddress"/>
+							<input  type="hidden" id="id" name="id"/>
+							<div class="form-group">
+								<label class="col-sm-3 control-label no-padding-right" for="consigneeName">名称:</label>
+								<div class="col-sm-9">
+									<input type="text" id="consigneeName"  class=" form-control col-xs-10 col-sm-5">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label no-padding-right" for="consigneePhone">手机号码:</label>
+								<div class="col-sm-9">
+									<input type="text" id="consigneePhone" class=" form-control col-xs-10 col-sm-5">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label no-padding-right" for="area">所在区域:</label>
+								<div class="col-sm-9 form-inline">
+									 <select id="s_province" name="s_province" class="form-control form-select">
+									 </select>
+									  <select id="s_city" name="s_city" class="form-control form-select">
+									 </select>
+									  <select id="s_county" name="s_county" class="form-control form-select">
+									 </select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label no-padding-right" for="address">详细地址:</label>
+								<div class="col-sm-9">
+									<input type="text" id="address"  class="col-xs-10 col-sm-5 form-control">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label no-padding-right" for="postCode">邮政编码:</label>
+								<div class="col-sm-9">
+									<input type="text" id="postCode"  class="col-xs-10 col-sm-5 form-control">
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<!-- end -->
+			</div>
+			<!--  确定按钮 -->
+			<div onclick="submitAddressData();" style="height:40px;background:red;text-align:center;">
+				<p style="padding-top:10px;color:white;">确定</p>
+			</div>	
+		</div>
+    
+    
+    
+    
+   <%- cssAJsPosEndTpl %>	
+   <script type="text/javascript" src="/ZingMH/js/area.js?v=9999.9999"></script>
+    
+    
+    <script>
+    
+    	var mhUserVars = null;
+    	var optStatus= null;
+    	
+    	$(function(){
+    		mhUserVars=<%- JSON.stringify(mhUserVars) %>;
+    		
+    		if(mhUserVars.addressData.data.length >0){
+    			loadAddress(mhUserVars.addressData);
+    		}
+    		
+    		if(mhUserVars.isChange == "true"){
+    			$(".isChangeOrNot").hide();
+    		}
+    		
+    		//关闭按钮
+    		$("#closedBtn").on('click',function(){
+    			$("#bg").hide();
+    			$("#selectProp").slideUp(500);
+    		});
+    		
+    		_init_area(); //加载全国城市列表
+    	});
+    
+    
+    	function selectThisAddress(_id){
+    		
+    		if(mhUserVars.isChange == "true"){
+	    		window.location.href="/SRender?jsLoader=shopping%2ForderManagerLoader&tpl=shopping%2ForderConfirm&orderStatus=01&addressId="+_id;
+    		}
+    	
+    	}
+    
+    
+    
+    
+    	
+    	function openAddOrEditDiv(opt,data){
+    		optStatus = opt; // 保存操作状态，提交数据时用
+    		$("#addressForm")[0].reset();	
+    		// 如果是编辑操作，初始化页面表单信息
+    		if(opt == "edit"){
+    			for(var key in data){  
+	    			if(!Z_IsEmpty20(data[key])){
+		    			$("#"+key).val(data[key]);
+		    			//如果是是area 则split("-");
+		    			if(key == "area"){
+		    				$("#s_province").val(data[key].split("-")[0]);
+		    				change(1);
+		    				$("#s_city").val(data[key].split("-")[1]);
+		    				change(2);
+		    				$("#s_county").val(data[key].split("-")[2]);
+		    			}
+	    			}
+	    		}
+    		}
+    		
+    		$("#bg").show();
+    		$("#selectProp").slideDown(500);
+    	}
+    
+    	
+    	//提交
+    	function submitAddressData(){
+    		
+    		var params = {
+	    		consigneeName  : $("#consigneeName").val(),
+	    		consigneePhone : $("#consigneePhone").val(),
+	    		area: $("#s_province").val()+ "-" + $("#s_city").val()+"-" + $("#s_county").val(),
+	    		address:$("#address").val(),
+	    		postCode:$("#postCode").val()
+    		}
+    		
+    		var url=MH_PATH+"/Shopping/addressManager/addAddress.action";
+    		// 如果是添加，则使用这个，修改，地址状态不变。
+    		if(optStatus == "add"){
+    			//提示用户该地址是否设置为默认收货地址
+	    		var isDefaultAddress = "";
+	    		if(window.confirm("是否将该地址设置为默认地址？")){ 
+	    			params.isDefaultAddress = "1";
+	    		}else{
+	    			params.isDefaultAddress = "0";
+	    		}
+    		}else{
+    			params.type="edit";
+    			params.isDefaultAddress = $("#isDefaultAddress").val();
+    			params.id = $("#id").val();
+    			url=MH_PATH+"/Shopping/addressManager/updateAddress.action";
+    		}
+    		/*
+    		console.log(params);
+    		return;*/
+    		
+    		ajaxFunction(url,params,true,function(data) {
+				if (data.retcode == "0") { 
+					openB3AjaxAlertDialog("保存成功","提示",true);
+					window.location.reload();
+				} else {
+					openB3AjaxAlertDialog("保存失败", "提示", true);
+				}
+			});
+    	
+    	}
+    
+    
+    	// 点击设为默认操作,
+    	function updateAddressDefault(_this,_id,_isDefaultAddress){
+    		//如果
+    		/*if(_isDefaultAddress == "1"){
+    			return;
+    		}
+    		*/
+    		if($(_this).hasClass("checked")){
+    			return;
+    		}
+    		
+    		var params ={
+    			id: _id,
+    			type:"status",
+    			isDefaultAddress:"1"
+    		}
+    		
+    		var url=MH_PATH+"/Shopping/addressManager/updateAddress.action";
+    		ajaxFunction(url,params,true,function(data) {
+    			if (data.retcode == "0") { 
+    				// 复选框置为未选中状态，然后再选中当前点击的。
+    				$(".checkbox").removeClass("checked");
+    				$(_this).addClass("checked");
+    				
+    				//
+    				$(".price-color").html('');
+    				$("#isDefault"+_id).html("默认地址");
+    				
+    				var divObj = $(_this).parents(".list-group-item");
+		    		var divFirstObj = divObj.prevAll().last();
+		    		divFirstObj.before(divObj);
+    			}
+    		});
+    		
+    	}
+    	
+    	
+    	//地址删除操作
+    	function delAddress(_id,_isDefaultAddress){
+    	
+    		openB3AjaxConfigDialog("确认删除该地址吗?", "提示", function (){
+    			var params = {
+    				id : _id
+    			}
+    			
+    			//如果删除的数据复选框是选中的，则设置为选中状态的数据
+    			if($("#check"+_id).hasClass("checked")){
+    				params.isDefaultAddress = "1";
+    			}else{
+    				params.isDefaultAddress = "0";
+    			}
+    			
+    			
+				var url = MH_PATH+ "/Shopping/addressManager/delAddress.action";
+				ajaxFunction(url,params,true,function(data) {
+					if (data.retcode == "0") { 
+						openB3AjaxAlertDialog("删除成功","提示",true);
+						window.location.reload();
+						//删除后，删除该条数据的dom
+						/*$("#address"+_id).remove();*/
+					} else {
+						openB3AjaxAlertDialog("删除失败", "提示", true);
+					}
+				});    
+    		});
+    	}
+    
+    	
+    	//加载已存在的地址信息列表
+    	function loadAddress(data){
+    		var html='';
+    		for(var i = 0; i<data.data.length;i++){
+    			html+=  '	<li class="list-group-item" style="margin-top: 3px;" onclick="selectThisAddress(\''+data.data[i].id+'\')"	id="address'+data.data[i].id+'">'+
+			            '			<div class="row">'+
+			            '				<div class="col-xs-12 col-md-12 col-padding">'+
+				        '   				<p>'+
+					    '        				<span class="pull-left">'+data.data[i].consigneeName+' &nbsp;'+
+					    '							<a href="tel://'+data.data[i].consigneePhone+'">'+data.data[i].consigneePhone+'</a></span>';
+												 if(data.data[i].isDefaultAddress == "1"){
+												 	html += '<span id="isDefault'+data.data[i].id+'" class="pull-right price-color">默认地址</span>';
+												 }else{
+												 	html += '<span id="isDefault'+data.data[i].id+'" class="pull-right price-color"></span>';
+												 }
+			    html +=	'  					</p>'+
+				        ' 				</div>'+
+			            '			</div>'+
+			            '			<div class="row">'+
+			            '				<div class="col-xs-12 col-md-12 col-padding">'+
+			            					data.data[i].area.split("-")[0]+
+			            					data.data[i].area.split("-")[1]+
+			            					data.data[i].area.split("-")[2]+
+			            					data.data[i].address+
+			            '				</div>'+
+			            '			</div>	'+
+			            '			<div class="row isChangeOrNot" style="margin-top: 5px;border-top: 1px solid #ddd;">'+
+					    '       		<div class="col-xs-4 col-sm-4 col-md-4 col-padding div-top-bottom">'+
+						'				<span class="pull-left">';
+											 if(data.data[i].isDefaultAddress == "1"){
+											 	html += '<input id="check'+data.data[i].id+'" type="checkbox" class="checkbox checked" onclick="updateAddressDefault(this,\''+data.data[i].id+'\',\''+data.data[i].isDefaultAddress+'\');">';
+											 }else{
+											 	html += '<input id="check'+data.data[i].id+'" type="checkbox" class="checkbox" onclick="updateAddressDefault(this,\''+data.data[i].id+'\',\''+data.data[i].isDefaultAddress+'\');">';
+											 }
+				html +=	'					</span>'+
+						'					<span class="pull-left" style="padding-top: 5px;padding-left: 2px;">设为默认</span>'+
+						'				</div>'+
+						'				<div class="col-xs-8 col-sm-8 col-md-8 col-padding div-top-bottom">'+
+						'					<span class="pull-right">'+
+						'						<button class="btn-class" onclick=\'openAddOrEditDiv("edit",'+JSON.stringify(data.data[i])+')\'>修改</button>'+
+						'						<button class="btn-class" onclick="delAddress(\''+data.data[i].id+'\',\''+data.data[i].isDefaultAddress+'\')">删除</button>'+
+						'					</span>	'+
+						'				</div>'+
+						'			</div>'+
+			            '		</li>';
+    		}
+    		
+    		$("#addressList").html(html);
+    		
+    	}
+    
+    </script>
+    
+  </body>
+</html>

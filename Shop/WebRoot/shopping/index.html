@@ -1,0 +1,195 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, 
+		  maximum-scale=1.0, user-scalable=no" name="viewport">
+	<meta name="format-detection" content="telephone=no" />
+	<title>首页</title>
+  
+	<%- cssAJsPosStartTpl %>	
+	<link rel="stylesheet" href="/ZingMH/css/appCss/shopping/shopUtils.css?v=9999.9999">
+	
+	<style>
+		#nav-status{
+			margin-top: 5px;
+		}
+		#nav-status>a{
+			width: 25%;
+			text-align: center;
+			float:left;
+			display: block;
+			color: #696969;
+		}
+			
+		#nav-status>a>p{
+			margin:0px;
+			font-size:18px;
+		}
+		.fix-bottom-style{
+			position: fixed;
+			bottom:0px;
+			display:inline;
+			width:100%;
+			background-color: white;
+		}
+		.price-color{
+			color:red !important;
+		}
+		
+	</style>
+	
+	
+  </head>
+  
+  <body class="no-skin">
+    <div class="container" style="margin-bottom: 40px;">
+     <div class="row" style="overflow:hidden;">
+		<div class="panel panel-default widget">	
+            <div class="panel-body">
+            	<!-- 图片轮播 
+            	<div class="touchslider" style="margin:0 0;">
+					<div class="touchslider-viewport">
+						<div class="touchslider-item">
+							<a href="#"><img src="/ZingMH/img/voice.png"	
+								style="vertical-align: top;height:250px;" />
+							</a>
+						</div>
+						<div class="touchslider-item">
+							<a href="#"><img src="/ZingMH/img/slide.png"	
+								style="vertical-align: top;height:250px;"/>
+							</a>
+						</div>
+						<div class="touchslider-item">
+							<a href="#"><img
+									src="/ZingMH/img/voice.png"
+									style="vertical-align: top;height:250px;"/>
+							</a>
+						</div>
+					</div>
+					<div class="touchslider-navtag">
+						<span class="touchslider-nav-item touchslider-nav-item-current"></span>
+						<span class="touchslider-nav-item "></span>
+						<span class="touchslider-nav-item "></span>
+					</div>
+				</div>
+				  图片轮播 -->
+				
+				<!-- 搜索框 -->
+				<div>
+					<form class="form-search" style="margin-left: 8px; margin-right: 8px;margin-top:20px;">
+						<div class="row">
+							<div class="col-xs-12 col-sm-8">
+								<div class="input-group">
+									<!--<span class="input-group-addon">
+										<i class="ace-icon fa fa-search"></i>
+									</span>-->
+
+									<input type="text" id="searchValue" class="form-control search-query" placeholder="请输入搜索关键字">
+									<span class="input-group-btn">
+										<button type="button" onclick="search();" class="btn btn-purple btn-sm">
+										<span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
+											搜索
+										</button>
+									</span>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+				
+				<!-- 商品列表 -->
+            	<ul class="list-group" id="goodList">
+            	</ul>
+    		</div>
+    	</div>
+     
+     </div>
+    </div>
+    
+     <div class="fix-bottom-style">
+		<div class="row">
+			<div id="nav-status" class="col-xs-12 col-md-12">
+				<a href="javascript:window.location.href='/SRender?jsLoader=login%2FmeLoader&tpl=login%2Fmy&v=9999.9999'" class="orderStatus"><p><i class="fa fa-reply fa-lg"></i></p>返回门户</a>
+				<a href="javascript:void(0);" class="orderStatus price-color"><p><i class="fa fa-home fa-lg"></i></p>首页</a>
+				<a href="javascript:window.location.href='/SRender?jsLoader=shopping%2FshoppingCartLoader&tpl=shopping%2FshoppingCart&v=9999.9999'" class="orderStatus"><p><i class="fa fa-shopping-cart fa-lg"></i></p>购物车</a>
+				<a href="javascript:window.location.href='/SRender?jsLoader=shopping%2FuserCenterLoader&tpl=shopping%2FuserCenter&v=9999.9999'" class="orderStatus"><p><i class="fa fa-user fa-lg"></i></p>我</a>
+			</div>
+		</div>
+	</div>
+    
+    
+    <%- cssAJsPosEndTpl %>	
+    <script type="text/javascript" src="/ZingMH/js/jquery.touchslider.min.js?v=9999.9999"></script>
+    
+    <script>
+    
+    	var mhUserVars = null;
+    	
+    	$(function(){
+    		/*
+    		$(window).resize(function(){ 
+				var width=$('#js-com-header-area').width();
+				$('.touchslider-item a').css('width','100%');
+				$('.touchslider-item a').css('height',300*(width/640));
+			}).resize();	
+			$(".touchslider").touchSlider({mouseTouch: true, autoplay: true});
+    		*/
+    	
+    		mhUserVars=<%- JSON.stringify(mhUserVars) %>;
+    	
+    		if(mhUserVars.goodsData.data.total >0){
+    			loadGood(mhUserVars.goodsData.data);
+    		}
+    	});
+    	
+    	
+    	// 搜索
+    	function search(){
+    		var params={
+    			reserved6 : "1",
+    			reserved1:$("#searchValue").val()
+    		};
+    		
+    		//var url = MH_PATH+"/Shopping/goodManager/getAllGoodData.action";
+    		var url = MH_PATH+"/Shopping/goodManager/getAllGoodDataWithOutProp.action";
+    		ajaxFunction(url, params, true, function(data){
+				if(!Z_IsEmpty20(data.data)){
+					loadGood(data.data);
+				}
+			});
+    	}
+    	
+    	// 点击某个商品，进入商品详情页
+    	function loadDetail(dataId){
+    		window.location.href="/SRender?jsLoader=shopping%2FinsertGoodLoader&tpl=shopping%2Fdetail&dataId="+dataId;
+    	}
+    
+    
+    	function loadGood(data){
+    		var html = '';
+    		for(var i =0; i < data.data.length; i++){
+    			html += '<li class="list-group-item" onclick="loadDetail(\''+data.data[i].dataId+'\')">'+
+						'	<div class="row">'+
+						'		<div class="col-xs-3 col-md-1 col-sm-3">'+
+						'			<a data-rel="colorbox" class="cboxElement">'+
+						'				<span class="label-holder" style="top: -5px;margin-left:45px;position: absolute;"></span>'+
+						'				<img class="li-img-width-height" src="'+data.data[i].reserved3.split(",")[0]+'">'+
+						'			</a>'+
+						'		</div>'+
+						'		<div class="col-xs-9 col-md-11 col-sm-9">'+
+						'			<h5 class="li-h5-char-split li-h5-char-split-margin">'+data.data[i].reserved1+'</h5>'+
+						'			<h5 class="li-h5-char-split price-color">&yen;:'+data.data[i].reserved4+'</h5>'+
+						'			<div class="comment-text"><span class="work-title"></span><span></span></div> '+
+						'		</div>'+
+						'	</div>'+
+						'</li> ';
+    		}
+    	
+    		$("#goodList").html(html);
+    	}
+
+    </script>
+    
+  </body>
+</html>

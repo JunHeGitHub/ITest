@@ -1,0 +1,80 @@
+@CHARSET "UTF-8";
+
+/*bootstrap3 样式*/
+
+.list-group>li .tags {
+    display: inline-block;
+    position: absolute;
+    /*bottom: 0;*/
+    /*right: 0;*/
+    overflow: visible;
+    direction: rtl;
+    padding: 0;
+    margin: -7;
+    height: auto;
+    width: auto;
+    background-color: transparent;
+    border-width: 0;
+    vertical-align: inherit;
+}
+
+.zdy-line{
+    width:100%;
+    border-top:1px solid #ccc;
+}
+
+.btn.btn-app.btn-xs {
+    width: 64px;
+    font-size: 15px;
+    border-radius: 1px;
+    padding-bottom: 7px;
+    padding-top: 8px;
+    line-height: 1.45;
+}
+
+.panel-heading {
+    border-bottom: 1px solid transparent;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
+
+/*.badge {*/
+/*text-shadow: none;*/
+/*font-size: 12px;*/
+/*padding-top: 0px;*/
+/*padding-bottom: 0px;*/
+/*padding-left: 3px;*/
+/*padding-right: 8px;*/
+/*font-weight: 400;*/
+/*line-height: 15px;*/
+/*background-color: #abbac3 !important;*/
+/*}*/
+
+
+
+.list_star_on {
+    background: url("/css/star_on.png") no-repeat 0 0;
+    -moz-background-size: contain;
+    -o-background-size: contain;
+    -webkit-background-size: contain;
+    background-size: contain;
+}
+
+.list_star_off {
+    background: url("/css/star_off.png") no-repeat 0 0;
+    -moz-background-size: contain;
+    -o-background-size: contain;
+    -webkit-background-size: contain;
+    background-size: contain;
+}
+.list_starchange {
+    display: inline-block;
+    height: 30px;
+    margin-right: 2%;
+    padding: 0 !important;
+    width: 35px;
+    position: absolute;
+    /* vertical-align: bottom; */
+    bottom: 20%;
+    left: 0px;
+}

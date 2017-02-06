@@ -1,0 +1,124 @@
+/**
+ *  鏈珻SS 鐢ㄤ簬璧勬簮搴撳拰鐢靛晢鍔熻兘銆�
+ *  
+ *
+ *
+ **/
+
+/* 鍏ㄥ眬鏍峰紡 */
+a,a:active,a:focus,a:hover {
+	text-decoration: none !important;
+}
+
+/*涓婁紶鍥剧墖鏍峰紡*/
+.backImg {
+	float: left;
+	margin-left: 15px;
+	margin-bottom: 5px;
+}
+
+.img-style {
+	border: 1px solid #ccc;
+	float: left;
+	background: url(/Shop/img/image.png) center no-repeat;
+	background-size: cover;
+}
+
+.img-del {
+	margin-top: -10px !important;
+	margin-left: -15px !important;
+	background: #ddd !important;
+	padding: 1px 3px !important;
+	line-height: 22px;
+	border: 2px solid #FFF;
+	border-radius: 32px;
+	color: #FFF;
+	font-size: 21px;
+	height: 28px;
+	width: 28px;
+	text-indent: 0;
+	float: right;
+	z-index: 999;
+}
+
+/*缁熶竴璁剧疆鍒楄〃涓浘鐗囨樉绀哄ぇ灏�/
+.li-img-width-height {
+	width: 70px !important;
+	height: 70px !important;
+}
+
+/*缁熶竴璁剧疆鍒楄〃涓瓧绗︿覆瓒呴暱鎴彇*/
+.li-h5-char-split {
+	min-width: 50px !important;
+	overflow: hidden !important;
+	text-overflow: ellipsis !important;
+	white-space: nowrap !important;
+}
+
+.li-h5-char-split-margin {
+	margin: 2px 0 !important;
+}
+
+
+
+/* 鍥剧墖杞挱鏍峰紡寮� ---- 棣栭〉 鍜屽晢鍝佽鎯呴〉 */
+.touchslider,.touchslider div,.touchslider a,.touchslider img {
+	font-style: normal;
+	vertical-align: top;
+	padding: 0px;
+	margin: 0px;
+	border: 0px;
+}
+
+.touchslider {
+	position: relative;
+	margin: 0 -12px;
+}
+
+.touchslider .touchslider-viewport {
+	overflow: hidden;
+	height: 250px;
+}
+
+.touchslider .touchslider-viewport .touchslider-item a {
+	z-index: 1;
+	width: 100%;
+	display: block;
+}
+
+.touchslider .touchslider-viewport .touchslider-item img {
+	width: 100%;
+}
+
+.touchslider .touchslider-navtag {
+	text-align: center;
+	height: 34px;
+	display: inline-block;
+	vertical-align: middle;
+	margin-top: -8px;
+	width: 100%
+}
+
+.touchslider .touchslider-navtag span {
+	width: 14px;
+	height: 2px;
+	background: #c1c1c1;
+	overflow: hidden;
+	display: inline-block;
+}
+
+.touchslider .touchslider-navtag .touchslider-nav-item-current {
+	background: #ff7363;
+}
+/*------杞挱鏍峰紡缁撴潫----------*/
+
+
+
+.tab-content {
+	border:0 !important;
+}
+.wrapper {
+	background:white !important;
+	
+}
+

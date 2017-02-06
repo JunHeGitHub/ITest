@@ -1,0 +1,639 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta
+			content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+			name="viewport">
+			
+		<title>添加商品</title>
+		<link rel="stylesheet" type="text/css" href="../css/baseCss/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/baseCss/ace.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/baseCss/bootstrap3Cus.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/baseCss/font-awesome.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/baseCss/zinglabs.css">
+		<link rel="stylesheet" type="text/css" href="../css/shopping/shopUtils.css">
+		 
+		<script src="../js/jquery-2.1.4.min.js"></script>
+		<script src="../js/bootstrap.min.js"></script>
+		<script src="../js/ace.min.js"></script>
+		<script src="../js/jquery.validate.min.js"></script>
+		<script src="../js/utilJs/mobile_utils.js"></script>
+		
+		<style type="text/css">
+			
+			/*img {	max-width: 90%;}*/
+
+			.input_size {
+				font-size: 16px;
+			}
+
+			.formDiv{
+				border: 1px solid #ccc;
+				margin-top: 5px;
+			}
+			.formGroup{
+				margin-bottom: 0px;
+				margin-left: 0px;
+			}
+			.btn-addGoods{
+				margin-top:10px;
+			}
+			.row-right-css{
+				border-right: 1px solid #CCC;
+				padding-right: 0px;
+			}
+			.center-row-top-bottom{
+				margin:5px 0px;
+			}
+			
+			.del-btn-css{
+				height: 100px;
+				line-height: 100px;
+				/*padding: 25px 10px;*/
+				text-align:center;
+			}
+			.text-align-center{
+				text-align:center;
+				padding-top: 5px; /*使标签垂直居中*/
+			}
+			.input-border-css{
+				border:0px;
+			}
+			.hr-css{
+				border: 0;
+				border-top: 1px solid #eee;
+				margin:0px;
+			}
+
+			.backImg { 
+				/*border: 1px solid #ccc;*/
+				float:left;
+				margin-left:15px;
+				margin-bottom:5px;
+			}
+			
+			.del-icon{
+				font-size: 2.0em;
+			    color: #ff3360;
+			    line-height: 100px;
+			    left: -8px;
+			}
+			
+			.p-select{
+				background-color: white;
+    			height: 40px;
+    			line-height: 40px;
+    			border-bottom: 1px solid #ddd;
+			}
+			
+			.margin-15{
+				margin:15px 0px;
+			}
+			.img-del{
+				margin-top: -10px !important;
+			    margin-left: -15px !important;
+			    background: #ddd !important;
+			    padding: 1px 3px !important;
+			    line-height: 22px;
+			    border: 2px solid #FFF;
+			    border-radius: 32px;
+			    color: #FFF;
+			    font-size: 21px;
+			    height: 28px;
+			    width: 28px;
+			    text-indent: 0;
+			    float: right;
+			    z-index: 999;
+			}
+			.selectColor{
+				background-color:grey !important;
+				color:white;	
+			}
+			.unselectColor{
+				background-color:white !important;
+				color: black;
+			}
+			
+			.list-group-item{
+				border:0px !important;
+			}
+			.dropdown-menu{
+				/*top:50%;*/
+				left:15px;
+				min-width:91%;
+				margin:0px;
+				
+			}
+			.foot-company-logo{
+				margin-bottom:50px;
+			}
+			
+</style>
+	</head>
+	<body style="overflow: visible;">
+		<div class="container-fluid">
+			<div class="row">
+				<form class="form-horizontal" action="" id="goodsInfo"
+					method="post">
+					<div class="panel panel-success">
+						<div class="panel-heading" style="font-size: 16px;">
+							商品信息
+						</div>
+						<div class="panel-body">
+							<div class="form-group" id="imgs">
+								<!-- <div class='backImg' > 
+					                  <img  style='width:70px;height:70px; border:1px solid #ccc;'  id='img0'   
+					                     onclick = 'upImage(this.id);'  />
+					                 <button type='button' class='close img-del' onclick="delImg(0)">&times;</button>  
+					             </div> -->
+							</div>
+							
+							<div class="form-group">
+								<div class="col-sm-12">
+									<input type="text" class="form-control" id="goodTitle"
+										style="font-size: 16px;" name="goodTitle" placeholder="标题">
+								</div>
+							</div>
+							<div class="form-group">
+								<!-- </label>  -->
+								<div class="col-sm-12">
+									<textarea rows="5" cols="" class="form-control" id="goodDesc"
+										style="font-size: 16px;" name="goodDesc" placeholder="请输入商品描述"></textarea>
+								</div>
+							</div>
+
+							<!-- 商品信息 -->
+							<!-- <div id="addProp" style="display: none;">  -->
+							<div id="addProp" >
+								<div id="goodsInfoList">
+								
+								</div>
+								<input type="button" class="btn btn-default btn-block btn-addGoods" 
+									 value="添加商品规格" onclick="createPropTable();" />
+							</div>
+							<div class="row">
+								<div class="col-md-12 col-xs-12 margin-15">
+									<ul id="tasks" class="item-list ui-sortable">
+										<li id="goodsCategory111" data-toggle="dropdown" class="item- clearfix ui-sortable-handle dropdown-toggle" aria-expanded="false">
+											<label class="inline">
+												<span class="lbl">分类:</span>&nbsp;<span class="lbl selOne"></span>
+											</label>
+											<span class="pull-right"><i class="glyphicon glyphicon-chevron-right"></i></span>
+										</li>
+										 
+										 <div class="wrapper dropdown-menu dropdown-success" style="height: 200px; overflow-y: auto;">
+											<ul id="category"  class="list-group">
+												<li class="testC list-group-item text-center" onclick="checkThisCate(this)">服装</li>
+												<li class="testC list-group-item text-center" onclick="checkThisCate(this)">手机</li>
+												<li class="testC list-group-item text-center" onclick="checkThisCate(this)">电脑</li>
+												<li class="testC list-group-item text-center" onclick="checkThisCate(this)">箱包</li>
+												<li class="testC list-group-item text-center" onclick="checkThisCate(this)">食品</li>
+												<li class="testC list-group-item text-center" onclick="checkThisCate(this)">化妆用品</li>
+											</ul>
+										 </div>
+										
+										<!-- 
+										<li id="goodsType" class="item- clearfix ui-sortable-handle">
+											<label class="inline">
+												<span class="lbl">品类</span>
+											</label>
+											<span class="pull-right"><i class="glyphicon glyphicon-chevron-right"></i></span>
+										</li>
+										 -->
+									</ul>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<!-- </label>  -->
+								<div class="col-sm-12">
+									<input id="update" type="button" onclick="addGoods()"
+										class="btn btn-primary  btn-block" value="添加" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	
+
+		<script type="text/javascript">	
+			// 商品属性
+			var indexNumber = new Array();
+			var count = 0; //计算商品种类
+
+			// 图片
+			var imgArray = new Array();
+			var imgCount = 0;
+			
+			var photoSubstring = "/checkJpg";  
+			
+			var imgId = null;
+			var mhUserVars = null;
+			
+			var myScroll;
+			
+			$(function(){
+				
+				validateForm();
+				
+				//加载分类				
+				//initCategory(mhUserVars.data.data,"checkThisCate");
+				/*
+				//当状态为编辑商品时，默认加载商品信息 不等于0时 为编辑商品
+ 				if(mhUserVars.dataId != 0){
+					var data = mhUserVars.goodInfo;
+					var propData = mhUserVars.goodInfo.propList;
+					
+					var imgList = data.data[0].reserved3.split(",");
+					
+					//1. 加载图片；
+					for(var i = 0; i <imgList.length; i++){
+						createImgDiv();
+						$("#img"+imgCount).attr("src",imgList[i]);
+					}
+					//2. 标题、描述、
+					$("#goodTitle").val(data.data[0].reserved1);
+					$("#goodDesc").val(data.data[0].reserved2);
+					
+					//3. 商品属性、
+					
+					for(var j = 0 ; j < data.propList.length; j++ ){
+					
+						createPropTable();
+						$("#goodsProp"+count).val(data.propList[j].goodsProp);
+						$("#goodsPrice"+count).val(data.propList[j].goodsPrice);
+						$("#goodsCount"+count).val(data.propList[j].goodsCount);
+						
+					}
+					
+					//4. 分类加载、
+					$(".selOne").html(data.data[0].reserved5);
+					
+					//5. 新增 改成 修改
+					$("#update").val("修改");
+					$(document).attr("title","修改商品");
+					
+				}else{
+				}
+				
+				*/
+				// 增加一个没有图片的空格子 方便继续添加图片
+				createPropTable();
+				createImgDiv();
+				
+			});
+			
+			function uploadImg(id){
+				upImage(id);	        
+			}
+			
+			//上传图片  PC——端上传 start
+			function upImage(id){
+				var url = MH_PATH + "/UploadFile/uploadImg.action";
+				imgId = id;
+				pcUploadImg("setImg","",{actionPath : url});
+				
+			}
+			function setImg(data){
+				$("#"+imgId).attr("src",data[0]['relativePath']);
+				createImgDiv(); // 上传成功后，创建一个新的图片框
+			}
+			//上传图片  PC——端上传 end
+			
+			function createImgDiv(){
+				imgCount++ ; //计算图片总数
+				imgArray.push(imgCount);
+				var htmlStr = "<div class='backImg' > " +
+					          "		<img  style='width:100px;height:100px;' class='img-style' src='../img/1.jpg' id='img"+imgCount+"' " +   
+					       // "           onclick = 'upImage(this.id);'  /> " +
+					          "           onclick = 'uploadImg(this.id);'  /> " +
+					         "     <button type='button' class=img-del onclick='delImg("+imgCount+")'><span>&times;</span></button>" +
+					          "     </div>";
+				$("#imgs").append(htmlStr);
+			}
+
+			
+	
+		
+	
+	function addGoods() {
+		
+		$("#update").addClass("disabled"); // 点击确定后，禁用按钮，防止重复提交。
+				
+		var bool = $("#goodsInfo").validate().form();
+		if(!bool){
+			$("#update").removeClass("disabled"); //如验证失败，释放确定按钮。
+			return;
+		}
+		
+		var params = {};
+		var max = 0;
+		var min = 0;
+		
+		// reserved1 商品标题
+		params.goodTitle = $("#goodTitle").val();
+		// reserved2 商品描述
+ 		params.goodDesc = $("#goodDesc").val();
+		
+		/*var imgs = "";
+		for(var i = 0; i < imgArray.length; i++){
+			var src = $("#img"+imgArray[i])[0].src;
+			if(!Z_IsEmpty20(src)){
+				// 截取图片路径。去掉host
+				src = src.substring(src.indexOf(photoSubstring));
+				imgs += src+",";
+			}
+		}
+		// reserved3 商品图片
+		params.reserved3 = imgs.substring(0,imgs.length -1);
+		//图片验证
+		if(Z_IsEmpty20(params.reserved3)){
+			openB3AjaxAlertDialog("请设置至少一张商品图片","提示",false);
+			return;
+		}*/
+		params.goodImg = $("#img1")[0].src.split(window.location.host)[1];
+		
+		// 商品规格-价格-数量 ,目前是以-链接
+		var goodsInfo = "";
+		var formData = new Array();
+		for(var i = 0; i <indexNumber.length;i++){
+			
+			var formParam = zkm_getHtmlFormJsons("form"+indexNumber[i]);
+			
+			var price = $("#goodsPrice"+indexNumber[i]).val();
+			if(price.indexOf(".") < 0){
+				price += ".00";
+			}
+			
+			// 第一次循环，最低价格为
+			if(i == 0){
+				min = price;
+			}
+			
+			//获取价格区间
+			if(eval(price) > eval(max)){
+				max = price;
+			}
+			
+			if(eval(price) < eval(min)){
+			 	min = price;
+			}
+			
+			formData.push(formParam);
+			
+		}
+		
+		params.data = JSON.stringify(formData);
+		// 如果最高价格和最低价格一致，则保存一个价格，反之则保存价格区间
+		// goodPriceLine  价格区间
+		if(eval(min) == eval(max)){
+			params.goodPriceLine = max; 
+		}else{
+			params.goodPriceLine = min + "~" +max; 
+		}
+		
+		// categoryName 商品类别
+		params.categoryName =  $(".selOne").html();
+		
+		// 上下架状态。默认上架
+		params.goodStatus =  "1";
+		
+		//params.goodInfo = goodsInfo;
+		
+		console.log(params);
+		
+		//return;
+		var url = null;
+		/*if(mhUserVars.dataId != 0){
+			params.dataId = mhUserVars.dataId;
+			url ="/Shop/ZDesk/Shopping/goodManager/updateGood.action";
+		}else{*/
+			url ="/Shop/ZDesk/Shopping/goodManager/insertGood.action";
+// 		}
+		
+		ajaxFunction(url,params,true,function(data) {
+				$("#update").removeClass("disabled"); //提交成功后，释放确定按钮。
+				var result = "失败";
+				if (data.retcode == "0"){
+					result ="成功";
+				} 
+				//保存成功或者失败都提醒，是继续添加，或者跳转到管理界面
+				var ret = window.confirm("保存"+result+",是否继续添加");
+				if(ret){
+					window.location.reload();
+				}else{
+					//window.location.href="/SRender?jsLoader=shopping%2FgoodsManagerLoader&tpl=shopping%2FgoodsManager";
+				}
+			});
+		}
+	
+	//动态生成商品规格
+	function createPropTable(){
+		count++;
+		indexNumber.push(count);
+		var str = "";
+		str += "<div id='form"+count+"' class='formDiv'>"
+			+  "	<div class='row'>"
+			+  "		<div class='col-md-10 col-xs-10 row-right-css'>"
+			+  "				<div class='form-group formGroup'>"
+			+  "					<label for='goodsProp"+count+"' class='col-sm-3 col-xs-3 col-md-3  text-align-center'>规格:</label>"
+			+  "						<div class='col-sm-9 col-xs-9 col-md-9'>"
+			+  "							<input type='text' class='form-control' style='border:0px;color:black;' id='goodsProp"+count+"'"
+		//+  "							onkeyup=\"this.value=loopErrorChar(this.value)\" name='goodsProp"+count+"'" 
+			+  "							 name='goodsProp'" 
+			+  "								placeholder='尺寸、大小、颜色等'>"
+			+  "						 </div>"
+			+  "				</div>"
+			+  "				<hr class='hr-css' />"
+			+  "				<div class='form-group formGroup'>"
+			+  "					<label for='goodsPrice"+count+"' class='col-sm-3 col-xs-3 col-md-3  text-align-center'>价格:</label>"
+			+  "						<div class='col-sm-9 col-xs-9 col-md-9'>"
+			+  "							<input type='text' class='form-control' style='border:0px;color:black;' id='goodsPrice"+count+"'"
+			/*+  "									name='goodsPrice"+count+"'    onfocus='this.value=cancelLast(this.value)'  " 
+			+  "									onblur='this.value=addMin(this.value);'   "  
+			+  "									onkeyup=\"javascript:this.value=this.value.replace(/[^\\d]/g,\'\');\"   "  */
+			+  "									name='goodsPrice' " 
+			+  "									 "  
+			+  "									onkeyup='validatePrice(this,this.value);' "  
+			+  "									placeholder='给商品定个好价格吧' />"
+			+  "						</div>"
+			+  "				</div>"
+			+  "				<hr class='hr-css'/>"
+			+  "					<div class='form-group formGroup'>"
+			+  "						<label for='goodsCount"+count+"' class='col-sm-3 col-xs-3 col-md-3  text-align-center'>库存:</label>"
+			+  "							<div class='col-sm-9 col-xs-9 col-md-9'>"
+			+  "								<input type='text' class='form-control' style='border:0px;color:black;' id='goodsCount"+count+"'"
+			//+  "									name='goodsCount"+count+"' onkeyup=\"javascript:this.value=this.value.replace(/[^\\d]/g,\'\');\""
+			//+  "									name='goodsCount"+count+"' onkeyup=\"javascript:this.value=this.value.replace(/(^[1-9][0-9])/g//,\'\');\""
+			+  "									name='goodsCount' onkeyup='validateCount(this,this.value);'"
+			+  "									placeholder='合理设置库存避免超卖' />"
+			+  "							</div>"
+			+  "					</div>"
+			+  "		</div>"
+			+  "		<div class='col-md-2 col-xs-2 del-btn-css' onclick=removeDiv("+count+")>"
+			+  "		<span style='margin-left:-12px;'><i class='ace-icon fa fa-trash-o del-icon '></i></span></div>" 
+			+  "	</div>"
+			+  "</div>"
+		$("#goodsInfoList").append(str);	
+		validateProp(count);	
+	}
+	
+	//特殊字符处理
+	function loopErrorChar(s) { 
+		var pattern = new RegExp("[`~!@#$^&*()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？]");
+		var rs = ""; 
+		for (var i = 0; i < s.length; i++) { 
+			rs = rs+s.substr(i, 1).replace(pattern, ''); 
+		} 
+		return rs; 
+	} 
+	
+	
+	//验证价格
+	function validatePrice(_this,_value){
+		var regValue = /^[0-9]+\.{0,1}[0-9]{0,2}$/;
+		if(!regValue.test(_value)){
+			$(_this).val('');	
+		}
+	
+	}
+	
+	
+	//正则表达式验证数量
+	function validateCount(_this,_value){
+		// 不为0开头的正整数
+		var regValue = /^\+?[1-9][0-9]*$/;
+		if(!regValue.test(_value)){
+			$(_this).val('');
+		}
+	}
+	
+	// 删除规格
+	function removeDiv(value){
+		if(indexNumber.length != 1){
+			var index = getArrayIndex(indexNumber,value);
+			if(!Z_IsEmpty20(index)){
+				indexNumber.splice(index, 1); //删除指定元素 数据长度自减1
+			}
+			$("#form"+value).remove();
+		}
+		
+	}
+	
+	/*
+	* 删除图片
+	*
+	*/
+	
+	function delImg(imgId){
+		
+		// 没上传图片的格子不允许删除；
+		if(Z_IsEmpty20($("#img"+imgId)[0].src)){
+			return;
+		}
+		
+		var imgLength = $("#imgs")[0].children.length;
+		
+		// 当只剩一张图片时不删除图片元素
+		if(imgLength != 1){
+			var index =getArrayIndex(imgArray,imgId);
+			if(!Z_IsEmpty20(index)){
+				imgArray.splice(index, 1);
+			}
+			$("#img"+imgId).parent().remove();
+		}
+		
+	}
+	
+	
+	function validateForm(){
+        $("#goodsInfo").validate({
+            onfocusout: false, //取消失去焦点验证
+            rules : {
+                goodTitle : {
+                    required : true,
+                    maxlength : 20
+                },
+                goodDesc : {
+                    required : true,
+                    maxlength : 140
+                }
+            },
+             messages : {
+                goodTitle : {
+                	required: " 商品标题不能为空",
+                    maxlength : "商品标题长度至多为20个字符"
+                },
+                goodDesc : {
+                	required: " 商品描述不能为空",
+                    maxlength : "商品描述长度至多为140个字符"
+                }
+            },
+            // 错误信息处理方法
+            errorPlacement: function (error, element) {
+                element.addClass('error');
+                var errorInfo = error.html();
+                var id = element[0]['id'];
+                element.tooltip({
+                    trigger: "manual",
+                    title: errorInfo,
+                    placement: "top"
+                });
+                element.data("bs.tooltip").options.title = errorInfo;
+                element.tooltip("show");
+    		},
+            // 成功信息处理方法
+            success: function ($e, dom) {
+                var element = $(dom);
+                element.tooltip('hide');
+                element.tooltip("destroy"); // 清空提示消息
+                element.removeClass('error');
+            }
+        });
+    }
+    
+    // 验证动态属性框
+    function validateProp(value){
+    
+    	$("#goodsProp"+value).rules("add",  { required: true, messages: { required: "请设置商品属性"} });
+    	$("#goodsPrice"+value).rules("add", { required: true, messages: { required: "请设置商品价格"} });
+    	$("#goodsCount"+value).rules("add", { required: true, min:1 ,messages: { required: "请设置库存",min:"库存不能小于1"} });
+    
+    }
+    
+    
+    function initCategory(data,fn){
+		var cateHtml="";
+		for(var i =0; i< data.length; i++){
+    	  	cateHtml += '<li class="testC list-group-item text-center" onclick="'+fn+'(this);">'
+    	  			 +  data[i].typeName  
+    	  			 +'</li>';  
+		}
+		$("#category").html(cateHtml);
+    }
+    
+    //获取值在数据中的下标位置，arr = array , value = 要查询的值 
+	function getArrayIndex(arr,value){
+		for(var i in arr){
+		  if(arr[i] == value){
+		    return i;//i就是下标
+		  }
+		}
+	}
+    
+    //修改分类。
+    function checkThisCate(_this){
+    	$(".testC").addClass("unselectColor");
+    	$(_this).removeClass("unselectColor");
+    	$(_this).addClass("selectColor");
+    	$(".selOne").html($(_this).html());
+    }
+    
+    
+	
+</script>
+	</body>
+</html>
