@@ -1,0 +1,55 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html >
+<head>
+    <title>购物平台-管理员后台</title>
+	
+	<%- include(ejsAppTplsBaseUrl_ + '/mh_pc_main_head.ejs') %>
+	<link href="/ZingMH/css/appCss/login/my.css?v=9999.9999" type="text/css" rel="stylesheet">
+	
+</head>
+<body class="no-skin">
+
+	<div style="background-color:#f5f5f5;border-bottom:1px solid #afafae;" id="industry-list">
+		<header id="common_hd" class="head_rel">
+			<span class="glyphicon glyphicon-book"></span>
+			<span class="head_title"> 电商管理 </span>
+		</header>
+	</div>
+		
+	<div class="shortcut-navs" id="pageMain" >
+		<%- pageMainStr %>
+	</div>
+		
+  <%- include(ejsAppTplsBaseUrl_+ '/mh_pc_main_bodybottom.ejs') %>	 
+  
+<script>
+
+var mhUserVars = null;
+    	
+   function init(){	
+		mhUserVars=<%- JSON.stringify(mhUserVars) %>;
+    	console.log(mhUserVars);
+		/*loadMsg();*/
+	}
+
+
+function loadMsg(){
+    var pageMainHtml="";
+    pageMainHtml+=" <ul class=\"shortcut-mys-nav\" style=\"background:none; \" >";
+    pageMainHtml+=" <li><div id='li1'  ></div><a class='link link4' href='/SRender?jsLoader=shopping%2FgoodsManagerLoader&tpl=shopping%2FgoodsManager&v=9999.9999'>商品管理</a></li>";
+    pageMainHtml+=" <li><div id='li2'  ></div><a class='link link3' href='/SRender?jsLoader=shopping%2FinsertGoodLoader&tpl=shopping%2FinsertGoods&dataId=0&v=9999.9999'>添加商品</a></li>";
+    pageMainHtml+=" <li><div id='li3'  ></div><a class='link link2' href='/SRender?jsLoader=shopping%2ForderLoader&tpl=shopping%2Forder&v=9999.9999'>订单管理</a></li>";
+    pageMainHtml+=" <li><div id='li4'  ></div><a class='link link3' href='/SRender?jsLoader=shopping%2FuserCenterLoader&tpl=shopping%2FuserCenter&v=9999.9999'>个人中心</a></li>";
+    pageMainHtml+=" <li><div id='li5'  ></div><a class='link link4' href='/SRender?jsLoader=shopping%2FshoppingCartLoader&tpl=shopping%2FshoppingCart&v=9999.9999'>购物车</a></li>";
+    pageMainHtml+=" <li><div id='li5'  ></div><a class='link link2' href='/SRender?jsLoader=shopping%2FindexLoader&tpl=shopping%2Findex&v=9999.9999'>首页</a></li>";
+  	pageMainHtml+=" </ul>";
+  
+    var pageMainObj=$("#pageMain"); 
+    pageMainObj.html(pageMainHtml);
+}
+	function tempFun(){
+		alert("即将开放");
+	}
+</script>
+</body>
+</html>

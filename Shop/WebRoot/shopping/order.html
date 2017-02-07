@@ -1,0 +1,241 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+   		<meta charset="utf-8">
+   		<meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+			name="viewport">
+			
+		<meta name="format-detection" content="telephone=no" />
+		<title>订单管理</title>
+
+		 <%- cssAJsPosStartTpl %>	
+
+		<style>
+			
+			#tabId>li{
+				text-align:center;
+				width:25%;
+			}
+			
+			.del-border-top{
+				border-top:0px !important;
+			}
+			
+			.btn-icon-css{
+				font-size:18px;
+				margin:0 4px;
+				
+			}
+			.row-padding-top{
+				padding-top:5px;
+			}
+			
+			#nav-status>a{
+				width: 25%;
+			    text-align: center;
+			    float:left;
+			    display: block;
+			}
+			
+			#nav-status>a>p{
+				margin:0px;
+				font-size:18px;
+			}
+			.tab-content{
+				padding:2px 0px 5px;
+			}
+			
+			.price-color{
+				color:red !important;
+			}
+		</style>
+		
+  </head>  
+  <body>
+	<div class="container">
+     <div class="row">
+		<div class="panel panel-default widget">	
+			<div style="background-color:#f5f5f5;border-bottom:1px solid #afafae;margin: -1px -1px 0 0;" id="industry-list">
+                <header id="common_hd" class="head_rel">
+                    <span class="glyphicon glyphicon-book"></span>
+                    <span class="hd_tle"> 订单管理 </span>
+                </header>
+            </div>
+			
+            <div class="panel-body">
+					<div class="tabbable">
+						<ul id="tabId" class="nav nav-tabs">
+							<li class="active ">
+								<a data-toggle="tab" href="#going" class="going del-border-top price-color" aria-expanded="true">
+										<span class="bigger-110">进行中</span>
+								</a>
+							</li>
+							<li>
+								<a data-toggle="tab"  href="#ending" class="ending del-border-top" aria-expanded="false">
+										<span class="bigger-110">已完成</span>
+								</a>
+							</li>
+							<li>
+								<a data-toggle="tab"  href="#closed"  class="closed del-border-top" aria-expanded="false">
+										<span class="bigger-110">已关闭</span>
+								</a>
+							</li>
+					   </ul>
+
+						<div class="tab-content ">
+							 <div id="going" class="tab-pane in active ">
+							 	<div class="row">
+								 	<div id="nav-status" class="col-xs-12 col-md-12">
+										<a href="javascript:void(0);" class="orderStatus price-color" onClick="ajaxLoadData('01',this,'orderList');"><p class="count-01">0</p>待付款</a>
+										<a href="javascript:void(0);" class="orderStatus" onClick="ajaxLoadData('02',this,'orderList');"><p class="count-02">0</p>待发货</a>
+										<a href="javascript:void(0);" class="orderStatus" onClick="ajaxLoadData('04',this,'orderList');"><p class="count-04">0</p>已发货</a>
+										<a href="javascript:void(0);" class="orderStatus" onClick="ajaxLoadData('10',this,'orderList');"><p class="count-10">0</p>退款中</a>
+									</div>
+								</div>
+								<div>
+                                    <ul id="searchList" data-lt-url="javascript:void(0);" data-lt-recordcount="0" data-lt-pagesize="10" data-lt-page="0" data-lt-keyname="" class="list-group">	
+                                        <div class="panel panel-default widget">		
+                                        	<div class="panel-body" id="orderList">
+												<!--<ul class="list-group" id="orderList">
+													 <li class="list-group-item"> 
+														<div class="row" row-index="0">
+															<div class="col-xs-3 col-md-1">
+																<a data-rel="colorbox" class="cboxElement">
+																	<span class="label-holder" style="top: -5px;margin-left:45px;position: absolute;"></span>
+																	<img width="50" height="50" alt="50x50" src="/css/weicard.jpg" onerror="javascript:this.onerror='';this.src='/css/weicard.jpg';">
+																</a>
+															</div>
+															<div class="col-xs-9 col-md-11">
+																<h5 style="min-width: 50px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;margin:2px 0;">商品标题要长长长长长长长</h5>
+																<h5 style="min-width: 50px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">￥:5.50</h5>
+																<div class="comment-text"><span class="work-title"></span><span></span></div> 
+															</div>
+														</div>
+													</li> 
+												</ul>	-->	
+													
+												</div>	
+											</div>
+										</ul>
+                                    </div>
+							</div>
+							<div id="ending" class="tab-pane">
+									
+							</div>
+							<div id="closed" class="tab-pane  ">
+								
+							</div>
+						</div><!-- /.tab-content -->
+					</div><!-- /.tabbable -->
+		</div>
+	</div>
+	</div>	
+	 
+	 <%- goBack %>	
+	 <%- logoTpl %>	
+	 <%- cssAJsPosEndTpl %>	
+
+	<script>
+		var mhUserVars = null;
+    	
+    	$(function(){
+    		mhUserVars=<%- JSON.stringify(mhUserVars) %>;
+		
+			// 初始化页面数据
+			if(!Z_IsEmpty20(mhUserVars)){
+				loadData(mhUserVars.data,"orderList");
+				$(".count-01").html(mhUserVars.orderStatusCount.data.status01)
+				$(".count-02").html(mhUserVars.orderStatusCount.data.status02)
+				$(".count-04").html(mhUserVars.orderStatusCount.data.status04)
+				$(".count-10").html(mhUserVars.orderStatusCount.data.status10)
+				
+			}
+			
+			//进行中的订单
+			$(".going").on('click',function(){
+				$(".del-border-top").removeClass("price-color");
+				$(".going").addClass("price-color");
+				
+				ajaxLoadData("01",null,"orderList");
+			});
+			
+			//已完成的订单
+			$(".ending").on('click',function(){
+				$(".del-border-top").removeClass("price-color");
+				$(".ending").addClass("price-color");
+				ajaxLoadData("05",null,"ending");
+			});
+			
+			//已关闭的订单
+			$(".closed").on('click',function(){
+				$(".del-border-top").removeClass("price-color");
+				$(".closed").addClass("price-color");
+				ajaxLoadData("09",null,"closed");
+			});
+		});
+		
+		
+		/*
+			不同tab 选项，加载不同状态数据
+		*/
+		function ajaxLoadData(orderStatus,_this,_id){
+			
+			//如果_this 不为null,
+			if(!Z_IsEmpty20(_this)){
+				$(".orderStatus").removeClass("price-color");
+				$(_this).addClass("price-color");
+			}
+			
+			
+			var postParams = {
+				orderStatus :orderStatus,
+				addressId:0
+				
+			}
+		
+			var url ="/ZingMH/ZDesk/Shopping/orderManager/getAllOrder.action";
+			ajaxFunction(url, postParams, true, function(data){
+				if(data && data.success){
+					loadData(data,_id);
+				}
+			});
+		
+		}
+		
+		//点击订单，跳转某个订单详情		
+		function loadOrderDetail(orderId,addressId){
+			if(Z_IsEmpty20(addressId)){
+     			addressId = 0;
+     		}
+			window.location.href="/SRender?jsLoader=shopping%2ForderDetailLoader&tpl=shopping%2ForderDetail&isAdmin="+mhUserVars.isAdmin+"&orderId="+orderId+"&addressId="+addressId;
+		}
+		
+		
+		
+		function loadData(data,_id){
+			var html = '<ul class="list-group">';
+			for(var i = 0; i < data.data.length; i++){	
+				html += '<li class="list-group-item" onclick="loadOrderDetail(\''+data.data[i].orderId+'\',\''+data.data[i].addressId+'\');"> '+
+					    '		<div class="row" row-index="0">'+
+						'		<div class="col-xs-3 col-md-1">'+
+						'			<a data-rel="colorbox" class="cboxElement">'+
+						'				<span class="label-holder" style="top: -5px;margin-left:45px;position: absolute;"></span>'+
+						'				<img width="50" height="50" alt="50x50" src="/css/weicard.jpg" >'+
+						'			</a>'+
+						'		</div>'+
+						'		<div class="col-xs-9 col-md-11">'+
+						'			<h5 style="min-width: 50px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;margin:2px 0;"><span>订单编号:</span>'+ data.data[i].orderId+'</h5>'+
+						'			<h5 style="min-width: 50px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"><span class="price-color">&yen;:'+data.data[i].orderAccount+'</span></h5>'+
+						'			<div class="comment-text"><span class="work-title"></span><span></span></div> '+
+						'		</div>'+
+						'	</div>'+
+						'</li>';
+			}
+			html +="</ul>"
+			$("#"+_id).html(html);
+		}
+		
+	</script>
+	
+  </body>
+</html>

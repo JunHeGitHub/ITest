@@ -1,0 +1,219 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>个人中心</title>
+	<meta charset="utf-8">
+   	<meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,
+   				 user-scalable=no"	name="viewport">
+    
+     <%- cssAJsPosStartTpl %>
+   <link rel="stylesheet" href="/ZingMH/zh_cn/chatWorkflow/css/workflowPage.css?v=9999.9999">
+
+	<style>
+		#nav-status>a{
+			width: 20%;
+			text-align: center;
+			float:left;
+			display: block;
+		}
+		#shop-nav-status{
+			position: absolute;
+		    z-index: 999;
+		    background-color: #888888;
+		    bottom: 0px;
+		    margin-left: 10px;
+		    opacity: 0.8;
+		}
+		#shop-nav-status>a{
+			width: 33.33%;
+			text-align: center;
+			float:left;
+			display: block;
+			color:white;
+			margin-top: 3px;
+			font-size: 10px;
+		}
+		.no-Padding-Left-right{
+			padding-left: 0px !important;
+    		padding-right: 0px !important;
+		
+		}
+		.redColor-Count{
+			width: 12px;
+		    height: 12px;
+		    line-height: 10px;
+		    border-radius: 15px;
+		    font-size: 10px;
+		    background: #f00;
+		    color: #fff;
+		    position: relative;
+		    top: -20px;
+		    left: 55%;
+		    margin-bottom: -10px;
+		}
+		.noBackGroundColor{
+			background:#fff !important;
+		}
+		
+		 
+    	#nav-status1{
+			margin-top: 5px;
+		}
+		#nav-status1>a{
+			width: 25%;
+			text-align: center;
+			float:left;
+			display: block;
+			color: #696969;
+		}
+			
+		#nav-status1>a>p{
+			margin:0px;
+			font-size:18px;
+		}
+		.fix-bottom-style{
+			position: fixed;
+			bottom:0px;
+			display:inline;
+			width:100%;
+			background-color: white;
+		}
+		.price-color{
+			color:red !important;
+		}
+		
+	</style>
+
+  </head>
+  
+  <body>
+	<div class="container">
+	    <div class="row" style="overflow:hidden;">
+		    <div style="background-color:#f5f5f5;border-bottom:1px solid #afafae;" id="industry-list">
+				 <header id="common_hd" class="head_rel">
+				       <span onclick="javascript:history.go(-1);"><i class="fa fa-chevron-left fa-lg"></i></span>
+				       <span class="hd_tle">个人中心</span>
+				  </header>
+			</div> 
+		
+			<!--  -->	
+			<div>
+				<ul class="list-group">
+				   <li class="list-group-item no-padding">
+				   	 <div class="row">
+						  <div class="col-xs-12 col-md-12 no-Padding-Left-right">
+						  	  <div><img src="/ZingMH/img/voice.png" style="width:100%;height:180px;" /></div>
+						  	  <div class="row">
+								  <div id="shop-nav-status" class="col-xs-12 col-md-12 no-Padding-Left-right">
+									<a href="#"><p>3</p>商品收藏</a>
+									<a href="#"><p>0</p>店铺收藏</a>
+									<a href="#"><p>5</p>关注品牌</a>
+								  </div>
+							   </div>
+						  </div>
+					 </div>
+				   </li>	  
+				   <li class="list-group-item">
+				   	 <div class="row">
+						  <div class="col-xs-12 col-md-12">
+						  	<label class="inline">
+								<span class="lbl">全部订单</span>
+							</label>
+							<span class="pull-right" style="margin-top: 5px;">
+								<i class="fa fa-chevron-right"></i>
+							</span>
+					   	  </div>	
+				   	 </div> 
+				   </li>
+				   <li class="list-group-item">
+				   	<div class="row">
+					  <div id="nav-status" class="col-xs-12 col-md-12 no-Padding-Left-right">
+						<a href="/SRender?jsLoader=shopping%2ForderManagerLoader&tpl=shopping%2ForderInfo&orderStatus=01">
+							<p id="o1"><i class="fa fa-credit-card fa-lg"></i></p>
+							待付款
+						</a>
+						<a href="/SRender?jsLoader=shopping%2ForderManagerLoader&tpl=shopping%2ForderInfo&orderStatus=02">
+							<p id="o2"><i class="fa fa-envelope-square fa-lg"></i></p>
+							待发货
+						</a>
+						<a href="/SRender?jsLoader=shopping%2ForderManagerLoader&tpl=shopping%2ForderInfo&orderStatus=04">
+							<p id="o3"><i class="fa fa-truck fa-lg"></i></p>
+							待收货
+						</a>
+						<a href="/SRender?jsLoader=shopping%2ForderManagerLoader&tpl=shopping%2ForderInfo&orderStatus=05">
+							<p id="o4"><i class="fa fa-file-text-o fa-lg"></i></p>
+							待评价
+						</a>
+						<a href="/SRender?jsLoader=shopping%2ForderManagerLoader&tpl=shopping%2ForderInfo&orderStatus=05">
+							<p id="o5"><i class="fa fa-repeat fa-lg"></i></p>
+							退款中
+						</a>
+					  </div>
+				   	</div>
+				   </li>
+				   <li class="list-group-item" style="margin-top: 5px;" onclick="loadAddress();">
+				   	 <div class="row">
+						  <div class="col-xs-12 col-md-12">
+						  	<label class="inline">
+								<span class="lbl">地址管理</span>
+							</label>
+							<span class="pull-right" style="margin-top: 5px;">
+								<i class="fa fa-chevron-right"></i>
+							</span>
+					   	  </div>	
+				   	 </div> 
+				   </li>
+				</ul>
+			</div>
+		</div>
+	</div>
+    
+    <div class="fix-bottom-style">
+		<div class="row">
+			<div id="nav-status1" class="col-xs-12 col-md-12">
+				<a href="javascript:window.location.href='/SRender?jsLoader=login%2FmeLoader&tpl=login%2Fmy&v=9999.9999'" class="orderStatus"><p><i class="fa fa-reply fa-lg"></i></p>返回门户</a>
+				<a href="javascript:window.location.href='/SRender?jsLoader=shopping%2FindexLoader&tpl=shopping%2Findex&v=9999.9999';" class="orderStatus"><p><i class="fa fa-home fa-lg"></i></p>首页</a>
+				<a href="javascript:window.location.href='/SRender?jsLoader=shopping%2FshoppingCartLoader&tpl=shopping%2FshoppingCart&v=9999.9999';" class="orderStatus"><p><i class="fa fa-shopping-cart fa-lg"></i></p>购物车</a>
+				<a href="javascript:void(0);" class="orderStatus  price-color"><p><i class="fa fa-user fa-lg"></i></p>我</a>
+			</div>
+		</div>
+	</div>
+    
+    
+    
+    <!-- 
+    <%- include(ejsAppTplsBaseUrl_+ '/mh_pc_main_bodybottom.ejs') %>
+     -->
+     <%- cssAJsPosEndTpl %>
+    <script>
+    	
+    	var mhUserVars = null;
+    	
+    	$(function(){
+    		mhUserVars=<%- JSON.stringify(mhUserVars) %>;
+    		
+    		if(!Z_IsEmpty20(mhUserVars.data.data.status01) && mhUserVars.data.data.status01 != 0){
+    			$("#o1").append("<div class='redColor-Count'>"+mhUserVars.data.data.status01+"</div>");
+    		}
+    		if(!Z_IsEmpty20(mhUserVars.data.data.status02) && mhUserVars.data.data.status02 != 0){
+    			$("#o2").append("<div class='redColor-Count'>"+mhUserVars.data.data.status02+"</div>");
+    		}
+    		if(!Z_IsEmpty20(mhUserVars.data.data.status04) && mhUserVars.data.data.status04 != 0){
+    			$("#o3").append("<div class='redColor-Count'>"+mhUserVars.data.data.status04+"</div>");
+    		}
+    		if(!Z_IsEmpty20(mhUserVars.data.data.status05) && mhUserVars.data.data.status05 != 0){
+    			$("#o4").append("<div class='redColor-Count'>"+mhUserVars.data.data.status05+"</div>");
+    		}
+    		if(!Z_IsEmpty20(mhUserVars.data.data.status10) && mhUserVars.data.data.status10 != 0){
+    			$("#o5").append("<div class='redColor-Count'>"+mhUserVars.data.data.status10+"</div>");
+    		}
+    	});
+    	
+    	//跳转地址管理
+    	function loadAddress(){
+    		window.location.href="/SRender?jsLoader=shopping%2FaddressManagerLoader&tpl=shopping%2FaddressManager&isChange=false&v=9999.9999";
+    	}
+    	
+    </script>
+  </body>
+</html>

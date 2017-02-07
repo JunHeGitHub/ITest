@@ -1,0 +1,397 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta charset="utf-8">
+<meta
+	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+	name="viewport">
+
+	<title>商品管理</title>
+
+	<link rel="stylesheet" type="text/css" href="../css/baseCss/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/baseCss/ace.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/baseCss/bootstrap3Cus.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/baseCss/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/baseCss/zinglabs.css">
+	<link rel="stylesheet" type="text/css" href="../css/shopping/shopUtils.css">
+		 
+	<script src="../js/jquery-2.1.4.min.js"></script>
+	<script src="../js/bootstrap.min.js"></script>
+	<script src="../js/ace.min.js"></script>
+	<script src="../js/jquery.validate.min.js"></script>
+	<script src="../js/utilJs/mobile_utils.js"></script>
+
+
+<style>
+#tabId>li {
+	text-align: center;
+	width: 25%;
+}
+
+.del-border-top {
+	border-top: 0px !important;
+}
+
+.btn-icon-css {
+	font-size: 18px;
+	margin: 0 4px;
+}
+
+.row-padding-top {
+	padding-top: 5px;
+}
+
+.tab-content {
+	border: 0px;
+	padding: 0px;
+}
+
+.icon-width {
+	width: 14.28%;
+}
+
+.nav-tabs>li.active>a {
+	border-bottom-color: red !important;
+	color: red !important;
+}
+
+.g-price {
+	color: red;
+}
+</style>
+
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="panel panel-default widget">
+				<div
+					style="background-color:#f5f5f5;border-bottom:1px solid #afafae;margin: -1px -1px 0 0;"
+					id="industry-list">
+					<header id="common_hd" class="head_rel"> <span
+						class="glyphicon glyphicon-book"></span> <span class="hd_tle">
+						商品管理 </span> </header>
+				</div>
+				<div class="panel-body">
+					<div class="tabbable">
+						<ul id="tabId" class="nav nav-tabs">
+							<li class="active "><a data-toggle="tab" href="#wrapper1"
+								class="del-border-top" aria-expanded="true"> <span
+									class="bigger-110">出售中</span> </a></li>
+							<li><a data-toggle="tab" href="#inbox1"
+								class="del-border-top" aria-expanded="false"> <span
+									class="bigger-110">已下架</span> </a></li>
+						</ul>
+						<!-- wrapper" style="height: 470px;  overflow: hidden; -->
+						<div class="tab-content ">
+							<div id="wrapper1" class="tab-pane in active ">
+								<ul class="list-group">
+									<li class="list-group-item" style="">
+										<div class="row" row-index="0">
+											<div class="col-xs-3 col-md-1">
+												<a data-rel="colorbox" class="cboxElement"> <span
+													class="label-holder"
+													style="padding-left: 45px; position: absolute;top: -10px;"></span>
+													<img class="li-img-width-height" width="60" height="60"
+													alt="60x60" src="http://192.168.199.199/46356234100001.jpg"
+													>
+												</a>
+											</div>
+											<div class="col-xs-9 col-md-11">
+												<h5 class="li-h5-char-split li-h5-char-split-margin">三年多了烦恼</h5>
+												<h5 class="li-h5-char-split">
+													<span class="g-price">¥：123131.00~345345.00</span>
+												</h5>
+											</div>
+											<div class="col-xs-12 col-md-12 row-padding-top text-center">
+												<ul>
+													<li class="pull-left"><span
+														class="glyphicon glyphicon-hand-up icon-lg mouse_hover btn-icon-css"
+														onclick="goStart(this,46356271100011)"></span>
+													</li>
+													<li class="pull-left"><span
+														class="glyphicon glyphicon-hand-down icon-lg mouse_hover btn-icon-css"
+														onclick="goEnd(this,46356271100011);"></span>
+													</li>
+													<li class="pull-left"><span
+														class="glyphicon glyphicon-arrow-up icon-lg mouse_hover btn-icon-css"
+														onclick="goUp(this,46356271100011);"></span>
+													</li>
+													<li class="pull-left"><span
+														class="glyphicon glyphicon-arrow-down icon-lg mouse_hover btn-icon-css"
+														onclick="goDown(this,46356271100011);"></span>
+													</li>
+													<li class="pull-left"><span
+														class="glyphicon glyphicon-eye-open  mouse_hover btn-icon-css"
+														onclick="goDetail(this,46356271100001);"></span>
+													</li>
+													<li class="pull-left"><span
+														class="glyphicon glyphicon-pencil  mouse_hover btn-icon-css"
+														onclick="goEdit(this,46356271100001);"></span>
+													</li>
+													<li class="pull-left"><span
+														class="glyphicon glyphicon-download   mouse_hover btn-icon-css"
+														onclick="checkSaleStatus(this,46356271100001,'0');"></span>
+													</li>
+													<li class="pull-left"><span
+														class="glyphicon glyphicon-trash   mouse_hover btn-icon-css"
+														onclick="goDel(this,46356271100001,'onSale');"></span>
+													</li>
+												</ul>
+											</div>
+										</div>
+									</li>
+								</ul>
+							</div>
+							<div id="inbox1" class="tab-pane"></div>
+						</div>
+						<!-- tab-content -->
+
+					</div>
+					<!-- tabbable  -->
+
+				</div>
+				<!-- panel-body -->
+
+			</div>
+			<!-- panel-default widget -->
+		</div>
+		<!-- rows -->
+	</div>
+	<!--  containers -->
+
+	
+
+	<script>
+		function fontFunc(value, rowData, rowIndex, otherParams) {
+			var fontHtml = '<h5 class="li-h5-char-split li-h5-char-split-margin">'
+					+ rowData.reserved1
+					+ '</h5>'
+					+ '<h5 class="li-h5-char-split"><span class="g-price">&yen;：'
+					+ rowData.reserved4 + '</span></h5>';
+			return fontHtml;
+		}
+
+		function iconFunc(value, rowData, rowIndex, otherParams) {
+
+			var strHtml, status;
+			// 如果状态是 在售状态，显示下架按钮，反之显示上架按钮
+			if (otherParams.saleStatus == "onSale") {
+				strHtml = '<li class="pull-left"><span class="glyphicon glyphicon-download   mouse_hover btn-icon-css" onclick="checkSaleStatus(this,'
+						+ rowData.dataId + ',\'0\');"></span></li>';
+			} else {
+				strHtml = '<li class="pull-left"><span class="glyphicon glyphicon-upload   mouse_hover btn-icon-css" onclick="checkSaleStatus(this,'
+						+ rowData.dataId + ',\'1\');"></span></li>';
+			}
+
+			var iconHtml = ' <ul>'
+					+ '    <li class="pull-left"><span class="glyphicon glyphicon-hand-up icon-lg mouse_hover btn-icon-css" onclick="goStart(this,'
+					+ rowData.id
+					+ ')"></span></li>'
+					+ '	<li class="pull-left"><span class="glyphicon glyphicon-hand-down icon-lg mouse_hover btn-icon-css" onclick="goEnd(this,'
+					+ rowData.id
+					+ ');"></span></li>'
+					+ '	<li class="pull-left"><span class="glyphicon glyphicon-arrow-up icon-lg mouse_hover btn-icon-css" onclick="goUp(this,'
+					+ rowData.id
+					+ ');"></span></li>'
+					+ '	<li class="pull-left"><span class="glyphicon glyphicon-arrow-down icon-lg mouse_hover btn-icon-css" onclick="goDown(this,'
+					+ rowData.id
+					+ ');"></span></li>'
+					+ '	<li class="pull-left"><span class="glyphicon glyphicon-eye-open  mouse_hover btn-icon-css" onclick="goDetail(this,'
+					+ rowData.dataId
+					+ ');"></span></li>'
+					+ '	<li class="pull-left"><span class="glyphicon glyphicon-pencil  mouse_hover btn-icon-css" onclick="goEdit(this,'
+					+ rowData.dataId
+					+ ');"></span></li>'
+					+ strHtml
+					+ '	<li class="pull-left"><span class="glyphicon glyphicon-trash   mouse_hover btn-icon-css" onclick="goDel(this,'
+					+ rowData.dataId
+					+ ',\''
+					+ otherParams.saleStatus
+					+ '\');"></span></li>' + '</ul>';
+			return iconHtml;
+		}
+
+		function formatImg(value, rowData, rowIndex, otherParams) {
+			var html = '<a data-rel="colorbox" class="cboxElement">'
+					+ '	<span class="label-holder" style="padding-left: 45px; position: absolute;top: -10px;"></span>'
+					+ '	<img class="li-img-width-height" '
+					+ '		src="'
+					+ rowData.reserved3.split(",")[0]
+					+ '" '
+					+ ' onerror=\'javascript:this.onerror=\'\';this.src=\'/css/weicard.jpg\';\'></a>';
+
+			return html;
+
+		}
+
+		// 已上架
+		var settingsUp = {
+			url : "/ZingMH/ZDesk/Shopping/goodManager/getAllGoodData.action",
+			columns : [ {
+				field : "reserved3",
+				classer : "col-xs-3 col-md-1",
+				formatter : formatImg
+			}, {
+				field : "reserved1",
+				classer : "col-xs-9 col-md-11",
+				formatter : fontFunc
+			}, {
+				field : "reserved2",
+				classer : "col-xs-12 col-md-12 row-padding-top text-center",
+				formatter : iconFunc,
+				otherParams : {
+					saleStatus : "onSale"
+				},
+			} ],
+			pagination : true,
+			totalNumber : 8,
+			loadParam : function() {
+				var retParam = {};
+				retParam.reserved6 = "1";
+				return retParam;
+			},
+			rowDom : function(dom, data) {
+
+			}
+		};
+
+		// 未上架
+		var settingsDown = {
+			url : "/ZingMH/ZDesk/Shopping/goodManager/getAllGoodData.action",
+			columns : [ {
+				field : "reserved3",
+				classer : "col-xs-3 col-md-1",
+				formatter : formatImg,
+				otherParams : {
+					imgLoad : "imgFormat",
+					onerrorImg : "/css/weicard.jpg"
+				}
+			}, {
+				field : "reserved1",
+				classer : "col-xs-9 col-md-11",
+				formatter : fontFunc
+			}, {
+				field : "reserved2",
+				classer : "col-xs-12 col-md-12 row-padding-top text-center",
+				formatter : iconFunc,
+				otherParams : {
+					saleStatus : "offSale"
+				},
+			} ],
+			pagination : true,
+			totalNumber : 8,
+			loadParam : function() {
+				var retParam = {};
+				retParam.reserved6 = "0";
+				return retParam;
+			},
+			rowDom : function(dom, data) {
+
+			}
+		};
+
+		var offSale = 'false'; // 未上架
+		var onSale = 'false'; // 上架
+
+		$(function() {
+			onSale = $("#wrapper1").zingGrid(settingsUp);
+			onSale.reload();
+
+			offSale = $("#inbox1").zingGrid(settingsDown);
+			offSale.reload();
+		});
+
+		//向上移动
+		function goStart(_this, _id) {
+			movePrevious(_id, function() {
+				var divObj = $(_this).parents(".list-group-item");
+				var divPrevObj = divObj.prev();
+				divPrevObj.before(divObj);
+			});
+
+		}
+
+		//向下移动
+		function goEnd(_this, _id) {
+			moveNext(_id, function() {
+				var divObj = $(_this).parents(".list-group-item");
+				var divNextObj = divObj.next();
+				divNextObj.after(divObj);
+			});
+		}
+		//移动到顶部
+		function goUp(_this, _id) {
+			moveFirst(_id, function() {
+				var divObj = $(_this).parents(".list-group-item");
+				var divFirstObj = divObj.prevAll().last();
+				divFirstObj.before(divObj);
+			});
+
+		}
+		//移动到底部
+		function goDown(_this, _id) {
+			moveLast(_id, function() {
+				var divObj = $(_this).parents(".list-group-item");
+				var divLastObj = divObj.nextAll().last();
+				divLastObj.after(divObj);
+			});
+		}
+		//详细
+		function goDetail(_this, _id) {
+
+			window.location.href = "/SRender?jsLoader=shopping%2FinsertGoodLoader&tpl=shopping%2Fdetail&dataId="
+					+ _id;
+
+		}
+		//修改
+		function goEdit(_this, _id) {
+
+			window.location.href = "/SRender?jsLoader=shopping%2FinsertGoodLoader&tpl=shopping%2FinsertGoods&dataId="
+					+ _id;
+
+		}
+
+		//删除
+		function goDel(_this, _id, status) {
+
+			var url = "/ZingMH/ZDesk/Shopping/goodManager/delGood.action";
+			var param = {
+				dataId : _id
+			};
+			ajaxFunction(url, param, true, function(data) {
+				if (data.retcode == "0") {
+					if (status == "onSale") {
+						onSale.reload();
+					} else {
+						offSale.reload();
+					}
+					openB3AjaxAlertDialog("删除成功", "提示", true);
+				} else {
+					openB3AjaxAlertDialog("删除失败", "提示", true);
+				}
+			});
+		}
+
+		// 上架、下架商品 切换
+		function checkSaleStatus(_this, _id, status) {
+			var url = "/ZingMH/ZDesk/Shopping/goodManager/checkGoodStatus.action";
+			var param = {
+				dataId : _id,
+				reserved6 : status
+			};
+			ajaxFunction(url, param, true, function(data) {
+				if (data.retcode == "0") {
+					onSale.reload();
+					offSale.reload();
+					openB3AjaxAlertDialog("更改状态成功", "提示", true);
+				} else {
+					openB3AjaxAlertDialog("更改状态失败", "提示", true);
+				}
+			});
+
+		}
+	</script>
+
+</body>
+</html>

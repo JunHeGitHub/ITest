@@ -1,0 +1,357 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+   	<meta charset="utf-8">
+    <title>购物车</title>
+   	<meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+			name="viewport">
+    
+	<%- cssAJsPosStartTpl %>
+	<link rel="stylesheet" href="/ZingMH/css/appCss/shopping/shopUtils.css?v=9999.9999">
+	
+	<style>
+		a{
+			color:black !important;
+		}
+		
+		.checkbox {
+			font-size: 10px;
+			color: #ccc;
+			outline:0px !important;
+			background: url(/ZingMH/img/box.png) 0 0 no-repeat;
+			background-size: 100%;
+			-webkit-appearance: none;
+			-moz-appearance: none;
+			border: 0;
+			border: none;
+			vertical-align: middle;
+			width: 25px;
+			height: 25px;
+		}
+		
+		.checked {
+			font-size: 10px;
+			color: #ccc;
+			background: url(/ZingMH/img/check.png) 0 0 no-repeat;
+			background-size: 100%;
+			-webkit-appearance: none;
+			-moz-appearance: none;
+			border: 0;
+			border: none;
+			vertical-align: middle;
+			width: 25px;
+			height: 25px;
+		}
+		.padding-style{
+			padding:5% 5%;
+			/*padding-top: 5%;*/
+    		/*padding-right: 5%;*/
+		}
+		
+		.text-split-style{
+			min-width: 30px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;
+		}
+		.price-color{
+			color:red !important;
+		}
+		
+		.btn-submit-order{
+		    width: 100% !important;
+    		margin-bottom: 0px !important; 
+			
+		}
+		.div-bottom-fixed{
+			position: fixed;
+    		width: 100%;
+    		bottom: 0px;
+		}
+		.list-group-item{
+			border: 0 !important;
+			padding:5px 5px !important;
+		}
+		.li-margin-top{
+			margin-top: 5px !important;
+		}
+		
+		#nav-status{
+			margin-top: 5px;
+		}
+		#nav-status>a{
+			width: 25%;
+			text-align: center;
+			float:left;
+			display: block;
+			color: #696969;
+		}
+			
+		#nav-status>a>p{
+			margin:0px;
+			font-size:18px;
+		}
+		.fix-bottom-style{
+			position: fixed;
+			bottom:0px;
+			display:inline;
+			width:100%;
+			background-color: white;
+		}
+		
+		.btn-warning{
+			margin-bottom:10px !important;
+		}
+		
+	</style>
+	
+  </head>
+  
+ <body class="no-skin">
+ 	<div class="container">
+	    <div class="row" style="overflow:hidden;">
+		 	 <!-- 头部title -->
+		 	<div style="background-color:#f5f5f5;border-bottom:1px solid #afafae;" id="industry-list">
+				 <header id="common_hd" class="head_rel" >
+				       <span onclick="javascript:history.go(-1);"><i class="fa fa-chevron-left fa-lg"></i></span>
+				       <span class="hd_tle">购物车</span>
+				  </header>
+			</div>
+			<!-- 内容 --> 	<!-- style="padding-left: 0;padding-right: 0;" -->
+			<div style="margin-bottom:66px;">
+				<ul class="list-group" id="goodDetail">
+				  
+				</ul>
+			</div>
+		</div>
+	</div>		
+	
+	<!--  底部结算 -->
+	<div class="div-bottom-fixed">
+		<div class="row" style="background-color: white;">
+			<div class="col-xs-8 col-sm-8 col-md-8" style="padding-right: 0px;">
+				<div>
+					<span class="pull-left" style="padding-left: 5%;padding-top:5px;">
+						<input type="checkbox" class="checkbox" id="check-all">
+					</span>
+					<span class="pull-right" style="font-size:14px;line-height:3;">合计:<span class="price-color ">&yen;<span id="totalPrice">0</span></span>
+				</div>
+			</div>
+			<div class="col-xs-4 col-sm-4 col-md-4">
+				<button class="btn btn-submit-order" onclick="goSubmit();">结算(<span id="selectGoodCount">0</span>)</button>
+			</div>
+		</div>	
+		<div class="row">
+			<div id="nav-status" class="col-xs-12 col-md-12">
+				<div id="nav-status" class="col-xs-12 col-md-12">
+				<a href="javascript:window.location.href='/SRender?jsLoader=login%2FmeLoader&tpl=login%2Fmy&v=9999.9999'" class="orderStatus"><p><i class="fa fa-reply fa-lg"></i></p>返回门户</a>
+				<a href="javascript:window.location.href='/SRender?jsLoader=shopping%2FindexLoader&tpl=shopping%2Findex&v=9999.9999';" class="orderStatus"><p><i class="fa fa-home fa-lg"></i></p>首页</a>
+				<a href="javascript:void(0);" class="orderStatus  price-color"><p><i class="fa fa-shopping-cart fa-lg"></i></p>购物车</a>
+				<a href="javascript:window.location.href='/SRender?jsLoader=shopping%2FuserCenterLoader&tpl=shopping%2FuserCenter&v=9999.9999';" class="orderStatus"><p><i class="fa fa-user fa-lg"></i></p>我</a>
+			</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<%- cssAJsPosEndTpl %>	
+	<script>
+		
+		// 全选时直接给这个值，无需额外计算。只需操作其他复选框选中状态即可。
+		//allSelectPrice ，全选价格，allCountPrice：单选设置价格、
+		var allSelectPrice = 0;
+		/*var allCountPrice = 0;*/
+		// 计算商品数量 goodSelectCount: 全选商品数量，goodsCount：单选商品数量。
+		var goodAllSelectCount = 0;
+		/*var goodsCount = 0;*/
+		
+		var	mhUserVars = 'false';
+		var companyId = null;
+		
+		//$(function(){
+		$(function(){
+			mhUserVars=<%- JSON.stringify(mhUserVars) %>;
+
+			if(mhUserVars.data.data.length > 0){
+				//loadGood(mhUserVars.data);
+				loadData(mhUserVars.data);
+			}
+			
+			//全选按钮
+			$("#check-all").on("click",function(){
+				if($("#check-all").hasClass("checked")){
+					$("#check-all").removeClass("checked");
+					$(".allCheckClass").removeClass("checked");
+					$("#totalPrice").html(0);
+					$("#selectGoodCount").html(0);
+				}else{
+					$("#check-all").addClass("checked");
+					$(".allCheckClass").addClass("checked");
+					$("#totalPrice").html(allSelectPrice.toFixed(2)) ;
+					//$("#selectGoodCount").html(goodAllSelectCount);
+					$("#selectGoodCount").html($(".allCheckClass").length);
+				}
+			});
+		});
+		
+		// 复选框选中计算总价
+		function checkboxEvent(_this,totalPrice,id){
+			
+			
+			
+			var allCountPrice = parseFloat($("#totalPrice").html());
+			var goodsCount = $("#selectGoodCount").html();
+			
+			if($(_this).hasClass("checked")){
+				$(_this).removeClass("checked");
+				allCountPrice -= parseFloat(totalPrice);
+				goodsCount--;
+			}else{
+				$(_this).addClass("checked");
+				goodsCount++;
+				allCountPrice += parseFloat(totalPrice);
+			}
+			
+			//单选时，如果有一个取消选择，则取消全选按钮选择
+			if($(".allCheckClass").length == goodsCount){
+				$("#check-all").addClass("checked");
+			}else{
+				$("#check-all").removeClass("checked"); 
+			}
+		
+			$("#totalPrice").html(allCountPrice.toFixed(2));
+			$("#selectGoodCount").html(goodsCount);
+			
+		}
+		
+		
+		
+		// 提交订单
+		function goSubmit(){
+						
+			openB3AjaxConfigDialog("确认提交订单?","提示",
+				function(){  // 确定
+					submitOrder();
+				}
+			);
+		}
+		
+		
+		
+		function submitOrder(){
+		
+			/*
+			//订单提交--不更改状态，直接跳转 确认订单页
+			window.location.href="/SRender?jsLoader=shopping%2ForderManagerLoader&tpl=shopping%2ForderConfirm&orderStatus=01";
+			return;*/
+			
+			var sumbitValue = "";
+			var len = $(".allCheckClass").length;
+			
+			
+			for(var i =0;i<len;i++){
+				var checkboxId = $(".allCheckClass")[i].id;
+				// 如果复选框选中了，则取该值提交	
+				if($("#"+checkboxId).hasClass("checked")){
+					sumbitValue += $("#"+checkboxId).val()+",";
+				}
+			}
+			
+			/*console.log(sumbitValue);*/
+			
+			var params = {};
+			params.goodInfo = sumbitValue; // 
+			params.orderStatus = "01";  //提交时，状态设置未待付款状态
+			params.orderAccount = $("#totalPrice").html();  //该订单总价
+			
+			/*console.log(params);
+			return;*/
+			var url = "/ZingMH/ZDesk/Shopping/orderManager/submitOrder.action"; 
+			ajaxFunction(url, params, true, function(data){
+				if(data.retcode == 0){
+					// 点击结算进入订单确认界面
+					window.location.href="/SRender?jsLoader=shopping%2ForderManagerLoader&tpl=shopping%2ForderConfirm&orderStatus=01&orderId="+data.orderId;
+					/*openB3AjaxAlertDialog("订单已提交","提示",true);*/
+				}
+			});
+		}
+		
+		
+		// 初始化页面数据
+		function loadData(data){
+			
+			console.log(data);
+			
+			var html ='';
+			
+			// 店铺信息
+			for(var j = 0; j < data.data.length;j++){
+				//html += '<li class="list-group-item">' +
+				html += '<li class="list-group-item li-margin-top">' +
+			  			'	<div class="row">' +
+					  	' 		<div class="col-xs-8 col-sm-8 col-md-8" >' +
+						'			<h5><a href="javascript:void(0);">' +
+						'			 '+data.data[j].companyName+'&nbsp;<i class="fa fa-chevron-right"></i>' +
+						'				</a></h5>' +
+						'		</div>' +
+					   	' 		<div class="col-xs-4 col-sm-4">' +
+						'			<h5 class="pull-right"><a href="javascript:alert(\'等待实现\');">编辑</a></h5>' +
+						'		</div>' +
+					  	'  </div>'+
+					  	'  <ul class="list-group">';
+				
+				// 商品信息
+				for(var x = 0; x < data.data[j].goodData.length; x++){
+					var goodData = data.data[j].goodData[x];
+									
+					var selectProp,selectPrice;
+					for(var z = 0; z < goodData.propData.length; z++){
+						if(goodData.propId == goodData.propData[z].id){
+							selectProp = goodData.propData[z].goodsProp;
+							selectPrice =  goodData.propData[z].goodsPrice;
+						}
+					}
+					
+					// 数据加载时，直接计算出总价格
+					allSelectPrice += parseFloat(selectPrice * goodData.goodCount);
+					
+					var valueStr = 	goodData.id + "=" + selectPrice + "=" + selectProp;
+					
+					if(x > 0){
+						 html += '<li class="list-group-item" style="background-color: #F5F5F5; margin-top:3px;">';
+					}else{
+						 html += '<li class="list-group-item" style="background-color: #F5F5F5;">';
+					}
+					
+					html +=   ' <div class="row">' +
+							  ' 	<div class="col-xs-12 col-sm-12 col-md-12">' +
+							  '			<div class="pull-right">' +
+							  '    			<p class="text-right price-color">&yen;<span id="goodPrice'+x+'">'+selectPrice+'</p>' +
+							  '	    		<p class="text-right">x<span>'+goodData.goodCount+'</span></p>' +
+							  ' 		</div>' +
+							  ' 	     <div class="pull-left" style="padding-top:10px;">' +
+							  ' 	     	<input type="checkbox" class="allCheckClass  checkbox" id="c'+goodData.id+'" value="'+valueStr+'" onclick="checkboxEvent(this,\''+selectPrice*goodData.goodCount+'\',\''+goodData.id+'\');" />' +
+							  ' 	    </div>' +
+							  ' 	     <div class="pull-left" style="padding-left:8px;padding-right:8px;">' +
+							  ' 	     	<img class="li-img-width-height" src="'+goodData.goodImg+'">' +
+							  '	     </div>' +
+						      ' 		 	<h5  class="li-h5-char-split li-h5-char-split-margin">' +
+								    		 		goodData.goodTitle +
+							  '		 	</h5>' +
+							  ' 		 	<p class="li-h5-char-split ">' +
+								   						selectProp+
+							  ' 		 	</p>' +
+							  ' 	</div>' +
+							  ' </div></li> ';
+					
+				}
+				
+				html +='</ul></li>';	
+			}
+			$("#goodDetail").html(html);		
+		
+		}
+		
+		
+	</script>
+	
+	
+  </body>
+</html>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop" 
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:task="http://www.springframework.org/schema/task"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans    
+    http://www.springframework.org/schema/beans/spring-beans-4.0.xsd    
+    http://www.springframework.org/schema/tx    
+    http://www.springframework.org/schema/tx/spring-tx-4.0.xsd   
+    http://www.springframework.org/schema/context   
+    http://www.springframework.org/schema/context/spring-context-4.0.xsd 
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop-4.0.xsd  
+    http://www.springframework.org/schema/mvc   
+    http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+    http://www.springframework.org/schema/task
+    http://www.springframework.org/schema/task/spring-task-4.0.xsd">
+    
+    <!-- 扫描路径java文件路径 -->
+    <context:component-scan base-package="com.it.app.*"></context:component-scan>
+    
+    <!-- 自动装载注解 -->
+    <mvc:annotation-driven></mvc:annotation-driven>
+    
+    <mvc:default-servlet-handler/>
+    
+    <!-- 配置数据源位置 -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">   
+    	 <property name="locations" value="classpath*:com/it/conf/jdbc.properties"></property>   
+     </bean>
+    
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    	<property name="driverClassName" value="${driverClassName}" />  
+        <property name="url" value="${url}" />  
+        <property name="username" value="${username}" />  
+        <property name="password" value="${password}" />  
+    </bean>
+    
+      <!-- 事务管理-->
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+      </bean>
+      
+      
+      <!-- 事务的处理方式 -->
+    <tx:advice id="txAdvice" transaction-manager="txManager">
+        <tx:attributes>
+          <tx:method name="query*" read-only="true" />
+          <tx:method name="list*" read-only="true" />
+          <tx:method name="update*"  />
+          <tx:method name="delete*" />
+          <tx:method name="*" />
+        </tx:attributes>
+    </tx:advice>
+    <aop:config>
+        <aop:pointcut id="ServicePointcut" expression="execution(* com.it.app.*.services.*(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="ServicePointcut"/>
+    </aop:config> 
+    <tx:annotation-driven transaction-manager="txManager" proxy-target-class="true"/>
+    
+    
+     <!-- myBatis配置 -->
+    <!-- 配置SqlSessionFactoryBean -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:com/it/conf/mybatis-config.xml"/>
+        <property name="mapperLocations" >
+            <list>
+                <!-- mapper接口对应的xml路径 如果mapper接口的保内有和接口名一致的xml 则不用配置这个 -->
+                <value>classpath*:com/it/app/defXml/*-mapper.xml</value>
+            </list>
+        </property>    
+    </bean>
+    
+    
+    <import resource="classpath*:com/it.conf/spring-servicebean.xml"/>
+    
+    
+</beans>

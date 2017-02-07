@@ -1,0 +1,53 @@
+package com.zinglabs.base.core.frame;
+
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import com.zinglabs.base.core.utils.AppSpringUtils;
+import com.zinglabs.log.LogUtil;
+import com.zinglabs.util.JsonUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+
+public abstract class BaseAction {
+	public static  Logger SKIP_Logger = LoggerFactory.getLogger("ZDesk");
+
+	public RequestAdapter getRequestAdapter(HttpServletRequest request){
+		return new RequestAdapter(request);
+	}
+	public Object getBean(String id){
+		if(id!=null && id.length()>0){
+			ApplicationContext context= AppSpringUtils.getApplicationContext();
+			if(context!=null){
+				return context.getBean(id);
+			}else{
+				LogUtil.error("BaseAction-getBean  Spring  ApplicationContext is null ", SKIP_Logger);
+			}
+		}
+		return null;
+	}
+	
+	public void postStrToClient(String json, HttpServletResponse response) {
+		try {
+			response.setContentType("text/html;charset=UTF-8");
+			PrintWriter pw = response.getWriter();
+			pw.write(json);
+			pw.flush();
+			pw.close();
+		} catch (Exception x) {
+			LogUtil.error(x, SKIP_Logger);
+		}
+	}
+	
+	public <T> void postStrToClient(T data, HttpServletResponse response) {
+		try {
+			response.setContentType("text/html;charset=UTF-8");
+			OutputStream os = response.getOutputStream();
+			JsonUtils.genUpdateDataReturnJsonStr(data, os);
+		} catch (Exception x) {
+			LogUtil.error(x, SKIP_Logger);
+		}
+	}
+}
