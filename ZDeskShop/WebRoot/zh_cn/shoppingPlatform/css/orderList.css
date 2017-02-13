@@ -1,0 +1,110 @@
+.firstLevel {
+	background: #F8F8FF;
+	padding-top: 5px;
+}
+
+.topLevel {
+	background: white;
+	height: 40px;
+}
+
+.topLevel-one {
+	display: inline;
+}
+
+.topLevel-one-orderId {
+	float: left;
+	text-align: left;
+	padding: 10 5px;
+}
+
+.topLevel-one-orderStatus {
+	text-align: right;
+	padding-top: 10px;
+}
+
+.topLevel-one-orderStatus-span {
+	color: #FF4500;
+	padding-right: 3px;
+}
+
+.goodShowDiv {
+	display: inline;
+	height: 80px;
+	background: #A9A9A9;
+}
+
+.goodShowDiv-imgDiv {
+	width: 25%;
+	background: #F5F5F5;
+	float: left;
+	height: 80px;
+}
+
+.goodShowDiv-imgDiv-outDiv {
+	height: 80%;
+	width: 80%;
+	text-align: center;
+	background: white;
+	margin: 10% 10%;
+}
+
+.goodShowDiv-imgDiv-outDiv-imgCss {
+	height: 100%;
+	width: 100%;
+}
+
+.goodShowDiv-content {
+	width: 55%;
+	float: left;
+	height: 80px;
+	margin-top: 3%;
+}
+
+.goodShowDiv-goodType {
+	font-size: 12px;
+	color: #afafae;
+	margin-top: 2%;
+}
+
+.goodShowDiv-priceOrCountDiv {
+	width: 20%;
+	float: left;
+	height: 80px;
+	margin-top: 3%;
+}
+
+.goodShowDiv-priceOrCountDiv-priceAndCount {
+	float: right;
+	padding-right: 5%;
+}
+
+.orderTotal {
+	background: white;
+	height: 36px;
+	border-bottom: #D3D3D3;
+	text-align: right;
+	border-top: 1px solid #DDDDDD;
+}
+
+.orderTotalDetail {
+	padding-top: 5px;
+	padding-right: 5px;
+}
+
+.buttonGroup {
+	background: white; height : 32px;
+	padding-top: 2px;
+	text-align: right;
+	border-top: 1px solid #DDDDDD;
+	height: 32px;
+}
+
+.buttonGroupBtn {
+	width: 65px;
+	height: 30px;
+	-webkit-appearance: none;
+	font-size: 12px;
+	border: 1px solid #CCC;
+	background: white;
+}

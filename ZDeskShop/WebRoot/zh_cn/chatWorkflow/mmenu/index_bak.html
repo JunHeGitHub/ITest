@@ -1,0 +1,457 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="author" content="www.frebsite.nl" />
+		<meta name="viewport" content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=yes" />
+
+		<title>jQuery.mmenu - Demo</title>
+
+		<link type="text/css" rel="stylesheet" href="css/index.css" />
+		<link type="text/css" rel="stylesheet" href="css/jquery.mmenu.all.css" />
+		<style type="text/css">
+		.mm-menu li.img:after
+		{
+			margin-left: 80px !important;
+		}
+		.mm-menu li.img a
+		{
+			font-size: 16px;
+		}
+		.mm-menu li.img a img
+		{
+			float: left;
+			margin: -5px 10px -5px 0;
+			border-radius: 100px;
+		}
+		.mm-menu li.img a small
+		{
+			font-size: 12px;
+		}
+		</style>
+
+		<script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
+		<script type="text/javascript" src="js/jquery.mmenu.min.all.js"></script>
+		<script type="text/javascript">
+			$(function() {
+				$("#menu")
+					.mmenu({
+						classes		: "mm-light",
+						counters	: true,
+						searchfield	: true,
+						header		: {
+							add			: true,
+							update		: true,
+							title		: "Contacts"
+						}
+					}).on(
+						'click',
+						'a[href^="#/"]',
+						function()
+						{
+							alert( "Thank you for clicking, but that's a demo link." );
+							return false;
+						}
+					);
+			});
+		</script>
+	</head>
+	<body>
+		<div id="page">
+			<div class="header">
+				<a href="#menu" class="contacts"></a>
+				Demo
+			</div>
+			<div class="content">
+				<p><strong>This is a demo.</strong><br />
+					Click the contacts icon to open the contacts list.</p>
+			</div>
+		</div>
+		<nav id="menu">
+		<ul>
+			<li>
+				<span>Friends</span>
+				<ul>
+					<li class="Label">A</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/1/" />
+							Alan<br />
+							<small>Thompson</small>
+						</a>
+					</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/2/" />
+							Anne<br />
+							<small>Cook</small>
+						</a>
+					</li>
+					<li class="Label">C</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/3/" />
+							Carolyn<br />
+							<small>Garcia</small>
+						</a>
+					</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/4/" />
+							Charles<br />
+							<small>Walker</small>
+						</a>
+					</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/5/" />
+							Cheryl<br />
+							<small>Rivera</small>
+						</a>
+					</li>
+					<li class="Label">H</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/6/" />
+							Harry<br />
+							<small>Stewart</small>
+						</a>
+					</li>
+					<li class="Label">J</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/7/" />
+							Janet<br />
+							<small>Clark</small>
+						</a>
+					</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/8/" />
+							Jeffrey<br />
+							<small>White</small>
+						</a>
+					</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/9/" />
+							Jeremy<br />
+							<small>Green</small>
+						</a>
+					</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/10/" />
+							Judith<br />
+							<small>Wright</small>
+						</a>
+					</li>
+					<li class="Label">K</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/1/" />
+							Karen<br />
+							<small>Mitchell</small>
+						</a>
+					</li>
+					<li class="Label">M</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/2/" />
+							Marie<br />
+							<small>Hill</small>
+						</a>
+					</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/3/" />
+							Martin<br />
+							<small>Parker</small>
+						</a>
+					</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/4/" />
+							Mary<br />
+							<small>Watson</small>
+						</a>
+					</li>
+					<li class="Label">R</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/5/" />
+							Roy<br />
+							<small>Collins</small>
+						</a>
+					</li>
+					<li class="Label">S</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/6/" />
+							Sean<br />
+							<small>Jenkins</small>
+						</a>
+					</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/7/" />
+							Shirley<br />
+							<small>Bailey</small>
+						</a>
+					</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/8/" />
+							Susan<br />
+							<small>James</small>
+						</a>
+					</li>
+					<li class="Label">V</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/9/" />
+							Virginia<br />
+							<small>Griffin</small>
+						</a>
+					</li>
+					<li class="Label">W</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/10/" />
+							Willie<br />
+							<small>Bennett</small>
+						</a>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<span>Family</span>
+				<ul>
+					<li class="Label">B</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/1/" />
+							Benjamin<br />
+							<small>Kelly</small>
+						</a>
+					</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/2/" />
+							Brenda<br />
+							<small>Price</small>
+						</a>
+					</li>
+					<li class="Label">E</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/3/" />
+							Eric<br />
+							<small>Hughes</small>
+						</a>
+					</li>
+					<li class="Label">G</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/4/" />
+							Gloria<br />
+							<small>Jones</small>
+						</a>
+					</li>
+					<li class="Label">J</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/5/" />
+							Jean<br />
+							<small>Gray</small>
+						</a>
+					</li>
+					<li class="Label">K</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/6/" />
+							Kenneth<br />
+							<small>Rogers</small>
+						</a>
+					</li>
+					<li class="Label">M</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/7/" />
+							Mark<br />
+							<small>Bell</small>
+						</a>
+					</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/8/" />
+							Martha<br />
+							<small>King</small>
+						</a>
+					</li>
+					<li class="Label">N</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/9/" />
+							Nicole<br />
+							<small>Murphy</small>
+						</a>
+					</li>
+					<li class="Label">P</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/10/" />
+							Pamela<br />
+							<small>Campbell</small>
+						</a>
+					</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/1/" />
+							Paula<br />
+							<small>Morris</small>
+						</a>
+					</li>
+					<li class="Label">R</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/2/" />
+							Randy<br />
+							<small>Sanders</small>
+						</a>
+					</li>
+					<li class="Label">T</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/3/" />
+							Teresa<br />
+							<small>Powell</small>
+						</a>
+					</li>
+					<li class="Label">W</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/4/" />
+							Walter<br />
+							<small>Howard</small>
+						</a>
+					</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/5/" />
+							Wanda<br />
+							<small>Lee</small>
+						</a>
+					</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/6/" />
+							Wayne<br />
+							<small>Turner</small>
+						</a>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<span>Work colleagues</span>
+				<ul>
+					<li class="Label">A</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/7/" />
+							Anthony<br />
+							<small>Roberts</small>
+						</a>
+					</li>
+					<li class="Label">D</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/8/" />
+							Daniel<br />
+							<small>Gonzalez</small>
+						</a>
+					</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/9/" />
+							Deborah<br />
+							<small>Brown</small>
+						</a>
+					</li>
+					<li class="Label">J</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/10/" />
+							Joan<br />
+							<small>Torres</small>
+						</a>
+					</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/1/" />
+							Johnny<br />
+							<small>Miller</small>
+						</a>
+					</li>
+					<li class="Label">K</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/2/" />
+							Kelly<br />
+							<small>Russell</small>
+						</a>
+					</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/3/" />
+							Kevin<br />
+							<small>Morgan</small>
+						</a>
+					</li>
+					<li class="Label">M</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/4/" />
+							Marilyn<br />
+							<small>Robinson</small>
+						</a>
+					</li>
+					<li class="Label">R</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/5/" />
+							Ralph<br />
+							<small>Scott</small>
+						</a>
+					</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/6/" />
+							Rebecca<br />
+							<small>Jackson</small>
+						</a>
+					</li>
+					<li class="Label">T</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/7/" />
+							Tina<br />
+							<small>Phillips</small>
+						</a>
+					</li>
+					<li class="Label">W</li>
+					<li class="img">
+						<a href="#/">
+							<img src="http://lorempixel.com/50/50/people/8/" />
+							William<br />
+							<small>Barnes</small>
+						</a>
+					</li>
+				</ul>
+			</li>
+		</ul>
+		</nav>
+	</body>
+</html>

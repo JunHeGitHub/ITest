@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.zinglabs.apps.orderManage">
+	<select id="getOrderSatteSelect" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		SELECT * FROM tb_dic_item ORDER BY keyCode
+	</select>
+	<select id="payment" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		SELECT ot.orderNumber,SUM(og.price) price,gi.id
+		goodsId,gi.goodsName
+		,(CASE WHEN gi.goodsCount>=0 THEN 0 ELSE 1
+		END) `COUNT` ,SUM((CASE WHEN
+		gi.goodsStatus=0 OR gi.dataStatus=0
+		THEN 1 ELSE 0 END)) dataStatus
+		,(CASE WHEN
+		ot.buyersUser=#{buyersUser} THEN 0 ELSE 1 END) buyersUser
+		,(CASE
+		WHEN ot.orderState='01' THEN 0 ELSE 1 END) orderState FROM
+		orderTable ot LEFT JOIN orderGoods og ON
+		og.orderGroupNumber=ot.orderGroupNumber LEFT JOIN tb_goodsInfo
+		gi ON
+		gi.id=og.goodsId WHERE 1=1
+		<if test="orderGroupNumber!=null and orderGroupNumber!=''">
+			and ot.orderGroupNumber=#{orderGroupNumber}
+		</if>
+		<if test="orderNumber!=null and orderNumber!=''">
+			and ot.orderNumber=#{orderNumber}
+		</if>
+	</select>
+
+	<!-- 手机端调用 -->
+	<select id="topa" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	</select>
+	<!-- 手机端调用 -->
+	<select id="getOrderListBy" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		SELECT og.goodsId,di.keyValue,ot.*,gi.*,og.numbers,ot.orderPrice
+		FROM
+		orderGoods og RIGHT JOIN orderTable ot ON
+		og.orderGroupNumber=ot.orderGroupNumber LEFT JOIN tb_dic_item di
+		ON
+		ot.orderState=di.keyCode LEFT JOIN tb_goodsInfo gi ON
+		gi.id=og.goodsId
+		WHERE 1=1
+		<if test="orderState!=null and orderState!=''">
+			and ot.orderState=${orderState}
+		</if>
+		<if test="orderGroupNumber!=null and orderGroupNumber!=''">
+			and og.orderGroupNumber=#{orderGroupNumber}
+		</if>
+		and ot.buyersUser=#{sellersUser}
+		<if test="orderGroupNumber!=null and orderGroupNumber!=''">
+			GROUP BY og.id
+		</if>
+		<if test="orderGroupNumber==null or orderGroupNumber==''">
+			GROUP BY og.orderGroupNumber
+		</if>
+		ORDER BY ot.orderTime
+		<if test="offset!=null and offset!=''">
+			limit ${offset},${rows}
+		</if>
+	</select>
+	<select id="getOrderListByLength" parameterType="java.util.HashMap"
+		resultType="java.lang.Integer">
+		SELECT count(1) FROM orderTable ot WHERE 1 = 1
+		<if test="orderState!=null and orderState!=''">
+			and ot.orderState=#{orderState}
+		</if>
+		<if test="buyersUser != null and buyersUser != ''">
+			and ot.buyersUser = #{buyersUser}
+		</if>
+		<if test="sellersUser != null and sellersUser != ''">
+			and ot.sellersUser=#{sellersUser}
+		</if>
+
+	</select>
+	<!-- 获取订单信息 -->
+	<select id="getOrderList" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		select ot.orderGroupNumber id,ot.orderNumber,ot.sellersName
+		,ot.orderGroupNumber,ot.orderTime,di.keyValue,ot.orderPrice
+		,ot.orderState,ot.buyersName ,ot.buyersPhone,ot.buyersUser
+		,ot.buyersAddress,ot.buyersMessage,ot.companyID ,sum(og.price)
+		price
+		FROM orderTable ot LEFT JOIN orderGoods og on
+		og.orderGroupNumber=ot.orderGroupNumber LEFT JOIN tb_dic_item di
+		ON
+		ot.orderState=di.keyCode where 1=1
+		<include refid="where" />
+		GROUP BY ot.id ORDER BY ot.orderTime DESC
+		<if test="offset!=null and offset!=''">
+			limit ${offset},${rows}
+		</if>
+	</select>
+	<!-- 获取订单长度 -->
+	<select id="getOrderListLength" parameterType="java.util.HashMap"
+		resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM(
+		select 1 FROM orderTable ot LEFT JOIN orderGoods og on
+		og.orderGroupNumber=ot.orderGroupNumber
+		where 1=1
+		<include refid="where" />
+		GROUP BY ot.id
+		)t
+	</select>
+	<!-- 查询订单明细 -->
+	<select id="getOrderDetails" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		SELECT
+		og.id,og.price,og.numbers,og.goodsCotegory,og.goodsNumber,og.goodsId,og.goodsName,og.goodsTitle,gi.groupId,gi.goodsCostPrice,og.unitPrice,og.goodsCotegory
+		,gi.goodsImgs,gi.goodsProp FROM orderGoods og LEFT JOIN
+		tb_goodsInfo gi
+		on gi.id=og.goodsId where
+		og.orderGroupNumber=#{orderId} ORDER BY
+		og.goodsId
+		<if test="companyID!=null and companyID!=''">
+			and og.companyID = #{companyID}
+		</if>
+	</select>
+	<!-- 查询订单明细长度 -->
+	<select id="getOrderDetailsLength" parameterType="java.util.HashMap"
+		resultType="java.lang.Integer">
+		SELECT count(1) FROM orderGoods og where
+		og.orderGroupNumber=#{orderId}
+		<if test="companyID!=null and companyID!=''">
+			and og.companyID = #{companyID}
+		</if>
+	</select>
+	<select id="getGoodsClassify" parameterType="java.util.HashMap"
+		resultType="java.lang.Integer">
+		SELECT c.departmentId FROM tb_Category c WHERE c.id =#{id}
+	</select>
+
+	<!-- 插入商品流水 -->
+	<insert id="insertGoodsRecord" useGeneratedKeys="true"
+		keyProperty="id" parameterType="java.util.Map">
+		insert into
+		tb_goodsRecord(goodsId,groupId,goodsName,goodsCostPrice,goodsSalePrice,
+		saleCount,updateCount,state,addDate,orderNumber) values(
+		#{goodsId},#{groupId},#{goodsName},#{goodsCostPrice},#{goodsSalePrice},
+		#{saleCount},#{updateCount},#{state},NOW(),#{orderNumber} )
+	</insert>
+	<!-- 插入订单商品 -->
+	<insert id="insertOrderGoods" useGeneratedKeys="true"
+		keyProperty="id" parameterType="java.util.Map">
+		INSERT INTO `orderGoods` (
+		`orderNumber`, `goodsId`,
+		`goodsNumber`, `goodsName`, `goodsTitle`,
+		`GoodsAttributes`,
+		`goodsCotegory`, `numbers`, `unitPrice`, `price`,
+		`createDate`,
+		`companyID`, `orderGroupNumber`) VALUES (
+		#{orderNumber},#{goodsId},#{goodsNumber},#{goodsName},#{goodsTitle}
+		,#{GoodsAttributes},#{goodsCotegory},#{numbers},#{unitPrice},#{price},#{createDate},#{companyID},#{orderGroupNumber});
+
+	</insert>
+
+	<!-- 插入订单流水表 -->
+	<insert id="insertOrderAccount" useGeneratedKeys="true"
+		keyProperty="id" parameterType="java.util.Map">
+		<!-- <selectKey keyProperty="id" resultType="int" order="BEFORE"> select 
+			CAST(RANDOM()*1000000 as INTEGER) a from SYSIBM.SYSDUMMY1 </selectKey> -->
+		INSERT INTO `orderAccount` ( `orderNumber`, `orderGroupNumber`,
+		`goodsId`, `goodsNumber`, `goodsName`, `price`,
+		`privilegePrice`,
+		`sellersName`, `type`) VALUES (
+		#{orderNumber}, #{orderGroupNumber},
+		#{goodsId}, #{goodsNumber},
+		#{goodsName}, #{price}, #{privilegePrice},
+		#{sellersName},
+		#{type});
+	</insert>
+	<!-- 插入订单 -->
+	<insert id="insertOrderTable" useGeneratedKeys="true"
+		keyProperty="id" parameterType="java.util.Map">
+		INSERT INTO `orderTable`
+		(`orderNumber`, `orderGroupNumber`,
+		`orderTime`, `orderState`,
+		`orderFor`, `buyersUser`,
+		`buyersName`, `buyersPhone`, `buyersAddress`,
+		`buyersMessage`,
+		`sellersUser`, `sellersName`, `sellersDepartmentId`,
+		`sellersDepartmentName`, `orderProcessingTime`, `companyID`,
+		`orderPrice`) VALUES (#{orderNumber},
+		#{orderGroupNumber},#{orderTime},#{orderState}
+		,#{orderFor},#{buyersUser},#{buyersName},#{buyersPhone}
+		,#{buyersAddress},#{buyersMessage},#{sellersUser},#{sellersName},#{sellersDepartmentId}
+		,#{sellersDepartmentName},#{orderProcessingTime}
+		,#{companyID},#{orderPrice});
+	</insert>
+	<!-- 更改状态 -->
+	<update id="updateOrderState" parameterType="java.util.HashMap">
+		UPDATE orderTable SET orderState=#{orderState} WHERE
+		orderGroupNumber=#{id}
+		<if test="orderStateCloseCode!=null and orderStateCloseCode!=''">
+			AND orderState &lt; #{orderStateCloseCode}
+		</if>
+	</update>
+	<delete id="roolBackOrder">
+		DELETE og.*,ot.*,oa.*,gr.* FROM orderGoods og LEFT
+		JOIN
+		tb_goodsRecord gr ON og.orderNumber=gr.orderNumber LEFT JOIN
+		orderTable ot ON ot.orderNumber=og.orderNumber LEFT JOIN
+		orderAccount
+		oa ON oa.orderNumber=og.orderNumber WHERE
+		og.orderNumber=#{orderNumber}
+	</delete>
+	<!-- 更改商品价格 -->
+	<update id="updateOrderGoodsPrice" parameterType="java.util.HashMap">
+		UPDATE
+		orderGoods SET price=#{price} WHERE id=#{GId}
+	</update>
+	<!-- 更改状态 -->
+	<update id="updateOrderPrice" parameterType="java.util.HashMap">
+		UPDATE orderTable ot SET
+		orderPrice=(orderPrice+#{privilegePrice})
+		WHERE 1=1
+		<include refid="where" />
+	</update>
+
+
+
+	<!-- 查询条件 -->
+	<sql id="where">
+		<!-- <if test="goodsName!=null and goodsName!=''">and og.goodsName like 
+			#{goodsName} </if> -->
+		<if test="orderState!=null and orderState!=''">
+			and ot.orderState = #{orderState}
+		</if>
+		<if test="orderId!=null and orderId!=''">
+			and ot.orderGroupNumber = #{orderId}
+		</if>
+		<if test="orderGoodsId!=null and orderGoodsId!=''">
+			and og.id = #{orderGoodsId}
+		</if>
+		<if test="orderStateMax!=null and orderStateMax!=''">
+			and orderState &lt; #{orderStateMax}
+		</if>
+		<if test="buyersName!=null and buyersName!=''">
+			and ot.buyersName like #{buyersName}
+		</if>
+		<if test="buyersUser!=null and buyersUser!=''">
+			and ot.buyersUser like #{buyersUser}
+		</if>
+		<if test="orderNumber!=null and orderNumber!=''">
+			and ot.orderNumber like #{orderNumber}
+		</if>
+		<if test="buyersPhone!=null and buyersPhone!=''">
+			and ot.buyersPhone like #{buyersPhone}
+		</if>
+		<if test="companyID!=null and companyID!=''">
+			and og.companyID = #{companyID}
+		</if>
+		<if test="buyersAddress!=null and 
+		buyersAddress!=''">
+			and ot.buyersAddress like #{buyersAddress}
+		</if>
+		<if test="timetimebegin!=null 
+		and timetimebegin!=''">
+			and ot.orderTime &gt;= #{timetimebegin}
+		</if>
+		<if test="timetimeend!=null 
+		and timetimeend!=''">
+			and ot.orderTime &lt;= #{timetimeend}
+		</if>
+	</sql>
+
+	<!-- 获取订单信息 gain order message 源码 select ot.id,ot.orderNumber,ot.orderTime,ot.orderState,ot.buyersName, 
+		ot.buyersPhone,ot.buyersAddress,ot.buyersMessage,og.companyID, og.goodsId,og.goodsName,og.goodsTitle,og.goodsNumber,og.unitPrice, 
+		og.price FROM orderGoods og LEFT JOIN orderTable ot on ot.id=og.orderId -->
+	<!-- <select id="getOrderList" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+		select ot.id,ot.orderNumber,ot.orderTime,ot.orderState,ot.buyersName, ot.buyersPhone,ot.buyersAddress,ot.buyersMessage,og.companyID, 
+		og.goodsId,og.goodsName,og.goodsTitle,og.goodsNumber,og.unitPrice, og.price 
+		FROM orderGoods og LEFT JOIN orderTable ot on ot.id=og.orderId where 1=1 
+		<include refid="where" /> ORDER BY ot.orderNumber,ot.orderTime limit ${offset},${rows} 
+		</select> <select id="getOrderListLength" parameterType="java.util.HashMap" 
+		resultType="int"> select count(1) lengths FROM orderGoods og LEFT JOIN orderTable 
+		ot on ot.id=og.orderId where 1=1 <include refid="where" /> </select> <sql 
+		id="where"> <if test="goodsName!=null and goodsName!=''">and og.goodsName 
+		like #{goodsName}</if> <if test="orderNumber!=null and orderNumber!=''">and 
+		ot.orderNumber like #{orderNumber}</if> <if test="orderState!=null and orderState!=''">and 
+		ot.orderState like #{orderState}</if> <if test="buyersName!=null and buyersName!=''">and 
+		ot.buyersName like #{buyersName}</if> <if test="orderNumber!=null and orderNumber!=''">and 
+		ot.orderNumber like #{orderNumber}</if> <if test="buyersPhone!=null and buyersPhone!=''">and 
+		ot.buyersPhone like #{buyersPhone}</if> <if test="buyersAddress!=null and 
+		buyersAddress!=''"> and ot.buyersAddress like #{buyersAddress}</if> <if test="timetimebegin!=null 
+		and timetimebegin!=''">and ot.orderTime &gt;= #{timetimebegin}</if> <if test="timetimeend!=null 
+		and timetimeend!=''">and ot.orderTime &lt;= #{timetimeend}</if> </sql> -->
+	<!-- <select id="getStudentLength" parameterType="java.util.HashMap" resultType="java.lang.Integer"> 
+		select count(1) lengthes from AStudent where 1=1 <include refid="where" /> 
+		</select> <update id="updateStudent" parameterType="java.lang.Integer"> UPDATE 
+		AStudent SET `id`=#{id}, `name`=#{name}, `age`=#{age}, `sex`=#{sex}, `number`=#{number}, 
+		`time`=#{time} WHERE id = #{id} </update> <delete id="deleteStudent" parameterType="java.util.HashMap"> 
+		delete from AStudent where id in (${ids}) <iterate conjunction="," open="(" 
+		close=")"> #value[]# </iterate> </delete> <insert id="addStudent" parameterType="java.util.HashMap"> 
+		INSERT INTO `AStudent` ( `name`, `age`, `sex`, `number`, `time`) VALUES (#{name}, 
+		#{age}, #{sex},#{number}, #{time}); <selectKey resultType="int" keyProperty="id"> 
+		select LAST_INSERT_ID() </selectKey> </insert> -->
+</mapper>
+
+
+
+

@@ -1,0 +1,72 @@
+body,div {
+	margin: 0;
+	padding: 0;
+}
+ 
+div {
+	/*height: 100%;*/
+	/*color: #F00;*/
+}
+
+.left {
+	float: left;
+	width: 240px; 
+	height:100%;
+	border-right:1px solid #696969; 
+	/*background: #00f;*/ 
+	_margin-right: -3px;
+}
+
+
+.center {
+	/*background: #333;*/
+	/*width:100%;*/
+	margin: 0 0px;
+	_margin: 0 0px;
+}
+/*  树右键菜单*/
+div#rMenu { 
+		position:absolute; 
+		visibility:hidden;
+		top:0; 
+		background-color: #555; 
+		text-align: left;
+		padding: 2px;}
+	div#rMenu ul{
+		margin: 1px;
+		padding: 0px;
+	} 
+	div#rMenu li{
+		margin: 1px 0;
+		padding: 0 5px;
+		cursor: pointer;
+		list-style-type:none;
+		background-color: #DFDFDF;
+	}
+
+	.modal{
+	    margin:0px,10%, 0px,10%; 
+		position: absolute;
+		left: 40%;
+	}
+	#addPropWindow.modal{
+		left: 50%;
+		top:30%;
+	}
+	#addWindow.modal{
+		left: 50%;
+		top:30%;
+	}
+	
+	.mgsModal{
+		left: 50%;
+		top:30%;
+		width:400px;
+	}
+	
+	div.ui-popup.ui-popup-modal.ui-popup-show.ui-popup-focus{
+		z-index:100000;
+	}
+	
+
+

@@ -1,0 +1,227 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>用户中心</title>
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+		<meta name="format-detection" content="telephone=no" />
+
+
+		<link rel="stylesheet" type="text/css" href="../css/top.css" />
+		<link rel="stylesheet" type="text/css" href="../css/myCenter.css" />
+
+		<script type="text/javascript" src="../../../js/jquery.js"></script>
+		
+	<style>
+		 #hd_back:before,#hd_back_none:before,#quickbuyback:before{
+		    content:"";
+		    width:15px;
+		    height:15px;
+		    position:absolute;
+		    top:10px;
+		    left:10px;
+		    border-bottom:1px solid #afafae;
+		    border-right:1px solid #afafae;
+		    -webkit-transform: rotate(135deg);
+		    -moz-transform: rotate(135deg);
+		    -o-transform: rotate(135deg);
+		    transform: rotate(135deg);
+		}
+		 
+		#hd_back:after,#hd_back_none:after,#quickbuyback:after{
+		    right:0;
+		}
+	</style>
+		
+		
+		
+		<script type="text/javascript">
+			$(document).ready(function(){
+			
+				//顶部弹出菜单
+				$("#btnJdkey").click(function() {
+					if ($("#jdkey").css("display") == "none") {
+						$("#jdkey").show()
+					} else {
+						$("#jdkey").hide()
+					}
+				});
+				
+				//选项卡
+				$('#my_focus').click(function(){
+					$('#my_history').removeClass("current");
+					$('#my_focus').addClass("current");
+					$('#my_favorite').removeClass("current");
+					$('.my_focus').show();
+					$('.my_favorite').hide();
+					$('.my_history').hide();
+				});
+				
+				$('#my_favorite').click(function(){
+					$('#my_history').removeClass("current");
+					$('#my_focus').removeClass("current");
+					$('#my_favorite').addClass("current");
+					$('.my_favorite').show();
+					$('.my_focus').hide();
+					$('.my_history').hide();
+				});
+				
+				$('#my_history').click(function(){
+					$('#my_focus').removeClass("current");
+					$('#my_favorite').removeClass("current");
+					$('#my_history').addClass("current");
+					$('.my_history').show();
+					$('.my_focus').hide();
+					$('.my_favorite').hide();
+				});
+			});
+	</script>
+
+	</head>
+
+	<body>
+		<div class="new-header">
+		<div id="top">
+			<a id="hd_back"  href="javascript:void(0);"  onclick="javascript:history.go(-1);"></a>
+			<span  style="padding-left:18px;margin-top: -10px;position: absolute;color:#afafae;"
+				onclick="javascript:history.go(-1);"
+			>返回</span>
+			<div class="site-nav">
+				<ul class="fix">
+					<li class="home"><a href="index.html">首页</a></li>
+					<li class="mysn"><a href="javascript:void(0);"
+						onclick="location='myCenter.html'">我的云贝</a></li>
+					<li class="mycart"><a href="javascript:void(0);"
+						onclick="location='demo.html'">购物车</a></li>
+					<li class="allcate"><a href="javascript:void(0);"
+						onclick="location='childFenlei.html'">商品分类</a></li>
+				</ul>
+			</div>
+		</div>
+		</div>
+
+		<div class="user-bg" ></div>
+
+		<div class="user-wrapper">
+			<div class="div-user">
+				<div class="user">
+					<img src="../images/defaul.png" class="user-avatar" />
+					<div class="user-info">
+						<span class="user-name">用户名</span>
+						<span class="user-level">银牌用户</span>
+					</div>
+					<a href="javascript:void(0);"><span class="msg">消息</span> </a>
+				</div>
+			</div>
+		</div>
+		<br/>
+		
+		<div class="shortcut-navs">
+			<ul class="shortcut-nav">
+				<li>
+					<a class="link link1" href="orderList.html?keyCode=01">待付款</a>
+				</li>
+				<li>
+					<a class="link link2" href="orderList.html?keyCode=02">待收货</a>
+				</li>
+				<li>
+					<a class="link link3" href="orderList.html?keyCode=00">全部订单</a>
+				</li>
+				<li>
+					<a class="link link5" href="userCenter.html">收货地址</a>
+				</li>
+			</ul>
+		</div>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<!-- 
+		<div class="shortcut-navs">
+			<ul class="shortcut-nav">
+				<li>
+					<a class="link link1" href="orderList.html?keyCode=01">待付款</a>
+				</li>
+				<li>
+					<a class="link link2" href="orderList.html?keyCode=02">待收货</a>
+				</li>
+				<li>
+					<a class="link link3" href="orderList.html?keyCode=00">全部订单</a>
+				</li>
+				<li>
+					<a class="link link5" href="addressManager.html">收货地址</a>
+				</li>
+			</ul>
+			<ul class="shortcut-nav">
+				<li>
+					<a class="link link6" href="#">帐户中心</a>
+				</li>
+				<li>
+					<a class="link link7" href="#">客户服务</a>
+				</li>
+				<li>
+					<a class="link link8" href="#">我的预约</a>
+				</li>
+				<li></li>
+			</ul> 
+		</div> -->
+		<!-- 
+		<ul class="tab">
+			<li>
+				<a class="item current" id="my_focus">我的关注</a>
+			</li>
+			<li>
+				<a class="item" id="my_favorite">店铺收藏</a>
+			</li>
+			<li>
+				<a class="item" id="my_history">浏览记录</a>
+			</li>
+		</ul>
+		<ul class="tab-scroller">
+			<li class="my_focus" style="display: list-item;">
+				<div style="text-align: center; margin: 40px; font-size: 13px;">
+					<br />
+					<a href="javascript:void(0);" onclick="location='index.html'">那么多宝贝，快去看看吧~</a>
+				</div>
+			</li>
+			<li class="my_favorite" style="display: none;">
+				<div style="text-align: center; margin: 40px; font-size: 13px;">
+					<br />
+					<a href="javascript:void(0);" onclick="location='index.html'">你还没有收藏的店铺,快去看看吧~</a>
+				</div>
+			</li>
+			<li class="my_history" style="display: none;">
+				<div style="text-align: center; margin: 40px; font-size: 13px;">
+					<br />
+					<a href="javascript:void(0);" onclick="location='index.html'">您还没有浏览商品，快去看看吧~</a>
+				</div>
+			</li>
+		</ul>
+		<!--  
+		<div class="login-area" id="footer">
+			<div class="version">
+				<a
+					href="http://m.jd.com/index.html?v=w&sid=0868c9ea80cfe88be664cf44b23445ca">标准版</a><a
+					href="javascript:void(0)" class="on">触屏版</a><a
+					href="http://www.jd.com/">电脑版</a>
+			</div>
+			<div class="copyright">
+				© m.jd.com
+			</div>
+		</div>
+		 -->
+	</body>
+</html>

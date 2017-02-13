@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.zinglabs.apps.customText">
+	<!-- 模板开始 -->
+	<!-- 查询自定义模板 -->
+	<select id="getAllTemplate" resultType="java.util.Map">
+		select * from CustomTextTemplate
+	</select>
+	<!-- 根据id查询自定义模板 -->
+	<select id="getTemplateById" parameterType="java.util.HashMap" resultType="java.util.Map">
+		select * from CustomTextTemplate where id=#{id}
+	</select>
+	<!-- 添加自定义模板 -->
+	<insert id="addTemplate" parameterType="java.util.HashMap">
+		insert into CustomTextTemplate values(#{id},#{name},#{templateType},#{maxSize})
+	</insert>
+	<!-- 修改自定义模板 -->
+	<update id="updateTemplateById" parameterType="java.util.HashMap">
+		update CustomTextTemplate set name=#{name},templateType=#{templateType},maxSize=#{maxSize} where id=#{id}
+	</update>
+	<!-- 删除自定义模板 -->
+	<delete id="deleteTemplateById" parameterType="java.util.HashMap">
+		delete from CustomTextTemplate  where id in(${dataIdList})
+	</delete>
+	<!-- 模板结束 -->
+	
+	<!-- 模板数据开始 -->
+	<!-- 根据模板id获取模板数据 -->
+	<select id="getTemplateDataByTemplateId" parameterType="java.util.HashMap" resultType="java.util.Map">
+		select * from CustomTextTemplateData where templateId=#{templateId} order by viewIndex asc
+	</select>
+	<!-- 添加模板数据 -->
+	<insert id="addTemplateData">
+		insert into CustomTextTemplateData values(#{id},#{content},#{type},#{viewIndex},#{templateId});
+	</insert>
+	<!-- 根据模板id删除模板数据 -->
+	<delete id="deleteTemplateDataByTemplateId" parameterType="java.util.HashMap">
+		delete from CustomTextTemplateData where templateId in(${dataIdList})
+	</delete>
+	<!-- 根据模板id修改模板数据 -->
+	<update id="updateTemplateDataByTemplateId" parameterType="java.util.HashMap">
+		update CustomTextTemplateData set content=#{content} where id=#{id} and templateId=#{templateId}
+	</update>	
+	<!-- 模板数据结束 -->
+</mapper>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.zinglabs.apps.mybaits_xml_def.ZQC">
+
+	<select id="SU_QC_SOURCE_RECORD_DATA_select" resultType="java.util.HashMap" parameterType="map">
+		SELECT
+			*
+		FROM
+			SU_QC_SOURCE_RECORD_DATA
+		WHERE
+				data_state != #{ling}
+		AND data_state != #{chujianweifenpei}
+		AND data_state != #{chujianyifenpei}
+		AND data_state != #{fujianweifenpei}
+		AND data_state !=#{fujianyifenpei}
+		<include refid="SU_QC_SOURCE_RECORD_DATA_selectID"/>
+	</select>
+	<!-- 根据当前用户名获取物理组 -->
+	<select id="SU_QC_SOURCE_RECORD_DATA_select_wulizu" resultType="java.util.HashMap" parameterType="map">
+		select alias2 from 	SU_QC_SOURCE_RECORD_DATA WHERE alias1=#{alias1} limit 0,1
+	</select>
+	
+	<select id="SU_QC_SOURCE_RECORD_DATA_select_text" resultType="java.util.HashMap" parameterType="map">
+		select * from 	SU_QC_SOURCE_RECORD_DATA WHERE 1=1
+		<include refid="SU_QC_SOURCE_RECORD_DATA_selectID"/>			 
+	</select>
+	<sql id="SU_QC_SOURCE_RECORD_DATA_selectID">
+	
+		<if test="record_length_min != null and record_length_min != ''"> AND <![CDATA[ record_length >= #{record_length_min}]]></if>
+		<if test="record_length_max != null and record_length_max != ''"> AND <![CDATA[  record_length <= #{record_length_max}]]></if>
+		<if test="begin_time_devoir_DFTB != null and begin_time_devoir_DFTB != ''"> AND <![CDATA[ begin_time_devoir >= #{begin_time_devoir_DFTB}]]></if>
+		<if test="begin_time_devoir_DFTE != null and begin_time_devoir_DFTE != ''"> AND <![CDATA[ begin_time_devoir <= #{begin_time_devoir_DFTE}]]></if>
+		<if test="begin_time_DFTB != null and begin_time_DFTB != ''"> AND <![CDATA[  begin_time >= #{begin_time_DFTB}]]></if>
+		<if test="begin_time_DFTE != null and begin_time_DFTE != ''"> AND <![CDATA[  begin_time <= #{begin_time_DFTE}]]></if>
+		<if test="generate_time_state != null and generate_time_state != ''"> AND <![CDATA[ generate_time_state >= #{generate_time_state_DFTB}]]></if>
+		<if test="generate_time_state_end != null and generate_time_state_end != ''"> AND <![CDATA[ generate_time_state <= #{generate_time_state_DFTE}]]></if>
+		<if test="score_state !=null and score_state != ''"> AND score_state like concat(#{score_state},'%')</if>
+		<if test="data_state !=null and data_state != ''"> AND data_state like concat(#{data_state},'%')</if>
+		<if test="alias1 != null and alias1 != ''"> AND alias1 like concat(#{alias1},'%')</if>
+		<if test="is_mp3 != null and is_mp3 != ''"> AND is_mp3 like concat(#{is_mp3},'%')</if>
+		<if test="business_type != null and business_type != ''"> AND business_type like concat(#{business_type},'%')</if>
+		<if test="phone_number != null and phone_number != ''"> AND phone_number like concat(#{phone_number},'%')</if>
+		<if test="caller_number != null and caller_number != ''"> AND caller_number like concat(#{caller_number},'%')</if>
+		<if test="call_number != null and call_number != ''"> AND call_number like concat(#{call_number},'%')</if>
+		<if test="alias2 != null and alias2 != ''"> AND alias2 like concat(#{alias2},'%')</if>
+		<if test="text_length != null and text_length != ''"> AND text_length like concat(#{text_length},'%')</if>
+		<if test="client_name != null and client_name != ''"> AND client_name like concat(#{client_name},'%')</if>
+		<if test="client_satisfy != null and client_satisfy != ''"> AND client_satisfy like concat(#{client_satisfy},'%')</if>
+		<if test="ip_adresse != null and ip_adresse != ''"> AND ip_adresse like concat(#{ip_adresse},'%')</if>
+		<if test="owner != null and owner != ''"> AND owner like concat(#{owner},'%')</if>
+		<if test="file_name != null and file_name != ''"> AND file_name like concat(#{file_name},'%')</if>
+		<if test="grade_name != null and grade_name != ''"> AND grade_name like concat(#{grade_name},'%')</if>
+		<if test="pfx_total_min != null and pfx_total_min != ''"> AND <![CDATA[  pfx_total >= #{pfx_total_min}]]></if>
+		<if test="pfx_total_max != null and pfx_total_max != ''"> AND <![CDATA[ pfx_total <= #{pfx_total_max}]]></if>
+		<if test="repeter_numero_min != null and repeter_numero_min != ''"> AND <![CDATA[  repeter_numero >= #{repeter_numero_min}]]></if>
+		<if test="repeter_numero_max != null and repeter_numero_max != ''"> AND <![CDATA[  repeter_numero <= #{repeter_numero_max}]]></if>
+		<if test="quartier != null and quartier != ''"> AND quartier like concat(#{quartier},'%')</if>
+		<if test="client_attendre_length_min != null and client_attendre_length_min != ''"> AND <![CDATA[  client_attendre_length >= #{client_attendre_length_min}]]></if>
+		<if test="client_attendre_length_max != null and client_attendre_length_max != ''"> AND <![CDATA[ client_attendre_length <= #{client_attendre_length_max}]]></if>
+		<if test="email_adresse != null and email_adresse != ''"> AND email_adresse like concat(#{email_adresse},'%')</if>
+		<if test="assign_role != null and assign_role != ''"> AND assign_role like concat(#{assign_role},'%')</if>
+	</sql>
+	
+	
+	
+	
+	
+	<!-- 修改SU_QC_SOURCE_RECORD_DATA状态score_state -->
+	<update id="SU_QC_SOURCE_RECORD_DATA_update"  parameterType="java.util.HashMap">
+		update  SU_QC_SOURCE_RECORD_DATA set score_state=#{score_state},data_state=#{data_state}  where id=#{id}
+	</update>
+	
+	
+	
+	
+	
+</mapper>

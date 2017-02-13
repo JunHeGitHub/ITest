@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.zinglabs.apps.chatWorkflow">
+	<!-- 根据传来的登录名查询用户和分类关联表内的所有数据 -->
+	<select id="requestSelect" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		SELECT * from wx_categoryPrivilege WHERE roleCode=#{roleCode}
+	</select>
+	<!-- 根据角色名称删除该角色已拥有的分类权限 -->
+	<delete id="deleteCategory" parameterType="java.util.HashMap">
+		delete FROM wx_categoryPrivilege where roleCode=#{roleCode}
+	</delete>
+
+	<!-- 验证已选中模块下的描述是否有权限  -->
+	<select id="checkCategoryDesc" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		SELECT c.id,c.categoryName from wx_categoryPrivilege rc LEFT JOIN
+		wx_category c ON c.id=rc.categoryId WHERE rc.roleCode in (${roleCode})
+		AND c.partId=#{partId} AND c.isDelete=#{isDelete} GROUP BY rc.id
+	</select>
+	
+	<!-- 查询人员信息 -->
+	<select id="searchUser" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT roleCode,GROUP_CONCAT(RealName)text,GROUP_CONCAT(cardUrl) id FROM cardUser c GROUP BY c.roleCode
+	</select>
+	
+	<!-- 查询人员信息 -->
+	<select id="getNodeDataByTemplateId" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select id,templateId,stepName,executor_name,executor,description,createDate,serial,companyId from stepRecording where templateId=#{templateid}
+	</select>
+
+</mapper>

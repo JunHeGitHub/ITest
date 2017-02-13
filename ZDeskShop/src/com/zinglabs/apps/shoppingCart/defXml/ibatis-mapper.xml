@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.zinglabs.apps.shoppingPlatform.shoppingCart">
+
+	<insert id="st_insert" parameterType="java.util.Map">
+		insert into
+		`tb_shoppingCart`
+		(`goodsSubId`,`goodsName`,`goodsTitle`,`goodsProp`,`goodsCount`,`userAccount`,`userName`,`addTime`)
+		values(#{goodsSubId},#{goodsName},#{goodsTitle},#{goodsProp},#{goodsCount},#{userAccount},#{userName},#{addTime})
+	</insert>
+	<delete id="st_delete" parameterType="java.util.Map">
+		delete from
+		`tb_shoppingCart` where id in(
+		<foreach collection="id" item="item" index="index" separator=",">
+			#{item}
+		</foreach>
+		)
+	</delete>
+	<update id="st_update" parameterType="java.util.Map">
+		update `tb_shoppingCart`
+		set `goodsCount`=#{goodsCount},`goodsSubId`=#{goodsSubId}
+		where
+		`id`=#{id}
+	</update>
+	<update id="st_update2" parameterType="java.util.Map">
+		update `tb_shoppingCart`
+		set `goodsProp`=#{goodsProp} where `id`=#{id}
+	</update>
+	
+	
+	<update id="st_update3" parameterType="java.util.Map">
+		update tb_shoppingCart
+		set goodsCount= goodsCount + #{goodsCount}
+		where
+		goodsSubId=#{goodsSubId}
+	</update>
+	
+	
+	
+	
+	<!-- <select id="st_select" parameterType="java.util.Map" resultType="java.util.Map"> 
+		select sc.*,gi.goodsImgs,gi.goodsSalePrice,gi.goodsProp,gi.goodsCateGory 
+		from `tb_shoppingCart` sc ,`tb_goodsInfo` gi where sc.goodsSubId=gi.id limit 
+		0,5 </select> -->
+	<select id="st_select" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT sc.id sid,
+		gi.id,sc.goodsCount,gi.goodsCount
+		goodsCount1,gi.goodsCateGory,gi.goodsId,gi.goodsImgs,gi.goodsSalePrice,gi.goodsShowPrice,gi.goodsName,gi.goodsType,
+		gi.goodsTitle,gi.goodsProp,gi.goodsStatus,gi.dataStatus
+		FROM
+		tb_goodsInfo gi
+		LEFT JOIN tb_shoppingCart sc ON gi.id=sc.goodsSubId
+		WHERE 1=1
+		<if test="(goodsId==null or goodsId=='')">
+			and sc.userAccount=#{userAccount}
+		</if>
+		<if test="(id!=null and id.length!=0) and (goodsId==null or goodsId=='')">
+			and sc.id in(
+			<foreach collection="id" item="item" index="index" separator=",">
+				#{item}
+			</foreach>
+			)
+		</if>
+		<if test=" goodsId!=null and goodsId!='' ">
+			and gi.id=#{goodsId}
+		</if>
+		ORDER BY gi.goodsStatus
+		DESC,gi.dataStatus DESC,gi.id
+		<if test="(id==null or id.length==0) and (goodsId==null or goodsId=='')">
+			LIMIT
+			${follow},${line}
+		</if>
+
+	</select>
+	<select id="st_search" parameterType="java.util.Map" resultType="java.util.Map">
+		select sc.*,gi.goodsImgs,gi.goodsSalePrice,gi.goodsProp from
+		`tb_shoppingCart` where id=#{id}
+	</select>
+	<select id="st_searchGoodsProp" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT
+		gi.goodsProp,gi.goodsCount,gi.goodsName,goodsTitle,gi.id,gi.goodsImgs,gi.goodsSalePrice,gi.goodsShowPrice
+		FROM tb_goodsInfo gi
+		WHERE gi.goodsId=#{goodsId}
+		ORDER BY gi.id
+	</select>
+	<select id="st_search2" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		select 1 from `tb_shoppingCart` where
+		goodsSubId=#{goodsSubId}
+		AND
+		userAccount=#{userAccount}
+		<if test="id!=null and id!=''">
+			and id!=#{id}
+		</if>
+	</select>
+	<select id="goods_search" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		select goodsTitle,goodsName,id,goodsProp,goodsCount from
+		`tb_goodsInfo`
+		where id=#{goodsSubId};
+	</select>
+	<select id="st_selectOne" parameterType="java.util.Map"
+		resultType="java.lang.Integer">
+		select * from `tb_shoppingCart` where name=#{name}
+	</select>
+
+</mapper>

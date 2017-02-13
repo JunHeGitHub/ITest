@@ -1,0 +1,279 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<title>素材管理</title>
+		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+		<meta http-equiv="description" content="this is my page">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+		<link rel="stylesheet" href="../../css/bootstrap.min.css"
+			type="text/css"></link>
+		<link rel="stylesheet" href="../../css/bootstrap-responsive.min.css"
+			type="text/css" />
+		<script type="text/javascript" src="../../js/jquery.js"></script>
+		<script type="text/javascript" src="../../js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="sucaiguanli.js"></script>
+		<script type="text/javascript" charset="utf-8" src="../../js/ueditor/ueditor.config.js"></script>
+		<script type="text/javascript" charset="utf-8" src="../../js/ueditor/ueditor.all.js"> </script>
+		<!--建议手动加在语言，避免在ie下有时因为加载语言失败导致编辑器加载失败-->
+		<!--这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文-->
+		<script type="text/javascript" charset="utf-8"
+			src="../../js/ueditor/lang/zh-cn/zh-cn.js"></script>
+		<link rel="stylesheet" href="../../js/ueditor/themes/default/css/ueditor.css" />
+		<script type="text/javascript" src="../../js/appCommonUtil.js"></script>
+		<script type="text/javascript" src="../../js/appCommonCurdUtils_new.js"></script>
+		<script type="text/javascript" src="../../js/common_validation.js"></script>
+		<script type="text/javascript" src="../../js/common_utils.js"></script>
+		<style type="text/css">
+body {
+	font-size: 14px;
+	font-family: Arial, '微软雅黑', sans-serif;
+}
+
+a,textarea,button,input,ul,li,div,span,td {
+	font-size: 14px;
+	font-family: Arial, '微软雅黑', sans-serif;
+	-webkit-appearance: none;
+}
+</style>
+		<script type="text/javascript">
+		var xiugaitupianId;
+		var uuid={};
+		var imageName="";
+		var imageUrl="";
+		var coverPhysicalPath="";
+		var uploadImageName="";
+		var parentId;
+var editor = new UE.ui.Editor({   autoHeightEnabled: false,initialFrameWidth:900  ,initialFrameHeight:200  ,
+minFrameHeight:400   ,iframeCssUrl: 'themes/iframe.css' ,toolbars:[['Paragraph','RowSpacing','FontFamily','FontSize', 'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify','bold', 'italic', 'underline', 'fontborder', 'strikethrough', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist','insertimage']]}); 
+editor.render("editor");
+var myEditorImage; var d;  
+myEditorImage= new UE.ui.Editor();  
+myEditorImage.render('myEditorImage'); 
+function upImage(){          
+d = myEditorImage.getDialog("insertimage");     
+     d.render();
+d.open(); 
+}  
+        myEditorImage.ready(function(){
+        //myEditorImage.setDisabled();             
+        myEditorImage.hide();//隐藏UE框体              
+        myEditorImage.addListener('beforeInsertImage',function(t, arg){  
+        //alert(); 
+        if(arg.length!=1){
+        zinglabs.alert('请上传一张图片');
+        return;
+        }
+        
+        var imgsrc = arg[0].src; 
+        alert(imgsrc);
+        var src = imgsrc.substr(imgsrc.indexOf("jsp"), imgsrc.length); 
+        imageName=imgsrc.substr(imgsrc.indexOf("jsp")+30, imgsrc.length);
+        uploadImageName=imgsrc.substr(imgsrc.indexOf("jsp")+30, imgsrc.length);
+        //alert(imageName);
+        //alert(imgsrc.substr(imgsrc.lastIndexOf("."), imgsrc.length));
+        var sp=imageName.split(imgsrc.substr(imgsrc.lastIndexOf("."), imgsrc.length));
+        imageName=sp[0];
+        //alert(sp[0]);
+        imageUrl=imgsrc.substr(imgsrc.indexOf(PRJ_PATH), imgsrc.length);
+        coverPhysicalPath=imageUrl;
+        
+        var attr2 = document.getElementsByTagName('form') ; //获取当前formid
+        var fromId2=attr2[0].getAttribute("id");
+        var Img_Div2 = fromId2.substr(fromId2.indexOf("tableForm")+9, fromId2.length); 
+        
+        $("#img_Article_Img"+Img_Div2+"").attr("src", imgsrc);   
+                 
+        //alert(arg[0].src);//arg就是上传图片的返回值，是个数组，如果上传多张图片，请遍历该值。                 
+         //$("#abccc").val(arg[0].src)//把图片地址赋值给页面input，我这里使用了jquery，可以根据自己的写法赋值，到这里就很简单了，会js的都会写了。             
+         });});
+         
+         
+         $(document).ready(function() {
+         getUUID({}, true ,function(data){
+         uuid=data;
+         //alert(JSON.stringify(data));
+         parentId=uuid['0'];
+         });
+         $("#title").change(function(){
+         var attr3 = document.getElementsByTagName('form') ; //获取当前formid
+         var fromId3=attr3[0].getAttribute("id");
+         var Img_Div3 = fromId3.substr(fromId3.indexOf("tableForm")+9, fromId3.length); 
+         change(Img_Div3);
+         });
+         
+         $("#abstract").change(function(){
+         var attr4 = document.getElementsByTagName('form') ; //获取当前formid
+         var fromId4=attr4[0].getAttribute("id");
+         var Img_Div4 = fromId4.substr(fromId4.indexOf("tableForm")+9, fromId4.length); 
+         change(Img_Div4);
+         });
+         });
+         
+         
+		</script>
+
+	</head>
+	<body>
+		
+			<table class="table table-bordered table-condensed">
+				<tbody>
+
+					<tr>
+						<td id="td_add">
+							<div id="Img_Div0"
+								style="width: 380px; height: 270px; overflow: auto; text-align: center; border:1px solid #F5F5F5; border-radius:12px ">
+								<input type="button" id="xiugai0" onclick="xiugai(0); " style="margin-left: -135px"
+												class="btn" value="修改" />
+								
+								<div style="width: 370px; height: 20px; overflow: auto; text-align: center;margin-top: 5px" id="biaoti0"></div>
+								<img id="img_Article_Img0" alt="等待您的上传" src="" style="border:1px solid #F5F5F5;background-color: #F5F5F5;width: 270px; height: 150px;"/>
+								
+								<textarea id="zhaiyao0" name="zhaiyao"
+										style="border-style:none;width: 260px; height: 30px;" ></textarea>
+							</div>
+							<input type="button" id="" onclick="tianjiazituwenxinxi(); " style="width:380px;margin-bottom: 9px"
+												class="btn" value="添加子图文信息" />
+							
+
+						</td>
+						<td>
+						<form action="" id="tableForm0">
+							<table class="table table-bordered table-condensed">
+								<tbody>
+									<tr >
+										<td>
+											标题
+										</td>
+									</tr>
+									<tr >
+										<td>
+											<input type="text" id="title" name="title" class="input"
+												style="padding: 0; margin: 0; background-color: #F5F5F5; width: 100%; height: 30px" >
+										</td>
+									</tr>
+									<tr >
+										<td>
+											作者（选填）
+										</td>
+
+									</tr>
+									<tr >
+
+										<td>
+											<input type="text" id="autor" name="autor" class="input"
+												style="padding: 0; margin: 0; background-color: #F5F5F5; width: 100%; height: 30px">
+										</td>
+									</tr>
+									
+									<tr >
+										<td>
+											封面（大图片建议尺寸：900像素 * 500像素）
+										</td>
+									</tr>
+									<tr >
+										<td>
+											<input type="button" id="myEditorImage" onclick="upImage(); "
+												class="btn" value="上传图片" />
+											&nbsp; &nbsp; &nbsp; &nbsp;
+											<input type="button" id="myEditorImages" onclick="dayin();"
+												class="btn" value="从图片库选择" />
+										</td>
+									</tr>
+									<tr >
+										<td>
+											<input type="checkbox" id="coverToTextContent" name="coverToTextContent" value="1">
+											封面图片显示在正文中
+										</td>
+									</tr>
+									<tr >
+										<td>
+											摘要
+										</td>
+									</tr>
+									<tr >
+										<td>
+											<textarea id="abstract" name="abstract"
+												style="padding: 0; margin: 0; background-color: #F5F5F5; width: 100%; height: 40px" ></textarea>
+										</td>
+									</tr>
+									<tr >
+										<td>
+											正文
+										</td>
+									</tr>
+									<tr >
+										<td>
+											<div>
+												<script id="editor" type="text/plain"></script>
+											</div>
+										</td>
+									</tr>
+									<tr >
+										<td>
+											添加原文链接
+										</td>
+									</tr>
+									<tr >
+										<td>
+											<input type="text" id="originalLink" name="originalLink" class="input"
+												style="padding: 0; margin: 0; background-color: #F5F5F5; width: 100%; height: 30px">
+										</td>
+									</tr>
+									<tr >
+										<td>
+											所属类别
+										</td>
+									</tr>
+									<tr >
+										<td>
+											<select name="Category" id="Category"
+												style="padding: 0; margin: 0; background-color: #F5F5F5; width: 100%;">
+											
+											</select>
+										</td>
+									</tr>
+									<tr >
+										<td>
+											图文外链类型
+										</td>
+									</tr>
+									<tr >
+										<td>
+											<select name="chainType" id="chainType"
+												style="padding: 0; margin: 0; background-color: #F5F5F5; width: 100%;">
+												
+											</select>
+										</td>
+									<tr >
+										<td>
+											是否发布
+										</td>
+									</tr>
+									<tr >
+										<td>
+											<input type="radio" name="isRelease" value="1" id="isRelease1"
+												checked>
+											发布&nbsp; &nbsp; &nbsp; &nbsp;
+											<input type="radio" name="isRelease" value="0"  id="isRelease0">
+											不发布
+										</td>
+									</tr>
+
+								</tbody>
+							</table></form>
+							<input type="button" id="myEditorImage" onclick="baocun(); "
+												class="btn " value="保存" style="margin-left: 380px"/>
+											&nbsp; &nbsp; &nbsp; &nbsp;
+											<input type="button" id="myEditorImages" onclick="fanhui();"
+												class="btn" value="返回" />
+						</td>
+					</tr>
+
+				</tbody>
+			</table>
+		
+	</body>
+</html>
+

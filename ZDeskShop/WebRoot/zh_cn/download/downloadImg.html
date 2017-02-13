@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta charset="utf-8" />
+    <title>下载管理</title>
+
+    <meta name="description" content="Drag &amp; drop hierarchical list" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+
+    <!-- bootstrap & fontawesome -->
+
+    <link rel="stylesheet" href="/JsLib/dist/css/bootstrap.min.css?v=9999.9999" />
+    <link rel="stylesheet" href="/JsLib/dist/css/font-awesome.min.css?v=9999.9999" />
+    <link rel="stylesheet" type="text/css" ref="/JsLib/dist/component/bootstrap-dialog/css/bootstrap-dialog.min.css?v=9999.9999" />
+    <link rel="stylesheet" href="/JsLib/dist/component/b3tagsinput/bootstrap-tagsinput.css" />
+
+    <!-- page specific plugin styles -->
+
+    <!-- ace styles -->
+    <link rel="stylesheet" href="/JsLib/dist/css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style" />
+
+    <!--[if lte IE 9]>
+    <link rel="stylesheet" href="/JsLib/dist/css/ace-part2.min.css" class="ace-main-stylesheet" />
+    <![endif]-->
+
+    <!--[if lte IE 9]>
+    <link rel="stylesheet" href="/JsLib/dist/css/ace-ie.min.css" />
+    <![endif]-->
+
+    <link rel="stylesheet" href="/JsLib/dist/css/zmobile.min.css?v=9999.9999" />
+
+    <!-- inline styles related to this page -->
+
+    <!-- ace settings handler -->
+    <!--<script src="assets/js/ace-extra.min.js"></script>-->
+
+    <!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
+
+    <!--[if lte IE 8]>
+    <script src="/JsLib/dist/component/html5shiv.min.js"></script>
+    <script src="/JsLib/dist/component/respond.min.js"></script>
+    <![endif]-->
+	
+	
+</head>
+
+<body class="no-skin">
+<div class="main-container" id="main-container">
+    <div class="main-content">
+        <div class="main-content-inner">
+            <div class="page-content">
+
+                <!-- /.ace-settings-container -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <!-- PAGE CONTENT BEGINS -->
+                        <div class="row">
+                            <div class="vspace-16-sm"></div>
+                            <div class="col-sm-12">
+
+                                <div class="tabbable">
+                                    <ul class="nav nav-tabs" id="myTab">
+                                        <li class="active">
+                                            <a data-toggle="tab" href="#myImg">
+                                                <i class="blue ace-icon fa fa-users bigger-120"></i>
+                                                门户二维码
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a data-toggle="tab" href="#kefuImg">
+                                                <i class="blue ace-icon fa fa-users bigger-120"></i>
+                                                客服二维码
+                                            </a>
+                                        </li>
+                                    </ul>
+
+                                    <div class="tab-content" style="width:100%;">
+                                        <!-- 服务号二维码 -->
+                                        <div id="myImg" class="tab-pane fade in active">
+                                           
+                                           <div style="text-align:center;">
+												<div class="row">
+													<div class="col-xs-12">
+														<img id="erweima" style="padding-top:20px;width:300px;height:300px;" src="" />
+													</div>
+												</div>
+										<!-- <div class="row" >
+													<div class="col-xs-12">
+														<button class="btn btn-success" style="margin-top: 20px;width: 80px;" onclick="downloadImg();">下载</button>
+													</div>
+												</div> -->	
+												 <div class="row" >
+													<div class="col-xs-12" style="margin-top: 20px;">
+														<span style='color:red;font-size:18px;'>* 注:鼠标右键点击二维码,选择图片另存为即可保存至本地。</span>
+													</div>
+												</div>
+											</div>  
+                                           
+                                        </div>
+                                        <!-- 客服二维码 -->
+                                        <div id="kefuImg" class="tab-pane fade">
+                                           <div style="text-align:center;">
+												<div class="row">
+													<div class="col-xs-12">
+														<img id="kefuCode" style="padding-top:20px;width:300px;height:300px;" src="" />
+													</div>
+												</div>
+												 <div class="row" >
+													<div class="col-xs-12" style="margin-top: 20px;">
+														<span style='color:red;font-size:18px;'>* 注:鼠标右键点击二维码,选择图片另存为即可保存至本地。</span>
+													</div>
+												</div>
+											</div>  
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- PAGE CONTENT ENDS -->
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.page-content -->
+        </div>
+    </div><!-- /.main-content -->
+
+    <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+        <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+    </a>
+</div><!-- /.main-container -->
+
+<!-- basic scripts -->
+
+<!--<script language="javascript" type="text/javascript" src="/JsLib/dist/component/jquery1x.min.js?v=9999.9999"></script>-->
+
+
+<!--[if !IE]> -->
+<script src="/JsLib/dist/component/jquery.min.js?v=9999.9999"></script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script src="/JsLib/dist/component/jquery1x.min.js?v=9999.9999"></script>
+<![endif]-->
+
+
+<!--[if !IE]> -->
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='/JsLib/dist/component/jquery.min.js?v=9999.9999'>"+"<"+"/script>");
+</script>
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='/JsLib/dist/component/jquery1x.min.js?v=9999.9999'>"+"<"+"/script>");
+</script>
+<![endif]-->
+
+
+<script type="text/javascript">
+    if('ontouchstart' in document.documentElement) document.write("<script src='/JsLib/dist/component/jquery.mobile.custom.min.js?v=9999.9999'>"+"<"+"/script>");
+</script>
+
+
+<script type="text/javascript" src="/JsLib/dist/component/bootstrap.min.js"></script>
+<script type="text/javascript" src="/JsLib/dist/component/bootstrap-dialog/js/bootstrap-dialog.min.js?v=9999.9999"></script>
+<!--<script src="assets/js/bootstrap-tag.min.js"></script>-->
+<!--<script src="b3tagsinput/bootstrap-tagsinput.min.js"></script>-->
+<script type="text/javascript" src="/JsLib/dist/component/b3tagsinput/bootstrap-tagsinput.js"></script>
+
+
+<!-- page specific plugin scripts -->
+<script type="text/javascript" src="/JsLib/dist/component/jquery.nestable.js"></script>
+
+<!-- ace scripts -->
+<!--<script src="assets/js/ace-elements.min.js"></script>-->
+<!--<script src="assets/js/ace.min.js"></script>-->
+<!--<script src="assets/js/pillbox.js"></script>-->
+
+<script language="javascript" type="text/javascript" src="/JsLib/dist/js/log2.js?v=9999.9999"></script>
+<!--TODO appCommonUtil.js 太多无关内容，后续优化-->
+<!-- <script type="text/javascript" src="/JsLib/dist/js/appCommonUtil.js?v=9999.9999"></script> -->
+<script type="text/javascript" src="../../js/appCommonUtil.js?v=9999.9999"></script>
+
+	<!-- 图片目前没有设定大小  下载方法目前只获取图片路径和文件后缀，没有实际下载方法 -->	
+			
+		<script type="text/javascript">
+			var wlUrl="/usr/local/nginx/html/";
+			$(function(){
+				
+				//这个图片路径为项目本地路径，下载时为测试能下载成功，
+				// 我在tmp 下面放了同一张图片。下载路径我给的是 物理路径 “/tmp/apple.png”
+				//var imgSrc = "../../img/apple.jpg";
+				//loadImg(imgSrc);
+				getCompanData();
+				
+			});
+			
+			//加载图片 目前加载是本地静态图片，路径可更换
+			function loadImg(imgSrc){
+				$("#erweima").attr("src",imgSrc); 
+			
+			}
+		
+			// 点击下载触发函数
+			function downloadImg(){ 
+					//获取下载文件路径
+					var path = $("#erweima")[0].src;  
+
+					//文件后缀后缀名
+					var imgType = path.substr(path.lastIndexOf(".")).toLowerCase();  
+					
+					//下载时用时间戳命名文件名
+					var fileName = new Date().getTime() + "" + imgType;
+					
+					// 调用下载通用文件下载方法  (该方法目前只支持物理路径)
+					//commonDownload(path,fileName,"ZDesk");
+					
+					
+					// 调用此方法，图片路径为物理路径，填入二维码存放的物理位置
+					//commonDownload("/tmp/apple.jpg",fileName,"ZDesk");
+					commonDownload(wlUrl,fileName,"ZDesk");
+					
+			}
+			function getCompanData(){
+				var url="/ZDeskR/ZDesk/MHWorkflow/getCompanyData.action";
+				var params={};
+				$.ajax({
+			        url: url,
+			        async : true,
+			        type : "post",
+			        dataType : "json",
+			        data : params,
+			        success : function(data) {
+			            if(data.success){
+			            	//var imgUrl="/"+data.data[0].headimgurl+".jpg"; 
+			            	var imgUrl = data.data[0].headimgurl+"QR.jpg";  //客服二维码
+			            	var wlUrl =data.data[0].headimgurl+"MH.jpg";	   //门户二维码	
+							//loadImg(imgUrl);
+							$("#erweima").attr("src",wlUrl);  //门户二维码
+							$("#kefuCode").attr("src",imgUrl);   //客服二维码
+						}
+			        }
+			    });
+			}
+		</script>
+
+
+
+</body>
+</html>

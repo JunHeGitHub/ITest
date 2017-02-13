@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.zinglabs.apps.suPermission">
+    <!--授权  -->
+	<insert id="givePermission" parameterType="java.util.List" >
+	   insert into suSecurityRoleMapPermission(`roleCode`,`permissionCode`,`type`) values
+	    	<foreach collection="itemList" index="index" item="item" separator=",">
+	    	   (#{item.roleCode},#{item.permissionCode},#{item.type}) 
+        	</foreach>
+	</insert>
+	<!-- 跟据角色id和type删除权限 -->
+	<delete id="deauthorize" parameterType="Map">
+	   delete from suSecurityRoleMapPermission where type=#{type}
+	   <if test="roleCode !=null and roleCode !=''">
+	      and roleCode=#{roleCode}
+	   </if>
+	   <if test="permissionCodes !=null ">
+	     and  permissionCode in 
+	      <foreach collection="permissionCodes" index="index" item="item" separator="," open="(" close=")">
+	    	   #{item}
+          </foreach>
+	   </if>
+	</delete>
+	<!-- 根据用户获取权限集合 -->
+	<select id="getPermission" parameterType="Map" resultType="Map">
+	     <trim  suffix=" " suffixOverrides="UNION" >
+	            <foreach collection="roleList" index="index" item="item"  >
+			             select permissionCode  from suSecurityRoleMapPermission where type=#{type}  and roleCode=#{item} UNION         
+			     </foreach>	
+	     </trim>		
+	</select>
+	<!-- 获取权限种类 后期可改成从字典表获取 -->
+	<select id="getTypeCollection"  resultType="Map" parameterType="String">
+	   select DISTINCT(`type`) from  suSecurityRoleMapPermission 
+	    <where>
+		     <if test="roleCode!='' and roleCode !=null ">
+		         `roleCode`=#{roleCode}
+		     </if> 
+	     </where>
+	</select>
+	
+   <!-- 获取权限 权限码 -->
+	<select id="getPermissionId"  resultType="Map" parameterType="Map">
+	   select permissionCode from suSecurityRoleMapPermission 
+	       <trim prefix="where" prefixOverrides="AND|OR">
+		     <if test="roleCode!='' and roleCode !=null ">
+		        and  roleCode=#{roleCode}
+		     </if> 
+		      <if test="type!='' and type !=null ">
+		         and `type`=#{type}
+		     </if> 
+		   </trim>
+	</select>
+	<!-- 只获取tree无关的所有权限 -->
+	<select id="getAllPermission" resultType="Map" parameterType="Map" >
+			            select r.permissionCode,r.roleCode,p.* from suSecurityRoleMapPermission r 
+					     INNER JOIN
+					     suSecurityPermission p   on   
+						 r.permissionCode=p.id 
+						 and  r.type=p.typeName
+						<trim prefix="and"> 
+						     r.roleCode in
+							 <foreach collection="roleList" index="index" item="item" open="(" close=")" separator=",">   
+							        #{item}
+				             </foreach>	
+	                    </trim>
+	                     GROUP BY  r.permissionCode
+	                     ORDER BY  alias2 ASC
+	</select>
+	
+
+	
+</mapper>

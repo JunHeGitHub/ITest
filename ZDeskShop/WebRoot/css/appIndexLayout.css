@@ -1,0 +1,93 @@
+/*
+	上中下布局，上下的高度固定，中间的高度随浏览器的高度变化。
+*/
+
+*{
+ margin:0;
+ padding:0;
+}
+html,body {
+	padding:0 !important;
+	padding:85px 0;
+	width:100%;
+	height:100%;
+	min-height: 800px;
+	min-width: 1300px;
+	overflow:hidden;
+}
+
+.app_css_index_header {
+	position: absolute;
+ 	top:0;
+ 	width:100%;
+ 	min-width: 1300px;
+ 	height:85px;
+}
+
+.app_css_index_header_top{
+	/**background-color: #de0;**/
+	width: 100%;
+	min-width: 1300px;
+	height: 60px;
+}
+
+.app_css_index_header_bar {
+	/**background-color: #dd0;**/
+	width: 100%;
+	height: 25px;
+}
+
+
+.app_css_index_footer {
+	position:absolute;
+ 	bottom:0;
+ 	width:100%;
+ 	height:65px;
+}
+
+.app_css_index_footer_bottom {
+	background-color: #ddd;
+	width: 100%;
+	height: 60px;
+}
+
+.app_css_index_footer_bar {
+	background-color: #666699;
+	width: 100%;
+	height: 25px;
+}
+
+
+.app_css_index_content {
+	position: absolute!important;
+ 	top:95px!important;
+ 	height:auto!important;
+ 	position: relative;
+ 	height:100%;
+ 	bottom:65px;
+ 	width:100%;
+ 	white-space: nowrap;
+	text-overflow: ellipsis;
+	/**background-color: #da0;**/
+	overflow: hidden;
+	border-bottom: 1px solid #ccc;
+	border-top: 1px solid #ccc;
+}
+
+.app_css_index_content_left {
+	margin: 0px 0px 1px 0px;
+	padding: 0 0 0 0;
+	float: left;
+	width: 20%;
+	min-width: 270px;
+	/**background-color: #ffffff;**/
+	border-right: 1px solid #ccc;
+}
+
+
+.app_css_index_content_main {
+	margin: 0 0 0 20%;
+	padding: 0 0 0 0;
+	overflow: hidden;
+	/**background-color: #df0;**/
+}

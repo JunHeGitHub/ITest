@@ -1,0 +1,446 @@
+<!DOCTYPE  HTML><html lang="en"><head>
+		<title>教材文件查询</title>
+
+		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+		<meta http-equiv="description" content="this is my page">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<link rel="stylesheet" href="../../css/bootstrap.css" type="text/css">
+		<link rel="stylesheet" href="../../js/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" type="text/css">
+
+		<link rel="stylesheet" href="../../js/dataTables/css/jquery.dataTables.css" type="text/css">
+
+		<!-- 工具 -->
+		<link rel="stylesheet" href="../../js/dataTables/css/dataTables.tableTools.min.css" type="text/css">
+		<!-- bootstrap 与 datatable结合 -->
+		<link rel="stylesheet" href="../../js/dataTables/css/DT_bootstrap.css" type="text/css">
+		<link rel="stylesheet" href="../../js/dataTables/css/font-awesome.css">
+		<link rel="stylesheet" href="../../js/dataTables/css/Z_DataTalbeCheckBox.css">
+		<link rel="stylesheet" href="../../js/dataTables/css/dataTables.colVis.min.css" type="text/css">
+		
+		
+		
+		
+		
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	<script type="text/javascript" src="../../js/jquery.js"></script>
+<script type="text/javascript" src="../../js/bootstrap.js"></script>
+<script type="text/javascript" src="../../js/bootstrap-datetimepicker/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="../../js/bootstrap-datetimepicker/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript" src="../../js/common_utils.js"></script>
+<script type="text/javascript" src="../../js/dataTables/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="../../js/dataTables/js/dataTables.colReorder.js"></script>
+<script type="text/javascript" src="../../js/dataTables/js/dataTables.colVis.js"></script>
+<script type="text/javascript" src="../../js/dataTables/js/dataTables.tableTools.min.js"></script>
+<script type="text/javascript" src="../../js/dataTables/js/DT_bootstrap.js"></script>
+<script type="text/javascript" src="../../js/golbal_params.js"></script>
+<script type="text/javascript" src="../../js/appCommonUtil.js"></script>
+<script type="text/javascript" src="../../js/appCommonCurdUtils.js"></script>
+<script type="text/javascript" src="../../js/html5.js"></script>
+<script type="text/javascript" src="./ZQC_common.js"></script>
+<script type="text/javascript" src="jiaocaiwenjianchaxun.js"></script>
+<script type="text/javascript">
+var data_;
+		$(document).ready(function() {
+		
+        //加载物理组---动态写入select   
+            doSearch_jiaocaimuluming();
+            doSearch_wulizu();
+            doSearch_zuoxigonghao();
+            //doSearch_zuoxigonghao();
+			var data;
+			$('#zuoxipeixun').dataTable({
+				data:data,//数据赋值
+			    dom: 'TRlfrtip',				
+				bProcessing : true, //是否启用正在加载中...
+		        bPaginate: true, //翻页功能
+				bLengthChange: false, //改变每页显示数据数量
+				bFilter: false, //过滤功能
+				bSort: true, //排序功能		       
+				bInfo: true,//页脚信息
+				bAutoWidth: false, //自动宽度
+				sPaginationType: "bootstrap",//分页样式
+			    scrollCollapse: true,
+				sScrollX:"100%",
+		        "aaSorting":[[1,'asc']],
+				"bScrollCollapse": true,
+				columns: [
+					{ title:"<center><input type='checkbox' id='selectall' onclick='toggleChecks(this);' ></input></center>",data: null, defaultContent: '', orderable: false,width:10 },
+					/**title 表头  data json 对应key **/
+{title:"Evaluation serial number",width:"150px",data:"grade_id"},
+{title:"Training into",width:"150px",data:"import_user"},
+{title:"Telephone extension number",width:"150px",data:"phone_number"},
+{title:"Textbook introduction time",width:"150px",data:"teach_set_time"},
+{title:"Textbook directory name",width:"150",data:"teach_name"},
+{title:"Textbook Reviews",width:"150",data:"remark"},
+{title:"录音/文本文件名称",width:"150",data:"file_name"},
+{title:"The recording file location",width:"150",data:"file_location"},
+{title:"Identification",visible:"false",data:"id",searchable:"false"}
+		        ],
+		        oLanguage: {
+					"sLengthMenu": "每页显示 _MENU_条",
+					"sZeroRecords": "没有找到符合条件的数据",
+					"sProcessing": "数据正在加载，请稍后...",
+					"sInfo": "当前第 _START_ - _END_ 条　共计 _TOTAL_ 条",
+					"sInfoEmpty": "没有记录",
+					"sInfoFiltered": "(从 _MAX_ 条记录中过滤)",
+					"sSearch": "搜索：",
+					"oPaginate": {
+					"sFirst": "首页",
+					"sPrevious": "前一页",
+					"sNext": "后一页",
+					"sLast": "尾页"
+				    }
+		        }, 
+		        tableTools: {
+		            //single 单选 multi 多选  os 可以按ctrl 选择		            
+		            //回调 单选
+		            fnRowSelected: function ( nodes ) {
+		               var index=nodes[0]._DT_RowIndex;	
+		               data_ = table.row(index).data();
+		                $("#addFormDiv").addClass('hide');
+						$("#updateFormDiv").show();
+						$("#addPeixunDiv").addClass('hide');
+							//alert(JSON.stringify(data));
+		              initForm1(data_);
+		              $("#teach_name").val('');
+		              
+		            },
+		            sRowSelect:'multi',
+		            "aButtons": []
+		        }
+		    });		    
+			//绑定事件 on
+		    var table= $('#zuoxipeixun').DataTable();		    
+		    $('#zuoxipeixun tbody').dblclick('click',function(e){
+		    	scroll2data("updateForm");		    	
+			});		    			 
+		    //自定义列插件绑定
+		    var colvis = new $.fn.dataTable.ColVis(table,{ buttonText: 'Customize display column',exclude: [ 0 ,1] });
+		    $(colvis.button()).insertBefore('#cols'); 		    		    		    
+		});		
+			function filterColumn(i){
+			    $('#zuoxipeixun').DataTable().column(i).search($('#col'+i+'_filter').val()).draw();
+			}
+			function showSearchItems(){
+				$("#searchItems").slideToggle(200);
+			}
+		
+			</script>
+</head><body style="overflow: auto;">
+		<!-- 头部导航条 -->
+		<!-- 数据表格展示模块 开始 -->
+		<div class="row-fluid" style="margin-top: -33px;">
+			<div class="widget-box">
+				<div class="widget-box">
+					<div class="widget-title" style="height: 40px; line-height: 40px; overflow: hidden;">
+						<span class="icon" style="float: left; padding: 0px 10px;">
+							<i class="icon-search"></i> </span>
+						&nbsp;&nbsp;&nbsp;每页显示条数：
+						<select name="pageSize" id="pageSize" style="width: 80px; margin-bottom: 0px;" onchange="setPageNum('tableForData','pageSize')">
+							<option selected value="10">
+								10
+							</option>
+							<option value="30">
+								30
+							</option>
+							<option value="50">
+								50
+							</option>
+							<option value="100">
+								100
+							</option>
+						</select>
+						<div class="buttons" style="margin-top: 0px;" id="cols">
+							<button type="button" class="btn" onclick="showSearchItems('searchItems');">Expand/close the search term</button>
+						</div>
+					</div>
+				</div>
+				<!-- 搜索项模块 开始 -->
+				<div id="searchItems" class="widget-content row" style="margin: 0 auto; width: 100%; border-left: 1px solid #ccc; border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; margin-top: -18px; margin-bottom: 18px; display: none; overflow: auto">
+					<table id="columns" style="margin-left: 60px;">
+						<tbody><tr>
+							<td style="text-align: right; width: 100px">Textbook introduction time:</td>
+							<td>
+								<div class="input-append date" data-link-field="teach_set_time_start" data-picker-position="bottom-left" data-provide="datetimepicker-inline" data-date-format="yyyy-MM-dd hh:mm:ss">
+									<input type="text" id="teach_set_time_start" style="width: 178px" name="teach_set_time">
+									<span class="add-on"><i class="icon-th"></i> </span>
+								</div>
+								<span style="color: red;">*</span>
+							</td>
+							<td style="text-align: right; width: 90px">To:</td>
+							<td>
+								<div class="input-append date" data-link-field="teach_set_time_end" data-picker-position="bottom-left" data-provide="datetimepicker-inline" data-date-format="yyyy-MM-dd hh:mm:ss">
+									<input type="text" id="teach_set_time_end" name="teach_set_time_end" style="width: 178px">
+									<span class="add-on"><i class="icon-th"></i> </span>
+								</div>
+								<span style="color: red;">*</span>
+							</td>
+							<td style="text-align: right; width: 90px">Telephone extension number:</td>
+							<td>
+								<input type="text" id="phone_number" name="phone_number" width="200px">
+							</td>
+						</tr>
+						<tr>
+							<td style="text-align: right; width: 90px">Materials into human:</td>
+							<td>
+								<input type="text" id="import_user" name="import_user" width="200px">
+							</td>
+							<td style="text-align: right; width: 90px">Textbook directory name:</td>
+							<td>
+								<select id="teach_name" name="teach_name" class="teach_name">
+								</select>
+							</td>
+						
+
+					</tr></tbody></table>
+					<div style="margin-left: 470px">
+						<button type="button" id="btn_sousuo" class="btn" onclick="doSearch1();">
+							<i class="icon-tag"></i>Search</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" id="btn_zhikong" class="btn" onclick="dochongzhi();">
+						<i class="icon-tag"></i>Reset</button>
+					</div>
+
+				</div>
+				<!-- 搜索项模块 结束 -->
+				<!-- 数据表格展示模块 开始 -->
+				<div style="margin-top: -15px; position: relative;">
+					<!-- class 或 = display -->
+					<table style="width: 100%;" class="table table-striped table-bordered nowrap" id="zuoxipeixun" cellspacing="0"></table>
+				</div>
+			</div>
+		</div>
+		<!-- 数据表格展示模块 结束 -->
+
+
+		<!-- 此地放可以放置table等 -->
+
+
+		<!-- 功能按钮模块 开始 -->
+		<div class="widget-box collapsible" style="margin-top: -15px;">
+			<div class="widget-title" style="height: 40px; line-height: 40px; overflow: hidden;">
+				<span class="icon" style="float: left; padding: 0px 10px;"><i class="icon-cog"></i> </span> &nbsp;&nbsp;&nbsp;
+				<button href="#1" type="button" id="btn_tianjia" class="btn" onclick="add();">
+					<i class="icon-tag"></i>Add</button>
+				<button href="#1" type="button" id="btn_shanchu" class="btn" onclick="doDelete();">
+					<i class="icon-trash"></i>Delete</button>
+				<button href="#1" type="button" id="btn_tianjiapeixun" class="btn" onclick="addPeixun();">
+					<i class="icon-trash"></i>Add training</button>
+				<button href="#1" type="button" id="btn_tianjiapeixun" class="btn" onclick="d();">
+					<i class="icon-search"></i>查看评分/内容</button>
+			</div>
+		</div>
+		<!-- 功能按钮模块 结束 -->
+		<!-- 此处可以放table -->
+		<!-- 修改数据form 开始 -->
+		<div id="updateFormDiv" class="widget-content row hide" style="margin: 0 auto; text-align: center; width: 100%; border-left: 1px solid #ccc; border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; margin-top: -18px; margin-bottom: 18px;">
+			<form class="form-horizontal" id="updateForm">
+				<input type="hidden" id="id" name="id" placeholder="id">
+				<table style="margin: auto; width: 100%;">
+					<tbody><tr>
+						<td style="width: 100px; text-align: right;">Evaluation serial number:</td>
+						<td style="text-align: left;">
+							<div id="text-Div-u">
+								<input type="text" id="grade_idu" name="grade_id" width="200px">
+							<span style="color: red;">*</span>
+							</div>
+						</td>
+
+						<td style="width: 100px; text-align: right;">Training into:</td>
+						<td style="text-align: left;">
+							<input type="text" id="import_useru" name="import_user" width="200px">
+						</td>
+						<td style="width: 100px; text-align: right;">Telephone extension number:</td>
+						<td style="text-align: left;">
+							<input type="text" id="phone_numberu" name="phone_number" width="200px">
+						</td>
+
+					</tr>
+					<tr>
+						<td style="width: 100px; text-align: right;">Textbook introduction time:</td>
+						<td style="text-align: left;">
+							<div class="input-append date" data-link-field="teach_set_timeu" data-picker-position="bottom-left" data-provide="datetimepicker-inline" data-date-format="yyyy-MM-dd hh:mm:ss" id="time1">
+								<input type="text" id="teach_set_timeu" style="width: 178px" name="teach_set_time">
+								<span class="add-on"><i class="icon-th"></i> </span>
+							</div>
+							<span style="color: red;">*</span>
+						</td>
+						<td style="width: 100px; text-align: right;">Textbook Reviews:</td>
+						<td style="text-align: left;">
+							<input type="text" id="remarku" name="remark">
+						</td>
+						<td style="width: 100px; text-align: right;">录音/文本文件名称:</td>
+						<td style="text-align: left;">
+							<input type="text" id="file_nameu" name="file_name">
+						</td>
+					</tr>
+					<tr>
+						<td style="width: 100px; text-align: right;">录音/文本文件位置:</td>
+						<td style="text-align: left;">
+							<input type="text" id="file_locationu" name="file_location">
+						</td>
+
+						<td style="width: 100px; text-align: right;">Textbook directory name:</td>
+						<td style="text-align: left;">
+							<select id="teach_nameu" name="teach_name" class="teach_name">
+							</select>
+						</td>
+					</tr>
+				</tbody></table>
+			</form>
+			<button type="button" id="btn_xiugaitijiao" class="btn" onclick="doUpdate();">
+				<i class="icon-tag"></i>修改提交</button>
+		</div>
+		<!-- 修改数据form 结束 -->
+		<!-- 添加数据form 开始 -->
+		<div id="addFormDiv" class="widget-content row hide" style="margin: 0 auto; text-align: center; width: 100%; border-left: 1px solid #ccc; border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; margin-top: -18px; margin-bottom: 18px;">
+			<form id="addForm">
+				<table style="margin: auto; width: 100%;">
+					<tbody><tr>
+						<td style="width: 100px; text-align: right;">Evaluation serial number:</td>
+						<td style="text-align: left;">
+							<div id="text-Div-a">
+								<input type="text" id="grade_ida" name="grade_id" width="200px">
+									 <span style="color: red;">*</span>
+							</div>
+							
+						</td>
+
+						<td style="width: 100px; text-align: right;">Training into:</td>
+						<td style="text-align: left;">
+							<input type="text" id="import_usera" name="import_user" readonly width="200px">
+						</td>
+						<td style="width: 100px; text-align: right;">Telephone extension number:</td>
+						<td style="text-align: left;">
+							<input type="text" id="phone_numbera" name="phone_number" width="200px">
+						</td>
+
+					</tr>
+					<tr>
+						<td style="width: 100px; text-align: right;">Textbook introduction time:</td>
+						<td style="text-align: left;">
+							<div class="input-append date" data-link-field="teach_set_timea" data-picker-position="bottom-left" data-provide="datetimepicker-inline" data-date-format="yyyy-MM-dd hh:mm:ss" id="time3">
+								<input type="text" id="teach_set_timea" style="width: 178px" name="teach_set_time">
+								<span class="add-on"><i class="icon-th"></i> </span>
+							</div>
+							<span style="color: red;">*</span>
+						</td>
+						<td style="width: 100px; text-align: right;">Textbook Reviews:</td>
+						<td style="text-align: left;">
+							<input type="text" id="remarka" name="remark">
+						</td>
+						<td style="width: 100px; text-align: right;">录音/文本文件名称:</td>
+						<td style="text-align: left;">
+							<input type="text" id="file_namea" name="file_name">
+						</td>
+					</tr>
+					<tr>
+						<td style="width: 100px; text-align: right;">录音/文本文件位置:</td>
+						<td style="text-align: left;">
+							<input type="text" id="file_locationa" name="file_location">
+						</td>
+
+						<td style="width: 100px; text-align: right;">Textbook directory name:</td>
+						<td style="text-align: left;">
+							<select id="teach_namea" name="teach_name" class="teach_name">
+							</select>
+						</td>
+					</tr>
+				</tbody></table>
+			</form>
+			<button type="button" id="btn_tianjiatijiao" class="btn" onclick="doInsert();">
+				<i class="icon-tag"></i>Add a submission</button>
+		</div>
+
+		<!-- 添加数据form 结束 -->
+		<div id="addPeixunDiv" class="widget-content row hide" style="margin: 0 auto; text-align: center; width: 100%; border-left: 1px solid #ccc; border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; margin-top: -18px; margin-bottom: 18px;">
+			<form id="addPeixun">
+				<table style="margin: auto; width: 100%;">
+					<tbody><tr>
+						<td style="width: 100px; text-align: right;">Evaluation serial number:</td>
+						<td style="text-align: left;">
+							<div id="text-Div">
+								<input type="text" id="grade_ida_p" name="grade_id" readonly width="200px">
+							</div>
+						</td>
+
+						<td style="width: 100px; text-align: right;">Training into:</td>
+						<td style="text-align: left;">
+							<input type="text" id="import_usera_p" name="import_user" readonly width="200px">
+						</td>
+						<td style="width: 100px; text-align: right;">Telephone extension number:</td>
+						<td style="text-align: left;">
+							<input type="text" id="phone_numbera_p" name="phone_number" readonly width="200px">
+						</td>
+
+					</tr>
+					<tr>
+						<td style="width: 100px; text-align: right;">Training introduction time:</td>
+						<td style="text-align: left;">
+							<div class="input-append date" data-link-field="teach_set_timea_p" data-picker-position="bottom-left" data-provide="datetimepicker-inline" data-date-format="yyyy-MM-dd hh:mm:ss" id="time6">
+								<input type="text" id="teach_set_timea_p" style="width: 178px" name="teach_set_time">
+								<span class="add-on"><i class="icon-th"></i> </span>
+							</div>
+
+						</td>
+						<td style="width: 100px; text-align: right;">Training completion time:</td>
+						<td style="text-align: left;">
+							<div class="input-append date" data-link-field="generate_timea_p" data-picker-position="bottom-left" data-provide="datetimepicker-inline" data-date-format="yyyy-MM-dd hh:mm:ss" id="time5">
+								<input type="text" style="width: 178px" id="generate_timea_p" name="generate_time">
+								<span class="add-on"><i class="icon-th"></i> </span>
+							</div>
+
+						</td>
+						<td style="width: 100px; text-align: right;">文本/文本文件名称:</td>
+						<td style="text-align: left;">
+							<input type="text" id="file_namea_p" name="file_name">
+						</td>
+					</tr>
+					<tr>
+						<td style="width: 100px; text-align: right;">文本/文本文件位置:</td>
+						<td style="text-align: left;">
+							<input type="text" id="file_locationa_p" name="file_location">
+						</td>
+						<td style="width: 100px; text-align: right;">The training content:</td>
+						<td colspan="3" style="text-align: left;">
+						<textarea id="remarka_p" name="remark" style="padding: 0; margin: 0; width: 85%; height: 40px"></textarea>
+						</td>
+						
+						
+					</tr>
+					<tr>
+						<td style="width: 100px; text-align: right;">Group:</td>
+						<td style="text-align: left;" colspan="5">
+							<div class="input-append">
+								<input class="span2" id="wulizuList" type="text" style="margin-top: 10px; width: 411px;" readonly>
+								<button type="button" id="btn_xuanzewulizu" onclick="choseWulizu();" style="margin-top: 10px;width: 112px" class="btn">选择物理组</button>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td style="width: 100px; text-align: right;">Customer service representive:</td>
+						<td style="text-align: left;" colspan="5">
+							<div class="input-append">
+								<input class="span2" id="zuoxigonghaoList" type="text" style="margin-top: 10px; width: 412px;" readonly>
+								<button type="button" id="btn_xuanzewulizu" onclick="chosezuoxigonghao();" style="margin-top: 10px;" class="btn">选择坐席工号</button>
+							</div>
+						</td>
+					</tr>
+				</tbody></table>
+			</form>
+			<button type="button" id="btn_tianjiapeixuntijiao" class="btn" onclick="doAddPeiXun();">
+				<i class="icon-tag"></i>添加培训提交</button>
+		</div>
+	
+</body></html>

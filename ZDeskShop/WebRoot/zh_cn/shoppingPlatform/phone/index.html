@@ -1,0 +1,159 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+		<title>首页</title>
+		<link rel="stylesheet" type="text/css" href="../css/base.css">
+		<link href="../js/mobile-website/style/v2/mobile.min.css" type="text/css" rel="stylesheet"/>
+		<link type="text/css" rel="stylesheet" href="../css/index.css" />
+		<script type="text/javascript" src="../../../js/jquery.js"></script>
+		<script src="../js/jquery.touchslider.min.js"></script>
+		<script type="text/javascript" src="../../../js/golbal_params.js"></script>
+		<script type="text/javascript" src="../../../js/common_utils.js"></script>
+		<script type="text/javascript" src="../js/goodsShow.js"></script>
+		
+		
+		<script>
+			var count = 1;
+			$(document).ready(function(){
+				loadGoods();
+			});
+		</script>
+	</head>
+	<body>
+	<!-- 
+		<div id="top">
+			<div class="site-nav">
+				<ul class="fix">
+					<li class="home">
+						<a href="index.html">首页</a>
+					</li>
+					<li class="mysn">
+						<a href="javascript:void(0);" onclick="location='myCenter.html'">我的云贝</a>
+					</li>
+					<li class="mycart">
+						<a href="javascript:void(0);" onclick="location='demo.html'">购物车</a>
+					</li>
+					<li class="allcate">
+						<a href="javascript:void(0);" onclick="location='childFenlei.html'">商品分类</a>
+					</li>
+				</ul>
+			</div>
+		</div>  -->
+
+		<div class="touchslider" style="margin:0 0;">
+			<div class="touchslider-viewport">
+				<div class="touchslider-item">
+					<a href="#"><img
+							src="../images/p1.jpg"
+							style="vertical-align: top;height:150px;" />
+					</a>
+				</div>
+				<div class="touchslider-item">
+					<a href="#"><img
+							src="../images/p2.jpg"
+							style="vertical-align: top;height:150px;"/>
+					</a>
+				</div>
+				<div class="touchslider-item">
+					<a href="#"><img
+							src="../images/p3.jpg"
+							style="vertical-align: top;height:150px;"/>
+					</a>
+				</div>
+				<div class="touchslider-item">
+					<a href="#"><img
+							src="../images/p4.jpg"
+							style="vertical-align: top;height:150px;"/>
+					</a>
+				</div>
+				<div class="touchslider-item">
+					<a href="#"><img
+							src="../images/p5.jpg"
+							style="vertical-align: top; height:150px;"/>
+					</a>
+				</div>
+				<div class="touchslider-item">
+					<a href="#"><img
+							src="../images/p6.jpg"
+							style="vertical-align: top; height:150px;" />
+					</a>
+				</div>
+			</div>
+			<div class="touchslider-navtag">
+				<span class="touchslider-nav-item touchslider-nav-item-current"></span>
+				<span class="touchslider-nav-item "></span>
+				<span class="touchslider-nav-item "></span>
+				<span class="touchslider-nav-item "></span>
+				<span class="touchslider-nav-item "></span>
+				<span class="touchslider-nav-item "></span>
+			</div>
+		</div>
+		<script>
+			$(function() {
+				$(window).resize(function(){ 
+					var width=$('#js-com-header-area').width();
+					$('.touchslider-item a').css('width','100%');
+					$('.touchslider-item a').css('height',300*(width/640));
+				}).resize();	
+				$(".touchslider").touchSlider({mouseTouch: true, autoplay: true});
+			});
+		</script>
+
+		<div class="layout mt20">
+			<div class="search-box">
+				<form action="prolist.htm">
+					<input type="search" name="sou" id="sou" class="search-input"
+						autocomplete="off"  placeholder="商品关键词" onfocus="this.value=''">
+					<input type="button" onclick ="searchGoods();" class="search-submit">
+				</form>
+			</div>
+		</div>
+		
+		<div class="sn-dock w mt20">
+			<div class="sn-dock-inside">
+				<ul class="fix">
+					<li>
+						<a href="childFenlei.html"><img src="../images/1.png" alt=""><span>全部分类</span>
+						</a>
+					</li>
+					<li>
+						<a href="javascript:void(0);" onclick="location='userCenter.html'"><img src="../images/2.png" alt=""><span>个人中心</span>
+						</a>
+					</li>
+					<li>
+						<a href="javascript:void(0);" onclick="location='orderList.html?keyCode=00'"><img src="../images/3.png" alt=""><span>我的订单</span>
+						</a>
+					</li>
+					<li>
+						<a href="javascript:void(0);" onclick="location='demo.html'"><img src="../images/4.png" alt=""><span>购物车</span>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+			<!-- 商品列表 -->
+			<div class="wrap proList goodsList" >
+				<div id="allGoods"></div>
+				<div id="loadMore" style="display:block;"><p style="text-align:center;font-size:16px;" onclick="loadMoreGoods();">更多....</p></div>
+			</div>
+
+		<div class="line"></div>
+		<div id="footer">
+			<!-- <div class="layout fix user-info">
+				<div class="fr" style="text-align:center;">
+					<a id="backTop" href="javascript:window.scrollTo(0,0);">回顶部</a>
+				</div>
+			</div>  -->
+			<div class="copyright">
+				北京英立讯科技有限公司
+			</div>
+		</div>
+
+	</body>
+</html>

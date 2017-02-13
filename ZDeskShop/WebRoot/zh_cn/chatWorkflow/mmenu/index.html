@@ -1,0 +1,94 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=yes" />
+
+		<title>jQuery.mmenu - Demo</title>
+		
+		<link type="text/css" rel="stylesheet" href="css/jquery.mmenu.all.css" />
+
+		<script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
+		<script type="text/javascript" src="js/jquery.mmenu.min.all.js"></script>
+		<script type="text/javascript" src="../../../js/common_utils.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+			
+				/*--------------------------------页面弹出用户菜单 设置及获取 BEGIN-----------------------------------*/
+				/*
+				 *	注: 1.用户菜单需引用文件：jquery.mmenu.all.css  jquery-1.8.3.min.js  jquery.mmenu.min.all.js
+				 *		2.页面其他代码均需写在page DIV内
+				 *		3.<nav id="menu" ></nav>  此段代码必须有 且id值暂不可动 后期可再次进行优化
+				 *		4.
+				 *
+				 */
+				//设置所需参数和数据集
+				var parames={
+					DS:[{
+						"_dataTitle":"组织机构", 		//该数据的标题
+						"_dataCode":"zzjg",				//该数据的唯一代码 可自由设定 切记不要设定重复
+						datas:getOrgAndUserList()		//设置此项的数据集
+					},{
+						"_dataTitle":"角色", 			//该数据的标题
+						"_dataCode":"js",				//该数据的唯一代码 可自由设定 切记不要设定重复
+						datas:getRoleMapUser()			//设置此项的数据集
+					}],
+					fn:function(){	//设置返回值
+						var retDatas=getSelectDatas();	//获取选中的数据
+						$("#a").val(JSON.stringify(retDatas));
+					}
+				}
+				
+				_initMMenu(parames);					//组装页面数据展示 传入配置参数
+				
+				/*----------------------------------页面弹出用户菜单 设置及获取 END-----------------------------------*/
+			});
+			
+			
+			function getOrgAndUserList(){
+				var rData={};
+				// 请求地址
+				var url = "/ZDesk/ZDesk/chatWorkflow" + "/"+ "getOrgAndUserList.action";
+				var rData = {};
+				ajaxFunction(url, "", false, function(data) {
+					if (data && data.success) {
+						rData = data.data;
+						
+					} else {
+						alert(data.msg);
+					}
+				});
+				return rData;
+				
+			}
+			function getRoleMapUser(){
+				var rData={};
+				// 请求地址
+				var url = "/ZDesk/ZDesk/chatWorkflow" + "/"+ "getRoleMapUser.action";
+				var rData = {};
+				ajaxFunction(url, "", false, function(data) {
+					if (data && data.success) {
+						rData = data.data;
+						
+					} else {
+						alert(data.msg);
+					}
+				});
+				return rData;
+				
+			}
+		</script>
+	</head>
+	<body>		
+		<div id="page">
+			<textarea rows="5" cols="50%"id="a" name="a" ></textarea>
+			<div style="margin-left:40%;">
+				<br/><br/><br/><br/><br/>
+				<a href="" onclick="openUserMenu(this,'#menu');" >邀请用户</a>
+			</div>
+		</div>
+		<nav id="menu" ></nav>
+	</body>
+</html>

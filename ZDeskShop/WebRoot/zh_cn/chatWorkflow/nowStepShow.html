@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>现况</title>
+<meta http-equiv="Content-Type" content="textml; charset=utf-8" />
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<link rel="stylesheet" type="text/css" href="css/workflowPage.css?v=9999.9999" />
+<link rel="stylesheet" href="css/jquery.mmenu.all.css?v=9999.9999" type="text/css"/>
+<script type="text/javascript" src="js/jquery-1.8.3.min.js?v=9999.9999"></script>
+
+<script type="text/javascript" src="js/jquery.mmenu.min.all.js?v=9999.9999"></script>
+<script type="text/javascript" src="/js/appCommonCurdUtils_new.js?v=9999.9999"></script>
+<script type="text/javascript" src="/js/appCommonUtil.js?v=9999.9999"></script>
+<script type="text/javascript"
+        src="../../js/jqueryValidate/jquery.validate.js?v=9999.9999"></script>
+<script type="text/javascript" src="/js/common_utils.js?v=9999.9999"></script>
+
+<!-- 文本编辑器 -->
+<script type="text/javascript" charset="utf-8" src="/ZDeskR/js/ueditor/ueditor.config.js?v=9999.9999"></script>
+<script type="text/javascript" charset="utf-8" src="/ZDeskR/js/ueditor/ueditor.all.js?v=9999.9999"></script>
+<link rel="stylesheet" type="text/css" href="/ZDeskR/js/ueditor/themes/default/css/ueditor.css?v=9999.9999"/>
+<script type="text/javascript" charset="utf-8" src="/ZDeskR/js/ueditor/lang/zh-cn/zh-cn.js?v=9999.9999"></script>
+
+<script type="text/javascript" src="js/mh.js?v=9999.9999"></script>
+
+<style type="text/css"><!--
+html{
+	height:100%;
+}
+.edui-default .edui-editor-iframeholder {
+    background-color: #f1f1f1;
+}
+.step {
+    background: #f2f2f2;
+    border: 1px solid #babbbb;
+    font-size: 12px;
+    line-height: 25px;
+    padding:5px 10px;
+}
+.step p{
+    text-indent:2em;
+    line-height: 8px;
+}
+.btnDiv{
+    float: right;
+    height: 30px;
+}
+
+#zheceng{
+    display: none;
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    z-index:1001;
+    -moz-opacity: 0.7;
+    opacity:.70;
+    filter: alpha(opacity=70);}
+#eidtZhiXingMiaoShu{
+display: none;
+position: 
+absolute;  
+top: 25%;  
+left: 7.5%;  
+width: 80%;  
+padding: 8px;  
+border: 3px solid #ccc;  
+background-color: white;  
+z-index:1002;  
+overflow: auto;}
+
+
+--></style>
+<script type="text/javascript">
+    var ZKM_ROU="ZKM";
+    var workflow_id=getQueryString("workflow_id");
+    //var workflow_id="1211";
+    $(document).ready(function() {
+        searchNowStep();
+    });
+    function searchNowStep(){
+        if(!Z_IsEmpty20(workflow_id)){
+            workflow_id=workflow_id.replace('#','');
+            var params={};
+            params.workflow_id=workflow_id;
+            var url="/"+PRJ_PATH+"/"+ZKM_ROU+"/"+"Step"+"/"+"searchNowStep.action";
+            var pdata={};
+            params.isPagination=false;
+            ajaxFunction(url, params, true, function(data) {
+                if(data&&data.data){
+                    pdata=data.data;
+                    //alert(JSON.stringify(pdata));
+                    readStep('step', data.data);
+                }
+            });
+        }
+        return pdata;
+    }
+
+    function readStep(id, data) {
+        $('#' + id).html('');
+        for (var i = 0; i < data.length; i++) {
+
+            if(data[i].role="2"){
+
+                data[i].role="执行";
+            }else{
+                data[i].role="参与";
+            }
+            if(data[i].staff_state==null){
+                data[i].staff_state="";
+            }
+            /** 暂时注释代码 调整为弹窗
+             var str = "<div class='step'>节点名称："+ data[i].stepName + "<br/>" +
+             "执行人:"+data[i].user_name+ "<br/>"+
+             //"所属角色:"+data[i].role+ "<br/>"+	//当前节点人员均为执行人角色 不需要显示所属角色
+             "当前状态:"+data[i].staff_state+ "<br/>"+
+             "节点描述:<br/><div style='width:100%;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+data[i].description+"</div><br/>"+
+             "<div id='"+data[i].id+"' style='display:none;'>执行描述：<br/><textarea id='zxms_"+data[i].id+"' style='width:100%;height:60px;'></textarea></div>"+
+             "<div style='positon:relative;'>"+
+             "<span class='xzButton'>"+
+             "<a href='#' onclick='handleZhiXing("+data[i].id+")'>执行</a>"+
+             "</span>&nbsp;&nbsp;<span class='xzButton'><a href='#' onclick='handleWeiTuo("+data[i].stepId+")'>委托</a>"+
+             "</span>&nbsp;&nbsp;<span class='xzButton'><a href='#' onclick='submitZhiXing("+data[i].id+")'>提交</a></span>";
+             $('#' + id).append(str);
+             $("#zxms_"+data[i].id).val(data[i].staff_state_describe);
+             **/
+            //弹窗模式
+            var str = "<div class='step'>节点名称："+ data[i].stepName + "<br/>" +
+                    "执行人:&nbsp;&nbsp;"+data[i].user_name+ "<br/>"+
+                //"所属角色:"+data[i].role+ "<br/>"+	//当前节点人员均为执行人角色 不需要显示所属角色
+                    "当前状态：&nbsp;"+data[i].staff_state+ "<br/>"+
+                    "执行内容："+data[i].staff_state_describe+"<br/>"+
+                    "节点描述：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+data[i].description+"</div><br/>"+
+                    "<div style='positon:relative;'>"+
+                    "<span class='xzButton'>"+
+                    "<a href='#' onclick='handleZhiXing(\""+data[i].stepId+"\")'>执行</a>"+
+                    "</span>&nbsp;&nbsp;<span class='xzButton'><a href='#' onclick='handleWeiTuo(\""+data[i].stepId+"\",this)'>委托</a></span>";
+            $('#' + id).append(str);
+        }
+    }
+    //处理执行的函数 传入当前数据的id
+    function handleZhiXing(id){
+        //$("#"+nodeid).slideDown(200); 暂时注释
+        $("#zhixingmingshu").val("");
+        $("#currentNodeId").val(id);
+        showEditZhiXingMiaoShu();
+    }
+    //处理委托的函数 传入nodeid
+    function handleWeiTuo(nodeid,objSel){
+        if(Z_IsEmpty20(nodeid) || Z_IsEmpty20(workflow_id)){
+            return;
+        }
+        var parames={
+//                    isFenJi : false ,
+            selectType : 'radio',
+            DS:[{
+                "_dataTitle":"组织机构", 		//该数据的标题
+                "_dataCode":"zzjg",				//该数据的唯一代码 可自由设定 切记不要设定重复
+                datas:getZuZhiUserDataByNodeId(nodeid)		//设置此项的数据集 getOrgAndUserList()
+            },{
+                "_dataTitle":"角色", 		//该数据的标题
+                "_dataCode":"js",				//该数据的唯一代码 可自由设定 切记不要设定重复
+                datas:getJueSeUserDataByNodeId(nodeid)		//设置此项的数据集 getOrgAndUserList()
+            }],
+            fn:function(){	//设置返回值
+                retDatas=getSelectDatas();	//获取选中的数据
+
+                if(retDatas.datas.length>0){
+                    var sendData={};
+                    sendData.workflow_id=workflow_id;
+                    sendData.nodeid=nodeid;
+                    sendData.cardUrlPeer=retDatas.datas[0].cardUrl;
+
+                    var url="/ZDeskR/ZDesk/MENHUWX/creatWork/tranWoow.action";
+                    ajaxFunction(url, sendData, true, function(data) {
+                        if (data && data.success==true) {
+                            alert("委托成功");
+                        } else {
+                            alert(data.mgs);
+                        }
+
+                        window.location.href="/NCard/IMKFService?ac=talkEnter&_t="+(new Date()).getTime()+"&woowId=WOOW"+workflow_id;
+
+//                        window.history.go(-1);
+                    });
+                }
+            }
+        };
+        _initMMenu(parames);
+        objSel.href="#menu";
+    };
+
+    //提交节点的执行描述
+    function submitZhiXing(){
+        var  nodeid=$("#currentNodeId").val();
+
+        var sendData={};
+        sendData.workflow_id=workflow_id;
+        sendData.nodeid=nodeid;
+        sendData.execMsg=$("#zhixingmingshu").val();
+
+        if(!Z_IsEmpty20(sendData.execMsg) && !Z_IsEmpty20(sendData.nodeid)){
+            var url="/ZDeskR/ZDesk/MENHUWX/creatWork/execWoow.action";
+            ajaxFunction(url, sendData, true, function(data) {
+                if (data && data.success) {
+                    alert("执行成功");
+                    hideEditZhiXingMiaoShu();//关闭弹窗与遮罩
+                } else {
+                    alert(data.mgs);
+                }
+                searchNowStep();
+            });
+        }
+    }
+
+    function showEditZhiXingMiaoShu() {
+        document.getElementById("zheceng").style.display ="block";
+        document.getElementById("eidtZhiXingMiaoShu").style.display ="block";
+    }
+    function hideEditZhiXingMiaoShu() {
+        document.getElementById("zheceng").style.display ='none';
+        document.getElementById("eidtZhiXingMiaoShu").style.display ='none';
+    }
+</script>
+</head>
+<body style="background: #f2f2f2">
+<header id="common_hd" class="c_txt rel">
+    <a id="hd_back" class="abs comm_p8" onclick="history.back();" type=item&amp;hd_back=1"></a>
+    <h1 class="hd_tle">现况</h1>
+    <em id="favourite_line" class="abs">&nbsp;</em>
+</header>
+<div id="step">
+
+</div>
+<div id="zheceng"></div>
+<div id="eidtZhiXingMiaoShu">
+    执行描述：
+    <textarea id="zhixingmingshu" style="width:100%;height:100px;"></textarea>
+    <input type="hidden" id="currentNodeId" name="currentNodeId" ></input>
+    <div style='text-align:center;margin-top:20px;'>
+        <span class='xzButton'><a href='#' onclick='submitZhiXing()'> 提 交 </a></span>&nbsp;&nbsp;&nbsp;&nbsp;
+        <span class='xzButton'><a href='#' onclick='hideEditZhiXingMiaoShu();'> 取 消 </a></span>
+    </div>
+</div>
+
+<nav id="menu"></nav>
+</body>
+</html>

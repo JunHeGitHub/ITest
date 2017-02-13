@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<title>菜单权限</title>
+
+		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+		<meta http-equiv="description" content="this is my page">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+		<!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+		<link rel="stylesheet" href="../../../css/bootstrap.min.css" type="text/css"></link>
+		<link rel="stylesheet" href="../../../css/bootstrap-responsive.min.css" type="text/css"></link>	
+		<script type="text/javascript" src="../../../js/jquery.js"></script>
+		<script type="text/javascript" src="../../../js/bootstrap.js"></script>
+		<script type="text/javascript" src="../../../js/common_utils.js"></script>
+		<script type="text/javascript">
+		  
+		   var PRJ_PATH=window.top.PRJ_PATH||"ZDesk";
+	       var ZDesk_ROU=window.top.ZDesk_ROU||"ZDesk";
+           //保存菜单权限
+           function doSave(params){
+             var url="/ZDesk/"+ZDesk_ROU+"/permissonMappingRole/addPermisson.action";
+             ajaxFunction(url,params,false,function(data){
+                    if(data&&data.success){
+                      window.parent.zinglabs.i18n.alert("permission_success");
+                    }else{
+                    
+                    }
+             });
+           }
+           
+          function setMenuTreeUrl(){
+             var role=window.parent.roleCode;
+             var url="/"+PRJ_PATH+"/zh_cn/common/zkmCommonTree.html?treeWidth=400&treeHeight=600&mode=many&pchm=p&cchm=p&recordType=menu&type=searchMenu&showButton=y&reFillFn=getSelectNode&roleName="+role;
+             $('#menuTree').attr("src",url);
+          }  
+          $(document).ready(function(){
+	          setMenuTreeUrl();
+	      });
+	      //获取选中节点
+          function getSelectNode(nodes){
+               var treeNodesId=[];
+               for(var i=0;i<nodes.length;i++){
+                  treeNodesId.push(nodes[i]);
+               }
+               var ids=treeNodesId.join(",");
+               var params={};
+               //TODO 后续权限验证操作
+               var fp=window.parent.getRoleCodeAndType();
+               params.permisstionCode=ids;
+               params.type="menu";
+               params=$.extend(params,fp);
+               //alert(ids);
+               doSave(params);
+           
+           }
+           
+        
+		</script>
+
+	</head>
+
+	<body>  
+	    <iframe id="menuTree" frameborder="0" width="200px" height="600" scrolling="no" src="/ZDesk/zkmCommonTree.html?treeWidth=400&treeHeight=600&mode=many&pchm=p&cchm=p&recordType=menu&showButton=y&reFillFn=getSelectNode">
+	    </iframe>
+	</body>
+</html>

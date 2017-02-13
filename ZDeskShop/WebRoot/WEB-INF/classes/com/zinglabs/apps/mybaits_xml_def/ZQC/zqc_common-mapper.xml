@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.zinglabs.apps.mybaits_xml_def.ZQC">
+
+    <select id= "zqc_common_checkwenbendata" resultType="java.util.Map" parameterType="java.util.HashMap">
+    	select * from SU_QC_SOURCE_RECORD_DATA
+    	where is_mp3='txt' and ${searchItems}
+    </select >
+    
+    <select id= "zqc_common_checkyuyindata" resultType="java.util.Map" parameterType="java.util.HashMap">
+    	select * from SU_QC_SOURCE_RECORD_DATA
+    	where is_mp3='mp3' and ${searchItems}
+    </select >
+    
+    <update id="zqc_wenbenfenpei"  parameterType="java.util.HashMap">
+		update  SU_QC_SOURCE_RECORD_DATA 
+		set score_state=#{score_state},data_state=#{data_state}
+		,owner=#{owner},begin_time_devoir=#{begin_time_devoir_DFTB},end_time_devoir=#{end_time_devoir_DFTE},
+		assign_role=#{assign_role},grade_name=#{grade_name}
+		 where id in #{id}
+	</update>
+</mapper>

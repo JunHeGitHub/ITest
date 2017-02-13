@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>ZDesk首页</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=11;IE=10;IE=9; IE=8; ">
+
+		<link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css"></link>
+		<link rel="stylesheet" href="../js/comTopTab/comTopTab.css" type="text/css"></link>
+		<link rel="stylesheet" href="../css/appIndexLayout.css" type="text/css"></link>
+		<link rel="stylesheet" href="../js/LeftNavigation/LeftNavigation.css" type="text/css"></link>
+		<script type="text/javascript" src="../js/jquery.js"></script>
+		<script type="text/javascript" src="../js/jquery.mousewheel.min.js"></script>
+		<script type="text/javascript" src="../js/jquery.dragsort.min.js"></script>
+		<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="../js/common_utils.js"></script>
+		<script type="text/javascript" src="../js/jquery.blockUI.js"></script>
+		<script type="text/javascript" src="../js/comTopTab/comTopTab.js"></script>
+		<script type="text/javascript" src="../js/appJs/appIndex.js"></script>
+		<script type="text/javascript" src="../js/jquery.marquee.js"></script>
+		<script type="text/javascript" src="../js/LeftNavigation/LeftNavigation.js"></script>
+		<!-- 全局变量  -->
+		<script type="text/javascript" src="../js/golbal_params.js"></script>
+		<!-- 工程通用函数库  -->
+		<script type="text/javascript" src="../js/appCommonUtil.js"></script>
+		<script type="text/javascript" src="../js/log2.js"></script>
+		<script type="text/javascript" src="../js/huoqudaiban_gongzuoliu.js"></script>
+		<style type="text/css">
+#main {
+	padding: 0;
+	margin: 0;
+}
+
+#header {
+	margin: 0 0 10px;
+	position: static;
+}
+
+#header li {
+	font-size: 14px;
+	_font-size: 12px;
+	padding-top: 12px;
+}
+
+#header .brand {
+	font-family: Helvetica, Georgia, Arial, sans-serif, 黑体;
+	font-size: 26px;
+	padding-left: 35px;
+	width: 120px;
+	height: 20px;
+	padding-top: 9px;
+}
+</style>
+		<script type="text/javascript">
+			//判断下载文件是否存在，如果不存在则调用此函数fileExists()
+			function fileExists(){
+				zinglabs.alert("文件路径不存在!");
+			}
+			//document.onkeydown=banBackSpace;  
+		
+			//跑马灯demo
+			$(document).ready(function(){
+			    log.debug("index.html 加载开始");
+			    //左侧导航栏收起初始化
+			   leftNavigation("btn_img","test","app_css_index_content_main");
+
+			   /*
+					*/	
+				
+			    /**获取客户端信息
+    
+			     判断是否是IE 是否低于ie8的版本浏览器
+			    return true / false
+			    
+			    ***/
+			      if(BrowserInfo.msie&&BrowserInfo.version<8){
+			              zinglabs.alert("您的浏览器版过低，请升级ie8或更高的版本！");
+			              return false;
+			     }
+			     //为下载页面iframe的src赋值 
+			     var iframeSrc="/"+PRJ_PATH+"/zh_cn/common/fileDownload.html";
+				$("#commonFileDownload").attr("src",iframeSrc);
+			});
+	
+	  //载入左侧树
+	  function  loadleftTab(title,src,hasActive){
+	       var leftTabDefultParams={
+					contentType:'iframe',
+					divContent:'',
+					iframeSrc:src,
+					tabId:'',
+					tabComId:'content_left_tab',
+					tabComContentId:'content_left_tab_content',
+					hasClose:false,
+					closeMode:'remove',
+					show:'',
+					tabStyle:'',
+					hasActive:hasActive
+				};
+	     var p =$.extend({"tabName":title},leftTabDefultParams);
+	     var re=com_bootStarpTab_addTab(p);
+	  }
+
+	   //左侧导航目录 左击调用方法
+	   function navigationLeftChickFn(tevent,treeId,treeNode,clickFlag,leftParam,zTree,commonTreeParam){
+	        var url="/"+PRJ_PATH+"/"+PROJECT_LANGUAGE+"/"+treeNode.nodeTypeUrl;
+	        var tabName=treeNode.text;
+	        var tabId=treeNode.id;
+	        if(treeNode.nodeTypeUrl!=undefined&&treeNode.nodeTypeUrl!=''&treeNode.nodeTypeUrl!=null&&tabName!=undefined&&tabName!=''&&tabName!=null){
+		        if(url.indexOf("?") == -1){
+	  			   url=url+'?modleId='+treeNode.modleId;
+	   			}else{
+	  			   url=url+'&modleId='+treeNode.modleId;
+	   			}
+	   			var modelId=treeNode.modleId||treeNode.id;
+ 				openRightTab(url,tabName,modelId,{});
+	        }	        
+	   }
+      
+	   //添加或打开右侧选项卡
+	   function openRightTab(src,name,moduleId,otherParams){
+	              //判断在IFRAME_CONFIG 中是否有此模块的配置(IFRAME_CONFIG  
+	              //                               配置在golbal_params.js 中)
+	              //如果有从iframe池中去id  如果没有 直接传给进行show hide 操作
+	              var ifrId=false;
+	              //因使用div 内容为空 tab验证值不通过 ，而当第二次打开内容不需要不需要创建内容 所以给个默认值
+	              var str="0";
+	              
+	              if(IFRAME_CONFIG[moduleId]!=undefined&&IFRAME_CONFIG[moduleId]!=null){
+	                    ifrId=iframePool.getIframe(moduleId);
+	              }else{
+	                    ifrId=moduleId;
+	              }
+	              //tabId
+	              var tabId=ifrId+"_tid";
+	              
+		          if(ifrId){
+		              //如果没有创建改iframe 创建iframe
+		             var $moduleId=null;
+		             //这里iframe池不负责创建iframe  先给返回iframe 字符转的方法
+		             //创建iframe 由tab 完成 iframe 池只负责 存取iframeId 
+		             //如果有此iframe  则进行show hide 没有的话交给tab 返回iframe字符串交给 tab 创建
+		             if(!U_object_isNotNull($("#"+ifrId)[0])){
+		                 //console.log("创建iframe");
+		                 str=createIframe(ifrId,src,"pageInit",otherParams); 
+			          }
+		         }else{
+		            //console.log("打开该类型窗口已打上限");
+		            return ;
+		         }
+		         //防止tabid和 iframeId 重复
+		         
+		         //将otherParams 保存  回调是进行传参
+		          $("#"+tabId).data("otherParams",otherParams);
+	   	          var p={
+	   	                contentType:'div',
+					    divContent:str,
+						//iframeSrc:src,
+						//生成的标签控件ID,若不指定ID，则按规则生成，规则：tabComId + genTabIdNum
+						tabId:tabId,
+						//生成的标签名称
+						tabName:name,
+						//标签控件的ID
+						tabComId:'content_main_tab',
+						//标签控件容器ID
+						tabComContentId:'content_main_tab_content',
+						//生成的标签是否可以被关闭
+						hasClose:true,
+						//对应bootstarp的shown事件
+						shown:app_css_index_content_left_reheight,
+						tabStyle:'',
+						closeMode:"hide",
+						//关闭 回调 function
+						closeFn:releaseIfr,
+						//创建前回调  function
+						beforeCreateFn:beforeCreate
+					};
+					var re=com_bootStarpTab_addTab(p);
+	   }
+	//释放iframe
+	function releaseIfr(opt){
+	   //iframePool.releaseIframe();
+	   //得到tab Id 和 iframe Id
+	   var tabId=opt["tabId"]||"";
+	    if(tabId){
+           //根据tabId 取到iframe Id 
+		    // 获取iframe 的ID
+		   //判断 是否使用iframe 池
+		  var ifrId=tabId.indexOf("IFRPOOL")>0?tabId.substring(0,tabId.lastIndexOf("_")):tabId;
+		  var moId = tabId.substring(0,ifrId.lastIndexOf("_"));   
+	      var isSuccess=iframePool.releaseIframe(moId,ifrId);
+		 // console.log("释放iframe-"+isSuccess+"---ifrId"+ifrId+"----模块ID"+moId);
+	    }else{
+	     // console.log(tabId+"为空");
+	    }
+	}
+	/**主要用于 初始化iframe 内容
+	  return  ture false
+	**/
+	function beforeCreate(opt){
+	   //打开tab 前清空
+	   var tabId=opt["tabId"];
+	   //判断iframe 是否已加载过 
+	   //已加载过  重置iframe 状态。
+	   var hasTabid =$("#"+tabId)[0];
+	   if(hasTabid!=undefined&&hasTabid!=null&&hasTabid!=""){
+	           //判断是否是激活操作    这里与后面tab重复
+	           var elParent=$(hasTabid).parent()[0].tagName;
+	        	if(elParent=='UL'){
+					$("#" + tabId + " a").tab("show");
+				}else{
+				   //清空
+				    // var ifrId=tabId.indexOf("IFRPOOL")>0?tabId.substring(0,tabId.lastIndexOf("_")):tabId;
+                     var ifrId=tabId.substring(0,tabId.lastIndexOf("_"));
+                     //取到保存的参数
+                     var otherParams=$("#"+tabId).data("otherParams");
+                     iframeInit(ifrId,"pageInit",otherParams) 
+                     // console.log("创建iframe之前重置表单状态"+ifrId);
+				}       
+	   }else{
+	     //未加载时
+	      
+	   }
+	   //console.log(opt);
+	   return true;
+	}  
+    //初始化主页头部内容
+    function init_head_content(){
+
+         $("#z_uname").html(getUserInfo().name);
+    }
+    //初始化头部工具栏
+    function init_head_bar(){
+    
+    
+    }
+    //初始化主体左侧
+    function init_content_left(){
+        //获取该用户所有tab权限
+        var tabs= GOLBAL_PARAM["userAllPermisson"].tab||"";
+        
+        for(var i=0;i<tabs.length;i++){
+           var hasActive = false;
+           if(i==0){
+             hasActive = true;
+           }
+           var tab=tabs[i]; 
+           var src=tab.alias1||tab.name;
+           //TODO 加角色名  过滤
+           var roles=getUserRole();
+           src="/"+PRJ_PATH+"/"+PROJECT_LANGUAGE+"/"+src+"&roleName="+nativeToascii(roles);
+           //alert(src);
+           loadleftTab(tab.name,src,hasActive);
+        }
+    
+    }
+    //初始化主体右侧
+    function init_content_right(){
+    
+    
+    }
+    //初始化尾部工具栏
+    function init_footer_bar(){
+               var p = {};
+				p.data=[
+					{content:'测试1',
+					 oneStyle:'color:yellow'	
+					},
+					{content:'1.测试数据1'},
+					{content:'2.测试数据2'},
+					{content:'3.测试数据3'},
+					{content:'4.测试数据4'},
+					{content:'5.测试数据5'}
+				];
+				p.conClass="text-warning";
+				$(".app_css_index_footer_bar").marquee(p);
+				//删除第六条信息
+				$(".app_css_index_footer_bar").deleteMarqueeData({index:5});
+				//删除第一条数据
+				$(".app_css_index_footer_bar").deleteMarqueeData({id:'con0'});
+    }
+    //初始化尾部内容
+    function init_footer_content(){
+    
+    }
+    
+
+
+
+		</script>
+	</head>
+	<body onload="ZDesk_init()">
+
+		<div class="app_css_index_header" id="header">
+
+			<div class="app_css_index_header_top" id="main">
+
+				<div class="navbar navbar-fixed-top">
+
+					<div class="navbar-inner">
+						<div class="brand" style="margin-top:0px;height:70px;width:250px">
+							<img  class="IEPNG" src="../img/loginLog.png" />
+						</div>
+						<div class="nav-collapse">
+							<ul class="nav pull-right">
+								<li class="dropdown">
+									<a class="dropdown-toggle" data-toggle="dropdown" href="#" title="个人信息">您好,<span id="z_uname"> </span>
+									</a>
+								</li>
+								<li>
+									<a href="#" title="退出登录" onclick="logout()">退出</a>
+								</li>
+								<li>
+									&nbsp;
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="app_css_index_header_bar">
+				<div style="float: right; clear: right; margin-right: 40px">
+					<form class="form-horizontal" style="width: 1050px">
+						通道状态:
+						<span class="label label-success">空闲</span> 坐席状态:
+						<select class="span2">
+							<option>
+								事后整理
+							</option>
+							<option>
+								就绪
+							</option>
+							<option>
+								未就绪
+							</option>
+							<option>
+								临时签退
+							</option>
+						</select>
+						<a class="btn btn-small"><i class="icon-headphones"></i>应答</a> |
+						<a class="btn btn-small"> <i class="icon-stop"></i>挂机</a> |
+						<a class="btn btn-small"><i class="icon-star-empty"></i>保持</a> |
+						<a class="btn btn-small"><i class="icon-stop"></i>拨号</a>
+						<input type="text" placeholder="电话号码" class="input-small" />
+						|
+						<a class="btn btn-small"><i class="icon-star-empty"></i>询问转接</a>
+						<a class="btn btn-small"><i class="icon-star-empty"></i>召集会议</a> |
+						<div class="btn-group">
+							<a class="btn dropdown-toggle btn-primary btn-small" data-toggle="dropdown" href="#"> IVR <span class="caret"> </span> </a>
+							<ul class="dropdown-menu">
+								<li>
+									<a tabindex="-1" href="#">转满意度</a>
+								</li>
+								<li>
+									<a tabindex="-1" href="#">测试</a>
+								</li>
+							</ul>
+						</div>
+						|
+						<div class="btn-group">
+							<a class="btn dropdown-toggle btn-primary btn-small" data-toggle="dropdown" href="#"> 应用 <span class="caret"></span> </a>
+							<ul class="dropdown-menu">
+								<li>
+									<a>工单</a>
+								</li>
+								<li>
+									<a>权限重载</a>
+								</li>
+							</ul>
+						</div>
+					</form>
+				</div>
+
+			</div>
+		</div>
+		<div class="app_css_index_content">
+
+			<div class="app_css_index_content_left" id="test">
+				<div class="com_css_tomTab_tabBar">
+					<div class="com_css_topTab_leftButton">
+						<a href="javascript:void(0)" onclick="com_bootStarpTab_moveLeft('content_left_tab')"><i class="icon-chevron-left"></i> </a>
+					</div>
+					<div class="com_css_topTab_rightButton">
+						<a href="javascript:void(0)" onclick="com_bootStarpTab_moveRight('content_left_tab')"><i class=" icon-chevron-right"></i> </a>
+					</div>
+					<div class="com_css_topTab">
+						<ul class="nav nav-tabs" id="content_left_tab">
+						</ul>
+					</div>
+				</div>
+
+				<div class="tab-content" id="content_left_tab_content">
+
+				</div>
+			</div>
+			<div id="btn">
+				<div style="border-right: 1px solid #CCCCCC; height: 1000px; margin-top: 37px;">
+					<div id="btn_img"></div>
+				</div>
+			</div>
+
+			<div class="app_css_index_content_main" id="app_css_index_content_main">
+				<div class="com_css_tomTab_tabBar">
+					<div class="com_css_topTab_leftButton">
+						<a href="javascript:void(0)" onclick="com_bootStarpTab_moveLeft('content_main_tab')"><i class="icon-chevron-left"></i> </a>
+					</div>
+					<div class="com_css_topTab_rightButton">
+						<a href="javascript:void(0)" onclick="com_bootStarpTab_moveRight('content_main_tab')"><i class=" icon-chevron-right"></i> </a>
+					</div>
+					<div class="com_css_topTab">
+						<ul class="nav nav-tabs" id="content_main_tab">
+						</ul>
+					</div>
+				</div>
+				<div class="tab-content" id="content_main_tab_content">
+
+				</div>
+			</div>
+		</div>
+		<div class="app_css_index_footer">
+
+			<div class="app_css_index_footer_bar">
+				footer_bar
+			</div>
+			<div class="app_css_index_footer_bottom">
+				footer
+			</div>
+		</div>
+		<!-- 下载页面iframe -->
+<<<<<<< .mine
+
+		<iframe id="commonFileDownload" src="" style="display: none"></iframe>
+=======
+        <!--  
+		<iframe id="commonFileDownload" src="/ZDeskR/zh_cn/common/fileDownload.html" style="display: none"></iframe>
+		-->
+		<iframe id="commonFileDownload"  style="display: none"></iframe>
+>>>>>>> .r4137
+		<iframe id="commonPendingFlow" src="" style="display: none"></iframe>
+		<!-- excel  下载 -->
+		<form id="excel_download_form" target="new" method="post" onsubmit="return false;" action="#">
+		</form>
+	</body>
+</html>

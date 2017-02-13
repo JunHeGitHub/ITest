@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.zinglabs.apps.treeDataMapper">
+	<!-- 添加数据 -->
+	<insert id="addData" parameterType="java.util.Map">
+		insert into commonTreeDataMapper(nodeId,dataId) values('${nodeId}','${dataId}')
+	</insert>
+	
+	<!-- 删除数据 -->
+	<delete id="deleteData" parameterType="java.util.Map">
+		delete from commonTreeDataMapper where nodeId in(${nodeIdList}) and dataId in(${dataIdList})
+	</delete>
+	
+	<!-- 根据nodeId查询数据 -->
+	<select id="selectByNodeId" parameterType="java.util.Map" resultType="String">
+		select dataId from commonTreeDataMapper where nodeId='${nodeId}'
+	</select>
+	<!-- 根据dataId查询数据 -->
+	<select id="selectByDataId" parameterType="java.util.Map" resultType="String">
+		select nodeId from commonTreeDataMapper where dataId='${dataId}'
+	</select>
+	
+	<!-- 获取模板分类树 -->
+	<select id="getTemplateTypeTree" resultType="java.util.Map">
+		select id,text from commonTree_detail where recordType='info_template';
+	</select>
+	<!-- 根据id查询节点名称 -->
+	<select id="getTreeNodeText" resultType="String">
+		select text from commonTree_detail where id='${id}'
+	</select>
+	<select id="getDataList" parameterType="java.util.Map" resultType="java.util.Map">
+		select 
+		<if test="columnName=='' or columnName==null">*</if>
+		<if test="columnName!='' and columnName!=null">${columnName}</if>
+		from ${tableName} tab 
+		left join (select t.id nodeId,text,recordType,parentId,dataId from commonTree_detail t,
+		commonTreeDataMapper where t.id=nodeId) a on tab.id=a.dataId
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="keyList.size>0">
+				<foreach collection="keyList" index="index" item="item" separator="and">
+					<if test="item!=null and item!=''">
+						${item}=#{${item}}
+					</if>
+				</foreach>
+			</if>
+		</trim>
+	</select>
+</mapper>
+
+
+
+

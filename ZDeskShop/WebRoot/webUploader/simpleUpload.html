@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>简单的上传</title>
+		<link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
+		<link rel="stylesheet" type="text/css" href="css/webuploader.css">
+		<link rel="stylesheet" type="text/css" href="css/simpleUpload.css">
+		<script type="text/javascript" src="../js/jquery.js"></script>
+		<script type="text/javascript" src="../js/jsonMy.js"></script>
+		<script type="text/javascript" src="../js/bootstrap.js"></script>
+		<script type="text/javascript" src="../js/appCommonUtil.js"></script>
+		<script type="text/javascript" src="../js/common_utils.js"></script>
+		<script type="text/javascript" src="js/webuploader.js"></script>
+		<script type="text/javascript">
+	    	var pwin = window.parent;
+	    	var params = JSON.parse(getQueryString("params"));
+	    	$(document).ready(function(){
+	    		$("#uploadClick").hide() ;
+	    	});
+	    	/*
+	    	*工单上传方法：
+	    	*	pwin.one=="1" (已存在附件，则不触发上传事件)
+	    	**/
+	    	function a(){
+	    		if(pwin.isFujianExist!=undefined&&pwin.isFujianExist=="1"){
+	    			pwin.tishi() ;
+	    			return ;
+	    		}else{
+	    			$("#uploadClick").click() ;
+	    		}
+	    	}
+    	</script>
+		<script type="text/javascript" src="js/simpleUpload.js"></script>
+	</head>
+
+	<body>
+		<div id="uploader" class="wu-example">
+			<div class="btns">
+				<div id="filePicker"></div>
+				<button id="ok" onclick="a()" class="btn btn-smal" >开始上传</button>
+				<button type="hidden" id="uploadClick" class="uploadBtn">
+				</button>
+			</div>
+			<!--用来存放文件信息-->
+			<div class="queueList"></div>
+		</div>
+	</body>
+</html>

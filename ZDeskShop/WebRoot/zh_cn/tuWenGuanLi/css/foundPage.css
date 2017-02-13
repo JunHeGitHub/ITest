@@ -1,0 +1,18 @@
+*, *:before, *:after { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
+
+h4{ font-size: 15px;font-family: 'microsoft yahei'; font-weight: normal; }
+
+a, a:link, a:active, a:visited, a:hover
+{
+	color: #233241;
+	text-decoration: underline;
+}
+
+.exploreSiteFullPane { padding: 5px; }
+a.explorePane { text-decoration:none; }
+.explorePane { width: 33.3333%; float: left; padding: 1%; border-bottom: 1px solid #DDD; text-align: center; text-decoration:none; }
+.explorePane.middle { border-left: 1px solid #DDD; border-right: 1px solid #DDD; }
+
+.explorePane .i-pane { float:none; margin:0px; display: inline-block; }
+.explorePane:hover { cursor:pointer; }
+

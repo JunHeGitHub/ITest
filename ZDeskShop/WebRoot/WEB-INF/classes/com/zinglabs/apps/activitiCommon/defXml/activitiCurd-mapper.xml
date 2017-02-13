@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<!-- 此文件通用增删改sqlMapper 
+     
+     具有通用性的sqlMapper 写在此XML里
+    
+
+ -->
+<mapper namespace="com.zinglabs.apps.activitiCurd">
+
+	<!-- 增 -->
+	<insert id="insert" parameterType="java.util.HashMap">
+		replace into ${tableName}
+			(
+	    		<foreach item="item" index="key" collection="fields" separator=",">
+	    			`${item}`
+	    		</foreach>
+	    	)VALUES(
+	    	    <foreach item="fieldsItem" index="key1" collection="fieldsValue" separator=",">
+	    		    #{fieldsItem}
+	    		</foreach> 
+	    	)
+	</insert>
+	
+	<!-- 改 -->
+	<update id="update" parameterType="java.util.HashMap">
+		update ${tableName}
+    	<trim prefix="SET" suffixOverrides=",">
+    		<foreach collection="update_fields" index="index" item="item" separator=","> 
+            	`${item}`=#{${item}}
+        	</foreach>
+   		</trim>
+   		where ${primaryKey}=#{primaryKeyValue}
+	</update>
+	
+	<!-- 删 -->
+	<!-- 查 -->
+	<select id="select" parameterType="java.util.HashMap">
+		select * from ${tableName}  where ${flowId} in
+    	(
+    		<foreach collection="in_fields" index="index" item="item" separator=","> 
+            	#{item}
+        	</foreach>
+   		)
+	</select>
+	
+	
+	<select id="selectMessageFlowID" parameterType="java.util.HashMap">
+		select * from messagePorcess    where `dataId` =#{id}
+	</select>
+	
+	
+	<insert id="insertMessagePorcessHis" parameterType="java.util.HashMap">
+		insert into messagePorcessHis
+			(
+	    		`id`
+	    		<if test="approveState !='' and approveState != null">,`approveState`</if>
+	    		<if test="appointedCheckUserID !='' and appointedCheckUserID != null">,`appointedCheckUserID`</if>
+	    		<if test="appointedCheckUser !='' and appointedCheckUser != null">,`appointedCheckUser`</if>
+	    		<if test="disponseUser !='' and disponseUser != null">,`disponseUser`</if>
+	    		<if test="disponseBTime !='' and disponseBTime != null">,`disponseBTime`</if>
+	    		<if test="disponseETime !='' and disponseETime != null">,`disponseETime`</if>
+	    		<if test="createTime !='' and createTime != null">,`createTime`</if>
+	    		<if test="createUser !='' and createUser != null">,`createUser`</if>
+	    		<if test="flowNode !='' and flowNode != null">,`flowNode`</if>
+	    		<if test="flowType !='' and flowType != null">,`flowType`</if>
+	    		<if test="flowId !='' and flowId != null">,`flowId`</if>
+	    		<if test="published !='' and published != null">,`published`</if>
+	    		<if test="jsonData !='' and jsonData != null">,`jsonData`</if>
+	    		<if test="dataId !='' and dataId != null">,`dataId`</if>
+	    		<if test="companyId !='' and companyId != null">,`companyId`</if>
+	    		<if test="companyName !='' and companyName != null">,`companyName`</if>
+	    		<if test="departmentId !='' and departmentId != null">,`departmentId`</if>
+	    		<if test="departmentName !='' and departmentName != null">,`departmentName`</if>
+	    		<if test="nodeName !='' and nodeName != null">,`nodeName`</if>
+	    		<if test="lastApproveState !='' and lastApproveState != null">,`lastApproveState`</if>
+	    		<if test="reviewAdvice !='' and reviewAdvice != null">,`reviewAdvice`</if>
+	    		<if test="handAdvice !='' and handAdvice != null">,`handAdvice`</if>
+	    		<if test="endDealTime !='' and endDealTime != null">,`endDealTime`</if>
+	    		<if test="XM !='' and XM != null">,`XM` </if>
+	    		<if test="CW !='' and CW != null">,`CW` </if>
+	    		<if test="SF !='' and SF != null">,`SF` </if>
+	    		<if test="HFFS !='' and HFFS != null">,`HFFS` </if>
+	    		<if test="GDDH !='' and GDDH != null">,`GDDH` </if>
+	    		<if test="SJ !='' and SJ != null">,`SJ`</if>
+	    		<if test="DZYJ !='' and DZYJ != null">,`DZYJ`</if>
+	    		<if test="inboundTime !='' and inboundTime != null">,`inboundTime` </if>
+	    		<if test="replyTime !='' and replyTime != null">,`replyTime`</if>
+	    		<if test="agentId !='' and agentId != null">,`agentId` </if>
+	    		<if test="remark !='' and remark != null">,`remark</if>
+	    		<if test="LYLX !='' and LYLX != LYLX">,`LYLX` </if>
+	    		<if test="JSZH !='' and JSZH != JSZH">,`JSZH` </if>
+	    		<if test="MBLX !='' and MBLX != MBLX">,`MBLX` </if>
+	    	)VALUES(
+	    		#{id}
+	    		<if test="approveState !='' and approveState != null">,#{approveState}</if>
+	    		<if test="appointedCheckUserID !='' and appointedCheckUserID != null">,#{appointedCheckUserID}</if>
+	    		<if test="appointedCheckUser !='' and appointedCheckUser != null">,#{appointedCheckUser}</if>
+	    		<if test="disponseUser !='' and disponseUser != null">,#{disponseUser}</if>
+	    		<if test="disponseBTime !='' and disponseBTime != null">,#{disponseBTime}</if>
+	    		<if test="disponseETime !='' and disponseETime != null">,#{disponseETime}</if>
+	    		<if test="createTime !='' and createTime != null">,#{createTime}</if>
+	    		<if test="createUser !='' and createUser != null">,#{createUser}</if>
+	    		<if test="flowNode !='' and flowNode != null">,#{flowNode}</if>
+	    		<if test="flowType !='' and flowType != null">,#{flowType}</if>
+	    		<if test="flowId !='' and flowId != null">,#{flowId}</if>
+	    		<if test="published !='' and published != null">,#{published}</if>
+	    		<if test="jsonData !='' and jsonData != null">,#{jsonData}</if>
+	    		<if test="dataId !='' and dataId != null">,#{dataId}</if>
+	    		<if test="companyId !='' and companyId != null">,#{companyId}</if>
+	    		<if test="companyName !='' and companyName != null">,#{companyName}</if>
+	    		<if test="departmentId !='' and departmentId != null">,#{departmentId}</if>
+	    		<if test="departmentName !='' and departmentName != null">,#{departmentName}</if>
+	    		<if test="nodeName !='' and nodeName != null">, #{nodeName}</if>
+	    		<if test="lastApproveState !='' and lastApproveState != null">, #{lastApproveState}</if>
+	    		<if test="reviewAdvice !='' and reviewAdvice != null">,#{reviewAdvice}</if>
+	    		<if test="handAdvice !='' and handAdvice != null">,#{handAdvice}</if>
+	    		<if test="endDealTime !='' and endDealTime != null">,#{endDealTime}</if>
+	    		<if test="XM !='' and XM != null">,#{XM}</if>
+	    		<if test="CW !='' and CW != null">,#{CW}</if>
+	    		<if test="SF !='' and SF != null">,#{SF}</if>
+	    		<if test="HFFS !='' and HFFS != null">,#{HFFS}</if>
+	    		<if test="GDDH !='' and GDDH != null">,#{GDDH}</if>
+	    		<if test="SJ !='' and SJ != null">,#{SJ}</if>
+	    		<if test="DZYJ !='' and DZYJ != null">, #{DZYJ}</if>
+	    		<if test="inboundTime !='' and inboundTime != null">, #{inboundTime}</if>
+	    		<if test="replyTime !='' and replyTime != null">, #{replyTime}</if>
+	    		<if test="agentId !='' and agentId != null">,#{agentId}</if>
+	    		<if test="remark !='' and remark != null">,#{remark}</if>
+	    		<if test="LYLX !='' and LYLX != LYLX">,#{LYLX}</if>
+	    		<if test="JSZH !='' and JSZH != JSZH">,#{JSZH}</if>
+	    		<if test="MBLX !='' and MBLX != MBLX">,#{MBLX}</if>
+	    	)
+	</insert>
+	<update id="updateMessagePorcessProcessinstanceId" parameterType="java.util.HashMap">
+		update messagePorcess set `flowId` = #{flowId},`disponseUser`='',`endDealTime`=#{endDealTime},nodeName=#{nodeName},flowNode=#{flowNode}
+   		where `dataId`=#{dataId} 
+	</update>
+	
+	<!-- 公告删除 -->
+	<update id="announceDelete" parameterType="java.util.HashMap">
+		update zkmAnnouncementDisponse  set  isUpdate='0',approveState='删除',flowId=' ' where `id`=#{id}
+	</update>
+<!-- 	<update id="update" parameterType="java.util.HashMap">
+		update messagePorcess
+    	<trim prefix="SET" suffixOverrides=",">
+    		<foreach collection="update_fields" index="index" item="item" separator=","> 
+            	`${item}`=#{${item}}
+        	</foreach>
+   		</trim>
+   		where ${primaryKey}=#{primaryKeyValue}
+	</update>
+ -->
+</mapper>

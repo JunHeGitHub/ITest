@@ -1,0 +1,181 @@
+/* ----------------Reset Css--------------------- */
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary,
+time, mark, audio, video, input  {
+    margin: 0;
+    padding: 0;
+    border: none;
+    outline: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+html, body, form, fieldset, p, div, h1, h2, h3, h4, h5, h6 {
+    -webkit-text-size-adjust: none;
+}
+
+body {
+    font-family: arial, sans-serif;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/* ------------ */
+#filePicker {
+	display: inline-block;
+	vertical-align: middle;
+	margin: 0 12px 0 0;
+}
+
+#filePicker .webuploader-pick {
+	padding: 5px 12px;
+	display: block;
+	height: 16px;
+}
+			
+#uploader .filelist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#uploader .filelist:after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    clear: both;
+}
+
+#uploader .filelist li {
+    font-size: 14px;
+    margin:0 15px 15px 0;
+    float: left;
+    width:115px;
+}
+#uploader .filelist li p.title {
+	font-size:18px;
+	font-weight:bold;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow : ellipsis;
+    margin-left: 25px;
+}
+#uploader .filelist li span.msg {
+	font-size: 14px;
+}
+
+@-webkit-keyframes progressmove {
+    0% {
+       background-position: 0 0;
+    }
+    100% {
+       background-position: 17px 0;
+    }
+}
+@-moz-keyframes progressmove {
+    0% {
+       background-position: 0 0;
+    }
+    100% {
+       background-position: 17px 0;
+    }
+}
+@keyframes progressmove {
+    0% {
+       background-position: 0 0;
+    }
+    100% {
+       background-position: 17px 0;
+    }
+}
+
+
+#uploader .filelist li span.error {
+    background: #f43838;
+    color: #fff;
+    bottom: 0;
+    left: 0;
+    height: 28px;
+    line-height: 28px;
+    font-size: 14px;
+}
+
+#uploader .statusBar {
+	margin-top:5px;
+	margin-bottom:5px;
+	height:18px;
+    vertical-align: middle;
+    position: relative;
+}
+
+#uploader .statusBar .progress {
+    width: 198px;
+    background: #fff;
+    height: 18px;
+    position: relative;
+    display: inline-block;
+    text-align: center;
+    color: #6dbfff;
+    position: relative;
+}
+#uploader .statusBar .progress span.percentage {
+    width: 0;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background: #1483d8;
+    position: absolute;
+}
+#uploader .statusBar .progress span.text {
+    position: relative;
+    z-index: 10;
+}
+.btns{
+	float: left;
+	margin-right: 50px;
+}
+.queueList{
+	padding-top: 6px;
+}
+
+#uploader .filelist div.file-panel {
+    position: absolute;
+    height: 18px;
+    background: rgba( 0, 0, 0, 0.5 );
+    overflow: hidden;
+    z-index: 300;
+    margin-top: -15px;
+}
+
+#uploader .filelist div.file-panel span {
+    width: 18px;
+    height: 18px;
+    display: inline;
+    float: right;
+    text-indent: -9999px;
+    overflow: hidden;
+    background: url(../img/icons.png) no-repeat;
+    cursor: pointer;
+}
+
+#uploader .filelist div.file-panel span.cancel {
+/**background-position: -48px -24px;**/
+    background-position: -48px 0;
+}
+#uploader .filelist div.file-panel span.cancel:hover {
+    background-position: -48px 0;
+}

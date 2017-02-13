@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<!-- 数据库表i18nprompt ibasis SqlSession 操作 -->
+	<bean id="i18nPromptSqlSession" class="com.zinglabs.base.core.springSupport.DbidSqlsession" singleton="false">
+		<property name="namespance" value="com.zinglabs.apps.i18nPrompt"></property>
+		<property name="dbid" value="ZDesk"/>
+	</bean>
+	<bean id="i18nPromptBaseService" name="i18nPromptBaseService" class="com.zinglabs.apps.i18nPrompt.I18nPromptService">
+	</bean>
+	<bean id="i18nLayoutBaseService" name="i18nLayoutBaseService" class="com.zinglabs.apps.i18nPrompt.I18nLayoutService">
+	</bean>
+</beans>

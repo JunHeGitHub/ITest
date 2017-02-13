@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.zinglabs.apps.Dictmanager">
+	<select id="selectDicData" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap" flushCache="true">
+		select * from DicData 
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+		<if test="code !='' and code != null">and `code` = #{code}</if>
+		<if test="name !='' and name != null">
+			and `name` = #{name}
+		</if>
+		<if test="indexName !='' and indexName != null">
+			and `indexName` = #{indexName}
+		</if>
+		<if test="indexCode !='' and indexCode != null">
+			and `indexCode` = #{indexCode}
+		</if>
+		<if test="parentIndexCode !='' and parentIndexCode != null">
+			and `parentIndexCode` = #{parentIndexCode}
+		</if>
+		<if test="parentIndexName !='' and parentIndexName != null">
+			and `parentIndexName` = #{parentIndexName}
+		</if>
+		<if test="alisa1!=null and alisa1!=''">and `alisa1` = #{alisa1}</if>
+		<if test="alisa2!=null and alisa2!=''">and `alisa2` = #{alisa2}</if>
+		<if test="alisa3!=null and alisa3!=''">and `alisa3` = #{alisa3}</if>
+		<if test="alisa4!=null and alisa4!=''">and `alisa4` = #{alisa4}</if>
+		<if test="alisa5!=null and alisa5!=''">and `alisa5` = #{alisa5}</if>
+		</trim>
+	</select>
+ 	<select id="selectDataforUpdate" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap" flushCache="true">
+		select * from `DicData` where `code` = #{code} and `id` &lt;&gt; #{id}
+	</select>
+	<select id="groupBYindexCode" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap" flushCache="true">
+		SELECT * FROM DicData WHERE `indexCode` = #{indexCode}
+	</select>
+	
+	<insert id="insertDicData" parameterType="java.util.HashMap" flushCache="true">
+		insert into `DicData`
+		<trim prefixOverrides=",">
+			( `code`,`name`,`indexCode`,`indexName`
+			<if
+				test="parentIndexName !='' and parentIndexName != null">
+				,`parentIndexName`
+			</if>
+			<if
+				test="parentIndexCode !='' and parentIndexCode != null">
+				,`parentIndexCode`
+			</if>
+			)values ( #{code},#{name},#{indexCode},#{indexName}
+			<if
+				test="parentIndexName !='' and parentIndexName != null">
+				,#{parentIndexName}
+			</if>
+			<if
+				test="parentIndexCode !='' and parentIndexCode != null">
+				,#{parentIndexCode}
+			</if>
+			)
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="java.util.HashMap" flushCache="true">
+		update `DicData`
+		<include refid="updateDicData" />
+		where `id`=#{id}
+	</update>
+	<update id="updateDicDataByIndex" parameterType="java.util.HashMap" flushCache="true">
+		update `DicData`
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="indexCode !='' and indexCode != null">`indexCode` = #{indexCode},</if>
+			<if test="indexName !='' and indexName != null">`indexName` = #{indexName},</if>
+		</trim>
+		where `indexCode`=#{OldIndexCode}
+	</update>
+	<sql id="updateDicData">
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="code !='' and code != null">`code` = #{code},</if>
+			<if test="name !='' and name != null">
+				`name` = #{name},
+			</if>
+			<if test="indexCode !='' and indexCode != null">
+				`indexCode` = #{indexCode},
+			</if>
+			<if test="indexName !='' and indexName != null">
+				`indexName` = #{indexName},
+			</if>
+				`parentIndexName` = #{parentIndexName},
+				`parentIndexCode` = #{parentIndexCode}
+		</trim>
+	</sql>
+	<delete id="deleteDicData" parameterType="java.util.HashMap" flushCache="true">
+		DELETE FROM `DicData` WHERE
+		<foreach collection="list" item="item" index="index"
+			separator="or">
+			`id`=#{item}
+		</foreach>
+	</delete>
+	<insert id="insertDicIndex" parameterType="java.util.HashMap" flushCache="true">
+		INSERT into DicIndex
+		<trim prefixOverrides=",">
+			( `indexCode`
+			<if test="indexName !='' and indexName != null">,`indexName`</if>
+			<if	test="dicInternational !='' and dicInternational != null">,`dicInternational`</if>
+			<if test="alisa1 !='' and alisa1 != null">,`alisa1`</if>
+			<if test="alisa2 !='' and alisa2 != null">,`alisa2`</if>
+			<if test="alisa3 !='' and alisa3 != null">,`alisa3`</if>
+			) values( #{indexCode}
+			<if test="indexName !='' and indexName != null">,#{indexName}</if>
+			<if	test="dicInternational !='' and dicInternational != null">,#{dicInternational}</if>
+			<if test="alisa1 !='' and alisa1 != null">,#{alisa1}</if>
+			<if test="alisa2 !='' and alisa2 != null">,#{alisa2}</if>
+			<if test="alisa3 !='' and alisa3 != null">,#{alisa3}</if>
+			)
+		</trim>
+	</insert>
+	
+	<delete id="deleteDicIndex" parameterType="java.util.HashMap" flushCache="true">
+		DELETE FROM `DicIndex` WHERE
+		<foreach collection="list" item="item" index="index"
+			separator="or">
+			`id`=#{item}
+		</foreach>
+	</delete>
+	<update id="updateIndex" parameterType="java.util.HashMap" flushCache="true">
+		update `DicIndex` 
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="indexCode!=null and indexCode!=''">`indexCode` = #{indexCode},</if>
+			<if	test="indexName !='' and indexName != null">`indexName` = #{indexName},</if>
+			<if	test="dicInternational !='' and dicInternational != null">`dicInternational`=#{dicInternational},</if>
+			<if test="alisa1!=null and alisa1!=''"> `alisa1` = #{alisa1},</if>
+			<if test="alisa2!=null and alisa2!=''"> `alisa2` = #{alisa2},</if>
+			<if test="alisa3!=null and alisa3!=''"> `alisa3` = #{alisa3},</if>
+		</trim>
+		where `id`=#{id}
+	</update>
+	<select id="selectDicIndex" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap" flushCache="true">
+		select * from `DicIndex`
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="id!=null and id!=''">`id` = #{id}</if>
+			<if test="indexCode!=null and indexCode!=''">and `indexCode` = #{indexCode}</if>
+			<if test="indexName!=null and indexName!=''">and `indexName` = #{indexName}</if>
+			<if test="alisa1!=null and alisa1!=''">and `alisa1` = #{alisa1}</if>
+			<if test="alisa2!=null and alisa2!=''">and `alisa2` = #{alisa2}</if>
+			<if test="alisa3!=null and alisa3!=''">and `alisa3` = #{alisa3}</if>
+		</trim>
+	</select>
+	<select id="selectIndexforUpdate" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap" flushCache="true">
+		select * from DicIndex where indexCode = #{indexCode} and `id` &lt;&gt; #{id}
+	</select>
+</mapper>

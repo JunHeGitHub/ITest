@@ -1,0 +1,17 @@
+<!--
+
+    Context configuration file for the ReportView Web App
+
+    $Id: ZWM.xml,v 1.1 2012-04-09 05:34:10 lichuan Exp $
+
+-->
+
+
+<Context docBase="${catalina.home}/server/webapps/ZWM"
+         privileged="true" antiResourceLocking="false" antiJARLocking="false">
+
+  <!-- Link to the user database we will get roles from -->
+  <ResourceLink name="users" global="UserDatabase"
+                type="org.apache.catalina.UserDatabase"/>
+
+</Context>

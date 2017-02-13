@@ -1,0 +1,760 @@
+<?xml version="1.0" encoding="GB2312"?><Conf>
+
+<!-- 程序使用 单独配置项 -->
+<procConf>
+<procMode value="common"/> <!-- common 普通程序 abc 农行模式 用于程序同步数据及兼容不同用户特殊要求 -->
+<reCalculateTime valueBegin="" valueEnd=""/> <!-- 重新计算指定时间内的数据 的开始结束时间 不重算需设置为空 -->
+<logLevel value="DEBUG"/> 
+<!-- 控制日志级别 DEBUG INFO WARN ERROR 
+级别顺序如下 DEBUG < INFO < WARN  < ERROR
+程序使用解释
+DEBUG:调试信息
+INFO:正常输出信息
+WARN:有可能是问题需要分析
+ERROR:严重问题需要处理
+-->
+<threadNumberW value="5"/> 
+<threadNumberR value="5"/> 
+<threadNumber value="6"/>  <!-- 程序使用的计算线程数量  为-1时程序根据任务动态调控 -->
+<isMultiSkill value="true"/>  <!-- 座席是否对多技能组  true或false -->
+<minGranularity value="7"/>  <!-- 程序最小时间粒度 8:1刻钟（目前不支持）7:半小时 6:小时  -->
+<forwardInterval value="20"/>  <!-- 为减少跨时段数据更新而延迟的数据更新时间 
+数据会以粒度对应整数点+延后时间完成数据更新，如粒度30分钟 延后15分钟
+则数据会在0:15  0:45 1:15 1:45 ....时间点进行数据更新。
+其后发生的跨时段的数据 会导致该时段更新 如电话0:40进入0:45数据更新 0:46电话结束 
+此时 0：45数据重新更新
+
+ 单位:分钟  -->
+
+
+<queueInfo queueType="2" queueValue="15"/> <!--定义排队 规则 目前支持：
+1.大组排队： 此时 valueTime 为排队组组名
+2.严格排队:  此时进入系统后  valueTime 时间(秒)内没有被分配到座席的电话视为排队
+3.轮询排队： 电话回到最初进入技能组，视为排队
+排队应该成为路由的部分规则在ivr类配置信息中体现 
+ -->
+<shortAband shortAbandTime="10"/>
+<!-- 短时放弃时长 大于0秒值 电话在该时长内放弃视为短时放弃 为负值时不使用短时放弃 -->
+
+ 
+<!-- 同一座席最长连续登录时间 单位：天（不是小时制，是整点制 ） -->
+<maxLoginDay value="3"/>
+ 
+<!-- 不初始化该组座席 即最终数据统计不统计该组及该组座席--> 
+<virtualSkill value="$11$"/> 
+
+<!-- 一次问题解决率 时间单位：秒 当前电话前指定时间内无同一号码视为一次解决 -->
+<oneceSolvSecond value="7200"/>  
+
+<!-- 控制未接来电明细表中 最小统计的未接来电振铃时长 农行14秒 慧聪1秒 -->
+<unAnsPeriod value="1"/>
+
+<!-- 需要ftp上传文件是此项设置为true 并设置具体ftp信息  -->
+<isFtp value="false"/>  
+
+<posNum value="1"/>
+
+<!--是否计算话费  -->
+<isCalcFee value="false"/>  
+
+<!--部分数据模式 不载入会议 一次解决率等  -->
+<isOptimizeMode value="true"/>  
+
+<!--不会建立数据文件目录  -->
+<isNeedDir value="false"/>  
+<!--不统计监听，临签，座席状态流水等  -->
+<isLoadDay value="false"/>  
+
+<!--被动载入座席信息 -->
+<isLazyMode value="true"/>  
+
+
+<!--use second Arr -->
+<isSecArr value="true"/>  
+
+<isRouteIpMapContain value="false"/>  
+
+<isCallInDISTINCT value="false"/>  
+
+<shiftsGenMode value="physicsMode"/>  
+<phySize value="12"/>  
+
+
+</procConf>
+
+<dynamicFields>
+<dynamicField classType="java.util.HashMap" name="sgIdMap">
+<!--attribute name="10" value="20071118133229008811450"/> 
+<attribute name="5" value="20071118133248416791445"/> 
+<attribute name="2" value="20071118133309067155267"/> 
+<attribute name="8" value="20071118133331506519242"/> 
+<attribute name="88" value="20071118133346586466946"/> 
+<attribute name="12" value="20080710141533755568086"/--> 
+
+<attribute name="10" value="20071118133229008811450"/> 
+<attribute name="5" value="20071118133248416791445"/> 
+<attribute name="2" value="20071118133309067155267"/> 
+<attribute name="8" value="20071118133331506519242"/> 
+<attribute name="88" value="20071118133346586466946"/> 
+<attribute name="12" value="20080710141533755568086"/> 
+<attribute name="14" value="2010061813387855050"/> 
+</dynamicField>
+
+<!--dynamicField  name="sgIdMap" classType='java.util.HashMap'>
+<attribute name="10" value="20090421124576333055402"></attribute> 
+<attribute name="5" value="2009072214407931026"></attribute> 
+<attribute name="2" value="2009072214407931031"></attribute> 
+<attribute name="8" value="2009051215437162036"></attribute> 
+<attribute name="88" value="2010020809107732441"></attribute> 
+<attribute name="12" value="2009072214407931061"></attribute> 
+<attribute name="14" value="2010061813387855050"></attribute> 
+<attribute name="1001" value="2010081215087312003"></attribute>        
+<attribute name="1002" value="20080710141533755568086"></attribute>                      
+<attribute name="1003" value="20071118133331506519242"></attribute>                      
+<attribute name="1004" value="20071118133331506519242"></attribute>                    
+<attribute name="1005" value="20071118133248416791445"></attribute>                      
+<attribute name="1006" value="20071118133229008811450"></attribute>                    
+<attribute name="1007" value="20071118133229008811450"></attribute>                      
+<attribute name="1008" value="20071118133229008811450"></attribute>                      
+<attribute name="1009" value="20071118133229008811450"></attribute>                      
+<attribute name="1010" value="20071118133229008811450"></attribute>  
+</dynamicField-->
+
+<dynamicField classType="java.util.HashMap" name="sgNameMap">
+<attribute name="10" value="人工咨询"/> 
+<attribute name="5" value="人工投诉"/> 
+<attribute name="2" value="vip组座席"/> 
+<attribute name="8" value="贵宾卡服务"/> 
+<attribute name="88" value="后台处理"/> 
+<attribute name="12" value="英文服务"/> 
+<attribute name="14" value="贵宾"/>
+
+<!--attribute name="1001" value="人工咨询"/>                      
+<attribute name="1002" value="英文服务"/>                      
+<attribute name="1003" value="贵宾卡服务"/>                      
+<attribute name="1004" value="贵宾卡服务"/>                    
+<attribute name="1005" value="人工投诉"/>                      
+<attribute name="1006" value="人工咨询"/>                    
+<attribute name="1007" value="人工咨询"/>                      
+<attribute name="1008" value="人工咨询"/>                      
+<attribute name="1009" value="人工咨询"/>                      
+<attribute name="1010" value="人工咨询"/-->  
+
+</dynamicField>
+<!-- 技能组Id对应 农行对每个技能组配置成项目组提供的id。其他客户需配置为 已有需统计技能组--> 
+<dynamicField classType="java.util.HashMap" name="sgOldIdMap">
+<attribute name="10" value="20071118133229008811450"/> 
+<attribute name="5" value="20071118133248416791445"/> 
+<attribute name="2" value="20071118133309067155267"/> 
+<attribute name="8" value="20071118133331506519242"/> 
+<attribute name="88" value="20071118133346586466946"/> 
+<attribute name="12" value="20080710141533755568086"/> 
+<attribute name="14" value="20080710141533755568086"/>
+
+<!--attribute name="1001" value="2009072917287499096"/> 
+<attribute name="1002" value="2009072917287499132"/> 
+<attribute name="1003" value="2009072917287499116"/> 
+<attribute name="1004" value="2009072917287499121"/> 
+<attribute name="1005" value="2009072917287499110"/> 
+<attribute name="1006" value="2009072917287499127"/> 
+<attribute name="1008" value="2009072917287499142"/> 
+<attribute name="1009" value="2009072917287499101"/> 
+<attribute name="1010" value="2009072917287499137"/--> 
+
+</dynamicField>
+
+<dynamicField classType="java.util.HashMap" name="sgOldNameMap">
+<attribute name="10" value="人工咨询"/> 
+<attribute name="5" value="人工投诉"/> 
+<attribute name="2" value="vip组座席"/> 
+<attribute name="8" value="贵宾卡服务"/> 
+<attribute name="88" value="后台处理"/> 
+<attribute name="12" value="英文服务"/> 
+<attribute name="14" value="贵宾"/>
+
+<!--attribute name="1001" value="北京咨询"/>                      
+<attribute name="1002" value="北京英语组"/>                      
+<attribute name="1003" value="北京理财溢出"/>                      
+<attribute name="1004" value="北京理财不溢出"/>                    
+<attribute name="1005" value="北京投诉"/>                      
+<attribute name="1006" value="北京网点咨询组"/>                    
+<attribute name="1007" value="北京网点信息"/>                      
+<attribute name="1008" value="北京自助设备"/>                      
+<attribute name="1009" value="北京网银"/>                      
+<attribute name="1010" value="北京查询查复"/-->  
+
+</dynamicField>
+
+
+<!--dynamicField  name="agentTemporaryIdMap" classType='java.util.HashMap'>
+<attribute name="2010020517227337020" value="测试01"></attribute> 
+<attribute name="2010030216197968768" value="北中心01"></attribute> 
+<attribute name="2010030817077239340" value="测试02"></attribute> 
+<attribute name="2010030817077239981" value="20"></attribute> 
+<attribute name="2010031115547336022" value="1"></attribute> 
+<attribute name="2010031115547336027" value="2"></attribute> 
+<attribute name="2010080315277045525" value="测试001"></attribute> 
+<attribute name="2010080315277045529" value="测试007"></attribute> 
+
+</dynamicField-->
+
+
+<dynamicField classType="java.util.HashMap" name="sgkMap">
+<attribute name="10" value="270"/> 
+<attribute name="5" value="270"/> 
+<attribute name="2" value="270"/> 
+<attribute name="8" value="270"/> 
+<attribute name="88" value="270"/> 
+<attribute name="12" value="270"/> 
+<attribute name="14" value="270"/> 
+
+
+<!--attribute name="1001" value="100"/>                      
+<attribute name="1002" value="50"/>                      
+<attribute name="1003" value="50"/>                      
+<attribute name="1004" value="50"/>                    
+<attribute name="1005" value="50"/>                      
+<attribute name="1006" value="50"/>                    
+<attribute name="1007" value="50"/>                      
+<attribute name="1008" value="50"/>                      
+<attribute name="1009" value="100"/>                      
+<attribute name="1010" value="50"/-->  
+</dynamicField>
+
+
+<dynamicField classType="java.util.HashMap" name="virtualSgNameMap">
+<attribute name="1001" value="210000000"/>
+<attribute name="1002" value="210000000"/>
+</dynamicField>
+
+
+<!-- 用于指示是否路由数据到子cti  数据会路由到子cti的z3000_ext 表中-->
+<dynamicField classType="java.util.HashMap" name="routeIpData">
+<attribute name="10.235.10.162" value="true"/>
+<attribute name="10.235.10.161" value="false"/>
+</dynamicField>
+
+<dynamicField classType="java.util.HashMap" name="routeIpMap">
+<attribute name="10.3.3.2" value="true"/>
+<attribute name="10.3.3.1" value="true"/>
+<attribute name="10.3.8.33" value="true"/>
+<attribute name="10.3.8.34" value="true"/>
+</dynamicField>
+
+
+<dynamicField classType="java.util.HashMap" name="swapSkillMap">
+<attribute name="11" value="11"/> 
+<!--attribute name="2012" value="热点"></attribute--> 
+</dynamicField>
+<!--dynamicField classType="java.util.HashMap" name="sgAggregateMap">
+	<attribute name="10" value="10"/> 
+	<attribute name="5" value="5"/> 
+	<attribute name="2" value="2"/> 
+	<attribute name="8" value="8"/> 
+	<attribute name="88" value="88"/> 
+	<attribute name="12" value="12"/> 
+
+	<attribute name="1001" value="10"/>                      
+	<attribute name="1002" value="12"/>                      
+	<attribute name="1003" value="8"/>                      
+	<attribute name="1004" value="8"/>                    
+	<attribute name="1005" value="5"/>                      
+	<attribute name="1006" value="10"/>                    
+	<attribute name="1007" value="10"/>                      
+	<attribute name="1008" value="10"/>                      
+	<attribute name="1009" value="10"/>                      
+	<attribute name="1010" value="10"/>  
+	</dynamicField-->
+	
+	<dynamicField classType="java.util.HashMap" name="ruleTypeMap">
+	<attribute name="人员固定" value="100"/> 
+	<attribute name="物理组一致" value="200"/> 
+	<attribute name="后续班次" value="400"/> 
+	<attribute name="后续休息" value="500"/> 
+	<attribute name="班次多样" value="600"/> 
+	<attribute name="班次公平" value="700"/> 
+	</dynamicField>
+	
+		
+	<dynamicField classType="java.util.HashMap" name="ruleActionMap">
+	<attribute name="包括" value="10"/> 
+	<attribute name="不包括" value="20"/> 
+	<attribute name="开始时间范围" value="30"/> 
+	<attribute name="结束时间范围" value="50"/> 
+	<attribute name="开始结束时间范围" value="60"/> 
+	<attribute name="最大工作天数" value="80"/> 
+	<attribute name="最小工作天数" value="90"/>                      
+	</dynamicField>
+	
+	</dynamicFields>
+
+<baseCtiData>
+<subCtiData type="skill">
+<attribute code="day$skill$inboundCount" desc="来电数" name="来电数"/>
+<attribute code="day$skill$inboundAccCount" desc="接听客户电话次数" name="接听客户电话次数"/>
+<attribute code="day$skill$inboundAccTime" desc="接听客户电话时间(累计通话时间)" name="接听客户电话时间(累计通话时间)"/>
+<attribute code="day$skill$shortAbandCount" desc="短时放弃量" name="短时放弃量"/>
+<attribute code="day$skill$abandCount" desc="客户呼入放弃量" name="客户呼入放弃量"/>
+<attribute code="day$skill$abandTime" desc="放弃时长" name="放弃时长"/>
+<attribute code="day$skill$accTelCount15" desc="15秒内接起的电话总量" name="15秒内接起的电话总量"/>
+<attribute code="day$skill$accTelCount20" desc="20秒内接起的电话总量" name="20秒内接起的电话总量"/>
+<attribute code="day$skill$queueCount" desc="排队等待数" name="排队等待数"/>
+<attribute code="day$skill$queuTime" desc="排队时长" name="排队时长"/>
+<attribute code="day$skill$queueAbandCount" desc="客户排队放弃量" name="客户排队放弃量"/>
+<attribute code="day$skill$accQueueTime" desc="被接起电话的累计排队时间" name="被接起电话的累计排队时间"/>
+<attribute code="day$skill$transAccCount" desc="转接数" name="转接数"/>
+<attribute code="day$skill$threeTalkCount" desc="三方通话量" name="三方通话量"/>
+<attribute code="day$skill$holdCount" desc="持线次数" name="持线次数"/>
+<attribute code="day$skill$holdTime" desc="持线时间" name="持线时间"/>
+<attribute code="day$skill$beThreeTalkCount" desc="被三方通话次数" name="被三方通话次数"/>
+<attribute code="day$skill$beThreeTalkTime" desc="被三方通话时间" name="被三方通话时间"/>
+<attribute code="day$skill$beTransAccCount" desc="被转接应答次数" name="被转接应答次数"/>
+<attribute code="day$skill$beTransAccTime" desc="被转接应答时间" name="被转接应答时间"/>
+<attribute code="day$skill$threeTalkACWCount" desc="三方通话话务整理次数" name="三方通话话务整理次数"/>
+<attribute code="day$skill$transACWCount" desc="转接通话话务整理次数" name="转接通话话务整理次数"/>
+<attribute code="day$skill$threeTalkACWTime" desc="三方通话话务整理时间" name="三方通话话务整理时间"/>
+<attribute code="day$skill$transACWTime" desc="转接通话话务整理时间" name="转接通话话务整理时间"/>
+<attribute code="day$skill$ACWCount" desc="话务整理次数" name="话务整理次数"/>
+<attribute code="day$skill$ACWTime" desc="事后整理状态时间" name="事后整理状态时间"/>
+<attribute code="day$skill$readyNoAccTime" desc="非话务等待时间(就绪未通话时间)" name="非话务等待时间(就绪未通话时间)"/>
+<attribute code="day$skill$readyTime" desc="就绪状态时间" name="就绪状态时间"/>
+<attribute code="day$skill$noReadyTime" desc="未就绪状态时间" name="未就绪状态时间"/>
+<attribute code="day$skill$temporaryTime" desc="临时签退状态时间" name="临时签退状态时间"/>
+<attribute code="day$skill$longNoAnswCount" desc="座席久未应答电话量" name="座席久未应答电话量"/>
+<attribute code="day$skill$ringTime" desc="振铃时间" name="振铃时间"/>
+<attribute code="day$skill$beAccRingTime" desc="被接起电话振铃时间" name="被接起电话振铃时间"/>
+<attribute code="day$skill$outboundCount" desc="外拨数" name="外拨数"/>
+<attribute code="day$skill$outboundSuccCount" desc="外拨接通数" name="外拨接通数"/>
+<attribute code="day$skill$outboundTime" desc="外拨时间" name="外拨时间"/>
+<attribute code="day$skill$innerCount" desc="内呼数" name="内呼数"/>
+<attribute code="day$skill$innerCallTime" desc="内呼时间" name="内呼时间"/>
+<attribute code="day$skill$loginAgentCount" desc="登录座席数" name="登录座席数"/>
+<attribute code="day$skill$maxLoginAgentCount" desc="最大登录座席数" name="最大登录座席数"/>
+<attribute code="day$skill$onlineAgentCount" desc="在线坐席数" name="在线坐席数"/>
+<attribute code="day$skill$maxOnlineAgentCount" desc="最大在线坐席数" name="最大在线坐席数"/>
+<attribute code="day$skill$oneceSolvCount" desc="一次问题解决数" name="一次问题解决数"/>
+<attribute code="day$skill$consultCount" desc="咨询其它座席电话量" name="咨询其它座席电话量"/>
+<attribute code="day$skill$beConsultCount" desc="被其它座席咨询的电话量" name="被其它座席咨询的电话量"/>
+<attribute code="day$skill$totalContactTime" desc="累计通话时间" name="累计通话时间"/>
+<attribute code="day$skill$totalContactCount" desc="累计通话次数" name="累计通话次数"/>
+<attribute code="day$skill$directContactTime" desc="直接客户通话时间" name="直接客户通话时间"/>
+<attribute code="day$skill$directContactCount" desc="直接客户通话次数" name="直接客户通话次数"/>
+<attribute code="day$skill$accACWTime" desc="客户呼入话务整理时间" name="客户呼入话务整理时间"/>
+<attribute code="day$skill$accACWCount" desc="客户呼入话务整理次数" name="客户呼入话务整理次数"/>
+<attribute code="day$skill$oneceSolvRate" desc="一次问题解决率" name="一次问题解决率"/>
+<attribute code="day$skill$noContactReadyTime" desc="非话务等待时间" name="非话务等待时间"/>
+
+<attribute code="day$skill$granularityBeginTime" desc="统计开始时间" name="统计开始时间"/>
+<attribute code="day$skill$granularityEndTime" desc="统计结束时间" name="统计结束时间"/>
+
+<attribute code="day$skill$SkillInfo$Name" desc="技能组标识" name="技能组标识"/>
+<attribute code="day$skill$SkillInfo$Alias1" desc="技能组别名1" name="技能组别名1"/>
+<attribute code="day$skill$SkillInfo$Alias2" desc="技能组别名2" name="技能组别名2"/>
+<attribute code="day$skill$SkillInfo$Alias3" desc="技能组别名3" name="技能组别名3"/>
+<attribute code="day$skill$SkillInfo$Alias4" desc="技能组别名4" name="技能组别名4"/>
+<attribute code="day$skill$SkillInfo$Alias5" desc="技能组别名5" name="技能组别名5"/>
+<attribute code="day$skill$SkillInfo$Alias6" desc="技能组别名6" name="技能组别名6"/>
+<attribute code="day$skill$SkillInfo$Alias7" desc="技能组别名7" name="技能组别名3"/>
+<attribute code="day$skill$SkillInfo$Alias8" desc="技能组别名8" name="技能组别名4"/>
+<attribute code="day$skill$SkillInfo$Alias9" desc="技能组别名9" name="技能组别名5"/>
+<attribute code="day$skill$SkillInfo$Alias10" desc="技能组别名10" name="技能组别名6"/>
+
+
+<attribute code="halfHour$skill$inboundCount" desc="时间粒度来电数" name="时间粒度来电数"/>
+<attribute code="halfHour$skill$inboundAccCount" desc="时间粒度接听客户电话次数" name="时间粒度接听客户电话次数"/>
+<attribute code="halfHour$skill$inboundAccTime" desc="时间粒度接听客户电话时间(累计通话时间)" name="时间粒度接听客户电话时间(累计通话时间)"/>
+<attribute code="halfHour$skill$shortAbandCount" desc="时间粒度短时放弃量" name="时间粒度短时放弃量"/>
+<attribute code="halfHour$skill$abandCount" desc="时间粒度客户呼入放弃量" name="时间粒度客户呼入放弃量"/>
+<attribute code="halfHour$skill$abandTime" desc="时间粒度放弃时长" name="时间粒度放弃时长"/>
+<attribute code="halfHour$skill$accTelCount15" desc="时间粒度15秒内接起的电话总量" name="时间粒度15秒内接起的电话总量"/>
+<attribute code="halfHour$skill$accTelCount20" desc="时间粒度20秒内接起的电话总量" name="时间粒度20秒内接起的电话总量"/>
+<attribute code="halfHour$skill$queueCount" desc="时间粒度排队等待数" name="时间粒度排队等待数"/>
+<attribute code="halfHour$skill$queuTime" desc="时间粒度排队时长" name="时间粒度排队时长"/>
+<attribute code="halfHour$skill$queueAbandCount" desc="时间粒度客户排队放弃量" name="时间粒度客户排队放弃量"/>
+<attribute code="halfHour$skill$accQueueTime" desc="时间粒度被接起电话的累计排队时间" name="时间粒度被接起电话的累计排队时间"/>
+<attribute code="halfHour$skill$transAccCount" desc="时间粒度转接数" name="时间粒度转接数"/>
+<attribute code="halfHour$skill$threeTalkCount" desc="时间粒度三方通话量" name="时间粒度三方通话量"/>
+<attribute code="halfHour$skill$holdCount" desc="时间粒度持线次数" name="时间粒度持线次数"/>
+<attribute code="halfHour$skill$holdTime" desc="时间粒度持线时间" name="时间粒度持线时间"/>
+<attribute code="halfHour$skill$beThreeTalkCount" desc="时间粒度被三方通话次数" name="时间粒度被三方通话次数"/>
+<attribute code="halfHour$skill$beThreeTalkTime" desc="时间粒度被三方通话时间" name="时间粒度被三方通话时间"/>
+<attribute code="halfHour$skill$beTransAccCount" desc="时间粒度被转接应答次数" name="时间粒度被转接应答次数"/>
+<attribute code="halfHour$skill$beTransAccTime" desc="时间粒度被转接应答时间" name="时间粒度被转接应答时间"/>
+<attribute code="halfHour$skill$threeTalkACWCount" desc="时间粒度三方通话话务整理次数" name="时间粒度三方通话话务整理次数"/>
+<attribute code="halfHour$skill$transACWCount" desc="时间粒度转接通话话务整理次数" name="时间粒度转接通话话务整理次数"/>
+<attribute code="halfHour$skill$threeTalkACWTime" desc="时间粒度三方通话话务整理时间" name="时间粒度三方通话话务整理时间"/>
+<attribute code="halfHour$skill$transACWTime" desc="时间粒度转接通话话务整理时间" name="时间粒度转接通话话务整理时间"/>
+<attribute code="halfHour$skill$ACWCount" desc="时间粒度话务整理次数" name="时间粒度话务整理次数"/>
+<attribute code="halfHour$skill$ACWTime" desc="时间粒度事后整理状态时间" name="时间粒度事后整理状态时间"/>
+<attribute code="halfHour$skill$readyNoAccTime" desc="时间粒度非话务等待时间(就绪未通话时间)" name="时间粒度非话务等待时间(就绪未通话时间)"/>
+<attribute code="halfHour$skill$readyTime" desc="时间粒度就绪状态时间" name="时间粒度就绪状态时间"/>
+<attribute code="halfHour$skill$noReadyTime" desc="时间粒度未就绪状态时间" name="时间粒度未就绪状态时间"/>
+<attribute code="halfHour$skill$temporaryTime" desc="时间粒度临时签退状态时间" name="时间粒度临时签退状态时间"/>
+<attribute code="halfHour$skill$longNoAnswCount" desc="时间粒度座席久未应答电话量" name="时间粒度座席久未应答电话量"/>
+<attribute code="halfHour$skill$ringTime" desc="时间粒度振铃时间" name="时间粒度振铃时间"/>
+<attribute code="halfHour$skill$beAccRingTime" desc="时间粒度被接起电话振铃时间" name="时间粒度被接起电话振铃时间"/>
+<attribute code="halfHour$skill$outboundCount" desc="时间粒度外拨数" name="时间粒度外拨数"/>
+<attribute code="halfHour$skill$outboundSuccCount" desc="时间粒度外拨接通数" name="时间粒度外拨接通数"/>
+<attribute code="halfHour$skill$outboundTime" desc="时间粒度外拨时间" name="时间粒度外拨时间"/>
+<attribute code="halfHour$skill$innerCount" desc="时间粒度内呼数" name="时间粒度内呼数"/>
+<attribute code="halfHour$skill$innerCallTime" desc="时间粒度内呼时间" name="时间粒度内呼时间"/>
+<attribute code="halfHour$skill$loginAgentCount" desc="时间粒度登录座席数" name="时间粒度登录座席数"/>
+<attribute code="halfHour$skill$maxLoginAgentCount" desc="时间粒度最大登录座席数" name="时间粒度最大登录座席数"/>
+<attribute code="halfHour$skill$onlineAgentCount" desc="时间粒度在线坐席数" name="时间粒度在线坐席数"/>
+<attribute code="halfHour$skill$maxOnlineAgentCount" desc="时间粒度最大在线坐席数" name="时间粒度最大在线坐席数"/>
+<attribute code="halfHour$skill$oneceSolvCount" desc="时间粒度一次问题解决数" name="时间粒度一次问题解决数"/>
+<attribute code="halfHour$skill$consultCount" desc="时间粒度咨询其它座席电话量" name="时间粒度咨询其它座席电话量"/>
+<attribute code="halfHour$skill$beConsultCount" desc="时间粒度被其它座席咨询的电话量" name="时间粒度被其它座席咨询的电话量"/>
+<attribute code="halfHour$skill$totalContactTime" desc="时间粒度累计通话时间" name="时间粒度累计通话时间"/>
+<attribute code="halfHour$skill$totalContactCount" desc="时间粒度累计通话次数" name="时间粒度累计通话次数"/>
+<attribute code="halfHour$skill$directContactTime" desc="时间粒度直接客户通话时间" name="时间粒度直接客户通话时间"/>
+<attribute code="halfHour$skill$directContactCount" desc="时间粒度直接客户通话次数" name="时间粒度直接客户通话次数"/>
+
+<attribute code="halfHour$skill$accACWTime" desc="时间粒度客户呼入话务整理时间" name="时间粒度客户呼入话务整理时间"/>
+<attribute code="halfHour$skill$accACWCount" desc="时间粒度客户呼入话务整理次数" name="时间粒度客户呼入话务整理次数"/>
+<attribute code="halfHour$skill$oneceSolvRate" desc="时间粒度一次问题解决率" name="时间粒度一次问题解决率"/>
+<attribute code="halfHour$skill$noContactReadyTime" desc="时间粒度非话务等待时间" name="时间粒度非话务等待时间"/>
+
+<attribute code="halfHour$skill$granularityBeginTime" desc="时间粒度统计开始时间" name="时间粒度统计开始时间"/>
+<attribute code="halfHour$skill$granularityEndTime" desc="时间粒度统计结束时间" name="时间粒度统计结束时间"/>
+
+<attribute code="halfHour$skill$SkillInfo$Name" desc="时间粒度技能组标识" name="时间粒度技能组标识"/>
+<attribute code="halfHour$skill$SkillInfo$Alias1" desc="时间粒度技能组别名1" name="时间粒度技能组别名1"/>
+<attribute code="halfHour$skill$SkillInfo$Alias2" desc="时间粒度技能组别名2" name="时间粒度技能组别名2"/>
+<attribute code="halfHour$skill$SkillInfo$Alias3" desc="时间粒度技能组别名3" name="时间粒度技能组别名3"/>
+<attribute code="halfHour$skill$SkillInfo$Alias4" desc="时间粒度技能组别名4" name="时间粒度技能组别名4"/>
+<attribute code="halfHour$skill$SkillInfo$Alias5" desc="时间粒度技能组别名5" name="时间粒度技能组别名5"/>
+<attribute code="halfHour$skill$SkillInfo$Alias6" desc="时间粒度技能组别名6" name="时间粒度技能组别名6"/>
+<attribute code="halfHour$skill$SkillInfo$Alias7" desc="时间粒度技能组别名7" name="时间粒度技能组别名3"/>
+<attribute code="halfHour$skill$SkillInfo$Alias8" desc="时间粒度技能组别名8" name="时间粒度技能组别名4"/>
+<attribute code="halfHour$skill$SkillInfo$Alias9" desc="时间粒度技能组别名9" name="时间粒度技能组别名5"/>
+<attribute code="halfHour$skill$SkillInfo$Alias10" desc="时间粒度技能组别名10" name="时间粒度技能组别名6"/>
+
+</subCtiData>
+
+<subCtiData type="sum">
+
+
+
+<attribute code="halfHour$sum$inboundCount" desc="时间粒度汇总呼入数" name="时间粒度汇总呼入数"/>
+<attribute code="halfHour$sum$inboundAccCount" desc="时间粒度汇总接听数" name="时间粒度汇总接听数"/>
+<attribute code="halfHour$sum$shortAbandCount" desc="时间粒度汇总短时放弃数" name="时间粒度汇总短时放弃数"/>
+<attribute code="halfHour$sum$outboundCount" desc="时间粒度汇总外呼数" name="时间粒度汇总外呼数"/>
+<attribute code="halfHour$sum$outboundSuccCount" desc="时间粒度汇总外呼成功数" name="时间粒度汇总外呼成功数"/>
+<attribute code="halfHour$sum$map$skillGranularity" desc="时间粒度汇总技能组map" name="时间粒度汇总技能组map"/>
+
+<attribute code="halfHour$sum$SumInfo$Name" desc="时间粒度汇总标识" name="时间粒度汇总标识"/>
+<attribute code="halfHour$sum$SumInfo$Alias1" desc="时间粒度汇总别名1" name="时间粒度汇总别名1"/>
+<attribute code="halfHour$sum$SumInfo$Alias2" desc="时间粒度汇总别名2" name="时间粒度汇总别名2"/>
+<attribute code="halfHour$sum$SumInfo$Alias3" desc="时间粒度汇总别名3" name="时间粒度汇总别名3"/>
+<attribute code="halfHour$sum$SumInfo$Alias4" desc="时间粒度汇总别名4" name="时间粒度汇总别名4"/>
+<attribute code="halfHour$sum$SumInfo$Alias5" desc="时间粒度汇总别名5" name="时间粒度汇总别名5"/>
+<attribute code="halfHour$sum$SumInfo$Alias6" desc="时间粒度汇总别名6" name="时间粒度汇总别名6"/>
+<attribute code="halfHour$sum$SumInfo$Alias7" desc="时间粒度汇总别名7" name="时间粒度汇总别名3"/>
+<attribute code="halfHour$sum$SumInfo$Alias8" desc="时间粒度汇总别名8" name="时间粒度汇总别名4"/>
+<attribute code="halfHour$sum$SumInfo$Alias9" desc="时间粒度汇总别名9" name="时间粒度汇总别名5"/>
+<attribute code="halfHour$sum$SumInfo$Alias10" desc="时间粒度汇总别名10" name="时间粒度汇总别名6"/>
+
+
+<attribute code="day$sum$inboundCount" desc="汇总呼入数" name="汇总呼入数"/>
+<attribute code="day$sum$inboundAccCount" desc="汇总接听数" name="汇总接听数"/>
+<attribute code="day$sum$shortAbandCount" desc="汇总短时放弃数" name="汇总短时放弃数"/>
+<attribute code="day$sum$outboundCount" desc="汇总外呼数" name="汇总外呼数"/>
+<attribute code="day$sum$outboundSuccCount" desc="汇总外呼成功数" name="汇总外呼成功数"/>
+<attribute code="day$sum$map$skillGranularity" desc="汇总技能组map" name="汇总技能组map"/>
+
+<attribute code="day$sum$SumInfo$Name" desc="汇总标识" name="汇总标识"/>
+<attribute code="day$sum$SumInfo$Alias1" desc="汇总别名1" name="汇总别名1"/>
+<attribute code="day$sum$SumInfo$Alias2" desc="汇总别名2" name="汇总别名2"/>
+<attribute code="day$sum$SumInfo$Alias3" desc="汇总别名3" name="汇总别名3"/>
+<attribute code="day$sum$SumInfo$Alias4" desc="汇总别名4" name="汇总别名4"/>
+<attribute code="day$sum$SumInfo$Alias5" desc="汇总别名5" name="汇总别名5"/>
+<attribute code="day$sum$SumInfo$Alias6" desc="汇总别名6" name="汇总别名6"/>
+<attribute code="day$sum$SumInfo$Alias7" desc="汇总别名7" name="汇总别名3"/>
+<attribute code="day$sum$SumInfo$Alias8" desc="汇总别名8" name="汇总别名4"/>
+<attribute code="day$sum$SumInfo$Alias9" desc="汇总别名9" name="汇总别名5"/>
+<attribute code="day$sum$SumInfo$Alias10" desc="汇总别名10" name="汇总别名6"/>
+
+</subCtiData>
+
+<subCtiData type="agent">
+<attribute code="day$agent$inboundCount" desc="来电数" name="来电数"/>
+<attribute code="day$agent$inboundAccCount" desc="接听客户电话次数" name="接听客户电话次数"/>
+<attribute code="day$agent$inboundAccTime" desc="接听客户电话时间(累计通话时间)" name="接听客户电话时间(累计通话时间)"/>
+<attribute code="day$agent$accTelCount15" desc="15秒内接起的电话总量" name="15秒内接起的电话总量"/>
+<attribute code="day$agent$accTelCount20" desc="20秒内接起的电话总量" name="20秒内接起的电话总量"/>
+<attribute code="day$agent$transAccCount" desc="转接数" name="转接数"/>
+<attribute code="day$agent$threeTalkCount" desc="三方通话量" name="三方通话量"/>
+<attribute code="day$agent$holdCount" desc="持线次数" name="持线次数"/>
+<attribute code="day$agent$holdTime" desc="持线时间" name="持线时间"/>
+<attribute code="day$agent$beThreeTalkCount" desc="被三方通话次数" name="被三方通话次数"/>
+<attribute code="day$agent$beThreeTalkTime" desc="被三方通话时间" name="被三方通话时间"/>
+<attribute code="day$agent$innerCallTime" desc="内呼时间" name="内呼时间"/>
+<attribute code="day$agent$innerCount" desc="内呼数" name="内呼数"/>
+<attribute code="day$agent$beTransAccTime" desc="被转接应答时间" name="被转接应答时间"/>
+<attribute code="day$agent$beTransAccCount" desc="被转接应答次数" name="被转接应答次数"/>
+<attribute code="day$agent$threeTalkACWCount" desc="三方通话话务整理次数" name="三方通话话务整理次数"/>
+<attribute code="day$agent$transACWCount" desc="转接通话话务整理次数" name="转接通话话务整理次数"/>
+<attribute code="day$agent$customACWTime" desc="客户通话话务整理时间" name="客户通话话务整理时间"/>
+<attribute code="day$agent$threeTalkACWTime" desc="三方通话话务整理时间" name="三方通话话务整理时间"/>
+<attribute code="day$agent$transACWTime" desc="转接通话话务整理时间" name="转接通话话务整理时间"/>
+<attribute code="day$agent$ACWCount" desc="话务整理次数" name="话务整理次数"/>
+<attribute code="day$agent$ACWTime" desc="事后整理状态时间" name="事后整理状态时间"/>
+<attribute code="day$agent$ringTime" desc="振铃时间" name="振铃时间"/>
+<attribute code="day$agent$beAccRingTime" desc="被接起电话振铃时间" name="被接起电话振铃时间"/>
+<attribute code="day$agent$readyTime" desc="就绪状态时间" name="就绪状态时间"/>
+<attribute code="day$agent$noReadyTime" desc="未就绪状态时间" name="未就绪状态时间"/>
+<attribute code="day$agent$temporaryTime" desc="临时签退状态时间" name="临时签退状态时间"/>
+<attribute code="day$agent$readyNoAccTime" desc="非话务等待时间(就绪未通话时间)" name="非话务等待时间(就绪未通话时间)"/>
+<attribute code="day$agent$longNoAnswCount" desc="座席久未应答电话量" name="座席久未应答电话量"/>
+<attribute code="day$agent$outboundCount" desc="外拨数" name="外拨数"/>
+<attribute code="day$agent$outboundTime" desc="外拨时间" name="外拨时间"/>
+<attribute code="day$agent$outboundSuccCount" desc="外拨接通数" name="外拨接通数"/>
+<attribute code="day$agent$customerAbandTime" desc="放弃时长" name="放弃时长"/>
+<attribute code="day$agent$customerAbandCount" desc="客户呼入放弃量" name="客户呼入放弃量"/>
+<attribute code="day$agent$transIVRCount" desc="转IVR数" name="转IVR数"/>
+<attribute code="day$agent$oneceSolvCount" desc="一次问题解决数" name="一次问题解决数"/>
+<attribute code="day$agent$consultCount" desc="咨询其它座席电话量" name="咨询其它座席电话量"/>
+<attribute code="day$agent$beConsultCount" desc="被其它座席咨询的电话量" name="被其它座席咨询的电话量"/>
+<attribute code="day$agent$totalContactTime" desc="累计通话时间" name="累计通话时间"/>
+<attribute code="day$agent$totalContactCount" desc="累计通话次数" name="累计通话次数"/>
+<attribute code="day$agent$directContactTime" desc="直接客户通话时间" name="直接客户通话时间"/>
+<attribute code="day$agent$directContactCount" desc="直接客户通话次数" name="直接客户通话次数"/>
+
+<attribute code="day$agent$accACWTime" desc="客户呼入话务整理时间" name="客户呼入话务整理时间"/>
+<attribute code="day$agent$accACWCount" desc="客户呼入话务整理次数" name="客户呼入话务整理次数"/>
+<attribute code="day$agent$oneceSolvRate" desc="一次问题解决率" name="一次问题解决率"/>
+<attribute code="day$agent$noContactReadyTime" desc="非话务等待时间" name="非话务等待时间"/>
+
+<attribute code="day$agent$granularityBeginTime" desc="统计开始时间" name="统计开始时间"/>
+<attribute code="day$agent$granularityEndTime" desc="统计结束时间" name="统计结束时间"/>
+<attribute code="day$agent$AgentInfo$Num" desc="座席分机号码" name="席分机号码"/>
+<attribute code="day$agent$AgentInfo$Alias1" desc="座席别名1" name="座席别名1"/>
+<attribute code="day$agent$AgentInfo$Alias2" desc="座席别名2" name="座席别名2"/>
+<attribute code="day$agent$AgentInfo$Alias3" desc="座席别名3" name="座席别名3"/>
+<attribute code="day$agent$AgentInfo$Alias4" desc="座席别名4" name="座席别名4"/>
+<attribute code="day$agent$AgentInfo$Alias5" desc="座席别名5" name="座席别名5"/>
+<attribute code="day$agent$AgentInfo$Alias6" desc="座席别名6" name="座席别名6"/>
+<attribute code="day$agent$AgentInfo$Alias7" desc="座席别名7" name="座席别名7"/>
+<attribute code="day$agent$AgentInfo$Alias8" desc="座席别名8" name="座席别名8"/>
+<attribute code="day$agent$AgentInfo$Alias9" desc="座席别名9" name="座席别名9"/>
+<attribute code="day$agent$AgentInfo$Alias9" desc="座席别名10" name="座席别名10"/>
+
+<attribute code="halfHour$agent$inboundCount" desc="时间粒度来电数" name="时间粒度来电数"/>
+<attribute code="halfHour$agent$inboundAccCount" desc="时间粒度接听客户电话次数" name="时间粒度接听客户电话次数"/>
+<attribute code="halfHour$agent$inboundAccTime" desc="时间粒度接听客户电话时间(累计通话时间)" name="时间粒度接听客户电话时间(累计通话时间)"/>
+<attribute code="halfHour$agent$accTelCount15" desc="时间粒度15秒内接起的电话总量" name="时间粒度15秒内接起的电话总量"/>
+<attribute code="halfHour$agent$accTelCount20" desc="时间粒度20秒内接起的电话总量" name="时间粒度20秒内接起的电话总量"/>
+<attribute code="halfHour$agent$transAccCount" desc="时间粒度转接数" name="时间粒度转接数"/>
+<attribute code="halfHour$agent$threeTalkCount" desc="时间粒度三方通话量" name="时间粒度三方通话量"/>
+<attribute code="halfHour$agent$holdCount" desc="时间粒度持线次数" name="时间粒度持线次数"/>
+<attribute code="halfHour$agent$holdTime" desc="时间粒度持线时间" name="时间粒度持线时间"/>
+<attribute code="halfHour$agent$beThreeTalkCount" desc="时间粒度被三方通话次数" name="时间粒度被三方通话次数"/>
+<attribute code="halfHour$agent$beThreeTalkTime" desc="时间粒度被三方通话时间" name="时间粒度被三方通话时间"/>
+<attribute code="halfHour$agent$innerCallTime" desc="时间粒度内呼时间" name="时间粒度内呼时间"/>
+<attribute code="halfHour$agent$innerCount" desc="时间粒度内呼数" name="时间粒度内呼数"/>
+<attribute code="halfHour$agent$beTransAccTime" desc="时间粒度被转接应答时间" name="时间粒度被转接应答时间"/>
+<attribute code="halfHour$agent$beTransAccCount" desc="时间粒度被转接应答次数" name="时间粒度被转接应答次数"/>
+<attribute code="halfHour$agent$threeTalkACWCount" desc="时间粒度三方通话话务整理次数" name="时间粒度三方通话话务整理次数"/>
+<attribute code="halfHour$agent$transACWCount" desc="时间粒度转接通话话务整理次数" name="时间粒度转接通话话务整理次数"/>
+<attribute code="halfHour$agent$customACWTime" desc="时间粒度客户通话话务整理时间" name="时间粒度客户通话话务整理时间"/>
+<attribute code="halfHour$agent$threeTalkACWTime" desc="时间粒度三方通话话务整理时间" name="时间粒度三方通话话务整理时间"/>
+<attribute code="halfHour$agent$transACWTime" desc="时间粒度转接通话话务整理时间" name="时间粒度转接通话话务整理时间"/>
+<attribute code="halfHour$agent$ACWCount" desc="时间粒度话务整理次数" name="时间粒度话务整理次数"/>
+<attribute code="halfHour$agent$ACWTime" desc="时间粒度事后整理状态时间" name="时间粒度事后整理状态时间"/>
+<attribute code="halfHour$agent$ringTime" desc="时间粒度振铃时间" name="时间粒度振铃时间"/>
+<attribute code="halfHour$agent$beAccRingTime" desc="时间粒度被接起电话振铃时间" name="时间粒度被接起电话振铃时间"/>
+<attribute code="halfHour$agent$readyTime" desc="时间粒度就绪状态时间" name="时间粒度就绪状态时间"/>
+<attribute code="halfHour$agent$noReadyTime" desc="时间粒度未就绪状态时间" name="时间粒度未就绪状态时间"/>
+<attribute code="halfHour$agent$temporaryTime" desc="时间粒度临时签退状态时间" name="时间粒度临时签退状态时间"/>
+<attribute code="halfHour$agent$readyNoAccTime" desc="时间粒度非话务等待时间(就绪未通话时间)" name="时间粒度非话务等待时间(就绪未通话时间)"/>
+<attribute code="halfHour$agent$longNoAnswCount" desc="时间粒度座席久未应答电话量" name="时间粒度座席久未应答电话量"/>
+<attribute code="halfHour$agent$outboundCount" desc="时间粒度外拨数" name="时间粒度外拨数"/>
+<attribute code="halfHour$agent$outboundTime" desc="时间粒度外拨时间" name="时间粒度外拨时间"/>
+<attribute code="halfHour$agent$outboundSuccCount" desc="时间粒度外拨接通数" name="时间粒度外拨接通数"/>
+<attribute code="halfHour$agent$customerAbandTime" desc="时间粒度放弃时长" name="时间粒度放弃时长"/>
+<attribute code="halfHour$agent$customerAbandCount" desc="时间粒度客户呼入放弃量" name="时间粒度客户呼入放弃量"/>
+<attribute code="halfHour$agent$transIVRCount" desc="时间粒度转IVR数" name="时间粒度转IVR数"/>
+<attribute code="halfHour$agent$oneceSolvCount" desc="时间粒度一次问题解决数" name="时间粒度一次问题解决数"/>
+<attribute code="halfHour$agent$consultCount" desc="时间粒度咨询其它座席电话量" name="时间粒度咨询其它座席电话量"/>
+<attribute code="halfHour$agent$beConsultCount" desc="时间粒度被其它座席咨询的电话量" name="时间粒度被其它座席咨询的电话量"/>
+<attribute code="halfHour$agent$totalContactTime" desc="时间粒度累计通话时间" name="时间粒度累计通话时间"/>
+<attribute code="halfHour$agent$totalContactCount" desc="时间粒度累计通话次数" name="时间粒度累计通话次数"/>
+<attribute code="halfHour$agent$directContactTime" desc="时间粒度直接客户通话时间" name="时间粒度直接客户通话时间"/>
+<attribute code="halfHour$agent$directContactCount" desc="时间粒度直接客户通话次数" name="时间粒度直接客户通话次数"/>
+<attribute code="halfHour$agent$accACWTime" desc="时间粒度客户呼入话务整理时间" name="时间粒度客户呼入话务整理时间"/>
+<attribute code="halfHour$agent$accACWCount" desc="时间粒度客户呼入话务整理次数" name="时间粒度客户呼入话务整理次数"/>
+<attribute code="halfHour$agent$oneceSolvRate" desc="时间粒度一次问题解决率" name="时间粒度一次问题解决率"/>
+<attribute code="halfHour$agent$noContactReadyTime" desc="时间粒度非话务等待时间" name="时间粒度非话务等待时间"/>
+
+
+
+<attribute code="halfHour$agent$granularityBeginTime" desc="时间粒度统计开始时间" name="时间粒度统计开始时间"/>
+<attribute code="halfHour$agent$granularityEndTime" desc="时间粒度统计结束时间" name="时间粒度统计结束时间"/>
+
+
+<attribute code="halfHour$agent$AgentInfo$Num" desc="座席分机号码" name="席分机号码"/>
+<attribute code="halfHour$agent$AgentInfo$Alias1" desc="座席别名1" name="座席别名1"/>
+<attribute code="halfHour$agent$AgentInfo$Alias2" desc="座席别名2" name="座席别名2"/>
+<attribute code="halfHour$agent$AgentInfo$Alias3" desc="座席别名3" name="座席别名3"/>
+<attribute code="halfHour$agent$AgentInfo$Alias4" desc="座席别名4" name="座席别名4"/>
+<attribute code="halfHour$agent$AgentInfo$Alias5" desc="座席别名5" name="座席别名5"/>
+<attribute code="halfHour$agent$AgentInfo$Alias6" desc="座席别名6" name="座席别名6"/>
+<attribute code="halfHour$agent$AgentInfo$Alias7" desc="座席别名7" name="座席别名7"/>
+<attribute code="halfHour$agent$AgentInfo$Alias8" desc="座席别名8" name="座席别名8"/>
+<attribute code="halfHour$agent$AgentInfo$Alias9" desc="座席别名9" name="座席别名9"/>
+<attribute code="halfHour$agent$AgentInfo$Alias9" desc="座席别名10" name="座席别名10"/>
+
+</subCtiData>
+
+
+<subCtiData type="agentRealTime">
+<attribute code="realTime$agent$AgentInfo$Num" desc="座席分机号码" name="席分机号码"/>
+<attribute code="realTime$agent$AgentInfo$Alias1" desc="座席别名1" name="座席别名1"/>
+<attribute code="realTime$agent$AgentInfo$Alias2" desc="座席别名2" name="座席别名2"/>
+<attribute code="realTime$agent$AgentInfo$Alias3" desc="座席别名3" name="座席别名3"/>
+<attribute code="realTime$agent$AgentInfo$Alias4" desc="座席别名4" name="座席别名4"/>
+<attribute code="realTime$agent$AgentInfo$Alias5" desc="座席别名5" name="座席别名5"/>
+<attribute code="realTime$agent$AgentInfo$Alias6" desc="座席别名6" name="座席别名6"/>
+<attribute code="realTime$agent$AgentInfo$Alias7" desc="座席别名7" name="座席别名7"/>
+<attribute code="realTime$agent$AgentInfo$Alias8" desc="座席别名8" name="座席别名8"/>
+<attribute code="realTime$agent$AgentInfo$Alias9" desc="座席别名9" name="座席别名9"/>
+<attribute code="realTime$agent$AgentInfo$Alias9" desc="座席别名10" name="座席别名10"/>
+
+<attribute code="realTime$agent$StateBeginTime" desc="座席状态开始时间" name="座席状态开始时间"/>
+<attribute code="realTime$agent$StateEndTime" desc="座席状态结束时间" name="座席状态结束时间"/>
+<attribute code="realTime$agent$StateId" desc="座席状态标识" name="座席状态标识"/>
+<attribute code="realTime$agent$StateName" desc="座席状态名称" name="座席状态名称"/>
+<attribute code="realTime$agent$StatePeriod" desc="座席状态时长" name="座席状态时长"/>
+<attribute code="realTime$agent$Alias1" desc="座席状态别名1" name="座席状态别名1"/>
+<attribute code="realTime$agent$Alias2" desc="座席状态别名2" name="座席状态别名2"/>
+
+
+</subCtiData>
+</baseCtiData>
+
+
+
+<!-- 只保存需要更新的客户数据库信息
+value 字段描述 #符号分割   日志格式符#动态字段值#键值种类#指定字段值（用于表列变行）依赖关键字map,sum,max,index#
+如果跳过固定位置使用 SKIP_
+如 yyyy-MM-dd HH:mm:ss#sgNameMap# 或 SKIP_#sgNameMap#
+
+
+
+键值种类 1111 分别代表insert update delete select  为1代表是相应键值 为0代表不是相应键值 【可扩】 如：
+SKIP_#SKIP_#1111#
+
+指定字段值 支持取当前粒度指定字段对应值 及$SUM（累计所有）比较类型 依据被指定字段类型【可扩】 如下：
+  value="SKIP_#SKIP_#SKIP_#day$skill$inboundCount"  baseCol="day$sum$map$skillGranularity=2"
+含义为：day$sum$map$skillGranularity变量为map结构，取键值为2对应的map value 从该返回value中取得day$skill$inboundCount值
+
+  value="SKIP_#SKIP_#SKIP_#day$skill$loginAgentCount"  baseCol="day$SkillInfo$map$skillGranularity=47"
+  含义为 index关键字影响细粒度，聚合为更大粒度时，的聚合方式为取最后位置的值  48个半小时聚合成天时取2 
+SKIP_#SKIP_#sgNameMap#halfHour$skill$Alias6 （根据Alias6累计baseCol字段值 ） 
+
+SKIP_#SKIP_#sgNameMap#halfHour$skill$Alias6	（Alias6=10时baseCol的值）
+
+
+#STATIC#NOW#:该关键字表示，使用数据库时间填充此字段
+
+ -->
+<targetDBInfo>
+
+	<!-- 测试数据库 -->
+	<!--database dbip="192.168.0.82" dbo="" id="ZShifts_local" name="z3000_extTJ1027" password="12" port="3306" type="mysql" userName="zinglabs"/-->
+	<database dbip="192.168.0.174" dbo="" id="ZShifts_local" name="ZShifts" password="12" port="3306" type="mysql" userName="zinglabs"/>
+	<!--<database dbip="127.0.0.1" dbo="" id="ZShifts_local" name="ZShifts_local" password="" port="3306" type="mysql" userName="root"/-->
+	<!-- 配置数据所在服务器的z3000_ext库 -->
+	<database dbip="127.0.0.1" id="z3000_ext" name="z3000_ext" password="12" port="3306" type="mysql" userName="zinglabs"/>
+	<!-- 配置ssc运行服务器的z3000库 -->
+	<database dbip="127.0.0.1" id="z3000" name="z3000" password="12" port="3306" type="mysql" userName="zinglabs"/>
+	<!--database id="z3000" name="z3000"  dbip="10.2.16.82" userName="zinglabs" password="12" port="3306" type="mysql" /-->
+	<!-- 配置实际有效的 VT_REPORT_END_TIME 所在数据库位置 普通配置 cti服务器 z3000_ext库 -->
+	<database dbip="127.0.0.1" id="endTimeDb" name="z3000_ext" password="12" port="3306" type="mysql" userName="zinglabs"/>
+	<!-- 配置农行csr座席信息数据库 -->
+	<database dbip="127.0.0.1" dbo="" id="csrSyncDB" name="clcrdb" password="sa1234" port="4200" type="sybase" userName="sa"/>
+
+	<!--database id="z3000_ext" name="z3000_extCD"  dbip="127.0.0.1" userName="zinglabs" password="12" port="3306" type="mysql" />
+	<database id="z3000" name="z3000CD"  dbip="127.0.0.1" userName="zinglabs" password="12" port="3306" type="mysql" /-->
+	
+	<!-- 配置数据写入的数据库 -->
+	<database dbip="127.0.0.1" dbo="" id="tarGetDB" name="ZShifts" password="12" port="3306" type="mysql" userName="zinglabs">
+	<!--database id="tarGetDB" name="z3000_extCD"  dbip="10.232.28.152" userName="zinglabs" password="12" port="3306" type="mysql" dbo="" -->
+	<!--database id="tarGetDB" name="MSS_TEST"  dbip="10.232.28.147" userName="sa" password="sa1234" port="4200" type="sybase" dbo="" -->
+	
+<!-- 座席话务时段表 -->
+
+
+
+<!-- 技能组话务时段表 -->
+<table name="VT_SkillGroupHour" type="baseData">
+<column baseCol="halfHour$skill$granularityBeginTime" isPK="false" maxLength="" name="workDate" type="datetime" value="yyyy-MM-dd HH:mm:ss#SKIP_#1111#"/>
+<column baseCol="halfHour$skill$SkillInfo$Name" isPK="false" maxLength="32" name="groupID" type="varchar" value="SKIP_#SKIP_#SKIP_#"/>
+<column baseCol="halfHour$skill$SkillInfo$Name" isPK="false" maxLength="32" name="skillGroupID" type="varchar" value="SKIP_#SKIP_#1111#"/>
+<column baseCol="skill$phoneDensity" isPK="false" maxLength="11" name="phoneDensity" type="int" value=""/>
+<column baseCol="halfHour$skill$skInCount" isPK="false" maxLength="11" name="callSkExtCount" type="int" value=""/>
+<column baseCol="halfHour$skill$skAccCount" isPK="false" maxLength="11" name="callSkExtConnectCount" type="int" value=""/>
+<column baseCol="halfHour$skill$skAccPeriod" isPK="false" maxLength="11" name="callSkExtTalkPeriod" type="int" value=""/>
+<column baseCol="halfHour$skill$onlinePeriod" isPK="false" maxLength="11" name="loginPerd" type="int" value=""/>
+<column baseCol="halfHour$skill$readyTime" isPK="false" maxLength="11" name="waitPerd" type="int" value=""/>
+<column baseCol="halfHour$skill$noReadyTime" isPK="false" maxLength="11" name="restPerd" type="int" value=""/>
+<column baseCol="halfHour$skill$ACWTime" isPK="false" maxLength="11" name="delayPerd" type="int" value=""/>
+<column baseCol="halfHour$skill$temporaryTime" isPK="false" maxLength="11" name="temporaryPerd" type="int" value=""/>
+<column baseCol="halfHour$skill$holdTime" isPK="false" maxLength="11" name="holdPeriod" type="int" value=""/>
+<column baseCol="halfHour$skill$beAccRingTime" isPK="false" maxLength="11" name="pickupPeriod" type="int" value=""/>
+<column baseCol="halfHour$skill$abandTime" isPK="false" maxLength="11" name="colineGiveupPerd" type="int" value=""/>
+<column baseCol="halfHour$skill$abandCount" isPK="false" maxLength="11" name="colineGiveupCount" type="int" value=""/>
+<column baseCol="halfHour$skill$shortAbandCount" isPK="false" maxLength="10,0" name="ShortAbandCount" type="int" value=""/>
+</table>
+
+
+
+<!-- 呼入明细表 -->
+<table name="VT_HourDetailCallIn" type="baseData">
+<column baseCol="realTime$DetailCallIn$detailTime" isPK="false" maxLength="" name="scopeTime" type="datetime" value="yyyy-MM-dd HH:mm:ss#SKIP_#1010#SKIP_#STATIC:SCOPE#"/>
+<column baseCol="realTime$DetailCallIn$beginTime" isPK="false" maxLength="" name="beginTime" type="datetime" value="yyyy-MM-dd HH:mm:ss"/>
+<column baseCol="realTime$DetailCallIn$endTime" isPK="false" maxLength="" name="endTime" type="datetime" value="yyyy-MM-dd HH:mm:ss"/>
+
+
+<column baseCol="realTime$DetailCallIn$groupID" isPK="false" maxLength="32" name="groupID" type="varchar" value=""/>
+<column baseCol="realTime$DetailCallIn$extensionNumber" isPK="false" maxLength="32" name="extensionNumber" type="varchar" value=""/>
+<column baseCol="realTime$DetailCallIn$colineNumber" isPK="false" maxLength="32" name="colineNumber" type="varchar" value=""/>
+<column baseCol="realTime$DetailCallIn$detailTime" isPK="false" maxLength="" name="detailTime" type="datetime" value="yyyy-MM-dd HH:mm:ss#SKIP_#SKIP_#"/>
+<column baseCol="realTime$DetailCallIn$talkPeriod" isPK="false" maxLength="11" name="talkPeriod" type="int" value=""/>
+<column baseCol="realTime$DetailCallIn$pickupPeriod" isPK="false" maxLength="11" name="pickupPeriod" type="int" value=""/>
+<column baseCol="realTime$DetailCallIn$colineWaitPeriod" isPK="false" maxLength="11" name="colineWaitPeriod" type="int" value=""/>
+<column baseCol="realTime$DetailCallIn$sessionID" isPK="false" maxLength="32" name="sessionID" type="varchar" value=""/>
+<column baseCol="realTime$DetailCallIn$holdPeriod" isPK="false" maxLength="11" name="holdPeriod" type="int" value=""/>
+<column baseCol="realTime$DetailCallIn$acwPeriod" isPK="false" maxLength="11" name="acwPeriod" type="int" value=""/>
+<column baseCol="realTime$DetailCallIn$ringPeriod" isPK="false" maxLength="11" name="ringPeriod" type="int" value=""/>
+
+
+</table>
+
+
+<table name="VT_HourDetailSkillAband" type="baseData">
+<column baseCol="realTime$Aband$BeginTime" isPK="false" maxLength="" name="scopeTime" type="datetime" value="yyyy-MM-dd HH:mm:ss#SKIP_#1010#SKIP_#STATIC:SCOPE#"/>
+<column baseCol="realTime$Aband$BeginTime" isPK="false" maxLength="" name="beginTime" type="datetime" value="yyyy-MM-dd HH:mm:ss"/>
+<column baseCol="realTime$Aband$endTime" isPK="false" maxLength="" name="endTime" type="datetime" value="yyyy-MM-dd HH:mm:ss"/>
+
+<column baseCol="realTime$Aband$PhoneNum" isPK="false" maxLength="25" name="colineNumber" type="char" value=""/>
+<column baseCol="realTime$Aband$colineWaitPeriod" isPK="false" maxLength="11" name="colineWaitPeriod" type="int" value=""/>
+<column baseCol="realTime$Aband$sessionID" isPK="false" maxLength="32" name="sessionID" type="varchar" value=""/>
+<column baseCol="realTime$Aband$SkillName" isPK="false" maxLength="32" name="groupID" type="varchar" value=""/>
+
+</table>
+
+
+	</database>
+	
+	
+</targetDBInfo>
+
+
+<mapResult>
+
+
+</mapResult>
+
+</Conf>

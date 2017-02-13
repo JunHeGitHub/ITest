@@ -1,0 +1,65 @@
+#wrapper {
+	position: absolute;
+	z-index: 1;
+	top: 10%;
+	padding:px;
+	bottom: 1px;
+	width: 100%;
+	/*background: #ccc;*/
+	overflow: hidden;
+	-webkit-transform:translateZ(0);
+}
+
+#scroller {
+	position: absolute;
+	z-index: 1;
+	width:100%;
+	/*-webkit-tap-highlight-color: rgba(0,0,0,0);*/
+	-webkit-transform:translateZ(0);
+	-moz-transform: translateZ(0);
+	-ms-transform: translateZ(0);
+	-o-transform: translateZ(0);
+	transform: translateZ(0); 
+}
+
+
+
+ #pullUp { 
+	background:#fff;
+	/*height:40px;*/
+	line-height:40px;
+	padding:5px 10px;
+	border-bottom:1px solid #ccc;
+	font-weight:bold;
+	font-size:14px;
+	color:#888;
+}
+ #pullUp .pullUpIcon  {
+	display:block; float:left;
+	width:40px; height:40px;
+	background:url(./js/iscroll-master/pull-icon@2x.png) 0 0 no-repeat;
+	-webkit-background-size:40px 80px; background-size:40px 80px;
+	-webkit-transition-property:-webkit-transform;
+	-webkit-transition-duration:0ms;	
+}
+
+#pullUp .pullUpIcon  {
+	-webkit-transform:translateZ(0);
+}
+
+#pullUp.flip .pullUpIcon {
+	-webkit-transform: translateZ(0);
+}
+
+#pullUp.loading .pullUpIcon {
+	 background-position:0 100%;
+	-webkit-transform:translateZ(0);
+	-webkit-transition-duration:0ms;
+	-webkit-animation-name:loading;
+	-webkit-animation-duration:0s;
+	-webkit-animation-iteration-count:infinite;
+	-webkit-animation-timing-function:linear;
+}
+
+
+

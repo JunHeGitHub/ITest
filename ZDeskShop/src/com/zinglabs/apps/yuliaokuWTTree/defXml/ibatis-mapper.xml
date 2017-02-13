@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.zinglabs.apps.yuliaokuWTTree">
+	<!-- 查询未绑定到树的对应数据 -->
+	<select id="selectDataNotToTree" parameterType="java.util.HashMap">
+		SELECT * FROM 
+			BOC_corpusPublish
+		WHERE 
+			BOC_corpusPublish.isStop="否" AND
+			<if test="clientQuestion !='' and clientQuestion != null"> companyId=#{companyId} AND </if>
+			<if test="clientQuestion !='' and clientQuestion != null">clientQuestion=#{clientQuestion} AND </if>  
+			<if test="seatQuestion !='' and seatQuestion != null">seatQuestion=#{seatQuestion} AND </if>
+			NOT EXISTS( 
+			   SELECT YT.dataid FROM yuliaokuWTTree_detail YT
+				WHERE 
+				BOC_corpusPublish.id=YT.dataId 
+		)LIMIT ${limit}
+	</select>
+	
+	
+	<!-- 查询未绑定到树的对应数据条数 -->
+	<select id="selectDataNotToTreeCount" parameterType="java.util.HashMap">
+		SELECT count(1) total FROM 
+			BOC_corpusPublish
+		WHERE 
+			BOC_corpusPublish.isStop="否" AND
+			<if test="clientQuestion !='' and clientQuestion != null"> companyId=#{companyId} AND </if>
+			<if test="clientQuestion !='' and clientQuestion != null">clientQuestion=#{clientQuestion} AND </if>  
+			<if test="seatQuestion !='' and seatQuestion != null">seatQuestion=#{seatQuestion} AND </if>
+			NOT EXISTS( 
+			 SELECT YT.dataid FROM yuliaokuWTTree_detail YT
+				WHERE 
+				BOC_corpusPublish.id=YT.dataId 
+		)
+	</select>
+	
+	
+	<!-- 解绑绑定到树的对应数据 -->
+	<delete id="DelDataToTree" parameterType="java.util.HashMap">
+	 DELETE FROM  yuliaokuWTTree_detail WHERE recordType=#{recordType}  AND dataId in (
+	 		<foreach item="item" index="key" collection="DataIds" separator=",">
+    			#{item}
+    		</foreach>
+	 ) and nodeId=#{nodeId};
+	</delete>
+	
+	
+	<!-- 删除节点时解绑绑定到树的对应数据 -->
+	<delete id="DelDataToTreeOfDelNode" parameterType="java.util.HashMap">
+	 DELETE FROM  yuliaokuWTTree_detail WHERE nodeId in (
+	 		<foreach item="item" index="key" collection="nodeIds" separator=",">
+    			#{item}
+    		</foreach>
+	 ) AND recordType=#{recordType}
+	</delete>
+	
+	<!-- 改绑绑定数据 -->
+	<update id="UpdDataToTree">
+	UPDATE yuliaokuWTTree_detail SET nodeId=#{NewnodeId} WHERE recordType=#{recordType} AND nodeId=#{OldnodeId} AND dataId in(
+			<foreach item="item" index="key" collection="DataIds" separator=",">
+    			#{item}
+    		</foreach>
+	)
+	</update>
+	
+	<!-- 查询绑定到树的对应数据 -->
+	<select id="selectDataToTree" parameterType="java.util.HashMap">
+	SELECT p.* FROM BOC_corpusPublish p ,yuliaokuWTTree_detail YL WHERE p.id=YL.dataId AND YL.nodeId=#{nodeId} 
+	AND YL.recordType=#{recordType} LIMIT ${limit}
+	</select>
+	
+	
+	<!-- 查询绑定到树的对应数据条数 -->
+	<select id="selectDataToTreeCount" parameterType="java.util.HashMap">
+	SELECT count(1) total FROM BOC_corpusPublish p ,yuliaokuWTTree_detail YL WHERE p.id=YL.dataId AND YL.nodeId=#{nodeId} 
+	AND YL.recordType=#{recordType}
+	</select>
+	
+</mapper>

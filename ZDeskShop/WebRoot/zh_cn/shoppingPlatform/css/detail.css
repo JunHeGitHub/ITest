@@ -1,0 +1,93 @@
+.proDetailHeadInfo .item_price {
+	height: 25px;
+	line-height: 25px;
+	padding: 0 10px;
+	color: #ff3c3c;
+}
+
+.proDetailHeadInfo .item_price>span:first-child {
+	float: left;
+}
+
+.proDetailHeadInfo .item_price>span:last-child {
+	float: left;
+	margin-left: 5px;
+}
+
+.proDetailHeadInfo .original_price {
+	font-size: 12px;
+	color: #999;
+	text-decoration: line-through;
+}
+
+.proDetailHeadInfo .item_price .small,.proDetailHeadInfo .item_price.small,.proDetailHeadInfo .use_credit .small
+	{
+	font-size: 12px;
+}
+
+.proDetailHeadInfo .use_credit {
+	height: 58px;
+	border-top: 1px dashed #d3d3d3;
+	border-bottom: 1px dashed #d3d3d3;
+	margin: 0 7px 0 10px;
+}
+
+.proDetailHeadInfo .use_credit .option {
+	height: 20px;
+	line-height: 20px;
+	margin-top: 10px;
+}
+
+.proDetailHeadInfo .use_credit .option input[type="checkbox"] {
+	border-radius: 0;
+	-webkit-appearance: none;
+	width: 20px;
+	height: 20px;
+	background-size: 20px;
+	background-repeat: no-repeat;
+	border: none;
+	background-image:
+		url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAABQCAIAAADk7aCWAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo4OTdGMTk0MjQ4M0IxMUUzOUM4NkUwMDgzMEE2MUE1NSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo4OTdGMTk0MzQ4M0IxMUUzOUM4NkUwMDgzMEE2MUE1NSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjg5N0YxOTQwNDgzQjExRTM5Qzg2RTAwODMwQTYxQTU1IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjg5N0YxOTQxNDgzQjExRTM5Qzg2RTAwODMwQTYxQTU1Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+3jykDwAAA8FJREFUeNrsV19IU1EYd9t1U8dQl2XOmDbFVKZzOp0+ZGQYQlKRST0WQRD0Yr1khQ9iRklPET1FvkWFImp/HiowH3Iy50Yjl0yHkpvm/IfOdO1PPz1xkYFl2+6V4HwPl9/97uH+vvOd7/edcwQ9PT0xu2HCmF0ySkyJKTElDtsYjv5bWFiYnp7ucDhsNht/My4oKFAqlSKRSKVS8ZfqrKysjIwMgjFjnohTU1Nzc3MJnpmZ2S7PUSZOSkoqLi4WCATAy8vLw8PDwWCQc2KpVFpWVoZ1BV5bWzMYDD6fj3M5icVisOIJDD6wgptzHQuFQmQYMwZGbo1GI/IcfgNRKBQVFRXQ4l9/odFoUlJSCLZarW63O6IGgg7AMIxcLg8EAi6Xa7thqGE2OLvdPjExEWnLnJ+fxxMlqtVq2QmFGPSanZ1N8NTU1B/E8w/EZrN5ZWWFLKFOp5PJZCEDEI1arSYY6bVYLNHZJLxe78DAAClO5Ly8vJyUDzHEgWiIZD0ej8lkwopEbXfaKkeJRMIKJi4uTq/XIxoS3+DgIJ5R3hYhDPzX7/ezLQIRgBXc8MCPr5gxJ/sxqgyZJM0PTbGqqoqsNzzwLy4ucngQQLuHQAkmTRGGGoaf8xMIBLpVLXgdGxvj6QSC/hAbG5uZmel0OtkE8HT0Gdk0esqkxJSYEu/ypW2EeUhTTYkpMSWmxLtJLKhRNzRUdx/OucArcXX+1YIDNYxIUppZzx9x6cGzRcpagk0TXTwRZ++rOJJzieCxWUPf6BM+iNOScms1jQLBxj9nlx2vLPeCwQDnxMkJijPFzbEiycblds3dMXR73efhvKrjxYl1ujsJ4kRg8IEV3JzLSSRkTmpuYsbAgaCva7gZeQ5fx4f2V54va8tLO7oDyV5X7ikiL+9HHk/OmSO6Ldaor4mZ+PTkfEzi63T/dsMqcy7mK6oINow/N0/2Rtq5phY2bsBCAXOi8AY7oRCDXvWqcwR/cX74OPo0Ci3z9ee2uZVJsoSntU17ZQdDBiCaY3lXCEZ631ofxMQEo0C86l16aWwkxSlhpPW6VlI+xBAHokE+gBdWnd2WVn/AF7VNYqscpRI5KxhZXEpdSQuiIfF1GG/98C5FeXeCMDqHmn7619kWsRFBSQu44YG/09SEGXOyLX5bsPZa7pLmh6Z4ubKdrDc88LsWbeGpf0cNxP7907uRR7/1t9kUYahh+Dk/CECg/aPtW18HHS8iurTtfOjA+DMxk1CScco23ccmIPwzyv03x+lhjxJTYkr8fxH/EmAAFUGOYZQhl0MAAAAASUVORK5CYII=')
+		;
+}
+
+.proDetailHeadInfo .use_credit .option input[type="checkbox"]:checked {
+	background-position: 0 -20px;
+	background-color: rgba(0, 0, 0, 0);
+	border: none;
+}
+
+.proDetailHeadInfo .use_credit .credit_detail .price {
+	color: #ff3c3c;
+}
+
+.proDetailBox .discount {
+	background-color: #f27444;
+}
+
+.no_prom_notice {
+	height: 38px;
+	line-height: 38px;
+	padding-left: 10px;
+	border: 1px solid #f2f2f2;
+	background-color: #ffffed;
+	margin: 10px 0;
+	display: none;
+}
+
+.proDetailHeadInfo p .promolabel {
+	display: inline-block;
+	margin-left: 10px;
+}
+
+.proDetailHeadInfo .tuan {
+	margin-right: 5px;
+}
+
+.proDetailHeadInfo .tuan em {
+	display: inline-block;
+	padding: 2px;
+	background-color: #FE5955;
+	color: #fff;
+	margin-left: 10px;
+}

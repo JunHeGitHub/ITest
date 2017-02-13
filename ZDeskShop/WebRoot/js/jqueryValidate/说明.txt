@@ -1,0 +1,6 @@
+jquery.validate.js  功能强大验证简单
+详细使用方法请解压jquery-validation-1.13.1.zip 看demo 
+
+官方网站 http://jqueryvalidation.org/
+
+简单使用方法 见demo.html

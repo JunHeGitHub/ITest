@@ -1,0 +1,19 @@
+log4j.rootLogger=INFO
+log4j.logger.com= DEBUG, F,C  
+log4j.additivity.SubLogger=false
+
+log4j.appender.F=org.apache.log4j.RollingFileAppender  
+log4j.appender.F.File=/mnt/ZQCSync.log
+log4j.appender.F.Append=true
+log4j.appender.F.layout=org.apache.log4j.PatternLayout
+
+log4j.appender.F.layout.ConversionPattern=[%-d{yyyy-MM-dd HH:mm:ss} %p][%t] %m%n
+log4j.appender.F.MaxFileSize=100000KB  
+log4j.appender.F.MaxBackupIndex=5
+
+
+log4j.appender.C=org.apache.log4j.ConsoleAppender
+log4j.appender.C.layout=org.apache.log4j.PatternLayout
+log4j.appender.C.layout.ConversionPattern=[%-d{yyyy-MM-dd HH:mm:ss} %p][%t] %m %n
+log4j.appender.C.Target=System.out
+ 

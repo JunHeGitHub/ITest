@@ -1,0 +1,14 @@
+-------------2014-12-30 王立铎
+all_base_data.sql 增加流程定义表 activitiParamDefination
+
+------------2014-12-30 郭志远
+zqc_base.sql      修改了中  commonTree_detail 表  DicData表 DicIndex 表  去掉删表的sql   改成先删数据再插入数据
+
+-----------2015-05-21 郭志远
+all_base_data.sql  修改 all_base_data.sql 中菜单树调用的方法名称   
+UPDATE `zkmCommonTree` SET `leftClick`='window.top.navigationLeftChickFn' WHERE `type`='menu' and `recordType`='menu'
+
+
+----------2015-05-27 郭志远
+
+all_base_data.sq 增加zqc 基础表 

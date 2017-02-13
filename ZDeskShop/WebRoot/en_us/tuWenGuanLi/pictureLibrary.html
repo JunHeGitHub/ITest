@@ -1,0 +1,717 @@
+
+<!DOCTYPE  HTML>
+<html>
+	<head>
+		<title>图片库管理</title>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="../../css/bootstrap.min.css" type="text/css" />
+		<link rel="stylesheet" href="../../js/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css" type="text/css"></link>
+		<link rel="stylesheet" href="../../js/dataTables/css/jquery.dataTables.css" type="text/css" />
+		<!--[if lt IE 9]>
+		<script type="text/javascript" src="../../js/html5shiv.min.js"></script>
+		<![endif]-->
+		<link rel="stylesheet" href="../../js/dataTables/css/DT_bootstrap.css" type="text/css" />
+		<link rel="stylesheet" href="../../js/dataTables/css/dataTables.tableTools.min.css" type="text/css" />
+		<!-- ZDesk 通用css  -->
+		<link rel="stylesheet" href="../../css/zinglabs.css" type="text/css" />
+		<link rel="stylesheet" href="../../js/dataTables/css/font-awesome.css" />
+		<link rel="stylesheet" href="../../js/dataTables/css/dataTables.colVis.min.css" type="text/css" />
+		<link rel="stylesheet" href="../../js/ueditor/themes/default/css/ueditor.css" />
+		<script type="text/javascript" src="../../js/jquery.js"></script>
+		<script type="text/javascript" src="../../js/bootstrap.js"></script>
+		<script type="text/javascript" src="../../js/dataTables/js/jquery.dataTables.js"></script>
+		<script type="text/javascript" src="../../js/dataTables/js/dataTables.colReorder.js"></script>
+		<script type="text/javascript" src="../../js/dataTables/js/dataTables.colVis.js"></script>
+		<script type="text/javascript" src="../../js/dataTables/js/dataTables.tableTools.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="../../js/ueditor/ueditor.config.js"></script>
+		<script type="text/javascript" charset="utf-8" src="../../js/ueditor/ueditor.all.js"> </script>
+		<!--建议手动加在语言，避免在ie下有时因为加载语言失败导致编辑器加载失败-->
+		<!--这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文-->
+		<script type="text/javascript" charset="utf-8"
+			src="../../js/ueditor/lang/zh-cn/zh-cn.js"></script>
+
+		<script type="text/javascript" src="../../js/common_utils.js"></script>
+		<script type="text/javascript" src="../../js/appCommonUtil.js"></script>
+		<script type="text/javascript" src="../../js/appCommonCurdUtils_new.js"></script>
+		<script type="text/javascript" src="../../js/dataTables/js/DT_bootstrap.js"></script>
+		<script type="text/javascript" src="../../js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
+		<script type="text/javascript" src="../../js/bootstrap-datetimepicker/bootstrap-datetimepicker.zh-CN.js"></script>
+
+		<script type="text/javascript" src="../../js/log2.js"></script>
+		<!-- 遮罩产插件 -->
+		<script type="text/javascript" src="../../js/jquery.blockUI.js"></script>
+		<!-- 验证及提示组件 -->
+		<script type="text/javascript" src="../../js/jqueryValidate/jquery.validate.js"></script>
+		<style type="text/css">
+/*解决时间控件在模式对话框中的显示问题**/
+.error {
+	border-color: red !important;
+}
+
+.datetimepicker {
+	z-index: 99999 !important;
+}
+
+.bootstrap-datetimepicker-widget {
+	z-index: 99999 !important;
+}
+
+/*临时解决datatable单元格变形问题  为保证宽度不变，ie兼容模式显示效果为换行 其它浏览器省略号
+  需要通过只显示部分原文解决此问题
+*/
+.dataTable th,.dataTable td {
+	width: 120px;
+	max-width: 120px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+</style>
+
+		<script type="text/javascript">
+//遮罩属性		
+var maskContent = {
+		css : {
+			border : 'none',
+			padding : '15px',
+			backgroundColor : '#000',
+			'-webkit-border-radius' : '10px',
+			'-moz-border-radius' : '10px',
+			opacity : .5,
+			color : '#fff',
+			font : '14px'
+		},
+		message : '<img src="../../img/wait.gif" border="0" />  正在加载中，请稍候...'
+	};
+var yijieshouxinxiCurdStatus="false";
+var fullTableName="pictureLibrary";
+var rowSelTr=false;
+var myEditorImage;
+var d;
+var imageName;
+var uploadImageName;
+var imageUrl;
+var imagePhysicalPath;
+var genusGroup;
+var uploadPeople;
+$(document).ready(function() {
+	//加载分组数据
+	getGroup();
+   $.blockUI(maskContent);
+   $('#dataGrid').DataTable({
+        //滚动条
+        //scrollY: 500,
+        //scrollX: false,
+        //延迟加载
+         deferRender: true,
+         processing: false,  
+         //开启服务端分页
+         serverSide: true,
+         //服务器端分页ajax请求 可抽离出一个方法
+         ajax: function (data, callback, settings) {
+                var params=spellSelectParams("searchDataForm");
+			    params.tableName=fullTableName;
+			    params.columnValues.isDelete="0";
+			    params.columnValues.genusGroup=$("#genusGroup option:selected").text();
+			    params.equal={"isDelete":"isDelete","genusGroup":"genusGroup"};
+			    params.rows=settings._iDisplayLength;
+			    params.offset=settings._iDisplayStart;
+			    $.blockUI(maskContent);
+			    commonSelect(params,true,function(data){
+			          try{
+			              if(data&&data.data){
+			                  var pdata={};
+			                  var size=data.data.length;
+			                  for(var i=0;i<size;i++){
+			                    data.data[i].DT_RowNumber=i+1;
+			                  }
+			                  //数据
+			                  pdata.data=data.data;
+			                  //总条数
+			                  pdata.recordsTotal=data.total||0;
+			                   //过滤没有使用到总条数
+			                  pdata.recordsFiltered=data.total||0;
+			                  // 代表第几次画页面  如pdata.draw 不能删 如删掉不会翻页  
+			                  pdata.draw=settings.iDraw;
+			                  callback(pdata);
+			                }
+			          }catch(ex){
+			             logErr("查询失败 failed "+ex.name + ": " + ex.message);
+			          }  
+			          $.unblockUI();    
+			    });
+		 
+		},
+		pagingType: "full_numbers",
+        pageLength: 10,
+        bPaginate: true, //翻页功能
+        bLengthChange: true, //改变每页显示数据数量
+        bFilter: true, //过滤功能
+        bSort: true, //排序功能
+        bInfo: true,//页脚信息
+        bAutoWidth: false, //自动宽度
+        sPaginationType: "bootstrap",//分页样式
+        dom: 'Tlrtip',
+        columns: [
+              {title:"序号",data: "DT_RowNumber", defaultContent: '', width:'1%',orderable: false },
+              {title:"id" ,data: 'id',width:'6%', visible: false},
+              {
+	          		title:"图片预览",
+	          		width:'2%',
+	            	"sClass": "center",
+	            	"bSearchable": false,
+	            	"defaultContent": "",
+	          		"bStorable": false
+	          },
+              {title:"图片名称" ,data: 'imageName',width:'6%', visible: true},
+              {title:"图片url" ,data: 'imageUrl',width:'6%', visible: true},
+              {title:"所属组" ,data: 'genusGroup',width:'6%', visible: true},
+              {title:"上传人" ,data: 'uploadPeople',width:'6%', visible: true},
+              {title:"上传时间" ,data: 'uploadTime',width:'6%', visible: true}                    
+             ],
+        columnDefs: [ {
+            "searchable": false,
+            "orderable": false,
+            "targets": 0
+        } ],
+        
+        oLanguage: {
+             infoFiltered:function(){
+             
+             },
+            "sLengthMenu": "每页显示 _MENU_条",
+            "sZeroRecords": "没有找到符合条件的数据",
+            "sProcessing": "&lt;imgsrc=’./loading.gif’ /&gt;",
+            "sInfo": "当前第 _START_ - _END_ 条　共计 _TOTAL_ 条",
+            "sInfoEmpty": "没有记录",
+            "sInfoFiltered": "(从 _MAX_ 条记录中过滤)",
+            "sSearch": "搜索：",
+            "oPaginate": {
+                "sFirst": "首页",
+                "sPrevious": "前一页",
+                "sNext": "后一页",
+                "sLast": "尾页"
+            }
+        }, tableTools: {
+            fnRowSelected: function ( nodes ) {
+                   var index=nodes[0]._DT_RowIndex;	
+                   rowSelTr=index;
+	               var data = table.row(index).data();
+	               openEdit(data);
+             },
+            sRowSelect:'multi',
+            
+            aButtons: []
+        },
+		"fnCreatedRow" : function(nRow,aData,iDataIndex){
+			$('td:eq(1)',nRow).html("<img src='"+aData.imageUrl+"' width='70px' />"); 
+		}
+    });
+    myEditorImage= UE.getEditor("myEditorImage");
+		        	 myEditorImage.ready(function(){
+			        //myEditorImage.setDisabled();             
+			        myEditorImage.hide();//隐藏UE框体              
+			        myEditorImage.addListener('beforeInsertImage',function(t, arg){  
+				        if(arg.length!=1){
+				        zinglabs.alert('请上传一张图片');
+				        return;
+				        }
+				        var json={};
+				        var imgsrc = arg[0].src; 
+				        /*var src = imgsrc.substr(imgsrc.indexOf("jsp"), imgsrc.length);*/ 
+				        imageName=imgsrc.substr(imgsrc.indexOf("image")+21, imgsrc.length);
+				        uploadImageName=imgsrc.substr(imgsrc.indexOf("image")+15, imgsrc.length);
+				        imageUrl=imgsrc.substr(imgsrc.indexOf("/"+PRJ_PATH), imgsrc.length);
+				        imagePhysicalPath=imgsrc;
+				        genusGroup="未分组";
+				        //uploadPeople=getUserInfo().loginName;
+				        uploadPeople="admin";
+				        var s=fomateDate("YYYY-MM-dd hh:mm:ss",new Date());
+				        json.imageName=imageName;
+				        json.uploadImageName=uploadImageName;
+				        json.imageUrl=imageUrl;
+				        json.imagePhysicalPath=imagePhysicalPath;
+				        json.genusGroup=genusGroup;
+				        json.uploadPeople=uploadPeople;
+				        json.uploadTime=s;
+				        var params1={};
+				        params1.columnValues=json;
+			    		params1.tableName="pictureLibrary";
+			   		 	params1.primarykeyType="uuid" ;
+			   		 	commonInsertOrUpdate(params1,true,function(data){
+						    if(data.success){
+						     zinglabs.alert("添加成功");
+						     refresh();
+						    }
+			    		});
+		         	});
+		          }); 
+   
+    
+    //自定义列插件绑定
+    //绑定事件 on
+    var table= $('#dataGrid').DataTable();
+    
+     
+    $.unblockUI();
+
+});
+
+function doSearch(){
+   var tableTmp=$("#dataGrid").DataTable();
+   tableTmp.draw(true);
+};
+
+
+/***
+ * @TODO
+ * 通用，调试完成后分文件，不要加Velocity代码
+ */
+
+function doDelete(){
+	
+    var params = {};
+		params.tableName="pictureLibrary";
+		params.columnValues={"isDelete":"1","id":$("#id").val()};
+		commonUpdate(params,false,function(data){
+			if(data && data.success){
+				doSearch();
+				alert("数据删除成功！");
+			}else{
+				alert("数据删除失败！");
+			}
+	    });
+};
+
+/***
+ *
+ * @desc 指定panel赋值 和清空
+ * @todo 只测试了主要类型 , checkbox、radio没测试
+ *
+ * pVars.id panel id
+ * pVars.data 赋值数据
+ * pVars.isClear 字符串 "true" 清空此panel
+ *
+ *
+ * @TODO
+ * 通用，调试完成后分文件，不要加Velocity代码
+ *
+ */
+function setPanelVal(pVars){
+    $('#'+pVars.id+' :input').each(function(index,obj) {
+        var type = obj.type;
+        var tag = obj.tagName.toLowerCase();
+        if(("isClear" in pVars) && pVars.isClear=='true'){
+            if (type == 'text' || type == 'password' || tag == 'textarea' || type=='hidden')
+                $(obj).val('');
+            else if (type == 'checkbox' || type == 'radio')
+                $(obj).attr('checked',false);
+            else if (tag == 'select')
+                $(obj).attr('selectedIndex',-1);
+        }else{
+            var vTmp=pVars.data[this.name];
+            if(BIsNullVal(vTmp)){
+                vTmp='';
+            }
+            if (type == 'text' || type == 'password'||type=='hidden' || tag == 'textarea')
+                $(obj).val(vTmp);
+            else if (type == 'checkbox' || type == 'radio'){
+                $(obj).attr('checked',vTmp==''?false:vTmp);
+            }
+            else if (tag == 'select'){
+                $(obj).attr('selectedIndex',vTmp==''?-1:vTmp);
+            }
+        }
+    });
+}
+//每页显示条数
+function setPageNum(obj){
+    var table=$('#dataGrid').DataTable();
+    table.page.len(obj.value).draw();
+}
+//刷新
+function refresh(){
+    $("#searchDataForm")[0].reset();
+    doSearch();
+}
+
+
+
+
+/***
+ * @TODO
+ * 通用，调试完成后分文件，不要加Velocity代码
+ */
+function BIsNullVal(value) {
+    return typeof(value)=="undefined" || value==null ||  (typeof(value)=='string' &&(value=="undefined" || value=='' || value=='null' )) ||  (typeof(value)=='boolean' &&value==false  );
+};
+
+/***
+ * 必须处理的严重错误，测试阶段可以alert 生产环境特殊标识写入日志
+ * 发现就要分析原因
+ * @param err
+ */
+function logErr(errMsg) {
+    log.debug(errMsg);
+//    alert(errMsg);
+//    PT().log.error(errMsg);
+};
+
+
+//上传图片
+function uploadImage(){
+  $("#yijieshouxinxiEdit").hide(); 
+  alert("进行上传图片操作");
+  
+}
+
+//打开详情表单
+function openEdit(data){
+   $("#yijieshouxinxiEdit").show();
+  
+   yijieshouxinxiCurdStatus="edit";
+   var pvars={"id":"yijieshouxinxiEdit","data":data};
+   setPanelVal(pvars);
+ 
+}
+
+//显示错误信息
+function showError(mgs){
+  //$("#errorDiv").show();
+  //  $("#successDiv").hide();
+  //  $("#errorDiv").html(mgs);
+  //  setTimeout(function(){
+  //    $("#errorDiv").hide();
+  // },3000);
+    zinglabs.alert(mgs);
+
+}
+//显示成功信息
+function showSuccess(mgs){
+  //  $("#errorDiv").hide();
+  // $("#successDiv").show();
+  //  $("#successDiv").html(mgs);
+ //  setTimeout(function(){
+  //     $("#successDiv").hide();
+ //  },3000);
+ zinglabs.alert(mgs);
+}
+//获取组信息
+function getGroup(){
+	var params = {};
+		params.tableName="pictureGroup";
+	
+	commonSelect(params,false,function(data){
+		if(data && data.success){
+			$("#genusGroup").empty();
+			$("#genusGroup2").empty();
+			$("#genusGroup").append("<option value=''>未分组</option>");
+			$("#genusGroup2").append("<option value=''>未分组</option>");
+			for(var o in data.data){
+				$("#genusGroup").append("<option value='"+data.data[o].id+"'>"+data.data[o].groupValue+"</option>");
+				$("#genusGroup2").append("<option value='"+data.data[o].id+"'>"+data.data[o].groupValue+"</option>");
+			}
+
+		}else{
+			alert(data.mgs);
+		}			
+	});
+}
+//添加组
+function addGroup(){
+	$("#divForAddGroup").slideDown(300);
+	$("#btn_addGroup").hide(200);
+}
+//提交组数据
+function comintGroup(){
+	var params = {};
+		params.tableName="pictureGroup";
+		params.columnValues={"groupKey":"","groupValue":$("#groupName").val(),"createPeople":"admin","createTime":fomateDate("YYYY-MM-dd hh:mm:ss",new Date())};
+		commonInsertOrUpdate(params,false,function(data){
+			if(data && data.success){
+				getGroup();
+				cancelAddGroup();
+				alert("创建分组成功！");
+			}else{
+				alert(data.mgs);
+			}
+	    });
+	
+}
+//取消创建分组
+function cancelAddGroup(){
+	$("#divForAddGroup").hide(300);
+	$("#btn_addGroup").show(200);
+}
+//删除分组
+function deleteGroup(){
+	var groupID=$("#genusGroup option:selected").val();
+	if(groupID==undefined || groupID==""){
+		alert("未分组选项不允许删除！");
+		return;
+	}
+	var params = {};
+		params.tableName="pictureGroup";
+		params.columnValues=groupID;
+		commonDelete (params,false,function(data){
+			if(data && data.success){
+				getGroup();
+				alert("删除分组成功！");
+			}else{
+				alert("删除分组失败！");
+			}
+    	});
+	
+}
+function upImage(){
+			d = myEditorImage.getDialog("insertimage");     
+		    d.render();
+			d.open(); 
+		} 
+//移动分组
+function moveGroup(){
+	var table = $("#dataGrid").DataTable();
+	var tt = new $.fn.dataTable.TableTools(table);
+	var selectData = tt.fnGetSelectedData();
+	if (selectData.length == 0 || selectData == null || selectData == undefined) {
+		alert("请选中要移动分组的数据！");
+		return;
+	}
+	if (selectData.length > 1) {
+		alert("暂不支持多条数据进行移动分组操作！");
+		return;
+	}
+
+	$("#btn_moveGroup").hide(150);
+	$("#btn_comint2").show(150);
+	$("#btn_cancelMoveGroup").show(150);
+	$("#genusGroup2").show(150);
+}
+//确定分组
+function updateGroup2(){	
+	var params = {};
+		params.tableName="pictureLibrary";
+		params.columnValues={"genusGroup":$("#genusGroup2 option:selected").text(),"id":$("#id").val()};
+		commonUpdate(params,false,function(data){
+			if(data && data.success){
+				getGroup();
+				refresh();
+				hideMoveGroup();
+				alert("移动分组成功！");
+			}else{
+				alert(data.mgs);
+			}
+	    });
+}
+//隐藏移动分组
+function hideMoveGroup(){
+	$("#genusGroup2").hide(150);
+	$("#btn_cancelMoveGroup").hide(150);
+	
+	$("#btn_comint2").hide(150);
+	$("#btn_moveGroup").show(150);
+}
+    </script>
+	</head>
+	<body>
+
+		<!-- 容器 -->
+		<div class="z_container">
+			<!-- datatable部分 包含筛选项 -->
+			<div class="head">
+				<!-- dataTable筛选项部分 -->
+				<div class="widget-box collapsible">
+					<div class="widget-title">
+						<span class="icon"> <i class="icon-search"></i> </span>
+						<h5>
+							配置项搜索
+						</h5>
+						<div class="buttons">
+							<button class="btn btn-mini" onclick="$('#collapseOne').slideToggle(200);">
+								<i class="icon-retweet"></i>展开/关闭
+							</button>
+						</div>
+					</div>
+					<div class="collapse in" id="collapseOne">
+							<form action="" id="searchDataForm">
+								<div style="width:100%;">
+									<table style="margin-top:20px;">
+										<tr>
+											<td>&nbsp;&nbsp;所属组:</td>
+											<td>
+												<select id="genusGroup" name="genusGroup" style="margin-bottom:0px;">
+													
+												</select>
+											</td>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												<button type="button" id="btn_search" class="btn" onclick="doSearch()">
+													<i class="icon-search"></i> 搜索
+												</button>
+											</td>
+											<td>
+												<button type="button" id="btn_addGroup" class="btn" onclick="addGroup()">
+													<i class="icon-plus"></i> 添加新分组
+												</button>
+											</td>
+											<td>
+												<button type="button" id="btn_deleteGroup" class="btn" onclick="deleteGroup()">
+													<i class="icon-minus"></i> 删除分组
+												</button>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</form>
+								<div id="divForAddGroup" style="width:100%;margin-bottom:20px;display:none;">
+									<table>
+										<tr>	
+											<td>&nbsp;&nbsp;分组名:</td>										
+											<td>
+												<input type="text" id="groupName" name="groupName" style="margin-bottom:0px;"/>
+											</td>
+											<td>&nbsp;</td>
+											<td>	
+												&nbsp;&nbsp;&nbsp;&nbsp;											
+												<button type="button" id="btn_comintGroup" class="btn" onclick="comintGroup()">
+													提 交
+												</button>
+												<button type="button" id="btn_cancelAddGroup" class="btn" onclick="cancelAddGroup()">
+													取 消
+												</button>
+											</td>
+										</tr>
+									</table>
+								</div>
+					</div>
+				</div>
+				<!-- dataTable 部分 -->
+				<div class="widget-box">
+					<div class="widget-title">
+						<span class="icon"> <i class="icon-th"></i> </span>
+						<h5>
+							信息
+						</h5>
+						<!--TODO 里面可加一些按钮 -->
+						<div class="buttons">
+							<a class="btn btn-mini" onclick="refresh()" href="javascript:;;"><i class="icon-refresh"></i> 刷 新</a>
+						</div>
+					</div>
+					<div class="widget-content nopadding">
+						<!-- 提示栏 -->
+						<div class="alert alert-error" id="errorDiv" style="display: none;">
+						</div>
+						<div class="alert alert-success" id="successDiv" style="display: none;">
+
+						</div>
+						<table id="dataGrid" class="table table-striped table-bordered nowrap">
+
+						</table>
+
+					</div>
+
+				</div>
+			</div>
+			<!-- 表单部分 -->
+			<div class="foot ">
+				<div class="widget-box " style="margin-top: 0px">
+					<!-- 功能栏 -->
+					<div class="navbar-inner" style="padding-top: 10px"><div id="myEditorImage" style="display: none"></div>
+						<button class="btn btn-primary" onclick="upImage();">
+							上传图片
+						</button>
+						<select id="genusGroup2" name="genusGroup2" style="margin-bottom:0px;display:none">
+													
+						</select>
+						&nbsp;
+						<button id="btn_moveGroup" class="btn btn-primary" onclick="moveGroup()">
+							移动分组
+						</button>
+						<button id="btn_comint2" class="btn btn-primary" onclick="updateGroup2()" style="display:none;">
+							提 交
+						</button>
+						<button type="button" id="btn_cancelMoveGroup" class="btn" onclick="hideMoveGroup()" style="display:none">
+							取 消
+						</button>
+						&nbsp;
+						<button class="btn btn-danger" onclick="doDelete()">
+							删 除
+						</button>						
+					</div>
+				<div id="yijieshouxinxiEdit" class="widget-content container" style="display: none">
+					<form id="yijieshouxinxiEditForm">
+						<input type="hidden" id="id" name="id">
+						<div class="row" style="margin-left: -200px">
+									<div class="span4">
+										<div class="form-horizontal">
+											<!-- 日期 布局会遮住后面选择日期的按钮  临时同减小input宽度解决 -->
+											<div class="control-group">
+												<label class="control-label" for="imageName">
+													图片名称:
+												</label>
+												<div class="controls">
+													<input type="text" id="imageName" name="imageName" data-sType="like">
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="span4 offset1">
+										<div class="form-horizontal">
+											<div class="control-group">
+												<label class="control-label" for="imageUrl">
+													图片url:
+												</label>
+												<div class="controls">
+													<input type="text" id="imageUrl" name="imageUrl" data-sType="like">
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="span4 offset1">
+										<div class="form-horizontal">
+											<div class="control-group">
+												<label class="control-label" for="group">
+													所属组:
+												</label>
+												<div class="controls">
+													<input type="text" id="genusGroup" name="genusGroup" data-sType="like">
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row" style="margin-left: -200px">
+									<div class="span4">
+										<div class="form-horizontal">
+											<div class="control-group">
+												<label class="control-label" for="uploadPeople">
+													上传人:
+												</label>
+												<div class="controls">
+													<input type="text" id="uploadPeople" name="uploadPeople" data-sType="like">	
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="span4 offset1">
+										<div class="form-horizontal">
+											<div class="control-group">
+												<label class="control-label" for="uploadTime">
+													上传时间:
+												</label>
+												<div class="controls">
+													<div class="input-append date form_datetime" data-date-language="zh-CN" data-picker-position="bottom-left" format-type="yyyy-MM-dd hh:mm:ss" data-link-field="msgEndTimetimeend" data-provide="datetimepicker-inline">
+														<input size="16" style="width: 179px" type="text" id="uploadTime" name="uploadTime" data-sType="lessThan" readonly>
+														<span class="add-on"><i class="icon-th"></i> </span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+					</form>
+				</div>
+
+			</div>
+		</div>
+</html>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="announceSqlSession" class="com.zinglabs.base.core.springSupport.DbidSqlsession" singleton="false">
+		<property name="namespance" value="com.zinglabs.apps.BOC_announcement" ></property>
+		<property name="dbid" value="ZKM"></property>
+	</bean>
+	
+	
+	<bean id="announcementService"  name="AnnouncementService"   class="com.zinglabs.apps.BOC_announcement.AnnouncementService"></bean>
+
+</beans>

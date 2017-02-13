@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<!-- 数据库表test ibasis SqlSession 操作 -->
+	<bean id="apptest_SqlSession" class="com.zinglabs.base.core.springSupport.DbidSqlsession" singleton="false">
+		<!--mybaits sqlMapper 命名空间-->
+		<property name="namespance" value="com.zinglabs.apps.apptest"></property>
+		<!-- 数据连接池id -->
+		<property name="dbid" value="ZKM"></property>
+	</bean>
+	<!-- 注册service  在action 中通过getBean获取  -->
+	<bean id="testService" name="testService" class="com.zinglabs.apps.apptest.TestService">
+	</bean>
+</beans>

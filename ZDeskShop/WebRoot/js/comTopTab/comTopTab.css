@@ -1,0 +1,109 @@
+.com_css_topTab_leftButton{
+	width:16px;
+	float:left;
+	height:30px;
+	padding-top: 0px;
+	margin-right: -3px
+}
+
+.com_css_topTab_leftButton > a{
+	vertical-align: bottom;
+}
+
+.com_css_topTab_rightButton{
+	width:16px;
+	height:30px;
+	float:right;
+	padding-top: 0px;
+	margin-left: -3px;
+}
+
+.com_css_topTab_rightButton > a{
+	vertical-align: bottom;
+}
+
+.com_css_tomTab_tabBar{
+	display: block;
+	height: 34px;
+	padding: 0 12px 0 0;
+	line-height: 36px;
+	background-color: #f5f5f5;
+}
+
+.com_css_topTab{
+	margin: 0 ;
+	white-space:nowrap;
+ 	overflow:hidden;
+ 	text-overflow:ellipsis;
+ 	display:block;
+}
+
+.com_css_topTab ul{
+	position:relative;
+	margin:0 0 2px 0;
+	padding:0 0 0 0;
+	height:32px;
+ 	after:content:"..";
+}
+
+.com_css_topTab ul > li{
+	height:32px;
+	float:left;
+	display: inline;
+	line-height:30px;
+	cursor: pointer;
+}
+
+.com_css_topTab ul > li > a{
+	float:left;
+	display: inline;
+	cursor: pointer;
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+
+.com_css_topTab ul > li > a > span{
+	white-space:nowrap;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	float:left;
+	after:content:"..";
+	z-index: 99;
+}
+.com_css_topTab ul > li > a > i{
+	float:left;
+	margin: 0px 0 0 0px;
+	z-index: 99;
+}
+
+.com_css_topTab_content{
+	height: 100%;
+	width:100%;
+	position:relative;
+	white-space:nowrap;
+	overflow:hidden;
+	text-overflow:ellipsis;
+}
+
+.com_css_topTab_content iframe{
+	margin 0 0 0 0;
+	padding: 0 0 0 0;
+	height: 100%;
+	width:100%;
+	white-space:nowrap;
+	text-overflow:ellipsis;
+	border: 0 0 0 0;
+	border-image-source: initial;
+	border-image-slice: initial;
+	border-image-width: initial;
+	border-image-outset: initial;
+	border-image-repeat: initial;
+}
+
+.com_css_topTab_content div{
+	height: 100%;
+	width:100%;
+	white-space:nowrap;
+	text-overflow:ellipsis;
+	overflow: auto;
+}

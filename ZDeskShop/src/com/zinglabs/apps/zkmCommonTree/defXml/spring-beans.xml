@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<!-- 数据库表test ibasis SqlSession 操作 -->
+	<bean id="zkmCommonTreeSqlSession" class="com.zinglabs.base.core.springSupport.DbidSqlsession" singleton="false">
+		<property name="namespance" value="com.zinglabs.apps.zkmCommonTree"></property>
+		<property name="dbid" value="ZDesk"></property>
+	</bean>
+	<bean id="zkmCommonTreeService" name="zkmCommonTreeService" class="com.zinglabs.apps.zkmCommonTree.ZkmTreeCommonService" >
+	</bean>
+	<bean id="zkmSimpleCommonTreeFilter" name="zkmSimpleCommonTreeFilter" class="com.zinglabs.apps.zkmCommonTree.commonTreeFilter.ZkmSimpleCommonTreeFilter" >
+	</bean>
+	<bean id="zkmSimpleCommonOrgTreeFilter" name="zkmSimpleCommonOrgTreeFilter" class="com.zinglabs.apps.zkmCommonTree.commonTreeFilter.ZkmSimpleCommonOrgTreeFilter" >
+	</bean>
+	<bean id="permissonFilter" name="permissonFilter" class="com.zinglabs.apps.zkmCommonTree.commonTreeFilter.PermissonFilter" >
+	</bean>
+	<bean id="treeNodeSelected" name="treeNodeSelected" class="com.zinglabs.apps.zkmCommonTree.commonTreeFilter.TreeNodeSelected" >
+	</bean>
+	<bean id="TreeSkillGroupInfo" name="TreeSkillGroupInfo" class="com.zinglabs.apps.zkmCommonTree.userMapperOrgTreeFilter.TreeSkillGroupInfo" >
+	</bean>
+	
+	<!-- 用户组织树过滤 -->
+	
+	<bean id="iconFileter" name="iconFileter" class="com.zinglabs.apps.zkmCommonTree.userMapperOrgTreeFilter.IconFileterImpl">
+	</bean>
+	
+	<!-- 复核过滤 -->
+	<bean id="MessageQuanxianFilter" name="MessageQuanxianFilter" class="com.zinglabs.apps.zkmCommonTree.userMapperOrgTreeFilter.MessageQuanxianFilter" >
+	</bean>
+	
+</beans>

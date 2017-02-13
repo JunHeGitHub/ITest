@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	
+	<bean id="zqcQuerySqlsession" class="com.zinglabs.base.core.springSupport.DbidSqlsession" singleton="false">
+		<property name="dbid" value="ZKM"></property>
+	</bean>
+	<bean id="zqcQuery" name="zqcQuery" class="com.zinglabs.apps.ZQC.ZqcQueryService"></bean>
+</beans>

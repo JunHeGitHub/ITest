@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<!-- 数据库表test ibasis SqlSession 操作 -->
+	<bean id="treeDataMapperSqlSession" class="com.zinglabs.base.core.springSupport.DbidSqlsession" singleton="false">
+		<property name="namespance" value="com.zinglabs.apps.treeDataMapper"></property>
+		<property name="dbid" value="ZKM"></property>
+	</bean>
+	<bean id="treeDataMapperService" name="treeDataMapperService" class="com.zinglabs.apps.treeDataMapper.service.TreeDataMapperService"></bean>
+	<bean id="treeDataFilterImpl" name="treeDataFilterImpl" class="com.zinglabs.apps.treeDataMapper.treeDataFilter.impl.TreeDataFilterImpl"/>
+</beans>

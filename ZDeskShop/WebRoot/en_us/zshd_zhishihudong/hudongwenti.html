@@ -1,0 +1,1740 @@
+<!DOCTYPE  HTML>
+<html lang="en">
+	<head>
+		<title>互动问题</title>
+
+		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3" />
+		<meta http-equiv="description" content="this is my page" />
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="../../css/bootstrap.css" type="text/css"></link>
+		<link rel="stylesheet" href="../../js/dataTables/css/jquery.dataTables.css" type="text/css"></link>
+
+		<!-- 工具 
+		 <link rel="stylesheet" href="../../demo/unicorn.main.css" type="text/css">-->
+		<link rel="stylesheet"href="../../js/dataTables/css/dataTables.tableTools.min.css"type="text/css"></link>
+		<!-- bootstrap 与 datatable结合 -->
+		<link rel="stylesheet" href="../../js/comWindow/window.css" type="text/css"></link>
+		<link rel="stylesheet" href="../../js/dataTables/css/DT_bootstrap.css" type="text/css"></link>
+		<link rel="stylesheet" href="../../js/comWindow/jquery-ui.min.css" type="text/css"></link>
+		<link rel="stylesheet" href="../../css/bootstrap-responsive.min.css" type="text/css"></link>
+		<link rel="stylesheet" href="../../css/bootstrap.min.css" type="text/css"></link>
+		<link rel="stylesheet" href="../../js/dataTables/css/font-awesome.css"></link>
+		<link rel="stylesheet" href="../../js/dataTables/css/Z_DataTalbeCheckBox.css"></link>
+		<link rel="stylesheet" href="../../demo/unicorn.main.css" type="text/css"></link>
+		<link rel="stylesheet" href="../../js/dataTables/css/dataTables.colVis.min.css" type="text/css"></link>
+		<link rel="stylesheet" href="../../js/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" type="text/css"></link>
+		<link rel="stylesheet" href="../../css/zinglabs.css" type="text/css"></link>
+		<script type="text/javascript" src="../../js/jquery.js"></script>
+		<script type="text/javascript" src="../../js/bootstrap.js"></script>
+		<script type="text/javascript" src="../../js/common_utils.js"></script>
+		<script type="text/javascript" src="../../js/dataTables/js/jquery.dataTables.js"></script>
+		<script type="text/javascript" src="../../js/dataTables/js/dataTables.colReorder.js"></script>
+		<script type="text/javascript" src="../../js/dataTables/js/dataTables.colVis.js"></script>
+		<script type="text/javascript" src="../../js/dataTables/js/dataTables.tableTools.min.js"></script>
+		<script type="text/javascript" src="../../js/dataTables/js/DT_bootstrap.js"></script>
+		<script type="text/javascript" src="../../js/golbal_params.js"></script>
+		<script type="text/javascript" src="../../js/appCommonUtil.js"></script>
+		<script type="text/javascript" src="../../js/html5.js"></script>
+		<script type="text/javascript" src="../../js/appCommonCurdUtils_new.js"></script>
+		<script type="text/javascript" src="../../js/comWindow/window.js"></script>
+		<script type="text/javascript" src="../../js/comWindow/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="../../js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="../../js/bootstrap-datetimepicker/bootstrap-datetimepicker.js"></script>
+		<style type="text/css">
+	.orderDiv {
+	padding-left: 2px;
+	border: 1px solid #33AECC;
+	border-collapse: separate;
+	border-left-width: 1px;
+	border-right-width: 1px;
+	border-right-color: #33AECC;
+	cellspacing: 0px;
+	cellpadding: 0px;
+	min-height: 100px;
+	padding-bottom: 1px;
+	margin-left: 0px;
+    *zoom: 1;
+}
+
+		</style>
+
+		<script type="text/javascript">
+		
+
+		/**
+		 * 此变量用于获取对应问题的信息
+		 */
+		//var GOLBAL_PARAM={};
+		//GOLBAL_PARAM["i18nPrompt"]=getI18nPromptData();
+				
+		
+		$(document).ready(function() {
+		//orgWin1= $("#orgWin1").window({
+	  	//	 title:"我要提问",
+	      //   width:"880",
+	     //    height:"397",
+	     //    Icon:"icon-hand-right",
+	     //    isShow:false
+          //  });
+		    text=getTextBymodleId();
+			name=getUserInfo().name;
+			//data  上方查询结果表的赋值数据
+			var data=doSearch();
+			//alert(data.slice(0,2));
+			//var da=data.slice(0,2);
+			$('#promptManager').dataTable({
+				data:data,//数据赋值
+			    dom: 'TRlfrtip',
+				
+				bProcessing : true, //是否启用正在加载中...
+		        bPaginate: true, //翻页功能
+				bLengthChange: true, //改变每页显示数据数量
+				bFilter: true, //过滤功能
+				bSort: true, //排序功能
+				bInfo: true,//页脚信息
+				bAutoWidth: true, //自动宽度
+				sPaginationType: "bootstrap",//分页样式
+			    scrollCollapse: false,
+				scrollX:"100%",
+				"sScrollX":"100%",
+				'sScrollY':'200px',
+		       // "aaSorting":[[4,'desc']],
+				//"bScrollCollapse": true,
+				columns: [
+					{ title:"<center><input type='checkbox' id='selectall' onclick='toggleChecks(this);' ></input></center>",data: null, defaultContent: '', orderable: false,width:10 },
+					/**title 表头  data json 对应key **/
+			        {"title":"标题" ,data: 'title'},
+			        {"title":"业务分类",data:'classification'},
+			        {"title":"用户姓名：",data:'userName'},
+			        {"title":"点击数",data: 'cilckNum'},
+			        {"title":"关注数",data: 'attentionNum'}
+		        ],
+		        oLanguage: {
+					"sLengthMenu": "每页显示 _MENU_条",
+					"sZeroRecords": "没有找到符合条件的数据",
+					"sProcessing": "数据正在加载，请稍后...",
+					"sInfo": "当前第 _START_ - _END_ 条　共计 _TOTAL_ 条",
+					"sInfoEmpty": "没有记录",
+					"sInfoFiltered": "(从 _MAX_ 条记录中过滤)",
+					"sSearch": "搜索：",
+					"oPaginate": {
+					"sFirst": "首页",
+					"sPrevious": "前一页",
+					"sNext": "后一页",
+					"sLast": "尾页"
+				    }
+		        }, 
+		        tableTools: {
+		            //single 单选 multi 多选  os 可以按ctrl 选择		            
+		            //回调 单选
+		            fnRowSelected: function ( nodes ) {
+		               var index=nodes[0]._DT_RowIndex;	
+		               da = table.row(index).data();
+		               $("#btn_shou").hide();
+					   $("#btn_chakan").show();
+					   $("#addAndUpdate").hide();
+					   $("#btn_querenhuifu").hide();
+					   $("#btn_huifuanniu").hide();
+					   $("#btn_renling").hide();
+					  //scroll2data("addAndUpdate");
+		             
+		            },
+		            sRowSelect:'multi',
+		            "aButtons": []
+		        }
+		    });
+		    
+			//绑定事件 on
+		    var table= $('#promptManager').DataTable();
+		    
+		    $('#promptManager tbody').dblclick('click',function(e){
+		    	//scroll2data("addAndUpdate");
+		    	/*
+		    	var index = $(this).context._DT_RowIndex; //行号
+		    	var data = table.row(index).data();
+		    	$("#i18nPromptImport").hide();
+		        $("#addLangugeModal").hide();
+		        $("#promptKey").attr("readonly",true);
+		        $("#addAndUpdate").slideDown(200);
+		        $("#btn_add").show();
+				$("#btn_submit").show();
+				$("#btn_shou").show();
+		    	initForm(data);
+				*/
+			});
+			$('#promptManager_filter').hide();
+			$('#promptManager_length').hide();
+		    //自定义列插件绑定
+		    var colvis = new $.fn.dataTable.ColVis(table,{ buttonText: '自定义显示列',exclude: [ 0 ,1] });
+		    $(colvis.button()).insertBefore('#cols');
+			});
+			
+			//最新列表
+		    $(document).ready(function(){
+		    var data=doSearch();
+		    var newdata=data.slice(0,200);
+		    $('#new').dataTable({
+				data:newdata,//数据赋值
+		        bPaginate: false, //翻页功能
+				bLengthChange: false, //改变每页显示数据数量
+				bFilter: false, //过滤功能
+				bSort: true, //排序功能
+				bInfo: false,//页脚信息
+			    scrollCollapse: false,
+				//scrollX:"45px",
+				//"sScrollX":"45px",
+				//'sScrollY':'380px',
+		        "aaSorting":[[1,'desc']],
+				//"bScrollCollapse": true,
+				columns: [
+					//{ title:"<center><input type='checkbox' id='selectall' onclick='toggleChecks(this);' ></input></center>",data: null, defaultContent: '', orderable: false,width:10 },
+					/**title 表头  data json 对应key **/
+			        {"title":"标题" ,data: 'title',width:'100%'},
+			        {"title":"建议时间",data: 'suggestTime',"bVisible": false}
+		        ]
+		        });
+		        });
+		        //最热列表
+		    $(document).ready(function(){
+		    var data=doSearch();
+		    var numdata=data.slice(0,10);
+		    $('#num').dataTable({
+				data:numdata,//数据赋值
+		        bPaginate: false, //翻页功能
+				bLengthChange: false, //改变每页显示数据数量
+				bFilter: false, //过滤功能
+				bSort: true, //排序功能
+				bInfo: false,//页脚信息
+			    scrollCollapse: false,
+				//scrollX:"45px",
+				//"sScrollX":"45px",
+				//'sScrollY':'380px',
+		        "aaSorting":[[1,'desc']],
+				//"bScrollCollapse": true,
+				columns: [
+					//{ title:"<center><input type='checkbox' id='selectall' onclick='toggleChecks(this);' ></input></center>",data: null, defaultContent: '', orderable: false,width:10 },
+					/**title 表头  data json 对应key **/
+			        {"title":"标题" ,data: 'title',width:'100%'},
+			        {"title":"关注数",data: 'attentionNum',"bVisible": false}
+		        ]
+		        });
+		        });
+		        //积分排行
+		    $(document).ready(function(){
+		    var data=doIntegraNum();
+		    var numdata=data.slice(0,10);
+		    $('#jifenpaihang').dataTable({
+				data:numdata,//数据赋值
+		        bPaginate: false, //翻页功能
+				bLengthChange: false, //改变每页显示数据数量
+				bFilter: false, //过滤功能
+				bSort: false, //排序功能
+				bInfo: false,//页脚信息
+			    scrollCollapse: false,
+				//scrollX:"45px",
+				//"sScrollX":"45px",
+				//'sScrollY':'380px',
+		        //"aaSorting":[[1,'desc']],
+				//"bScrollCollapse": true,
+				columns: [
+					//{ title:"<center><input type='checkbox' id='selectall' onclick='toggleChecks(this);' ></input></center>",data: null, defaultContent: '', orderable: false,width:10 },
+					/**title 表头  data json 对应key **/
+			        {"title":"用户名" ,data: 'userName',width:'50%'},
+			        {"title":"积分数",data: 'number',width:'50%'}
+		        ]
+		        });
+		        });
+			//查看选中的内容
+			function look(nodes){
+		                if(da.title.length>10){
+		                	da.title=allTitle;
+		                }
+		                cilck();
+		                var a=window.top.GOLBAL_PARAM["userAllPermisson"].base;
+						for(var i=0;i<a.length;i++){
+							if((a[i].name=="知识二级复核标识"||a[i].name=="知识库管理员标识")&&da.dealSchedule=="内部处理中"){
+								$("#cuiBanTimeB").datetimepicker({format: "yyyy-mm-dd HH:mm:ss",autoclose: true,todayBtn: true});
+	    						$("#postTimeB").datetimepicker({format: "yyyy-mm-dd HH:mm:ss",autoclose: true,todayBtn: true});
+	    						$("#replayTimeB").datetimepicker({format: "yyyy-mm-dd HH:mm:ss",autoclose: true,todayBtn: true});
+	    						comType('chulijindu1');
+		                    	comTypeZhuanfa('zhuanfa1');
+		                    	comTypeBumen('bumen1');
+		                    	comTypeJishihuifu('jishihuifu1');
+		                    	comTypeCuibanfangshi('cuibanfangshi1');
+		                    	$("#huifubiaodan").show();
+		                    	$("#wenti").show();
+		                    	$("#text_zhuanban").show();
+		                    	$("#btn_zhuanban").show();
+		                    	$("#huifu").hide();
+		                    	$("#kaishihuifu").hide();
+		                    	da.title=searchAllTitle();
+		   						initForm(da);
+							}
+						}
+		               if(da.dealSchedule=="内部处理中" && da.principal==getUserInfo().loginName){
+		                $("#cuiBanTimeB").datetimepicker({format: "yyyy-mm-dd HH:mm:ss",autoclose: true,todayBtn: true});
+	    				$("#postTimeB").datetimepicker({format: "yyyy-mm-dd HH:mm:ss",autoclose: true,todayBtn: true});
+	    				$("#replayTimeB").datetimepicker({format: "yyyy-mm-dd HH:mm:ss",autoclose: true,todayBtn: true});
+		                    comType('chulijindu1');
+		                    comTypeZhuanfa('zhuanfa1');
+		                    comTypeBumen('bumen1');
+		                    comTypeJishihuifu('jishihuifu1');
+		                    comTypeCuibanfangshi('cuibanfangshi1');
+		  					$("#huifubiaodan").show();
+		  					$("#btn_querenhuifu").show();
+		  					$("#huifu").hide();
+		   					$("#wenti").show();
+		   					$("#kaishihuifu").hide();
+		   					$("#text_zhuanban").hide();
+		                    $("#btn_zhuanban").hide();
+		   					da.title=searchAllTitle();
+		   					initForm(da);
+					}else if(da.dealSchedule==""||da.dealSchedule==null){
+					$("#cuiBanTimeA").datetimepicker({format: "yyyy-mm-dd HH:mm:ss",autoclose: true,todayBtn: true});
+					$("#postTimeA").datetimepicker({format: "yyyy-mm-dd HH:mm:ss",autoclose: true,todayBtn: true});
+	    			$("#replayTimeA").datetimepicker({format: "yyyy-mm-dd HH:mm:ss",autoclose: true,todayBtn: true});
+							comType('chulijindu2');
+							comTypeZhuanfa('zhuanfa');
+							comTypeBumen('bumen');
+							comTypeJishihuifu('jishihuifu');
+							comTypeCuibanfangshi('cuibangfangshi');
+							$("#btn_huifuanniu").show();
+							$("#btn_renling").show();
+							$("#btn_querenhuifu").hide();
+							$("#huifu").hide();
+		   					$("#wenti").show();
+		   					$("#huifubiaodan").hide();
+		   					$("#text_zhuanban").hide();
+		                    $("#btn_zhuanban").hide();
+		   					//$("#kaishihuifu").hide();
+		   					da.title=searchAllTitle();
+		   					initForm(da);
+					}else if(da.dealSchedule!="内部处理中"){
+		     				$("#wenti").show();
+		    				$("#huifu").show();
+		    				$("#btn_huifuanniu").hide();
+		    				$("#btn_querenhuifu").hide();
+		    				$("#btn_renling").hide();
+		    				$("#huifubiaodan").hide();
+		    				$("#kaishihuifu").hide();
+		    				$("#text_zhuanban").hide();
+		                    $("#btn_zhuanban").hide();
+		    				da.title=searchAllTitle();
+		    				initForm(da);
+		}
+		               
+		              $("#addAndUpdate").slideDown(200);
+					  $("#btn_shou").show();
+					  $("#btn_chakan").hide();
+			}
+			//加载字典项
+			function comType(selectid){
+				var data=getDictListfoIndexData('chulijindu');
+				$("#"+""+selectid+"").empty();
+				$("#"+""+selectid+"").append("<option value=''>--请选择--</option>"); 
+				for(var i in data){
+	        	$("#"+""+selectid+"").append("<option value='"+data[i].name+"'>"+data[i].name+"</option>"); 
+	       		 }
+ 			}
+ 			function comTypeZhuanfa(selectid){
+				var data=getDictListfoIndexData('zhuanfa');
+				$("#"+""+selectid+"").empty();
+				$("#"+""+selectid+"").append("<option value=''>--请选择--</option>"); 
+				for(var i in data){
+	        	$("#"+""+selectid+"").append("<option value='"+data[i].name+"'>"+data[i].name+"</option>"); 
+	       		 }
+ 			}
+ 			function comTypeBumen(selectid){
+				var data=getDictListfoIndexData('bumen');
+				$("#"+""+selectid+"").empty();
+				$("#"+""+selectid+"").append("<option value=''>--请选择--</option>"); 
+				for(var i in data){
+	        	$("#"+""+selectid+"").append("<option value='"+data[i].name+"'>"+data[i].name+"</option>"); 
+	       		 }
+ 			}
+ 			function comTypeJishihuifu(selectid){
+				var data=getDictListfoIndexData('jishihuifu');
+				$("#"+""+selectid+"").empty();
+				$("#"+""+selectid+"").append("<option value=''>--请选择--</option>"); 
+				for(var i in data){
+	        	$("#"+""+selectid+"").append("<option value='"+data[i].name+"'>"+data[i].name+"</option>"); 
+	       		 }
+ 			}
+ 			function comTypeCuibanfangshi(selectid){
+				var data=getDictListfoIndexData('cuibanfangshi');
+				$("#"+""+selectid+"").empty();
+				$("#"+""+selectid+"").append("<option value=''>--请选择--</option>"); 
+				for(var i in data){
+	        	$("#"+""+selectid+"").append("<option value='"+data[i].name+"'>"+data[i].name+"</option>"); 
+	       		 }
+ 			}
+			//收起
+			function shou(){
+				$("#addLangugeModal").slideUp(200);
+				$("#addAndUpdate").slideUp(200);
+				$("#btn_shou").hide();
+				$("#btn_huifuanniu").hide();
+				$("#btn_querenhuifu").hide();
+				$("#btn_renling").hide();
+				$("#kaishihuifu").hide();
+				$("#btn_chakan").show();
+			}
+			//展开筛选项
+			function showSearchItems(){
+				$("#searchItems").slideToggle(200);
+				$("#suggestTimeA").datetimepicker({format: "yyyy-mm-dd HH:mm:ss",autoclose: true,todayBtn: true});
+				$("#suggestTimeB").datetimepicker({format: "yyyy-mm-dd HH:mm:ss",autoclose: true,todayBtn: true});
+				comType('chulijindu');
+			}
+			//单击回复按钮，展开回复表单
+			function reply(){
+				$("#btn_querenhuifu").show();
+				$("#kaishihuifu").slideToggle(200);
+				$("#huifuPrincipal").val(getUserInfo().name);
+			}
+			//有二级复核、知识库管理员权限的用户对已有处理人的问题进行转办  处理人变为指定的人
+			function zhuanban(){
+				var questionId=da.questionId;
+				var principal=$("#text_zhuanban").val();
+				var pat={};
+				var columnValues={};
+				pat.tableName="question";
+				pat.primarykey="questionId";
+				pat.columnValues={"principal":principal};
+				pat.columnValues.questionId=questionId;
+				commonUpdate(pat,false,function(data){
+					if(data.success==true){
+						zinglabs.i18n.alert('system_updateSuccess');
+					}
+				});
+				refresh();
+			}
+			//认领自己想要回复的问题
+			function renling(data){
+				if((da.dealSchedule==""||da.dealSchedule==null)&&(da.principal==""||da.principal==null)){
+					var questionId=da.questionId;
+					var pat={};
+					var columnValues={};
+					pat.tableName="question";
+					pat.primarykey="questionId";
+					pat.columnValues={"principal":name,"dealSchedule":"内部处理中"};
+					pat.columnValues.questionId=questionId;
+					commonUpdate(pat,false,function(data){
+						if(data.success==true){
+							zinglabs.i18n.alert('system_updateSuccess');
+						}else{
+							zinglabs.i18n.alert('system_updateFailed');
+						}
+					});refresh();
+				}
+			}
+			//回复问题表单
+			function save(){
+				var value=$("#chulijindu2").val();
+	         	if(value==''||value==null||value==undefined){
+	           		checkData(value);
+	           		$("#chulijindu2").focus();
+	         	}else {
+				var questionId=da.questionId;
+				var pat={};
+				var columnValues={};
+				pat.tableName="question";
+				pat.primarykey="questionId";
+				if(da.chulijindu=="内部处理中"){
+					pat.columnValues=zkm_getHtmlFormJsons("huifubiaodan");
+				}else{
+					pat.columnValues=zkm_getHtmlFormJsons("kaishihuifubiaodan");
+				}
+				if(pat.columnValues.cuiBanTime==""||pat.columnValues.cuiBanTime==null){
+					pat.columnValues.cuiBanTime=s;
+				}
+				if(pat.columnValues.replayTime==""||pat.columnValues.replayTime==null){
+					pat.columnValues.replayTime=s;
+				}
+				if(pat.columnValues.postTime==""||pat.columnValues.postTime==null){
+					pat.columnValues.postTime=s;
+				}
+				pat.columnValues.questionId=questionId;
+					commonUpdate(pat,false,function(data){
+					var json=data;
+					if(json.success==true){
+						if(value=="已完成"){
+						saveAttention();
+						}
+						zinglabs.i18n.alert('system_updateSuccess');
+						return;
+					}else {
+						zinglabs.i18n.alert('system_updateFailed');
+						return;
+					}
+				});
+				refresh();
+				}
+			}
+			//问题回复完成，处理进度为已完成时，向积分流水表里添加一条记录
+			function saveAttention(){
+				var questionId=da.questionId;
+				var userName=da.userName;
+				var loginName=da.loginName;
+				var integralNum=1;
+				var integralTime=da.answerTime;
+				var pat={};
+				var columnValues={};
+				pat.tableName="integral";
+				pat.columnValues={"questionId":questionId,"userName":userName,"loginName":loginName,"integralNum":integralNum,"integralTime":integralTime}
+				pat.primarykeyType="uuid";
+				commonInsertOrUpdate(pat,false,function(data){
+					if(data.success==true){
+					}
+				});
+			}
+			//当处理进度为已完成时，记录答复时间
+   			function replyTime(){
+       			var schedule=$('#chulijindu2').val();
+       			if(schedule=="已完成"){
+          			getTime();
+       			}else if(schedule=="内部处理中"||schedule=="无需处理"){
+       				$('#answerTime').val("");
+       			}
+   			}
+   			function replyTime1(){
+       			var schedule=$('#chulijindu1').val();
+       			if(schedule=="已完成"){
+          			getTime();
+       			}else if(schedule=="内部处理中"||schedule=="无需处理"){
+       				$('#answerTime1').val("");
+       			}
+   			}
+			//验证
+			function checkData(data){
+				comType(data.value) ;
+			//验证
+				if(data.value==''||data.value==null||data.value==undefined){
+					CHECK_indexCode =false ;
+					showTooltip('indexNameDiv','请选择其中一项！') ;
+				}else{
+					hideTooltip('indexNameDiv');
+					CHECK_indexCode =true ;
+				}
+			}
+			function checkData1(data){
+				comType(data.value) ;
+			//验证
+				if(data.value==''||data.value==null||data.value==undefined){
+					CHECK_indexCode =false ;
+					showTooltip('indexNameDiv1','请选择其中一项！') ;
+				}else{
+					hideTooltip('indexNameDiv1');
+					CHECK_indexCode =true ;
+				}
+			}
+			//验证未通过样式
+			function showTooltip(id,title){
+				$("#"+id).attr('title',title) ;
+				$("#"+id).tooltip('show') ;
+				$("#"+id).addClass('control-group error') ;
+			}
+			//还原样式
+			function hideTooltip(id){
+				$("#"+id).tooltip('destroy') ;
+				$("#"+id).removeClass('error') ;
+			}
+			function guanzhu(){
+				//注意DataTable大写 或者 $('#promptManager').dataTable().api();	
+		     	var table=$('#promptManager').DataTable();
+		 		//  var data =table.column().data();
+		    	//获取选中行 通过dataTable查找
+		    	var cell=table.rows(".active").data();
+		    	//通过table TableTools插件 查找
+		     	var tt = new $.fn.dataTable.TableTools(table);
+		        selectData=tt.fnGetSelectedData();
+		        var questionId="";
+		        for(var i=0;i<selectData.length;i++){
+		        	questionId = questionId+selectData[i].questionId+",";
+		        }
+		        var params = {};
+		        var num;
+		        params.questionId =questionId.substr(0,questionId.length-1);
+		        var url="/"+window.top.PRJ_PATH+"/"+ZKM_ROU+"/"+"LH"+"/"+"guanzhu.action";
+		      	ajaxFunction(url,params,false,function(data){
+		      		num=data.data;
+		      	});
+		        if(selectData.length<=0){
+			      zinglabs.i18n.alert("attentionY");		
+			 }else if(num>0){
+			 		 zinglabs.i18n.alert("attentionYN");
+			 }else{
+			     zinglabs.confirm(zinglabs.i18n.getText("zshd_sureCancelAttention"),function (){jiaruguanzhu();});
+		      }
+			}
+			//加入关注表
+			function jiaruguanzhu(){
+				
+		      	var array=[];
+		      	for(var i=0;i<selectData.length;i++){
+		      		array.push({"questionId":selectData[i].questionId,"userName":selectData[i].userName,"attentionName":getUserInfo().loginName,"title":selectData[i].title,"classification":selectData[i].classification,"suggestTime":selectData[i].suggestTime,"replayContent":selectData[i].replayContent});
+		      	}
+		      		var pat={};
+		    		var columnValues={};
+		    		pat.tableName="attentionQuestion";
+		    		pat.columnValues=array;
+		    		pat.primarykeyType="uuid";
+		    		commonInsertOrUpdate(pat,false,function(data){
+		    			if(data.success==true){
+		    				
+		    				}
+		   			});
+		   			guanzhushu();
+		      	//}
+			}
+			
+			//关注数加一
+			function guanzhushu(){
+		      	for(var i=0;i<selectData.length;i++){
+		      		if(selectData[i].attentionNum==''||selectData[i].attentionNum==null){
+		      			selectData[i].attentionNum=0;
+		      		}
+		      		var pat={};
+		      		var columnValues={};
+		      		pat.tableName="question";
+		      		pat.primarykey="questionId";
+		      		pat.columnValues={"attentionNum":selectData[i].attentionNum+1};
+		      		pat.columnValues.questionId=selectData[i].questionId;
+		      		commonUpdate(pat,false,function(data){
+		      			if(data.success==true){
+		      				
+		      			}else{
+						zinglabs.i18n.alert('system_updateFailed');
+					}
+		      		});
+		      		//console.log(attentionNum);
+		      	}zinglabs.i18n.alert('attention');
+		      		refresh();
+			}
+			
+		 	
+			//点击数 
+			function cilck(){
+				var questionId=da.questionId;
+				var cilckNum=da.cilckNum;
+				if(cilckNum==''||cilckNum==null){
+					cilckNum=0;
+				}
+				var pat={};
+				var columnValues={};
+				pat.tableName="question";
+				pat.primarykey="questionId";
+				pat.columnValues={"cilckNum":cilckNum+1};
+				pat.columnValues.questionId=questionId;
+				commonUpdate(pat,false,function(data){
+					if(data.success==true){
+						
+					}else{
+						zinglabs.i18n.alert('system_updateFailed');
+					}
+				});refresh();
+			}
+			//我要提问
+			function insert() {
+			var url = "/ZDesk/zh_cn/zshd_zhishihudong/woyaotiwen.html?width=100%&height=700px";
+				closeDialog=orgDialog(url);
+			}
+			function orgDialog(url) {
+				var orgDig = dialog({
+					title : '我要提问',
+					content : '<iframe src=' + url
+							+ ' style="border: 0; width: 900px; height: 600px"  frameborder="0"/>',
+					width : '300',
+					height : '400'
+				});
+			orgDig.show();
+			return orgDig;
+		}
+		//关闭dialog
+		function closeDig(){
+			window.closeDialog.close().remove();
+		}
+			//var orgWin1;
+			//function insert(){
+			//closeWindow();
+			//var url = "/ZDesk/zh_cn/zhishihudong/woyaotiwen.html";
+			//$("#orgWin1 iframe").attr("src", url).removeClass('hide');
+			//orgWin1.open();
+			//}
+			//function closeWindow() {
+			//	orgWin1.close();
+			//}
+			//积分排行
+			var ZKM_ROU="ZKM";
+			function doIntegraNum(){
+				var url="/"+window.top.PRJ_PATH+"/"+ZKM_ROU+"/"+"LH"+"/"+"doIntegraNum.action";
+				var pat={};
+				ajaxFunction(url,false,false,function(data){
+					pat=data.data;
+				});
+				return pat;				
+			}
+			
+			//查询问题表里的所有数据
+			function doSearch(){
+				var pat={};
+		        var rdata=[];
+		        pat.columnValues={};
+		        pat.isPagination=false;
+	            pat.tableName = "zshd_question";
+			    commonSelect(pat,false,function(data){
+			                if(data&&data.data){
+			                 for(var i=0;i<data.data.length;i++){
+		             if(data.data[i].title.length>10){
+		             	allTitle=data.data[i].title;
+		                data.data[i].title=data.data[i].title.substr(0,9)+"......";   
+		             }
+		         }	
+			                  rdata=data.data;
+		                }
+
+		    });
+			     return rdata;
+
+		}
+		//查询全部的标题
+   		function searchAllTitle(){
+        	var pat={};
+			var adata="";
+			var columnValues={};
+			pat.tableName = "question";
+			pat.columnValues=columnValues;	
+        	pat.columnValues.questionId=da.questionId;
+        	pat.equal="questionId";
+			commonSelect(pat,false,function(data){					
+				if(data&&data.data){	
+					adata=data.data[0].title;		 	
+				}			
+			});
+			return adata;
+   		}
+		//根据模块id查询节点名称
+		function getTextBymodleId(){
+			var modleId=getQueryString('modleId');
+			var pat={};
+		        var rdata=[];
+		        pat.columnValues={};
+		        pat.isPagination=false;
+	            pat.tableName = "commonTree_detail";
+	            pat.columnValues.modleId=modleId;
+	            pat.equal="modleId";
+	            pat.columns="text";
+			    commonSelect(pat,false,function(data){
+			                if(data&&data.data){
+			                  rdata=data.data;
+		                }
+
+		    });
+			     return rdata;
+		
+		}
+			
+			function initForm(data){
+				var cfs=$("#addAndUpdate input[name],textarea[name],select[name]");
+				for(var i=0;i<cfs.length;i++){
+					var e=cfs[i];					
+					var v=data[e.name];
+					if(v==undefined || v==null){
+						v='';
+					}
+					$(e).val(v);
+				}
+					var chulijindu=$("#chulijindu1").val();
+		   }
+			//刷新
+			function refresh(){
+			     var table=$('#promptManager').DataTable();
+			     //清空筛选
+			     table.search("").draw();
+			     //清空数据
+			     table.clear().draw();
+			     //重新加载数据
+			     var data=doSearch(); 
+			     table.rows.add(data).draw(true);
+			     $('#addAndUpdate').hide();
+			     $('#btn_querenhuifu').hide();
+			     $('#btn_huifuanniu').hide();
+			     $('#btn_renling').hide();
+			     $('#btn_chakan').show();
+			     $('#btn_shou').hide();
+			     $("#text_zhuanban").hide();
+		         $("#btn_zhuanban").hide();
+			
+			}
+			//每页显示条数
+			function setPageNum(obj){
+			  var table=$('#promptManager').DataTable();
+			  table.page.len(obj.value).draw();
+			  //alert(obj.value);
+			}
+			//全选
+			 function toggleChecks(obj){
+			 	var table=$('#promptManager').DataTable();
+			    var tableTools = new $.fn.dataTable.TableTools(table);
+			       
+			    var ischeck=$("#selectall").is(':checked');
+			       if(ischeck){
+			         tableTools.fnSelectAll();
+			       }else{
+			         tableTools.fnSelectNone();
+			       }
+			      
+			   }			
+			//测试获取提示信息是否正常
+			function testI18n(){
+				var input=$("#testI18n").val();
+				var pat={'${0}':'123','${1}':'456'};
+				//alert(zinglabs.i18n.getText(input,pat));
+				zinglabs.i18n.alert(input,pat);
+			}
+			//获取系统当前时间
+			 function getTime(){
+      			var d = new Date(); 
+          		var vYear = d.getFullYear();  
+          		var vMon = d.getMonth() + 1; 
+          		var vDay = d.getDate();
+          		var h = d.getHours();
+          		var m = d.getMinutes(); 
+          		if(h<10||m<10){
+             		h="0"+h;
+             		m="0"+m;
+          		}
+          		s=vYear+"-"+vMon+"-"+vDay+" "+h+":"+m;
+          		$('#answerTime').val(s);
+          		$('#answerTime1').val(s);
+ 			}
+			//最新列表更多功能
+			function New(){
+				window.open('New.html','newwindow');
+			}
+			
+			//最热列表更多功能
+			function Num(){
+				window.open('Num.html','newwindow');
+			}
+			
+			//积分排行
+			function jifenpaihang(){
+				window.open('Jifenpaihang.html','newwindow');
+			}
+			
+			function getQuestionCodeList(){
+				
+			}
+			</script>
+
+	</head>
+	<body>
+		<!-- 头部导航条 -->
+		<!-- 数据表格展示模块 开始 -->
+		<div class="row-fluid" style="margin-top: -30px;">
+			<div class="widget-box">
+				<div class="widget-box">
+					<div class="widget-title"
+						style="height: 40px; line-height: 40px; overflow: hidden;">
+						<span class="icon" style="float: left; padding: 0px 10px;">
+							<i class="icon-search"></i> </span><h5>搜索</h5>
+						<div class="buttons" style="margin-top: 0px;">
+							<button onclick="insert();">我要提问</button>
+						</div>
+						<div class="buttons" style="margin-top: 0px;">
+							<button onclick="guanzhu();">添加关注</button>
+						</div>
+						<div class="buttons" style="margin-top: 0px;">
+							<button onclick="showSearchItems();">展开/关闭筛选项</button>
+						</div>
+					</div>
+					<div id="searchItems" class="widget-content" style="margin:0 auto;width:100%;border-left:1px solid #ccc;border-right:1px solid #ccc;border-bottom:1px solid #ccc;margin-top:0px;">
+						<div id=" " class="orderDiv" style="width:200px;height:300px; border: 2px solid #33AECC;margin-left:20px">
+							<div class="row">
+						    	<iframe id="menuTree" frameborder="0" width="200px" height="300" scrolling="no" style="margin-left: 20px;"
+				                	src="/ZDesk/zh_cn/common/zkmCommonTree.html?recordType=d&type=search&mode=many&showButton=y&reFillFn=getQuestionCodeList&closeFn=closeDig">
+	                         	</iframe>
+							</div>
+						</div>
+						<div style="width: 1100px; margin-left: 240px;margin-top: -280px;">
+						<form action="" id="where" class="form-horizontal">
+						 <div class="row">
+	                         <div class="span4" style="margin-left: -40px;">
+									<div class="control-group ">
+										<label class="control-label">
+											序号:
+										</label>
+										<div class="controls">
+										<input style="margin-left:-15px; width: 160px;" type="text" id="questionId" name="questionId"/>
+										</div>
+									</div>
+								</div>
+								<div class="span4" style="margin-left: -110px;">
+									<div class="control-group ">
+										<label class="control-label">
+											建议时间:
+										</label>
+										<div class="controls input-append date form_datetime"id="suggestTimeA"style="margin-left:200px;margin-top: -42px;"data-picker-position="bottom-left" data-link-field="suggestTime1">
+											<input type="text" style="width:135px;margin-left:-5px;margin-top:-8px" id="suggestTime1"
+												name="suggestTime"/>
+										<span class="add-on" style="margin-top:-8px"><i class="icon-th"></i></span>  
+										</div>
+									</div>
+								</div>
+								<div class="span4" style="margin-left: -130px;">
+									<div class="control-group ">
+										<label class="control-label">
+											至:
+										</label>
+										<div class="controls input-append date form_datetime" id="suggestTimeB"  style="margin-left:200px;margin-top: -42px;" data-picker-position="bottom-left" data-link-field="suggestTime2">
+											<input type="text" style="width:135px;margin-left:-5px;margin-top:-8px" id="suggestTime2"
+												name="suggestTime"/>
+											<span class="add-on" style="margin-top:-8px"><i class="icon-th"></i></span> 
+										</div>
+									</div>
+								</div>
+								<div class="span12" style="margin-left:-40px;margin-top:-15px">
+									<div class="control-group ">
+										<label class="control-label">
+											标题:
+										</label>
+										<div class="controls ">
+											<textarea id="title" name="title" style="margin-left:-15px; height:45px; width: 650px;"></textarea>	
+										</div>
+									</div>
+								</div>
+								<div class="span4" style="margin-left: -40px;margin-top:-15px">
+									<div class="control-group ">
+										<label class="control-label">
+											建议人:
+										</label>
+										<div class="controls">
+											<input type="text" style="margin-left:-15px; width: 160px" id="userName"
+												name="userName"/>
+										</div>
+									</div>
+								</div>
+								<div class="span4" style="margin-left: -110px;margin-top:-15px">
+                					<div  class="control-group">
+										<label class="control-label">
+											处理进度：
+										</label>
+										<div  id="Div" class="controls" >
+										<select id="chulijindu" name="dealSchedule" style="margin-left:-15px;width:175px;margin-left:-15px">
+										</select>
+										</div>
+									</div>
+           						</div> 
+								<div class="span4" style="margin-left: -110px;margin-top:-15px">
+									<div class="control-group ">
+										<label class="control-label">
+											建议渠道:
+										</label>
+										<div class="controls">
+											<input type="text" style="margin-left:-15px; width: 160px" id="suggestChannel"
+												name="suggestChannel"/>
+										</div>
+									</div>
+								</div>
+								<div class="span4" style="margin-left: -40px;margin-top:-15px">
+									<div class="control-group ">
+										<label class="control-label">
+											工单编号:
+										</label>
+										<div class="controls">
+											<input type="text" style="margin-left:-15px; width: 160px" id="orderNumber"
+												name="orderNumber"/>
+										</div>
+									</div>
+								</div>
+								<div class="span9" style="margin-left: -110px;margin-top:-15px">
+									<div class="control-group ">
+										<label class="control-label">
+											所在专组:
+										</label>
+										<div class="controls">
+											<input type="text" style="margin-left:-15px; width: 160px" id="placeGroup"
+												name="placeGroup" />
+										</div>
+									</div>
+								</div>
+								<div class="span4" style="margin-left: -40px;margin-top:-15px">
+									<div class="control-group ">
+										<label class="control-label">
+											建议/工单内容:
+										</label>
+										<div class="controls">
+											<textarea id="suggestContent" name="suggestContent"
+								style="margin-left:-15px; width: 650px; height: 45px;"></textarea>	
+										</div>
+									</div>
+								</div>
+							</div>
+					</form>
+					<div style="position: absolute;float: right;right: 50px;">
+					<input type="checkbox" value="是否在该分类下查找" id="checkbox_chakan">是否在该分类下查找
+					<button type="button" class="btn" id="btn_chakan" onclick="btSearch()">
+					<i class="icon-ok"></i>搜索
+				     </button>
+				     </div>
+					</div>
+					</div>
+
+				</div>
+				<div class="widget-content nopadding" style="margin-top:-40px;position:relative;">
+					<!-- class 或 = display -->
+					<table style="width:100% !important;margin: 0px;" class="table table-striped table-bordered nowrap"
+						id="promptManager" cellspacing="0"></table>
+				</div>
+			</div>
+		</div>
+	
+		<div class="widget-box collapsible" style="margin-top: -15px;">
+			<div class="widget-title"
+				style="height: 40px; line-height: 40px; overflow: hidden;">
+				<span class="icon" style="float: left; padding: 0px 10px;"><i
+					class="icon-cog"></i> </span> &nbsp;&nbsp;&nbsp;
+					每页显示条数：
+			<select name="pageSize" id="pageSize" style="width:70px; margin-top: 5px;" onchange="setPageNum(this)">
+				<option selected="selected" value="10">
+					10
+				</option>
+				<option value="30" >
+					30
+				</option>
+				<option value="50" >
+					50
+				</option>
+				<option value="100" >
+					100
+				</option>
+				<option value="200" >
+					200
+				</option>
+				<option value="500" >
+					500
+				</option>
+				<option value="1000" >
+					1000
+				</option>
+				<option value="-1" >
+					全部
+				</option>
+			</select> 
+				<input type="text" id="text_zhuanban" style="display: none;margin-top: 5px;" />
+				<button type="button" style="display: none;" class="btn" id="btn_zhuanban" onclick="zhuanban();">
+					<i class="icon-plus"></i>转办
+				</button>
+				<button type="button" class="btn" id="btn_chakan" onclick="look();">
+					<i class="icon-ok"></i>查看
+				</button>
+				<button type="button" style="display: none;" class="btn" id="btn_querenhuifu" onclick="save();">
+					<i class="icon-ok"></i>确认回复
+				</button>
+				<button type="button" style="display: none;" class="btn" id="btn_huifuanniu" onclick="reply();">
+					<i class="icon-plus"></i>回复
+				</button>
+				<button type="button" style="display: none;" class="btn" id="btn_renling" onclick="renling();">
+					<i class="icon-plus"></i>认领
+				</button>
+				<button type="button" class="btn" onclick="refresh();">
+					<i class="icon-refresh"></i>刷 新
+				</button>
+				<button type="button" class="btn" onclick="reloadI18nPromptCache();">
+					重载提示缓存
+				</button>
+				<button type="button" class="btn" id="btn_shou" onclick="shou();"
+					style="display: none;">
+					<i class="icon-eject"></i> 收 起
+				</button>
+
+			</div>
+			<!-- 最新列表 -->
+		<div class="row-fluid">
+			<div class="span2" style="margin-top:-20px; margin-left:60px; width:170px;">
+					<!-- class 或 = display -->
+					<h4 style="margin-top: 40px;margin-left: 40px;margin-bottom: -20px;">最新列表</h4>
+					<table style="width:20%" class="table table-striped table-bordered nowrap"
+						id="new" cellspacing="0">
+					</table>
+			</div>
+			<button type="button" class="btn" style="margin-top: 465px;margin-left: -80px;" onclick="New();">更多功能</button>
+		</div>
+			
+		   <!-- 最热列表 -->
+		 <div class="row-fluid" style="position: absolute;">
+			<div class="span2 " style="margin-top:-520px; margin-left:410px; width:170px;">
+					<!-- class 或 = display -->
+					<h4 style="margin-top: 40px;margin-left: 40px;margin-bottom: -20px;">最热列表</h4>
+					<table style="width:20%" class="table table-striped table-bordered nowrap"
+						id="num" cellspacing="0"></table>
+			</div>
+			<button type="button" class="btn" style="margin-top: -70px; margin-left: 500px" onclick="Num();">更多功能</button>
+		 </div>
+		  <!-- 积分排行 -->
+		 <div class="row-fluid">
+			<div class="span2 " style="margin-top:-520px; margin-left:750px; width:170px;">
+					<!-- class 或 = display -->
+					<h4 style="margin-top: 40px;margin-left: 40px;margin-bottom: -20px;">积分排行</h4>
+					<table style="width:20%" class="table table-striped table-bordered nowrap"
+						id="jifenpaihang" cellspacing="0"></table>
+			</div>
+			<button type="button" class="btn" style="margin-top: -70px; margin-left: 840px" onclick="jifenpaihang();">更多功能</button>
+		 </div>
+  
+			
+		</div>
+		<!-- 功能按钮模块 结束 -->
+
+			<!-- 栅格布局 -->
+			<div id="addAndUpdate" class="orderDiv widget-box"
+				style="display:none; border: 2px solid #33AECC; width: 100%">
+				<div id="wenti"class="" style=" display: none; margin-left: 10px;width: 1100px;">
+				<form class="form-horizontal" id="addAndUpdateForm">
+					<!-- 隐含变量 -->
+					<div style="margin-left: 5px;">
+							<h6>
+								我的问题
+							</h6>
+					<input type="hidden" id="id" name="id" />
+					  <div class="row">
+	                         <div class="span12" style="margin-left: -40px;">
+									<div class="control-group ">
+										<label class="control-label">
+											序号:
+										</label>
+										<div class="controls">
+										<input style="margin-left:-15px; width: 160px; border-bottom-color:black; border-left:0px;border-right:0px;border-top:0px;background-color: white;" type="text" id="questionId" name="questionId" readonly="readonly"/>
+										</div>
+									</div>
+								</div>
+								<div class="span12" style="margin-left:-40px;margin-top:-15px">
+									<div class="control-group ">
+										<label class="control-label">
+											标题:
+										</label>
+										<div class="controls ">
+											<textarea id="title" name="title" style="margin-left:-15px; height:45px; width: 650px;border-bottom-color:black; border-left:0px;border-right:0px;border-top:0px;background-color: white;" readonly></textarea>	
+										</div>
+									</div>
+								</div>
+								<div class="span4" style="margin-left: -40px;margin-top:-15px">
+									<div class="control-group ">
+										<label class="control-label">
+											建议人:
+										</label>
+										<div class="controls">
+											<input type="text" style="margin-left:-15px; width: 160px" id="userName"
+												name="userName" readonly/>
+										</div>
+									</div>
+								</div>
+								<div class="span4" style="margin-left: -55px;margin-top:-15px">
+									<div class="control-group ">
+										<label class="control-label">
+											建议时间:
+										</label>
+										<div class="controls">
+											<input type="text" style="margin-left:-15px; width: 160px" id="suggestTime"
+												name="suggestTime" readonly/>
+										</div>
+									</div>
+								</div>
+								<div class="span6" style="margin-left: -55px;margin-top:-15px">
+									<div class="control-group ">
+										<label class="control-label">
+											建议渠道:
+										</label>
+										<div class="controls">
+											<input type="text" style="margin-left:-15px; width: 160px" id="suggestChannel"
+												name="suggestChannel" readonly />
+										</div>
+									</div>
+								</div>
+								<div class="span4" style="margin-left: -40px;margin-top:-15px">
+									<div class="control-group ">
+										<label class="control-label">
+											业务分类:
+										</label>
+										<div class="controls">
+											<input type="text" style="margin-left:-15px; width: 160px" id="classification"
+												name="classification" readonly />
+										</div>
+									</div>
+								</div>
+								<div class="span4" style="margin-left: -55px;margin-top:-15px">
+									<div class="control-group ">
+										<label class="control-label">
+											工单编号:
+										</label>
+										<div class="controls">
+											<input type="text" style="margin-left:-15px; width: 160px" id="orderNumber"
+												name="orderNumber" readonly />
+										</div>
+									</div>
+								</div>
+								<div class="span6" style="margin-left: -55px;margin-top:-15px">
+									<div class="control-group ">
+										<label class="control-label">
+											所在专组:
+										</label>
+										<div class="controls">
+											<input type="text" style="margin-left:-15px; width: 160px" id="placeGroup"
+												name="placeGroup" readonly />
+										</div>
+									</div>
+								</div>
+								<div class="span4" style="margin-left: -40px;margin-top:-15px">
+									<div class="control-group ">
+										<label class="control-label">
+											建议/工单内容:
+										</label>
+										<div class="controls">
+											<textarea id="suggestContent" name="suggestContent"
+								style="margin-left:-15px; width: 650px; height: 45px;" readonly></textarea>	
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+				</form>
+			</div>
+		<div style="width: 100%;height: 0px;border-bottom: 2px solid #33AECC;"></div>
+				<!-- 开始回复表单 -->
+				 <div id="kaishihuifu" class="" style="margin-top:10px; margin-left:10px;display:none; width: 1100px;">
+   <form class="form-horizontal" id="kaishihuifubiaodan" >
+   <div style="margin-left: 5px;">
+							<h6>
+								问题回复
+							</h6>
+          <div class="row">
+           <div class="span4" style="margin-left: -75px;border:0px">
+              <div class="control-group">
+					<label class="control-label">
+						负责人：
+					</label>
+					<div class="controls" >
+						<input type="text" style="width: 160px;margin-left: -15px;" id="huifuPrincipal"  name="principal" readonly/>
+					</div>
+				</div>
+           </div>
+           <div class="span4" style="margin-left: -50px;">
+              <div class="control-group">
+					<label class="control-label">
+						转发：
+					</label>
+					<div class="controls">
+						<select id="zhuanfa" name="transpond"  style="width: 175px;margin-left:-15px">
+						</select>
+					</div>
+				</div>
+           </div>
+            <div class="span4" style="margin-left: -60px;">
+               <div class="control-group">
+					<label class="control-label" for="productionId" style="margin-left:12px">
+						部门：
+					</label>
+					<div class="controls">
+						<select id="bumen" name="dept" style="width: 175px;margin-left:-5px">
+						</select>
+					</div>
+				</div>
+           </div>
+            <div class="span4" style="margin-left: -40px;">
+              <div class="control-group">
+					<label class="control-label" style="margin-left:10px">
+						催办日期：
+					</label>
+					<div class="controls  input-append date form_datetime"  style="margin-left:200px;margin-top: -42px;" data-picker-position="bottom-right" data-link-field="cuiBanTime" >
+						<input type="text" id="cuiBanTimeA" name="cuiBanTime" placeholder="" style="width:135px;margin-left:-5px;margin-top:-8px">
+                        <span class="add-on" style="margin-top:-8px"><i class="icon-th"></i></span>   
+					</div>
+				</div>
+           </div>
+            <div class="span4"  style="margin-left: -75px;margin-top:-25px">
+               <div class="control-group">
+					<label class="control-label">
+						及时回复：
+					</label>
+					<div class="controls">
+						<select id="jishihuifu" name="timelyReplay" style="width: 175px;margin-left:-15px" >
+						</select>
+					</div>
+            	</div>
+           </div>
+            <div class="span4" style="margin-left: -50px;margin-top:-25px">
+                <div class="control-group">
+					<label class="control-label">
+						问题数量：
+					</label>
+					<div class="controls">
+						<input type="text" id="questionNum" name="questionNum" placeholder="" style="width:160px;margin-left:-15px">
+					</div>
+				</div> 
+           </div>
+           
+        <div class="span4" style="margin-left: -50px;margin-top:-25px">
+			<div class="control-group">
+					<label class="control-label">
+						催办方式：
+					</label>
+					<div class="controls">
+						<select id="cuibanfangshi" name="cuiBanWay" style="width: 175px;margin-left:-15px">
+						</select>
+					</div>
+            	</div>         
+           </div> 
+            
+          <div class="span4" style="margin-left: -40px;margin-top:-25px">
+                <div  class="control-group">
+					<label class="control-label">
+						<span style="color: red;">*</span>
+						处理进度：
+					</label>
+					<div  id="indexNameDiv" class="controls" >
+						<select id="chulijindu2" name="dealSchedule" onchange="replyTime()" style="width:175px;margin-left:-15px" ONBLUR="checkData(this.options[this.options.selectedIndex])">
+						</select>
+					</div>
+				</div>
+           </div>  
+                     
+           <div class="span12" style="margin-left:-75px;margin-top:-15px" >
+               <div class="control-group">
+					<label class="control-label">
+						回复时间：
+					</label>
+					<div class="controls  input-append date form_datetime" data-picker-position="bottom-left" data-link-field="replayTime">
+						<input type="text" id="replayTimeA" name="replayTime" placeholder="" style="width:135px;margin-left:-195px">
+	                        <span class="add-on"><i class="icon-th"></i></span>   
+					</div>
+				</div>
+           </div> 
+           <div class="span12" style="margin-left: -75px;margin-top:-15px">  
+            	<div class="control-group">
+					<label class="control-label" >
+						回复内容及<br>处理结果：
+					</label>
+					<div class="controls">
+						<textarea id="replayContent" name="replayContent"
+								style="width: 600px; height: 45px;margin-left:-15px"></textarea>	
+					</div>
+				</div>
+           </div>
+            <div class="span12" style="margin-left:-75px;margin-top:-15px">
+                <div class="control-group" >
+					<label class="control-label">
+						答复日期：
+					</label>
+					  
+					<div class="controls"> 
+						<input type="text" id="answerTime" name="answerTime" style="width: 160px;margin-left:-15px" readonly>
+					</div>
+				</div>
+           </div>
+           <div class="span12" style="margin-left:-75px;margin-top:-15px">
+				<div class="control-group">
+					<label class="control-label">
+						答复内容：
+					</label>
+					<div class="controls">
+						<textarea id="answerContent" name="answerContent"
+								style="width: 600px; height: 45px;margin-left:-15px"></textarea>	
+					</div>
+				</div>
+           </div>
+             <div class="span12" style="margin-left: -75px;margin-top:-15px">
+              <div class="control-group">
+					<label class="control-label">
+						发送时间：
+					</label>
+					<div class="controls  input-append date form_datetime" data-picker-position="bottom-left" data-link-field="postTime">
+						<input type="text" id="postTimeA"  name="postTime" placeholder="" style="width:135px;margin-left:-195px">
+	                       <span class="add-on"><i class="icon-th"></i></span>   
+					</div>
+				</div>
+           </div>    
+           <div class="span12" style="margin-left: -75px;margin-top:-15px">
+             <div class="control-group"  >
+					<label class="control-label" for="inputpeizhiItemValue">
+						发送内容：
+					</label>
+					<div class="controls">
+                          <textarea id="postContent" name="postContent"
+								style="width:600px; height: 45px;margin-left:-15px"></textarea>							
+				    </div>	
+                </div>
+           </div>  
+           <div class="span12" style="margin-left: -75px;margin-top:-15px">
+				<div class="control-group">
+					<label class="control-label">
+						其他说明：
+					</label>
+					<div class="controls">
+						<textarea id="other" name="other"
+								style="width:600px; height: 45px;margin-left:-15px"></textarea>	
+					</div>
+				</div>
+							</div>
+  					 </div></div></form>
+  					</div>
+				 <!-- 已回复表单 -->
+				 <div id="huifu" class="" style="margin-top:10px; margin-left:10px; display: none;width: 1100px;">
+   <form class="form-horizontal" id="FinishUpdateForm" >
+   <div style="margin-left: 5px;">
+							<h6>
+								问题回复
+							</h6>
+           <div class="row">
+								<div class="span4" style="margin-left: -40px;">
+									<div class="control-group ">
+										<label class="control-label">
+											负责人:
+										</label>
+										<div class="controls">
+											<input type="text" style="width: 160px;margin-left: -15px;" id="principal"
+												name="principal" readonly />
+										</div>
+									</div>
+								</div>
+								<div class="span4" style="margin-left: -50px;">
+									<div class="control-group ">
+										<label class="control-label">
+											转发：
+										</label>
+										<div class="controls">
+											<input type="text" style="width: 160px;margin-left:-15px" id="transpond"
+												name="transpond" readonly />
+										</div>
+									</div>
+								</div>
+								<div class="span4" style="margin-left: -50px;">
+									<div class="control-group ">
+										<label class="control-label">
+											部门：
+										</label>
+										<div class="controls">
+											<input type="text" style="width: 160px;margin-left:-15px" id="dept"
+												name="dept" readonly />
+										</div>
+									</div>
+								</div>
+								<div class="span4" style="margin-left: -40px;">
+									<div class="control-group ">
+										<label class="control-label">
+											催办日期：
+										</label>
+										<div class="controls">
+											<input type="text" style="width: 160px;margin-left:-15px" id="cuiBanTime"
+												name="cuiBanTime" readonly />
+										</div>
+									</div>
+								</div>
+								<div class="span4" style="margin-left: -40px;margin-top:-15px">
+									<div class="control-group ">
+										<label class="control-label">
+											及时回复：
+										</label>
+										<div class="controls">
+											<input type="text" style="width: 160px; margin-left:-15px" id="timelyReplay"
+												name="timelyReplay" readonly />
+										</div>
+									</div>
+								</div>
+								<div class="span4" style="margin-left: -50px;margin-top:-15px">
+									<div class="control-group ">
+										<label class="control-label">
+											问题数量:
+										</label>
+										<div class="controls">
+											<input type="text" style="width: 160px; margin-left:-15px" id="questionNum"
+												name="questionNum" readonly />
+										</div>
+									</div>
+								</div>
+								<div class="span4" style="margin-left: -50px;margin-top:-15px">
+									<div class="control-group ">
+										<label class="control-label">
+											催办方式：
+										</label>
+										<div class="controls">
+											<input type="text" style="width: 160px; margin-left:-15px" id="cuiBanWay"
+												name="cuiBanWay" readonly />
+										</div>
+									</div>
+								</div>
+								<div class="span4" style="margin-left: -40px;margin-top:-15px">
+									<div class="control-group ">
+										<label class="control-label">
+											处理进度:
+										</label>
+										<div class="controls">
+											<input type="text" style="width: 160px;margin-left:-15px" id="dealSchedule"
+												name="dealSchedule" readonly />
+										</div>
+									</div>
+								</div>
+								<div class="span12" style="margin-left: -40px;margin-top:-15px">
+									<div class="control-group ">
+										<label class="control-label">
+											回复时间：
+										</label>
+										<div class="controls">
+											<input type="text" style="width: 160px;margin-left:-15px" id="replayTime"
+												name="replayTime" readonly />
+										</div>
+									</div>
+								</div>
+								<div class="span12" style="margin-left: -40px;margin-top:-15px">
+									<div class="control-group ">
+										<label class="control-label">
+											回复内容及<br>处理结果：
+										</label>
+										<div class="controls">
+									        <textarea  id="replayContent" name="replayContent"
+								style="width: 600px; height: 45px;margin-left:-15px" readonly></textarea>
+										</div>
+									</div>
+								</div>
+								<div class="span12" style="margin-left: -40px;margin-top:-15px">
+									<div class="control-group ">
+										<label class="control-label">
+											答复日期:
+										</label>
+										<div class="controls">
+											<input type="text" style="width: 160px;margin-left:-15px" id="answerTime2"
+												name="answerTime" readonly />
+										</div>
+									</div>
+								</div>
+								<div class="span12"style="margin-left: -40px;margin-top:-15px">
+									<div class="control-group ">
+										<label class="control-label">
+											答复内容:
+										</label>
+										<div class="controls">
+												<textarea  id="answerContent" name="answerContent"
+								style="width: 600px; height: 45px;margin-left:-15px" readonly></textarea>	
+										</div>
+									</div>
+								</div>
+								<div class="span12" style="margin-left: -40px;margin-top:-15px">
+									<div class="control-group ">
+										<label class="control-label">
+											发送时间:
+										</label>
+										<div class="controls">
+											<input type="text" style="width: 160px;margin-left:-15px" id="postTime"
+												name="postTime" readonly />
+										</div>
+									</div>
+								</div>
+								<div class="span12"style="margin-left: -40px;margin-top:-15px">
+									<div class="control-group ">
+										<label class="control-label">
+											发送内容：
+										</label>
+										<div class="controls">
+										    <textarea  id="postContent" name="postContent"
+								style="width: 600px; height: 45px;margin-left:-15px" readonly></textarea>	
+										</div>
+									</div>
+								</div>
+								<div class="span12"style="margin-left: -40px;margin-top:-15px">
+									<div class="control-group ">
+										<label class="control-label">
+											其他说明:
+										</label>
+										<div class="controls">
+										    <textarea  id="other" name="other"
+								style="width: 600px; height: 45px;margin-left:-15px" readonly></textarea>	
+										</div>
+									</div>
+								</div>
+							</div>
+							</div>
+  					 </form>
+  					</div>
+  					<!-- 要回复表单处理进度为处理中 -->
+				 <div id="huifubiaodan" class="" style="margin-top:10px; margin-left:10px; display: none;width: 1100px;">
+   <form class="form-horizontal" id="renlingbiaodan" >
+   <div style="margin-left: 5px;">
+							<h6>
+								问题回复
+							</h6>
+           <div class="row">
+           <div class="span4" style="margin-left: -75px;border:0px">
+              <div class="control-group">
+					<label class="control-label">
+						负责人：
+					</label>
+					<div class="controls" >
+						<input type="text" style="width: 160px;margin-left: -15px;" id="principal"  name="principal" readonly/>
+					</div>
+				</div>
+           </div>
+           <div class="span4" style="margin-left: -50px;">
+              <div class="control-group">
+					<label class="control-label">
+						转发：
+					</label>
+					<div class="controls">
+						<select id="zhuanfa1" name="transpond"  style="width: 175px;margin-left:-15px">
+						</select>
+					</div>
+				</div>
+           </div>
+            <div class="span4" style="margin-left: -60px;">
+               <div class="control-group">
+					<label class="control-label" for="productionId" style="margin-left:12px">
+						部门：
+					</label>
+					<div class="controls">
+						<select id="bumen1" name="dept" style="width: 175px;margin-left:-5px">
+						</select>
+					</div>
+				</div>
+           </div>
+            <div class="span4" style="margin-left: -40px;">
+              <div class="control-group">
+					<label class="control-label" style="margin-left:10px">
+						催办日期：
+					</label>
+					<div class="controls  input-append date form_datetime"  style="margin-left:200px;margin-top: -42px;" data-picker-position="bottom-right" data-link-field="cuiBanTime" >
+						<input type="text" id="cuiBanTimeB" name="cuiBanTime" placeholder="" style="width:135px;margin-left:-5px;margin-top:-8px">
+                        <span class="add-on" style="margin-top:-8px"><i class="icon-th"></i></span>   
+					</div>
+				</div>
+           </div>
+            <div class="span4"  style="margin-left: -75px;margin-top:-25px">
+               <div class="control-group">
+					<label class="control-label">
+						及时回复：
+					</label>
+					<div class="controls">
+						<select id="jishihuifu1" name="timelyReplay" style="width: 175px;margin-left:-15px" >
+						</select>
+					</div>
+            	</div>
+           </div>
+            <div class="span4" style="margin-left: -50px;margin-top:-25px">
+                <div class="control-group">
+					<label class="control-label">
+						问题数量：
+					</label>
+					<div class="controls">
+						<input type="text" id="questionNum" name="questionNum" placeholder="" style="width:160px;margin-left:-15px">
+					</div>
+				</div> 
+           </div>
+           
+        <div class="span4" style="margin-left: -50px;margin-top:-25px">
+			<div class="control-group">
+					<label class="control-label">
+						催办方式：
+					</label>
+					<div class="controls">
+						<select id="cuibanfangshi1" name="cuiBanWay" style="width: 175px;margin-left:-15px">
+						</select>
+					</div>
+            	</div>         
+           </div> 
+          <div class="span4" style="margin-left: -40px;margin-top:-25px">
+                <div  class="control-group">
+					<label class="control-label">
+						<span style="color: red;">*</span>
+						处理进度：
+					</label>
+					<div  id="indexNameDiv1" class="controls" >
+						<select id="chulijindu1" name="dealSchedule" onchange="replyTime1()" style="width:175px;margin-left:-15px" ONBLUR="checkData1(this.options[this.options.selectedIndex])">
+						</select>
+					</div>
+				</div>
+           </div>  
+           <div class="span12" style="margin-left:-75px;margin-top:-15px" >
+               <div class="control-group">
+					<label class="control-label">
+						回复时间：
+					</label>
+					<div class="controls  input-append date form_datetime" data-picker-position="bottom-left" data-link-field="replayTime">
+						<input type="text" id="replayTimeB" name="replayTime" placeholder="" style="width:135px;margin-left:-195px">
+	                        <span class="add-on"><i class="icon-th"></i></span>   
+					</div>
+				</div>
+           </div> 
+           <div class="span12" style="margin-left: -75px;margin-top:-15px">  
+            	<div class="control-group">
+					<label class="control-label" >
+						回复内容及<br>处理结果：
+					</label>
+					<div class="controls">
+						<textarea id="replayContent" name="replayContent"
+								style="width: 600px; height: 45px;margin-left:-15px"></textarea>	
+					</div>
+				</div>
+           </div>
+            <div class="span12" style="margin-left:-75px;margin-top:-15px">
+                <div class="control-group" >
+					<label class="control-label">
+						答复日期：
+					</label>
+					  
+					<div class="controls"> 
+						<input type="text" id="answerTime1" name="answerTime" style="width: 160px;margin-left:-15px" readonly>
+					</div>
+				</div>
+           </div>
+           <div class="span12" style="margin-left:-75px;margin-top:-15px">
+				<div class="control-group">
+					<label class="control-label">
+						答复内容：
+					</label>
+					<div class="controls">
+						<textarea id="answerContent" name="answerContent"
+								style="width: 600px; height: 45px;margin-left:-15px"></textarea>	
+					</div>
+				</div>
+           </div>
+             <div class="span12" style="margin-left: -75px;margin-top:-15px">
+              <div class="control-group">
+					<label class="control-label">
+						发送时间：
+					</label>
+					<div class="controls  input-append date form_datetime" data-picker-position="bottom-left" data-link-field="postTime">
+						<input type="text" id="postTimeB"  name="postTime" placeholder="" style="width:135px;margin-left:-195px">
+	                       <span class="add-on"><i class="icon-th"></i></span>   
+					</div>
+				</div>
+           </div>    
+           <div class="span12" style="margin-left: -75px;margin-top:-15px">
+             <div class="control-group"  >
+					<label class="control-label" for="inputpeizhiItemValue">
+						发送内容：
+					</label>
+					<div class="controls">
+                          <textarea id="postContent" name="postContent"
+								style="width:600px; height: 45px;margin-left:-15px"></textarea>							
+				    </div>	
+                </div>
+           </div>  
+           <div class="span12" style="margin-left: -75px;margin-top:-15px">
+				<div class="control-group">
+					<label class="control-label">
+						其他说明：
+					</label>
+					<div class="controls">
+						<textarea id="other" name="other"
+								style="width:600px; height: 45px;margin-left:-15px"></textarea>	
+					</div>
+				</div>
+           </div>  
+  					 </div></div></form>
+  					</div>
+  					
+			</div>
+			
+					 <div id="orgWin1">
+				   		<iframe src="" style="border: 0; width: 95%; height: 95%" class="hide"></iframe>
+				   </div>
+	</body>
+</html>

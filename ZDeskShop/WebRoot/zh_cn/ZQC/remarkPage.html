@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>remarkPage.html</title>
+	
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="this is my page">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="../../js/zTree/zTreeStyle/metroZJ.css"
+			type="text/css" />
+		<link rel="stylesheet" href="../../css/bootstrap.min.css"
+			type="text/css"></link>
+		<link rel="stylesheet" href="../../css/bootstrap-responsive.min.css"
+			type="text/css" />
+      <script type="text/javascript" src="../../js/jquery.js"></script>
+    <script type="text/javascript" src="../../js/appCommonUtil.js"></script>
+    <script type="text/javascript" src="./ZQC_common.js"></script>
+    <!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+	<script type="text/javascript">
+	$(document).ready(function(){
+		var setRemark=getQueryString("setRemark");
+		if(setRemark!=''&&setRemark!=null&&setRemark!="undefined"){
+			$('#Remark').html(setRemark);
+		}
+	});
+	
+	 function queding(){
+	 	var re=$('#Remark').html();
+	 	var Remark={"Remark":re};
+	 	var closeFn=getQueryString("closeFn");
+		var pwin = window.parent;
+		var i=getQueryString("i");
+		window.parent.pydialog.close().remove();
+		pwin[closeFn](Remark,i);
+	 }
+	 
+	 function closeDialog(){
+	 	window.parent.pydialog.close().remove();
+	 }
+	</script>
+  </head>
+  <body>
+  	<div style="width: 350px;">
+  	<input type="text" id='pingyu_id' name='pingyu_id' style="display: none;"/> 
+  	<textarea rows="5" id="Remark" cols="50" style="width: 350px;"></textarea>
+  	</div>
+  	<div style="width: 350px;">
+  	<input type="button" class="btn" value="关闭" style="float: right; margin-left: 10px;" onclick="closeDialog();" />
+  	<input type="button" class="btn" value="确定" style="float: right;" onclick="queding();"/>
+	</div>
+  </body>
+</html>

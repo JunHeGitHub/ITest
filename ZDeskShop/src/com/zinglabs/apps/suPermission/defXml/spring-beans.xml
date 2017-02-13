@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="suPermissSqlsession" class="com.zinglabs.base.core.springSupport.DbidSqlsession" singleton="false">
+		<property name="namespance" value="com.zinglabs.apps.suPermission" ></property>
+		<property name="dbid"  value="ZKM"></property>
+	</bean>
+	
+	<bean id="permissonHelper"  name="permissonHelper"   class="com.zinglabs.apps.suPermission.service.PermissonHelper" init-method="init"></bean>
+	<!-- 角色信息 -->
+	<bean id="suRoleCurdService" name="suRoleCurdService" class="com.zinglabs.apps.suPermission.SuRoleCurdService"></bean>
+	<!-- 用户信息 -->
+	<bean id="userInfoService" name="userInfoService" class="com.zinglabs.apps.suPermission.service.UserInfoService" init-method="init"></bean>
+	<!-- 用户权限 -->
+	<bean id="suSecurityPermission"  name="zsh_suSecurityUserService"   class="com.zinglabs.apps.suPermission.SuSecurityPermissionService"></bean>
+	<!-- 通用增删改自定义filter 用户 -->
+	<bean id="suSecurityUserFilter" name="suSecurityUserFilter" class="com.zinglabs.apps.suPermission.filter.SuSecurityUserFilter"></bean>
+	<!-- 验证新增用户是否存在于设定表 -->
+	<bean id="MH_ZDeskUserCompanyService" name="MH_ZDeskUserCompanyService" class="com.zinglabs.apps.suPermission.service.MH_ZDeskUserCompany"></bean>
+</beans>

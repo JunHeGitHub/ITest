@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.zinglabs.apps.chatWorkflow.defXml">
+
+	<select id= "anYongHuMingChaXun" resultType="java.util.Map" parameterType="java.util.HashMap">
+    	select *,(select count(1) from Workflow_Table where id in ${idlist}
+    	<include refid="Workflow_Table_Where"/>
+    	) as total from Workflow_Table
+    	where id in ${idlist}  
+    	
+    	<include refid="Workflow_Table_Where"/>
+    	limit ${offset},${rows}
+    </select >
+    <sql id="Workflow_Table_Where">
+    	<if test="workflow_name != null and workflow_name != ''"> AND workflow_name like #{workflow_name}</if>
+		<if test="workflow_sort != null and workflow_sort != ''"> AND workflow_sort like #{workflow_sort}</if>
+		<if test="workflow_state != null and workflow_state != ''"> AND workflow_state like #{workflow_state}</if>
+    </sql>
+</mapper>

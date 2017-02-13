@@ -1,0 +1,274 @@
+
+<!DOCTYPE  HTML>
+<html>
+<head>
+<title>订单管理</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<script type="text/javascript" src="../../../../js/jquery.js"></script>
+<script type="text/javascript" src="../../../../js/bootstrap.js"></script>
+<script type="text/javascript"
+	src="../../../../js/dataTables/js/jquery.dataTables.js"></script>
+<!-- 遮罩产插件 -->
+<script type="text/javascript" src="../../../../js/jquery.blockUI.js"></script>
+<script type="text/javascript"
+	src="../../../../js/dataTables/js/dataTables.colReorder.js"></script>
+<script type="text/javascript"
+	src="../../../../js/dataTables/js/dataTables.colVis.js"></script>
+<script type="text/javascript"
+	src="../../../../js/dataTables/js/dataTables.tableTools.min.js"></script>
+<script type="text/javascript" src="../../../../js/common_utils.js"></script>
+<script type="text/javascript" src="../../../../js/appCommonUtil.js"></script>
+<script type="text/javascript"
+	src="../../../../js/appCommonCurdUtils_new.js"></script>
+<script type="text/javascript"
+	src="../../../../js/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript"
+	src="../../../../js/dataTables/js/DT_bootstrap.js"></script>
+<!--
+		<script type="text/javascript" src="../js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
+		<script type="text/javascript" src="../js/bootstrap-datetimepicker/bootstrap-datetimepicker.zh-CN.js"></script>
+		-->
+
+<script type="text/javascript" src="../../../../js/log2.js"></script>
+
+<!-- 验证及提示组件 -->
+<script type="text/javascript"
+	src="../../../../js/jqueryValidate/jquery.validate.js"></script>
+
+<link rel="stylesheet" href="../../../../css/bootstrap.min.css"
+	type="text/css" />
+<!--<link rel="stylesheet" href="../js/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css" type="text/css"></link>
+		-->
+<link rel="stylesheet"
+	href="../../../../js/dataTables/css/jquery.dataTables.css"
+	type="text/css" />
+<!--[if lt IE 9]>
+		<script type="text/javascript" src="../js/html5shiv.min.js"></script>
+		<![endif]-->
+<link rel="stylesheet"
+	href="../../../../js/dataTables/css/DT_bootstrap.css" type="text/css" />
+<link rel="stylesheet"
+	href="../../../../js/dataTables/css/dataTables.tableTools.min.css"
+	type="text/css" />
+<!-- ZDesk 通用css  -->
+<link rel="stylesheet" href="../../../../css/zinglabs.css"
+	type="text/css" />
+<link rel="stylesheet"
+	href="../../../../js/dataTables/css/font-awesome.css" />
+<link rel="stylesheet"
+	href="../../../../js/dataTables/css/dataTables.colVis.min.css"
+	type="text/css" />
+
+
+<style type="text/css">
+
+/*解决时间控件在模式对话框中的显示问题**/
+.error {
+	border-color: red !important;
+}
+
+.datetimepicker {
+	z-index: 99999 !important;
+}
+
+.bootstrap-datetimepicker-widget {
+	z-index: 99999 !important;
+}
+
+/*临时解决datatable单元格变形问题  为保证宽度不变，ie兼容模式显示效果为换行 其它浏览器省略号
+  需要通过只显示部分原文解决此问题
+*/
+.dataTable th,.dataTable td {
+	width: 120px;
+	max-width: 120px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+</style>
+
+<script type="text/javascript">
+	
+</script>
+<style type="text/css">
+div {
+	/* border: solid 1px #CCCCCC; */
+	
+}
+
+.div {
+	border: solid 1px #CCCCCC;
+	width: 850px;
+	position: relative;
+	left: 20px
+}
+
+.dataTable {
+	width: 800px;
+	position: relative;
+	left: 10px;
+}
+
+.divSon {
+	width: 800px;
+	position: relative;
+	left: 40px;
+	min-height: 100px;
+}
+
+.divFlotLeft {
+	float: left;
+}
+
+.divLable {
+	width: 10%;
+}
+
+.divText {
+	width: 37%;
+}
+
+.divSonBase {
+	min-height: 10px;
+}
+
+.divLine {
+	margin-top: 10px;
+	width: 100%;
+}
+
+.divBorder {
+	position: relative;
+	left: 20px;
+	margin-top: 15px;
+	margin-bottom: 15px;
+	width: 98%;
+	border: solid 1px #CCCCCC;
+}
+
+.divTitle {
+	position: relative;
+	left: 23px;
+	width: 100%;
+}
+
+.divFath {
+	width: 95%;
+	position: relative;
+	top: 10px;
+}
+</style>
+</head>
+<body>
+
+	<!-- 容器 -->
+	<div style="width: 800px;min-height: 1000px">
+		<!-- 订单信息 -->
+		<div class="div divFlotLeft" style="">
+			<div class="widget-title">
+				<span class="icon"> <i class="icon-th-list"></i>
+				</span>
+				<h5>订单信息</h5>
+			</div>
+			<div class="divFlotLeft divFath">
+				<!-- 买家信息 -->
+				<div class="divTitle divFlotLeft">
+					<h5>买家信息</h5>
+				</div>
+				<div class="divSon">
+					<div class="divLine divFlotLeft">
+						<div class="divFlotLeft divLable divSonBase">买家姓名:</div>
+						<div class="divFlotLeft divText divSonBase" id="buyersName"></div>
+						<div class="divFlotLeft divLable divSonBase">联系电话:</div>
+						<div class="divFlotLeft divText divSonBase" id="buyersPhone"></div>
+					</div>
+					<div class="divLine divFlotLeft">
+						<div class="divFlotLeft divLable divSonBase">买家帐号:</div>
+						<div class="divFlotLeft divText divSonBase" id="buyersUser"></div>
+					</div>
+				</div>
+				<!-- 线 -->
+				<div class="divBorder divFlotLeft"></div>
+				<!-- 订单信息  -->
+				<div class="divTitle divFlotLeft">
+					<h5>订单信息</h5>
+				</div>
+				<div class="divSon divFlotLeft">
+					<div class="divLine divFlotLeft">
+						<div class="divFlotLeft divLable divSonBase">订单编号:</div>
+						<div class="divFlotLeft divText divSonBase" id="orderNumber"></div>
+						<div class="divFlotLeft divLable divSonBase">订单总金额:</div>
+						<div class="divFlotLeft divText divSonBase">
+							<span id="price"></span><span>元</span>
+						</div>
+					</div>
+					<div class="divLine divFlotLeft">
+						<div class="divFlotLeft divLable divSonBase">订单状态:</div>
+						<div class="divFlotLeft divText divSonBase" id="keyValue"></div>
+						<div class="divFlotLeft divLable divSonBase">处理时间:</div>
+						<div class="divFlotLeft divText divSonBase"
+							id="orderProcessingTime"></div>
+					</div>
+					<div class="divLine divFlotLeft">
+						<div class="divFlotLeft divLable divSonBase">卖家留言:</div>
+						<div class="divFlotLeft divText divSonBase" id="buyersMessage"></div>
+						<div class="divFlotLeft divLable divSonBase">收货地址:</div>
+						<div class="divFlotLeft divText divSonBase" id="buyersAddress"></div>
+					</div>
+				</div>
+			</div>
+			<div class="divFlotLeft divFath">
+			
+				<div class="dataTable divFlotLeft" style="">
+					<div class="widget-content nopadding"
+						style="border-bottom-width:0px">
+						<!-- //提示栏 -->
+						<div class="alert alert-error" id="errorDiv"
+							style="display: none;"></div>
+						<div class="alert alert-success" id="successDiv"
+							style="display: none;"></div>
+						<table id="testGrid1"
+							class="table table-striped table-bordered nowrap">
+						</table>
+
+					</div>
+
+				</div>
+				
+				
+			</div>
+		</div>
+		<div id="edit" class="div divFlotLeft" style="display:none;">
+			<div class="divSon divFlotLeft">
+				<from id="upPriceFrom">
+				<div class="divLine divFlotLeft">
+					<div class="divFlotLeft divLable divSonBase">优惠金额:</div>
+					<div class="divFlotLeft divText divSonBase">
+						<input data-rule-number="true" data-rule-maxlength="10"
+							data-msg-number="消息标题不能为空！" type="text" oninput="upPrice();"
+							id="privilegePrice" name="privilegePrice" />
+					</div>
+					<div class="divFlotLeft divLable divSonBase">商品总金额:</div>
+					<div class="divFlotLeft divText divSonBase">
+						<span id="priceNew"></span><span>元</span>
+					</div>
+				</div>
+				<div class="divLine divFlotLeft">
+					<div class="divFlotLeft divLable divSonBase">以优惠:</div>
+					<div class="divFlotLeft divLable divSonBase">
+						<span id="privilegePriceYet"></span><span>元</span>
+					</div>
+				</div>
+				<div class="divLine divFlotLeft">
+					<div class="divFlotLeft divLable divSonBase">
+						<button class="btn null" onclick="doEdit();">提交</button>
+					</div>
+				</div>
+				</from>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="../../js/tool.js"></script>
+	<script type="text/javascript" src="../../js/orderDetails.js"></script>
+</body>
+</html>

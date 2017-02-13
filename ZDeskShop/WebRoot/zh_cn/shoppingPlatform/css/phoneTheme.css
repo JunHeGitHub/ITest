@@ -1,0 +1,25 @@
+body,ul,dl,dd,dt,ol,li,p,h1,h2,h3,h4,h5,h6,textarea,form,select,fieldset,table,td,div,input
+	{
+	margin: 0;
+	padding: 0;
+	
+}
+
+/* 效果CSS开始 */
+.slider {
+	display: none
+}  /*用于获取更加体验*/
+
+.focus span {
+	width: 10px;
+	height: 10px;
+	margin-right: 10px;
+	border-radius: 50%;
+	background: #666;
+	font-size: 0
+}
+
+.focus span.current {
+	background: #fff
+}
+/* 效果CSS结束 */

@@ -1,0 +1,86 @@
+
+html{-webkit-text-size-adjust:none;}
+body{
+	padding:0;
+	margin:0;
+	color:#333;
+	font-family:"Microsoft YaHei","微软雅黑",Helvetica,"黑体",Arial,Tahoma;
+}
+input{font-family:"Microsoft YaHei","微软雅黑",Helvetica,"黑体",Arial,Tahoma;;}
+.bodybackground{background:#f1f1f1;}
+ul,ol,li,h1,h2,h3,h4,h5,h6,span,p,dl,dt,dd{ margin:0; padding:0;}
+ul,ol,li{ list-style:none;}
+
+.website_annocement {
+	text-align:right;
+	padding-top:5px;
+	padding-right:5px;
+	color:#9c9c9c;
+	line-height:15px;
+	font-size: 10px;
+}
+
+.get_more{
+	height: 40px;
+	line-height: 40px;
+	text-align: center;
+	font-size:13px;
+	font-weight:bold;
+	border-bottom:#CCC solid 1px;
+	margin-top:2px;
+}
+
+
+.hidden{ 
+	border:#d1dbe6 1px solid;
+	border-top: 0; 
+	background:#f2f2f2; 
+	position:absolute; 
+	top:300px; 
+	left:50%;
+	margin-left: -32px; 
+	width:64px;
+	color: #555;
+}
+.hidden span{ display:block; padding:10px 0; text-align: center;}
+.hiddenpllist{ text-align:center; padding:10px; font-size:14px;}
+
+
+.rightdiv{ padding:0; height: 260px; background: #f2f2f2; overflow: hidden;}
+.rightdiv ul{ border:0; z-index:1;}
+.rightdiv ul .bd{ position: relative; height: 320px; overflow-y: scroll; }
+.rightdiv ul li.oneselect{ width: 50%}
+.rightdiv ul li{ margin: 0;text-align:center;background: #f2f2f2; color: #555; line-height: 16px; padding:13px 0 13px 12px; border-right: #d1dbe6 1px solid; border-bottom: #d1dbe6 1px solid;}
+.rightdiv ul li span{ background:url(../images/v2/godown.png) no-repeat 5px; background-size: 70%;margin-right: 12px;}
+.rightdiv ul li.bbdli{ position: absolute; left: 55%; top: 0;right: 0; padding: 0; border-right: 0; border-bottom: 0; z-index: 2;}
+.rightdiv ul li.bbdli ul{ z-index: 3;}
+.rightdiv ul.sellsearch_citylist{ background:#f2f2f2; padding:0; margin-bottom: 12px;}
+.rightdiv ul.sellsearch_citylist li{ padding:13px 0 13px 12px; border-bottom:#d1dbe6 1px solid; color: #555; border-left:0; border-top:0; width:100%; line-height: 16px;}
+.rightdiv ul.sellsearch_citylist li.selectcurrent{ background:#f2f2f2;}
+.rightdiv ul li img{ display: none; width: 11px; height: 9px; float: right; padding-top: 5px; padding-right: 12px;}
+.rightdiv ul li.action{ color: #0dad51;}
+.rightdiv ul li.action img{ display: block;}
+.price_selectoutdiv .rightdiv,
+.housetype_selectoutdiv .rightdiv,
+.sort_selectoutdiv .rightdiv,
+.communitychoice .rightdiv{ height: 320px; overflow-y: scroll;}
+
+
+.select_options{
+	background:#f2f2f2;
+	height: 44px;
+	border-bottom:#d1dbe6 1px solid;
+	position: relative;
+	z-index: 200;
+}
+
+.return_button,#map_title{
+	height: 44px;
+	line-height: 44px;
+	font-size:16px;
+	text-align:center;
+	color:#fff;
+	background:#0dad51;
+	position: relative;
+	z-index: 200;
+}

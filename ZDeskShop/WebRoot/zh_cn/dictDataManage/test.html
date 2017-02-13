@@ -1,0 +1,107 @@
+<!DOCTYPE  HTML>
+<html lang="en">
+	<head>
+		<title>字典项维护</title>
+
+		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+		<meta http-equiv="description" content="this is my page">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css"></link>
+		<link rel="stylesheet" href="../css/bootstrap-responsive.min.css"type="text/css"></link>
+		<link rel="stylesheet" href="../js/dataTables/css/jquery.dataTables.css" type="text/css"></link>
+		<!-- bootstrap 与 datatable结合 -->
+		<link rel="stylesheet" href="../js/dataTables/css/DT_bootstrap.css"	type="text/css"></link>
+		<!-- 工具 -->
+		<link rel="stylesheet" href="../js/dataTables/css/dataTables.tableTools.min.css" type="text/css"></link>
+		<!-- 动态列CSS -->
+		<link rel="stylesheet" href="../demo/unicorn.main.css" type="text/css"></link>
+		<link rel="stylesheet" href="../js/dataTables/css/font-awesome.css"></link>
+		<link rel="stylesheet" href="../js/dataTables/css/dataTables.colVis.min.css" type="text/css"></link>
+		<script type="text/javascript" src="../js/jquery.js"></script>
+		<script type="text/javascript" src="../js/bootstrap.js"></script>
+		<script type="text/javascript" src="../js/dataTables/js/jquery.dataTables.js"></script>
+		<script type="text/javascript" src="../js/dataTables/js/dataTables.colReorder.js"></script>
+		<script type="text/javascript" src="../js/dataTables/js/dataTables.colVis.js"></script>
+		<script type="text/javascript" src="../js/dataTables/js/dataTables.tableTools.min.js"></script>
+		<script type="text/javascript" src="../js/dataTables/js/DT_bootstrap.js"></script>
+		<script type="text/javascript" src="../js/common_utils.js"></script>
+		<script type="text/javascript" src="../js/appCommonUtil.js"></script>
+		<script type="text/javascript" src="../js/golbal_params.js"></script>
+		<script type="text/javascript">
+$(document).ready(function(){	
+	/*
+	*	根据indexCode,取下拉数据
+	*
+	*/
+	var data = getDictListfoIndexData("002") ;
+	for(var i in data){
+		$("#status").append("<option value='"+data[i].indexCode+"'>"+data[i].name+"</option>"); 
+	}
+	
+	//级联下拉：初始化第一个下拉。
+	var data = getDictListfoIndexData("001") ;
+	for(var i in data){
+		$("#s1").append("<option value='"+data[i].indexCode+"'  role='"+data[i].code+"'>"+data[i].name+"</option>"); 
+	}
+});
+/*
+*	code-->name
+*
+*/
+function test(){
+	var code = $("#code").val() ;
+	var name='' ;
+	name = getDictValueForCode(code) ;
+	if(name==''||name==undefined){alert('未找到');}
+	$("#name").val(name) ;
+}
+/*
+*	选中后设置第二个下拉
+*	级联下拉: setchildIndexCode(indexCode,childIndexCode)
+*
+*/
+function setchildIndexCode(data){
+	var code = data.role ;
+	var getData = getDictListfoIndexData('001') ;
+	var queryData = new Array() ; ;
+	if(getData.length>0){
+		for(var i=0 ; i<getData.length ; i++){
+			if(getData[i].parentIndexCode==code){
+				queryData.push(getData[i]) ;
+			}
+		}
+	}
+	$("#s2").empty();
+	for(var i in queryData){
+		$("#s2").append("<option value='"+queryData[i].indexCode+"'>"+queryData[i].name+"</option>"); 
+	}
+}
+
+/*
+*	重新加载缓存
+*
+*/	
+function reload(){
+	reloadDicData();
+}
+
+
+		</script>
+	</head>
+	<body>
+		<select id="status" name="status"></select>
+		</br>
+		<input id="code" name="code" />
+		<button onclick="test() ;">
+			根据code转换
+		</button>
+		<input id="name" name="name" />
+		</br>
+		<select id="s1" name="s1" onchange="setchildIndexCode(this.options[this.options.selectedIndex])"></select>
+		<select id="s2" name="s2"></select>
+		</br>
+		<button onclick="reload();">
+			重新加载
+		</button>
+	</body>
+</html>

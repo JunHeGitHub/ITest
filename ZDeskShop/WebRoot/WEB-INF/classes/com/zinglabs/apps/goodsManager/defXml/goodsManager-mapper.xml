@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.zinglabs.apps.goodsManager">
+		
+	<!-- 添加商品 -->	
+	<insert id="insertGoods" parameterType="java.util.HashMap">
+			insert into tb_goodsInfo (
+		           id,groupId,goodsId,goodsCode,goodsName,goodsTitle,goodsDesc,
+		           goodsImgs,goodsLabel,goodsCateGory,goodsType,goodsProp,
+		           goodsCount,goodsCostPrice,goodsShowPrice,goodsSalePrice,goodsStatus,
+		           goodsMark,dataStatus,createDate,dataDate,companyId)
+			VALUES (#{id},#{groupId},#{goodsId},#{goodsCode},#{goodsName},#{goodsTitle},#{goodsDesc},
+					#{goodsImgs},
+					<if test="goodsLabel != null and goodsLabel != ''">
+						#{goodsLabel},
+					</if>
+					<if test="goodsLabel == null or goodsLabel == ''">
+						'',
+					</if>
+					#{goodsCateGory},#{goodsType},#{goodsProp},
+					#{goodsCount},#{goodsCostPrice},
+					
+					<if test="goodsShowPrice != null and goodsShowPrice != ''">
+						#{goodsShowPrice},
+					</if>
+					<if test="goodsShowPrice == null or goodsShowPrice == ''">
+						'',
+					</if>
+					#{goodsSalePrice},${goodsStatus},
+					<if test="goodsMark != null and goodsMark != ''">
+						#{goodsMark},
+					</if>
+					<if test="goodsMark == null or goodsMark == ''">
+						'',
+					</if>
+					1,now(),now(),#{companyId}
+				)
+	</insert>	
+	
+	<!-- 修改商品信息 -->
+	<update id="updateGoods" parameterType="java.util.HashMap">
+			update tb_goodsInfo 
+			<trim prefix="SET" suffixOverrides=",">
+				<if test="goodsTitle != null and goodsTitle != ''">
+					goodsTitle = #{goodsTitle},
+				</if>
+				<if test="goodsDesc != null and goodsDesc != ''" >
+					 goodsDesc = #{goodsDesc},
+				 </if>
+				 <if test="goodsImgs != null and goodsImgs != ''" >
+					 goodsImgs = #{goodsImgs},
+				 </if>
+				 <if test="goodsLabel != null and goodsLabel != ''" >
+					 goodsLabel = #{goodsLabel},
+				 </if>
+				 <if test="goodsProp != null and goodsProp != ''" >
+					 goodsProp = #{goodsProp},
+				 </if>
+				 <if test="goodsType != null and goodsType != ''" >
+					 goodsType = #{goodsType},
+				 </if>
+				 <if test="goodsCount != null and goodsCount != ''" >
+					 goodsCount = #{goodsCount},
+				 </if>
+				 <if test="goodsShowPrice != null and goodsShowPrice !=''">
+				 	goodsShowPrice = #{goodsShowPrice},
+				 </if>
+				 <if test="goodsSalePrice != null and goodsSalePrice != ''" >
+					 goodsSalePrice = #{goodsSalePrice},
+				 </if>
+				  <if test="goodsStatus != null and goodsStatus != ''" >
+					 goodsStatus = #{goodsStatus},
+				 </if>
+				 <if test="goodsMark != null and goodsMark != ''" >
+					 goodsMark = #{goodsMark},
+				 </if>
+				 <if test="plusGoodsCount != null and plusGoodsCount != ''">
+					goodsCount =goodsCount+#{plusGoodsCount},
+				</if>
+				<if test="reduceGoodsCount != null and reduceGoodsCount != ''">
+					goodsCount = goodsCount-#{reduceGoodsCount},
+				</if>
+				 <if test="dataStatus != null and dataStatus != ''" >
+					 dataStatus = #{dataStatus},
+				 </if>
+				 <if test="flag != null and flag !=''">
+				 	goodsId = #{id},
+				 </if>
+				 dataDate = now()
+			</trim>
+			where id  = #{id}	
+		</update>
+	
+	
+	
+	<!-- 添加属性 -->	
+	<insert id="insertGoodsProp" parameterType="java.util.HashMap">
+		insert into tb_goodsProp 
+		(id,groupId,goodsId,goodsCode,goodsName,goodsImgs,propKey,propValue,companyId,addDate)
+			values(#{id},#{groupId},#{goodsId},#{goodsCode},#{goodsName},#{goodsImgs},#{propKey},
+			#{propValue},#{companyId},now() )
+	</insert>	
+		
+	
+	<delete id="delGoodsInfo" parameterType="java.util.HashMap">
+		delete from tb_goodsInfo where id  = #{id}
+	</delete>	
+		
+	<delete id="delGoodsProp" parameterType="java.util.HashMap">
+		delete from tb_goodsProp where goodsId  = #{goodsId}  
+	</delete>	
+	
+	<!-- 删除时判断该商品是否已产生订单 -->
+	<select id="selectOrderByGoodsId" parameterType="java.util.Map" resultType="java.util.Map">
+		
+		select * from orderGoods where goodsId = #{goodsId}
+	
+	</select>
+		
+	<!-- 根据商品主id获取属性集合 -->	
+	<select id="selectGoodsInfo" resultType="java.util.Map" parameterType="java.util.Map" >	
+		select * from tb_goodsInfo where  1 = 1
+			<if test="goodsId != null and goodsId != ''">
+			 	and goodsId = #{goodsId} 
+			</if>
+			<if test="goodsName != null and goodsName != ''">
+				and goodsName = #{goodsName}
+			</if>
+			
+	</select>	
+	<!-- 删除主商品时，查出单条数据，然后更新它的goodsId -->
+	<select id="selectTopGoodsByGroupId" resultType="java.util.Map" parameterType="java.util.Map">
+		select id from tb_goodsInfo where
+		 groupId = #{groupId} ORDER BY createDate  LIMIT 0 ,1 
+	</select>
+	
+	<select id="selectSomeGoods" resultType="java.util.Map" parameterType="java.util.Map">
+		select id,groupId,goodsId,goodsCode,goodsName,
+			 goodsTitle,goodsDesc,goodsImgs,goodsLabel,goodsCateGory,
+			 goodsType,goodsProp,goodsCount,goodsCostPrice,goodsShowPrice,goodsSalePrice, 
+             goodsStatus,goodsMark,dataStatus,createDate,dataDate,companyId
+
+		from tb_goodsInfo  where  1 = 1
+		
+		<if test="id != null and id != ''">
+			and id in 
+			(
+			<foreach collection="id" item="item" index="index"  separator="," >
+				#{item}
+			</foreach>
+			)
+		</if>
+	
+	</select>
+		
+	<select id="selectMainGoods" resultType="java.util.Map" parameterType="java.util.Map" >
+		 select id,groupId,goodsId,goodsCode,goodsName,
+			 goodsTitle,goodsDesc,goodsImgs,goodsLabel,goodsCateGory,
+			 goodsType,goodsProp,
+			 <if test="flag == 'mainGoods' ">
+			 	(select sum(goodsCount) as goodsCount from tb_goodsInfo	WHERE groupId = gi.groupId  ) AS goodsCount
+			 </if>
+			 <if test="flag == 'detail'">
+			 	goodsCount
+			 </if>
+			 
+			 ,goodsCostPrice,goodsShowPrice,goodsSalePrice, 
+             goodsStatus,goodsMark,dataStatus,createDate,dataDate,companyId
+             
+             <if test="saleNumber != null and saleNumber != ''">
+             	 , (select count(*) from orderGoods og where gi.goodsId = og.goodsId) as saleTotal 
+             </if>
+
+		from tb_goodsInfo gi where  1 = 1
+		
+		<if test="id != null and id != ''">
+			and id = #{id}
+		</if>
+		
+		<if test="flag == 'mainGoods'">
+			 and id = goodsId 
+		</if>
+		<if test="groupId != null and groupId != ''">
+			  and groupId = #{groupId}
+		</if>
+ 		<if test="goodsName != null and goodsName != ''">
+			and goodsName like CONCAT('%',#{goodsName},'%') 
+ 		</if>
+		<if test="goodsTitle != null and goodsTitle != ''">
+			and goodsTitle  like CONCAT('%',#{goodsTitle},'%')
+ 		</if>
+		<if test="goodsCateGory != null and goodsCateGory != ''">
+			and goodsCateGory  = #{goodsCateGory}
+ 		</if>
+		<if test="goodsStatus != null and goodsStatus != ''">
+			and goodsStatus  = #{goodsStatus}
+ 		</if>
+		<if test="goodsType != null and goodsType != ''">
+			and goodsType  = #{goodsType}
+ 		</if>
+ 		<!-- 手机端页面查询条件 -->
+		<if test="selectByCate != null and selectByCate != ''">
+			and goodsCateGory  like CONCAT('%',#{selectByCate},'%')
+ 		</if>
+		<!-- 手机端显示只显示上架商品 -->	
+		<if test="isMobile != null and isMobile != ''">
+			and goodsStatus = 1 
+ 		</if>
+		and dataStatus = 1
+		
+		<if test="orderBy != null and orderBy != ''">
+			order by  ${orderBy} 
+		</if>
+		<if test="orderBy == null or orderBy == ''">
+			order by  createDate desc 
+		</if>
+		
+		<if test="rows!=null and rows !='' and offset !=null and offset!=''">limit ${offset},${rows}</if>
+	
+	</select>
+	
+	<select id="selectMainGoodsTotal" resultType="java.util.Map" parameterType="java.util.Map" >
+		 select count(*) as total
+
+		from tb_goodsInfo where 1 = 1   
+		
+		
+		<if test="id != null and id != ''">
+			and id = #{id}
+		</if>
+		
+		<if test="flag == 'mainGoods'">
+			 and id = goodsId 
+		</if>
+		<if test="groupId != null and groupId != ''">
+			  and groupId = #{groupId}
+		</if>
+		<if test="goodsName != null and goodsName != ''">
+			and goodsName like CONCAT('%',#{goodsName},'%') 
+ 		</if>
+		<if test="goodsTitle != null and goodsTitle != ''">
+			and goodsTitle  like CONCAT('%',#{goodsTitle},'%')
+ 		</if>
+		<if test="goodsCateGory != null and goodsCateGory != ''">
+			and goodsCateGory  = #{goodsCateGory}
+ 		</if>
+		<if test="goodsStatus != null and goodsStatus != ''">
+			and goodsStatus  = #{goodsStatus}
+ 		</if>
+		<if test="goodsType != null and goodsType != ''">
+			and goodsType  = #{goodsType}
+ 		</if>
+ 		<!-- 手机端页面查询条件 -->
+		<if test="selectByCate != null and selectByCate != ''">
+			and goodsCateGory  like CONCAT('%',#{selectByCate},'%')
+ 		</if>
+ 		<if test="isMobile != null and isMobile != ''">
+			and goodsStatus = 1 
+ 		</if>
+		and dataStatus = 1
+	</select>
+	
+	<select id="validateGoodsCount" resultType="java.util.Map" parameterType="java.util.Map" >
+		select goodsCount from tb_goodsInfo where id = #{id}
+	</select>
+	
+	<!-- 添加商品流水 -->
+	<insert id="insertGoodsRecord" parameterType="java.util.Map">
+		insert into tb_goodsRecord(groupId,goodsId,goodsName,goodsCostPrice,goodsSalePrice, saleCount,updateCount,state,addDate)
+		values(
+		 #{groupId},#{goodsId},#{goodsName},#{goodsCostPrice},#{goodsSalePrice}, #{saleCount},#{updateCount},#{state},now())
+	</insert>
+	
+	
+	<select id="testSelect" resultType="java.util.Map" parameterType="java.util.Map">
+		select * from tb_Category where 1=1 
+		and id in (
+		
+		<foreach collection="ids" item="item" index="index"  separator="," >
+			#{item}
+		</foreach>
+		)
+	</select>
+	
+	
+</mapper>

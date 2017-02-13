@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.zinglabs.apps.mybaits_xml_def.ZQC">
+
+
+				
+	<select id="T_GRADE_DETAIL_FUSHEN_NEW_score" resultType="java.util.HashMap" parameterType="map">
+		select * from 	T_GRADE_DETAIL_FUSHEN_NEW  WHERE  grade_id=#{grade_id}	 
+	</select>
+	<select id="getGrade_name_select" resultType="java.util.HashMap" parameterType="map">
+		select * from 	SA_QC_GRADE_DICTINFO WHERE  id=#{id}	 
+	</select>
+	<select id="T_GRADE_DETAIL_NEW_score" resultType="java.util.HashMap" parameterType="map">
+		select * from 	T_GRADE_DETAIL_NEW WHERE  grade_id=#{grade_id}	 
+	</select>
+	
+	<select id="T_GRADE_DETAIL_FUJIAN_NEW_score" resultType="java.util.HashMap" parameterType="map">
+		select * from 	T_GRADE_DETAIL_FUJIAN_NEW WHERE  grade_id=#{grade_id}	 
+	</select>
+	
+	<!--插入上诉表sql -->
+	<insert id="SA_AGENT_ARGUMENT_insert" parameterType="java.util.HashMap">
+		insert into SA_AGENT_ARGUMENT
+		(
+		
+		<if test="grade_id!=null and grade_id!=''">
+			grade_id
+		</if>
+		<if test="grade_remark!=null and grade_remark!=''">
+			,grade_remark
+		</if>
+		<if test="owner!=null and owner!=''">
+			,owner
+		</if>
+		<if test="agent_user!=null and agent_user!=''">
+			,agent_user
+		</if>
+		<if test="agent_user_dt!=null and agent_user_dt!=''">
+			,agent_user_dt
+		</if>
+		<if test="agent_user_remark!=null and agent_user_remark!=''">
+			,agent_user_remark
+		</if>
+		<if test="grade_remark_fj!=null and grade_remark_fj!=''">
+			,grade_remark_fj
+		</if>
+		<if test="admin_remark!=null and admin_remark!=''">
+			,admin_remark
+		</if>
+		<if test="work_state!=null and work_state!=''">
+			,work_state
+		</if>
+		<if test="score_state!=null and score_state!=''">
+			,score_state
+		</if>
+		<if test="update_time!=null and update_time!=''">
+			,update_time
+		</if>
+		<if test="update_role!=null and update_role!=''">
+			,update_role
+		</if>
+		<if test="update_content!=null and update_content!=''">
+			,update_content
+		</if>
+		<if test="file_name!=null and file_name!=''">
+			,file_name
+		</if>
+		) values
+		(<if test="grade_id!=null and grade_id!=''">
+			#{grade_id}
+		</if>
+		<if test="grade_remark!=null and grade_remark!=''">
+			,#{grade_remark}
+		</if>
+		<if test="owner!=null and owner!=''">
+			,#{owner}
+		</if>
+		<if test="agent_user!=null and agent_user!=''">
+			,#{agent_user}
+		</if>
+		<if test="agent_user_dt!=null and agent_user_dt!=''">
+			,#{agent_user_dt}
+		</if>
+		<if test="agent_user_remark!=null and agent_user_remark!=''">
+			,#{agent_user_remark}
+		</if>
+		<if test="grade_remark_fj!=null and grade_remark_fj!=''">
+			,#{grade_remark_fj}
+		</if>
+		<if test="admin_remark!=null and admin_remark!=''">
+			,#{admin_remark}
+		</if>
+		<if test="work_state!=null and work_state!=''">
+			,#{work_state}
+		</if>
+		<if test="score_state!=null and score_state!=''">
+			,#{score_state}
+		</if>
+		<if test="update_time!=null and update_time!=''">
+			,#{update_time}
+		</if>
+		<if test="update_role!=null and update_role!=''">
+			,#{update_role}
+		</if>
+		<if test="update_content!=null and update_content!=''">
+			,#{update_content}
+		</if>
+		<if test="file_name!=null and file_name!=''">
+			,#{file_name}
+		</if>
+		)
+	</insert>
+</mapper>

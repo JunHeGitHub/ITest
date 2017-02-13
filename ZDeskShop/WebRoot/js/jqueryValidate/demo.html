@@ -1,0 +1,122 @@
+<!DOCTYPE  HTML>
+<html lang="en">
+	<head>
+		<title></title>
+
+		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3" />
+		<meta http-equiv="description" content="this is my page" />
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="../../css/bootstrap.css" type="text/css"></link>
+		
+		<script type="text/javascript" src="../../js/jquery.js"></script>
+		<script type="text/javascript" src="../../js/bootstrap.js"></script>
+		<script type="text/javascript" src="../../js/common_utils.js"></script>
+   
+        <script type="text/javascript" src="../../js/jqueryValidate/jquery.validate.js"></script>
+		<script type="text/javascript" src="../../js/appCommonUtil.js"></script>
+		<script type="text/javascript" src="../../js/appCommonCurdUtils.js"></script>
+		
+		<!-- darktooltip -->
+		<link rel="stylesheet" href="../darktooltip/css/darktooltip.css" type="text/css"></link>
+		<script type="text/javascript" src="../darktooltip/js/jquery.darktooltip.js"></script>
+		
+		<style type="text/css">
+		 .error{
+		    border-color: red !important;
+		 }
+		
+		</style>
+		<script type="text/javascript">
+		/***
+		 data-rule-required=""      非空验证  可以是正则或函数但需通过插件自定义验证方法
+		 data-rule-minlength="10"   最小长度10
+		 data-rule-maxlength="100"  最大长度
+		 data-rule-date             日期验证
+		 data-rule-number           数字验证
+		 data-rule-digits           整数验证
+		 data-rule-equalTo="标签id"  验证两个输入框的内容是否相同
+		 以下省略。。。
+		 
+		 
+		 data-msg-xx 相应的提示信息
+		  TODO 后续实现自定义方法方法
+		***/
+		$(document).ready(function() {
+			
+		   $("#tt").validate({ 
+		             rules:{
+					     name:"required",
+					     email:{
+					       required:true,
+					       email:true
+					     }
+					
+					   },	   
+				      //错误信息处理方法
+				      errorPlacement: function (error, element){
+				       //if(element.)
+                         element.addClass('error');
+                         var errorInfo=error.html();
+						 element.parent().darkTooltip({content:errorInfo,size:'small',show:true,x_number:450});
+                        },
+                       //成功信息处理方法
+	                    success: function ($e,dom) {
+	                       var element=$(dom);
+	                       element.parent().children("ins").remove();
+	                       element.removeClass('error');
+	                       
+	                     }
+				});
+	    });
+	    function test(){
+	       var x=$("#tt").validate().form();
+	       alert(x);
+	    }
+			</script>
+
+	</head>
+	<body>
+	
+  <form class="form-horizontal" id="tt">
+    <fieldset>
+      <div id="legend">
+        <legend>表单名</legend>
+      </div>
+    <div class="control-group">
+          <!-- Text input-->
+          <label class="control-label" for="input01">姓名</label>
+          <div class="controls">
+          <!-- 使用标签的方式确认验证信息 -->
+            <input class="input-xlarge" type="text" placeholder="姓名" data-rule-required="true" data-msg-required="Please enter your email address">
+            <p class="help-block">非空验证</p>
+          </div>
+        </div>
+    <div class="control-group">
+          <!-- Text input-->
+          <label class="control-label" for="input01">年龄</label>
+          <div class="controls">
+            <input class="input-xlarge" type="text" placeholder="年龄" name="age" data-rule-digits="true" data-rule-maxlength="2">
+            <p class="help-block">请输入一个数字</p>
+          </div>
+        </div>
+    <div class="control-group">
+
+          <!-- Text input-->
+          <label class="control-label" for="input01">邮箱</label>
+          <div class="controls">
+            <input class="input-xlarge" type="text" placeholder="邮箱">
+            <p class="help-block">请输入邮箱</p>
+          </div>
+        </div>
+      <div class="control-group">
+          <label class="control-label"></label>
+          <!-- Button -->
+          <div class="controls">
+            <button class="btn btn-info" onclick="test()">提交</button>
+          </div>
+        </div>
+    </fieldset>
+  </form>
+	     
+	</body>
+</html>

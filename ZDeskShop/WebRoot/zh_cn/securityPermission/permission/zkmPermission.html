@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<title>知识库模块</title>
+
+		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+		<meta http-equiv="description" content="this is my page">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<link rel="stylesheet" href="../../../css/bootstrap.min.css" type="text/css"></link>
+		<link rel="stylesheet" href="../../../css/bootstrap-responsive.min.css" type="text/css"></link>	
+	</head>
+	<body>
+		  <div class="tabbable">
+				<!-- Only required for left/right tabs -->
+		         <ul class="nav nav-tabs">
+					<li class="active">
+						<a href="#tab1" data-toggle="tab">导航
+						</a>
+					</li>
+					<li >
+						<a href="#tab2" data-toggle="tab">知识库
+						</a>
+					</li>
+					<li >
+						<a href="#tab3" data-toggle="tab">征询问答
+						</a>
+					</li>
+					<li >
+						<a href="#tab4" data-toggle="tab">我的收藏
+						</a>
+					</li>
+			</ul>
+			<div class="tab-content">
+					<div class="tab-pane active" id="tab1">
+						<p>
+						  <iframe src="" width="935" height="700" scrolling="yes" frameborder="0"></iframe>
+						</p>
+					</div>
+					<div class="tab-pane" id="tab2">
+						<p>
+						  <iframe src="" width="935" height="700" scrolling="yes" frameborder="0"></iframe>	
+						</p>
+					</div>
+					<div class="tab-pane" id="tab3">
+							<p>
+								征询问答
+							</p>
+					</div>
+					<div class="tab-pane" id="tab4">
+							<p>
+								我的收藏
+							</p>
+					</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="../../../js/jquery.js"></script>
+		<script type="text/javascript" src="../../../js/bootstrap.js"></script>
+		<script type="text/javascript" src="../../../js/common_utils.js"></script>
+		<script type="text/javascript">
+		    //授权
+		    function getTreeNode(nodes){
+               var treeNodesId=[];
+               for(var i=0;i<nodes.length;i++){
+                  treeNodesId.push(nodes[i].id);
+               }
+               var ids=treeNodesId.join(",");
+               var params={};
+               //TODO 后续权限验证操作
+               params.ids=ids;
+               params.type="";
+               params.roleCode="";
+               doSave(params);
+            }
+           //保存菜单权限
+           function doSave(params){
+             var url="/"+PRJ_PATH+"/"+ZDesk_ROU+"/permisson.action";
+             ajaxFunction(url,params,false,function(data){
+                    if(data&&data.success){
+
+                      alert("成功");
+                    }
+             });
+           }
+           
+          function setMenuTreeUrl(){
+              var url="/ZDesk/zkmCommonTree.html?treeWidth=400&treeHeight=600&mode=single&pchm=p&cchm=p&recordType=menu";
+              $('#modelTree').attr("src",url);
+          }  
+		</script>
+	</body>
+</html>

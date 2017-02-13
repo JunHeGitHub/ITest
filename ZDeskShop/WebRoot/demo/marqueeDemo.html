@@ -1,0 +1,128 @@
+<!DOCTYPE HTML">
+<html>
+	<head>
+		<title>marquee.html</title>
+
+		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+		<meta http-equiv="description" content="this is my page">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<script type="text/javascript" src="../js/jquery.js"></script>
+		<script type="text/javascript" src="../js/common_utils.js"></script>
+		<script type="text/javascript" src="../js/jquery.marquee.js"></script>
+		<style type="text/css">
+			.conClass{
+				color:red;
+				
+			}
+			.marqueeClass{
+				color:orange;
+			}
+		</style>
+		<script type="text/javascript">
+			//跑马灯demo
+			/**
+			 *  参数说明
+			 * 	data 跑马灯显示要显示的内容 格式JSON[{"key":"value"},{"key":"value"}],{"key":"value"},"普通文本"
+			 *    JSON格式下的参数
+			 *    content:'内容',conId:'内容id',href:'超链接',onClick:'点击事件',oneStyle:'设置单个内容的样式',target超链接打开窗口方式 
+ 			 *    content必填,conId不填时默认从con0开始 数字自增,href,onClick,oneStyle,target不填时为''
+			 *     
+			 *  direction 方向 left默认  right up down
+			 *	behavior 行为 scroll重复默认 alternate左右反复 slide到尽头停
+			 *	scrollamount 速度 数字 越大越快
+			 *	mouseEvent 鼠标移入悬停事件  true false
+			 *  gap 设置多条文本的间隔距离 数字格式 默认100
+			 *  height;跑马灯高度  数字
+			 *  width;跑马宽度  数字
+			 *  bgColor;跑马灯背景颜色
+			 *  conClass;添加marquee子标签class样式
+ 			 *  marqueeClass;添加marqueen class样式
+			 */
+			$(document).ready(function(){
+				var p1 = {};
+				p1.data=[
+				{
+					content:'跑马灯1-1',
+					conId:'c1',
+					href:'http://www.baidu.com',
+					onClick:'alert("alert()")',
+					oneStyle:'color:white',
+					target:"_blank"
+				},
+				{
+					content:'跑马灯1-2',
+					conId:'c2',
+					onClick:'demo()'
+				}];
+				p1.direction='right';
+				p1.scrollamount=10;
+				p1.mouseEvent='true';
+				p1.gap=60;
+				p1.height=30;
+				p1.bgColor='#00ccaa';
+				p1.conClass="conClass";
+				$("#p1").marquee(p1);
+				
+				var p2 = {};
+				p2.data=
+				{
+					content:'跑马灯2-1'
+				};
+				p2.bgColor='yellow';
+				$("#p2").marquee(p2);
+				
+				var p3 = {};
+				p3.data="跑马灯3-1";
+				p3.bgColor='#efefef';
+				p3.marqueeClass="marqueeClass";
+				$("#p3").marquee(p3);
+				
+				
+			});
+			function demo(){
+				alert("function");
+			}
+			function delDataById(){
+				$("#p1").deleteMarqueeData({
+					id:'c2'
+				});
+			}
+			function delDataByIndex(){
+				$("#p1").deleteMarqueeData({
+					index:'0'
+				});
+			}
+			function addMarqueeContent(){
+				var p ={};
+				p.data=[
+				{
+					content:'跑马灯New'
+				}];
+				$("#p1").appendContent(p);
+			}
+			function updataMarqueeContent(){
+				var p = {};
+				p.id="c1";
+				p.content='修改的数据'
+				$("#p1").updataContent(p);
+			}
+			function updataMarqueeContent2(){
+				var p1 = {};
+				p1.index=1;
+				p1.content='修改第二条数据';
+				$("#p1").updataContent(p1);
+			}
+			
+</script>
+	</head>
+	<body>
+		<div id="p1"></div>
+		<div id="p2"></div>
+		<div id="p3"></div>
+		<button onclick='delDataById()'>删除#p1下id为c2的数据</button>
+		<button onclick='delDataByIndex()'>删除#p1下index为0的第一个数据</button>
+		<button onclick='addMarqueeContent()'>新增数据</button>
+		<button onclick='updataMarqueeContent()'>修改#p1下id为c1的数据为  跑</button>
+		<button onclick='updataMarqueeContent2()'>修改#p1下的第二条数据</button>
+	</body>
+</html>

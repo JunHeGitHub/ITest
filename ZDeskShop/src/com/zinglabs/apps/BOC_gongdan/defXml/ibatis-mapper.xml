@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.zinglabs.apps.BOC_gongdan">
+	<select id="selectMaxId" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap" flushCache="true">
+		select max(`gongdanId`) as gongdanId from BOC_gongdan where DATE_FORMAT(STR_TO_DATE(`gongdanId`,"%Y%m%d"),"%Y-%m-%d") = DATE_FORMAT(#{interDate} ,"%Y-%m-%d") ;
+	</select> 
+	
+	<!-- 增 -->
+	<insert id="BOCinsertgongdan" parameterType="java.util.HashMap" flushCache="true">
+		replace into BOC_gongdan
+			(
+	    		`id`
+	    		<if test="gongdanId !='' and gongdanId != null">,`gongdanId`</if>
+	    		<if test="disponseUser !='' and disponseUser != null">,`disponseUser`</if>
+	    		<if test="customerCallTime !='' and customerCallTime != null">,`customerCallTime`</if>
+	    		<if test="callInNum !='' and callInNum != null">,`callInNum`</if>
+	    		<if test="gongdanSource !='' and gongdanSource != null">,`gongdanSource`</if>
+	    		<if test="gongdanLevel !='' and gongdanLevel != null">,`gongdanLevel`</if>
+	    		<if test="belongBank !='' and belongBank != null">,`belongBank`</if>
+	    		<if test="channelName !='' and channelName != null">,`channelName`</if>
+	    		<if test="country !='' and country != null">,`country`</if>
+	    		<if test="gongdanState !='' and gongdanState != null">,`gongdanState`</if>
+	    		<if test="gongdanType !='' and gongdanType != null">,`gongdanType`</if>
+	    		<if test="customerName !='' and customerName != null">,`customerName`</if>
+	    		<if test="companyFullName !='' and companyFullName != null">,`companyFullName`</if>
+	    		<if test="businessWorkType !='' and businessWorkType != null">,`businessWorkType`</if>
+	    		<if test="businessWorkChildType !='' and businessWorkChildType != null">,`businessWorkChildType`</if>
+	    		<if test="customerSex !='' and customerSex != null">,`customerSex`</if>
+	    		<if test="paperType !='' and paperType != null">,`paperType`</if>
+	    		<if test="paperNum !='' and paperNum != null">,`paperNum`</if>
+	    		<if test="phoneNum !='' and phoneNum != null">,`phoneNum`</if>
+	    		<if test="email !='' and email != null">,`email`</if>
+	    		<if test="huifuMgs !='' and huifuMgs != null">,`huifuMgs`</if>
+	    		<if test="tuihuiMgs !='' and tuihuiMgs != null">,`tuihuiMgs`</if>
+	    		<if test="fuheMgs !='' and fuheMgs != null">,`fuheMgs`</if>
+	    		<if test="chuliMgs !='' and chuliMgs != null">,`chuliMgs`</if>
+	    		<if test="manager !='' and manager != null">,`manager`</if>
+	    		<if test="referDept !='' and referDept != null">,`referDept` </if>
+	    		<if test="defendant !='' and defendant != null">,`defendant` </if>
+	    		<if test="complainType !='' and complainType != null">,`complainType` </if>
+	    		<if test="manageTimeLimit !='' and manageTimeLimit != null">,`manageTimeLimit` </if>
+	    		<if test="matter !='' and matter != null">,`matter` </if>
+	    		<if test="problemType !='' and problemType != null">,`problemType`</if>
+	    		<if test="praise !='' and praise != null">,`praise`</if>
+	    		<if test="businessType !='' and businessType != null">,`businessType` </if>
+	    		<if test="referMan !='' and referMan != null">,`referMan`</if>
+	    		<if test="accountType !='' and accountType != null">,`accountType` </if>
+	    		<if test="accountNumber !='' and accountNumber != null">,`accountNumber`</if>
+	    		<if test="subscribeType !='' and subscribeType != null">,`subscribeType` </if>
+	    		<if test="manageTime !='' and manageTime != null">,`manageTime` </if>
+	    		<if test="manageSite !='' and manageSite != null">,`manageSite` </if>
+	    		<if test="replaceAgent !='' and replaceAgent != null">,`replaceAgent` </if>
+	    		<if test="replaceAgentPaperNum !='' and replaceAgentPaperNum != null">,`replaceAgentPaperNum` </if>
+	    		<if test="chuangjianrenId !='' and chuangjianrenId != null">,`chuangjianrenId` </if>
+	    		<if test="chuangjianrenName !='' and chuangjianrenName != null">,`chuangjianrenName` </if>
+	    		<if test="chuangjianTime !='' and chuangjianTime != null">,`chuangjianTime` </if>
+	    		<if test="fuherenId !='' and fuherenId != null">,`fuherenId` </if>
+	    		<if test="fuherenName !='' and fuherenName != null">,`fuherenName` </if>
+	    		<if test="fuheTime !='' and fuheTime != null">,`fuheTime` </if>
+	    		<if test="wanchengrenId !='' and wanchengrenId != null">,`wanchengrenId` </if>
+	    		<if test="wanchengrenName !='' and wanchengrenName != null">,`wanchengrenName` </if>
+	    		<if test="wanchengTime !='' and wanchengTime != null">,`wanchengTime` </if>
+	    		<if test="disponseBTime !='' and disponseBTime != null">,`disponseBTime` </if>
+	    		<if test="disponseETime !='' and disponseETime != null">,`disponseETime` </if>
+	    		<if test="endDealTime !='' and endDealTime != null">,`endDealTime` </if>
+	    		<if test="companyId !='' and companyId != null">,`companyId` </if>
+	    		<if test="companyName !='' and companyName != null">,`companyName` </if>
+	    		<if test="departmentId !='' and departmentId != null">,`departmentId` </if>
+	    		<if test="departmentName !='' and departmentName != null">,`departmentName` </if>
+	    		<if test="flowNode !='' and flowNode != null">,`flowNode` </if>
+	    		<if test="flowId !='' and flowId != null">,`flowId` </if>
+	    		<if test="flowState !='' and flowState != null">,`flowState` </if>
+	    		<if test="guanlianId !='' and guanlianId != null">,`guanlianId` </if>
+	    	)VALUES(
+	    		#{id}
+	    		<if test="gongdanId !='' and gongdanId != null">,#{gongdanId}</if>
+	    		<if test="disponseUser !='' and disponseUser != null">,#{disponseUser}</if>
+	    		<if test="customerCallTime !='' and customerCallTime != null">,#{customerCallTime}</if>
+	    		<if test="callInNum !='' and callInNum != null">,#{callInNum}</if>
+	    		<if test="gongdanSource !='' and gongdanSource != null">,#{gongdanSource}</if>
+	    		<if test="gongdanLevel !='' and gongdanLevel != null">,#{gongdanLevel}</if>
+	    		<if test="belongBank !='' and belongBank != null">,#{belongBank}</if>
+	    		<if test="channelName !='' and channelName != null">,#{channelName}</if>
+	    		<if test="country !='' and country != null">,#{country}</if>
+	    		<if test="gongdanState !='' and gongdanState != null">,#{gongdanState}</if>
+	    		<if test="gongdanType !='' and gongdanType != null">,#{gongdanType}</if>
+	    		<if test="customerName !='' and customerName != null">,#{customerName}</if>
+	    		<if test="companyFullName !='' and companyFullName != null">,#{companyFullName}</if>
+	    		<if test="businessWorkType !='' and businessWorkType != null">,#{businessWorkType}</if>
+	    		<if test="businessWorkChildType !='' and businessWorkChildType != null">,#{businessWorkChildType}</if>
+	    		<if test="customerSex !='' and customerSex != null">,#{customerSex}</if>
+	    		<if test="paperType !='' and paperType != null">,#{paperType}</if>
+	    		<if test="paperNum !='' and paperNum != null">,#{paperNum}</if>
+	    		<if test="phoneNum !='' and phoneNum != null">,#{phoneNum}</if>
+	    		<if test="email !='' and email != null">,#{email}</if>
+	    		<if test="huifuMgs !='' and huifuMgs != null">,#{huifuMgs}</if>
+	    		<if test="tuihuiMgs !='' and tuihuiMgs != null">,#{tuihuiMgs}</if>
+	    		<if test="fuheMgs !='' and fuheMgs != null">,#{fuheMgs}</if>
+	    		<if test="chuliMgs !='' and chuliMgs != null">,#{chuliMgs}</if>
+	    		<if test="manager !='' and manager != null">,#{manager}</if>
+	    		<if test="referDept !='' and referDept != null">,#{referDept} </if>
+	    		<if test="defendant !='' and defendant != null">,#{defendant} </if>
+	    		<if test="complainType !='' and complainType != null">,#{complainType} </if>
+	    		<if test="manageTimeLimit !='' and manageTimeLimit != null">,#{manageTimeLimit} </if>
+	    		<if test="matter !='' and matter != null">,#{matter} </if>
+	    		<if test="problemType !='' and problemType != null">,#{problemType}</if>
+	    		<if test="praise !='' and praise != null">,#{praise}</if>
+	    		<if test="businessType !='' and businessType != null">,#{businessType} </if>
+	    		<if test="referMan !='' and referMan != null">,#{referMan}</if>
+	    		<if test="accountType !='' and accountType != null">,#{accountType} </if>
+	    		<if test="accountNumber !='' and accountNumber != null">,#{accountNumber}</if>
+	    		<if test="subscribeType !='' and subscribeType != null">,#{subscribeType} </if>
+	    		<if test="manageTime !='' and manageTime != null">,#{manageTime} </if>
+	    		<if test="manageSite !='' and manageSite != null">,#{manageSite} </if>
+	    		<if test="replaceAgent !='' and replaceAgent != null">,#{replaceAgent} </if>
+	    		<if test="replaceAgentPaperNum !='' and replaceAgentPaperNum != null">,#{replaceAgentPaperNum}</if>
+	    		<if test="chuangjianrenId !='' and chuangjianrenId != null">,#{chuangjianrenId} </if>
+	    		<if test="chuangjianrenName !='' and chuangjianrenName != null">,#{chuangjianrenName}</if>
+	    		<if test="chuangjianTime !='' and chuangjianTime != null">,#{chuangjianTime}</if>
+	    		<if test="fuherenId !='' and fuherenId != null">,#{fuherenId}</if>
+	    		<if test="fuherenName !='' and fuherenName != null">,#{fuherenName} </if>
+	    		<if test="fuheTime !='' and fuheTime != null">,#{fuheTime} </if>
+	    		<if test="wanchengrenId !='' and wanchengrenId != null">,#{wanchengrenI} </if>
+	    		<if test="wanchengrenName !='' and wanchengrenName != null">,#{wanchengrenName} </if>
+	    		<if test="wanchengTime !='' and wanchengTime != null">,#{wanchengTime} </if>
+	    		<if test="disponseBTime !='' and disponseBTime != null">,#{disponseBTime} </if>
+	    		<if test="disponseETime !='' and disponseETime != null">,#{disponseETime} </if>
+	    		<if test="endDealTime !='' and endDealTime != null">,#{endDealTime}</if>
+	    		<if test="companyId !='' and companyId != null">,#{companyId} </if>
+	    		<if test="companyName !='' and companyName != null">,#{companyName} </if>
+	    		<if test="departmentId !='' and departmentId != null">,#{departmentId} </if>
+	    		<if test="departmentName !='' and departmentName != null">,#{departmentName} </if>
+	    		<if test="flowNode !='' and flowNode != null">,#{flowNode} </if>
+	    		<if test="flowId !='' and flowId != null">,#{flowId}</if>
+	    		<if test="flowState !='' and flowState != null">,#{flowState} </if>
+	    		<if test="guanlianId !='' and guanlianId != null">,#{guanlianId} </if>
+	    	)
+	</insert>
+	
+	
+	<!-- 增 -->
+	<insert id="BOCinsertgongdanHis" parameterType="java.util.HashMap" flushCache="true">
+		replace into BOC_gongdanHis
+			(
+	    		`id`
+	    		<if test="gongdanId !='' and gongdanId != null">,`gongdanId`</if>
+	    		<if test="disponseUser !='' and disponseUser != null">,`disponseUser`</if>
+	    		<if test="customerCallTime !='' and customerCallTime != null">,`customerCallTime`</if>
+	    		<if test="callInNum !='' and callInNum != null">,`callInNum`</if>
+	    		<if test="gongdanSource !='' and gongdanSource != null">,`gongdanSource`</if>
+	    		<if test="gongdanLevel !='' and gongdanLevel != null">,`gongdanLevel`</if>
+	    		<if test="belongBank !='' and belongBank != null">,`belongBank`</if>
+	    		<if test="channelName !='' and channelName != null">,`channelName`</if>
+	    		<if test="country !='' and country != null">,`country`</if>
+	    		<if test="gongdanState !='' and gongdanState != null">,`gongdanState`</if>
+	    		<if test="gongdanType !='' and gongdanType != null">,`gongdanType`</if>
+	    		<if test="customerName !='' and customerName != null">,`customerName`</if>
+	    		<if test="companyFullName !='' and companyFullName != null">,`companyFullName`</if>
+	    		<if test="businessWorkType !='' and businessWorkType != null">,`businessWorkType`</if>
+	    		<if test="businessWorkChildType !='' and businessWorkChildType != null">,`businessWorkChildType`</if>
+	    		<if test="customerSex !='' and customerSex != null">,`customerSex`</if>
+	    		<if test="paperType !='' and paperType != null">,`paperType`</if>
+	    		<if test="paperNum !='' and paperNum != null">,`paperNum`</if>
+	    		<if test="phoneNum !='' and phoneNum != null">,`phoneNum`</if>
+	    		<if test="email !='' and email != null">,`email`</if>
+	    		<if test="huifuMgs !='' and huifuMgs != null">,`huifuMgs`</if>
+	    		<if test="tuihuiMgs !='' and tuihuiMgs != null">,`tuihuiMgs`</if>
+	    		<if test="fuheMgs !='' and fuheMgs != null">,`fuheMgs`</if>
+	    		<if test="chuliMgs !='' and chuliMgs != null">,`chuliMgs`</if>
+	    		<if test="manager !='' and manager != null">,`manager`</if>
+	    		<if test="referDept !='' and referDept != null">,`referDept` </if>
+	    		<if test="defendant !='' and defendant != null">,`defendant` </if>
+	    		<if test="complainType !='' and complainType != null">,`complainType` </if>
+	    		<if test="manageTimeLimit !='' and manageTimeLimit != null">,`manageTimeLimit` </if>
+	    		<if test="matter !='' and matter != null">,`matter` </if>
+	    		<if test="problemType !='' and problemType != null">,`problemType`</if>
+	    		<if test="praise !='' and praise != null">,`praise`</if>
+	    		<if test="businessType !='' and businessType != null">,`businessType` </if>
+	    		<if test="referMan !='' and referMan != null">,`referMan`</if>
+	    		<if test="accountType !='' and accountType != null">,`accountType` </if>
+	    		<if test="accountNumber !='' and accountNumber != null">,`accountNumber`</if>
+	    		<if test="subscribeType !='' and subscribeType != null">,`subscribeType` </if>
+	    		<if test="manageTime !='' and manageTime != null">,`manageTime` </if>
+	    		<if test="manageSite !='' and manageSite != null">,`manageSite` </if>
+	    		<if test="replaceAgent !='' and replaceAgent != null">,`replaceAgent` </if>
+	    		<if test="replaceAgentPaperNum !='' and replaceAgentPaperNum != null">,`replaceAgentPaperNum` </if>
+	    		<if test="chuangjianrenId !='' and chuangjianrenId != null">,`chuangjianrenId` </if>
+	    		<if test="chuangjianrenName !='' and chuangjianrenName != null">,`chuangjianrenName` </if>
+	    		<if test="chuangjianTime !='' and chuangjianTime != null">,`chuangjianTime` </if>
+	    		<if test="fuherenId !='' and fuherenId != null">,`fuherenId` </if>
+	    		<if test="fuherenName !='' and fuherenName != null">,`fuherenName` </if>
+	    		<if test="fuheTime !='' and fuheTime != null">,`fuheTime` </if>
+	    		<if test="wanchengrenId !='' and wanchengrenId != null">,`wanchengrenId` </if>
+	    		<if test="wanchengrenName !='' and wanchengrenName != null">,`wanchengrenName` </if>
+	    		<if test="wanchengTime !='' and wanchengTime != null">,`wanchengTime` </if>
+	    		<if test="disponseBTime !='' and disponseBTime != null">,`disponseBTime` </if>
+	    		<if test="disponseETime !='' and disponseETime != null">,`disponseETime` </if>
+	    		<if test="endDealTime !='' and endDealTime != null">,`endDealTime` </if>
+	    		<if test="companyId !='' and companyId != null">,`companyId` </if>
+	    		<if test="companyName !='' and companyName != null">,`companyName` </if>
+	    		<if test="departmentId !='' and departmentId != null">,`departmentId` </if>
+	    		<if test="departmentName !='' and departmentName != null">,`departmentName` </if>
+	    		<if test="flowNode !='' and flowNode != null">,`flowNode` </if>
+	    		<if test="flowId !='' and flowId != null">,`flowId` </if>
+	    		<if test="guanlianId !='' and guanlianId != null">,`guanlianId` </if>
+	    	)VALUES(
+	    		#{id}
+	    		<if test="gongdanId !='' and gongdanId != null">,#{gongdanId}</if>
+	    		<if test="disponseUser !='' and disponseUser != null">,#{disponseUser}</if>
+	    		<if test="customerCallTime !='' and customerCallTime != null">,#{customerCallTime}</if>
+	    		<if test="callInNum !='' and callInNum != null">,#{callInNum}</if>
+	    		<if test="gongdanSource !='' and gongdanSource != null">,#{gongdanSource}</if>
+	    		<if test="gongdanLevel !='' and gongdanLevel != null">,#{gongdanLevel}</if>
+	    		<if test="belongBank !='' and belongBank != null">,#{belongBank}</if>
+	    		<if test="channelName !='' and channelName != null">,#{channelName}</if>
+	    		<if test="country !='' and country != null">,#{country}</if>
+	    		<if test="gongdanState !='' and gongdanState != null">,#{gongdanState}</if>
+	    		<if test="gongdanType !='' and gongdanType != null">,#{gongdanType}</if>
+	    		<if test="customerName !='' and customerName != null">,#{customerName}</if>
+	    		<if test="companyFullName !='' and companyFullName != null">,#{companyFullName}</if>
+	    		<if test="businessWorkType !='' and businessWorkType != null">,#{businessWorkType}</if>
+	    		<if test="businessWorkChildType !='' and businessWorkChildType != null">,#{businessWorkChildType}</if>
+	    		<if test="customerSex !='' and customerSex != null">,#{customerSex}</if>
+	    		<if test="paperType !='' and paperType != null">,#{paperType}</if>
+	    		<if test="paperNum !='' and paperNum != null">,#{paperNum}</if>
+	    		<if test="phoneNum !='' and phoneNum != null">,#{phoneNum}</if>
+	    		<if test="email !='' and email != null">,#{email}</if>
+	    		<if test="huifuMgs !='' and huifuMgs != null">,#{huifuMgs}</if>
+	    		<if test="tuihuiMgs !='' and tuihuiMgs != null">,#{tuihuiMgs}</if>
+	    		<if test="fuheMgs !='' and fuheMgs != null">,#{fuheMgs}</if>
+	    		<if test="chuliMgs !='' and chuliMgs != null">,#{chuliMgs}</if>
+	    		<if test="manager !='' and manager != null">,#{manager}</if>
+	    		<if test="referDept !='' and referDept != null">,#{referDept} </if>
+	    		<if test="defendant !='' and defendant != null">,#{defendant} </if>
+	    		<if test="complainType !='' and complainType != null">,#{complainType} </if>
+	    		<if test="manageTimeLimit !='' and manageTimeLimit != null">,#{manageTimeLimit} </if>
+	    		<if test="matter !='' and matter != null">,#{matter} </if>
+	    		<if test="problemType !='' and problemType != null">,#{problemType}</if>
+	    		<if test="praise !='' and praise != null">,#{praise}</if>
+	    		<if test="businessType !='' and businessType != null">,#{businessType} </if>
+	    		<if test="referMan !='' and referMan != null">,#{referMan}</if>
+	    		<if test="accountType !='' and accountType != null">,#{accountType} </if>
+	    		<if test="accountNumber !='' and accountNumber != null">,#{accountNumber}</if>
+	    		<if test="subscribeType !='' and subscribeType != null">,#{subscribeType} </if>
+	    		<if test="manageTime !='' and manageTime != null">,#{manageTime} </if>
+	    		<if test="manageSite !='' and manageSite != null">,#{manageSite} </if>
+	    		<if test="replaceAgent !='' and replaceAgent != null">,#{replaceAgent} </if>
+	    		<if test="replaceAgentPaperNum !='' and replaceAgentPaperNum != null">,#{replaceAgentPaperNum}</if>
+	    		<if test="chuangjianrenId !='' and chuangjianrenId != null">,#{chuangjianrenId} </if>
+	    		<if test="chuangjianrenName !='' and chuangjianrenName != null">,#{chuangjianrenName}</if>
+	    		<if test="chuangjianTime !='' and chuangjianTime != null">,#{chuangjianTime}</if>
+	    		<if test="fuherenId !='' and fuherenId != null">,#{fuherenId}</if>
+	    		<if test="fuherenName !='' and fuherenName != null">,#{fuherenName} </if>
+	    		<if test="fuheTime !='' and fuheTime != null">,#{fuheTime} </if>
+	    		<if test="wanchengrenId !='' and wanchengrenId != null">,#{wanchengrenI} </if>
+	    		<if test="wanchengrenName !='' and wanchengrenName != null">,#{wanchengrenName} </if>
+	    		<if test="wanchengTime !='' and wanchengTime != null">,#{wanchengTime} </if>
+	    		<if test="disponseBTime !='' and disponseBTime != null">,#{disponseBTime} </if>
+	    		<if test="disponseETime !='' and disponseETime != null">,#{disponseETime} </if>
+	    		<if test="endDealTime !='' and endDealTime != null">,#{endDealTime}</if>
+	    		<if test="companyId !='' and companyId != null">,#{companyId} </if>
+	    		<if test="companyName !='' and companyName != null">,#{companyName} </if>
+	    		<if test="departmentId !='' and departmentId != null">,#{departmentId} </if>
+	    		<if test="departmentName !='' and departmentName != null">,#{departmentName} </if>
+	    		<if test="flowNode !='' and flowNode != null">,#{flowNode} </if>
+	    		<if test="flowId !='' and flowId != null">,#{flowId}</if>
+	    		<if test="guanlianId !='' and guanlianId != null">,#{guanlianId} </if>
+	    	)
+	</insert>
+	<select id="selectgongdan" parameterType="java.util.HashMap" flushCache="true">
+		select * from BOC_gongdan
+			where gongdanId = #{idcode}
+	</select>
+	<select id="selectgongdanid" parameterType="java.util.HashMap" flushCache="true">
+		select gongdanId from BOC_gongdan
+			where gongdanId = #{guanlianId}
+	</select>
+	<update id="updateguanlianId" parameterType="java.util.HashMap" flushCache="true">
+		update BOC_gongdan set
+            `guanlianId`=#{guanlianId}
+   		where `gongdanId`=#{gongdanId}
+	</update>
+	<update id="updateForMQ" parameterType="java.util.HashMap" flushCache="true">
+		update BOC_gongdan
+		<trim prefix="SET" suffixOverrides=",">
+				`chuliMgs`=#{chuliMgs},`flowNode`=#{flowNode}
+				<if test="gongdanState !='' and gongdanState != null">,`gongdanState`=#{gongdanState}</if>
+				<if test="disponseUser !='' and disponseUser != null">,`disponseUser`=#{disponseUser}</if>
+	    		<if test="tuihuiMgs !='' and tuihuiMgs != null">,`tuihuiMgs`=#{tuihuiMgs}</if>
+	    		<if test="chuliMgs !='' and chuliMgs != null">,`chuliMgs`=#{chuliMgs}</if>
+	    		<if test="wanchengrenId !='' and wanchengrenId != null">,`wanchengrenI`=#{wanchengrenI} </if>
+	    		<if test="wanchengrenName !='' and wanchengrenName != null">,`wanchengrenName`=#{wanchengrenName} </if>
+	    		<if test="wanchengTime !='' and wanchengTime != null">,`wanchengTime`=#{wanchengTime} </if>
+	    		<if test="disponseBTime !='' and disponseBTime != null">,`disponseBTime`=#{disponseBTime} </if>
+	    		<if test="disponseETime !='' and disponseETime != null">,`disponseETime`=#{disponseETime} </if>
+	    		<if test="endDealTime !='' and endDealTime != null">,`endDealTime`=#{endDealTime}</if>
+	    		<if test="flowId !='' and flowId != null">,`flowId`=#{flowId}</if>
+	    		<if test="flowState !='' and flowState != null">,`flowState`=#{flowState} </if>
+	    	</trim>
+   		where `gongdanId`=#{gongdanId}
+	</update>
+	<delete id="deleteguanlian" parameterType="java.util.HashMap" flushCache="true">
+		update BOC_gongdan set 
+			`guanlianId`=''
+			where `guanlianId` in (${guanlianId},${gongdanId})
+	</delete>
+</mapper>

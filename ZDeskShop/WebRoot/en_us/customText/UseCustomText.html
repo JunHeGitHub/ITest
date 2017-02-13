@@ -1,0 +1,246 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <title>自定义信息模板使用页面</title>
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="this is my page">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="../../css/bootstrap.min.css" type="text/css"></link>
+    <script type="text/javascript" src="../../js/jquery.js"></script>
+    <script type="text/javascript" src="../../js/common_utils.js"></script>
+    <script type="text/javascript" src="../../js/bootstrap.js"></script>
+    <script type="text/javascript" src="../../js/appCommonUtil.js"></script>
+    <!--zTree-->
+	<link rel="stylesheet" href="../../js/zTree/zTreeStyle/zTreeStyle.css"type="text/css" />
+	<script type="text/javascript" src="../../js/zTree/jquery.ztree.all-3.5.min.js"></script>
+	<style type="text/css">
+		ul.ztree {border: 1px solid #617775;background: #f0f6e4;width:220px;height:180px;overflow: auto;}
+		dl {margin: 0;padding: 0;margin-left: -100px;}
+		dl dt{
+			line-height: 30px;
+		}
+	</style>
+	<script type="text/javascript">
+	//ztree
+	var setting = {
+		view: {
+			dblClickExpand: false
+		},
+		data: {
+			key:{
+				name:'text'
+			},
+			simpleData: {
+				enable: true
+			}
+		},
+		callback: {
+			onClick: onClick
+		}
+	};
+	function onClick(e, treeId, treeNode) {
+		var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+		nodes = zTree.getSelectedNodes();
+		idStr ="";
+		textStr = "";
+		for (var i=0, l=nodes.length; i<l; i++) {
+			idStr +=nodes[i].id+",";
+			textStr += nodes[i].text + ",";
+		}
+		if (textStr.length > 0 ){ 
+			textStr = textStr.substring(0, textStr.length-1);
+		}
+		if (idStr.length > 0 ){ 
+			idStr = idStr.substring(0, idStr.length-1);
+		}
+		var nameObj = $("#templateTypeName");
+		var idObj=$("#templateTypeId");
+		nameObj.val(textStr);
+		idObj.val(idStr);
+		getTempByTypeId(idStr);
+		hideMenu();
+	}
+	function showMenu() {
+		$("#showTempData,#showTemplateDataTab,#showStr").html("");
+		var nameObj = $("#templateTypeName");
+		var Offset = $("#templateTypeName").offset();
+		$("#menuContent").css({left:Offset.left + "px", top:Offset.top + nameObj.outerHeight() + "px"}).slideDown("fast");
+		$("body").bind("mousedown",onBodyDown);
+	}
+	function hideMenu() {
+		$("#menuContent").fadeOut("fast");
+		$("body").unbind("mousedown", onBodyDown);
+	}
+	function onBodyDown(event) {
+		if (!(event.target.id == "menuBtn" || event.target.id == "menuContent" || $(event.target).parents("#menuContent").length>0)) {
+			hideMenu();
+		}
+	}
+	
+	function getTemplateTreeData(){
+		var url = "/" + "ZDesk" + "/" + "/ZKM/TreeDataMapper" + "/" + "getTemplateTree.action";
+   		var rdata=[];
+   		ajaxFunction(url,null,false,
+   			function(data){
+   				rdata = data.data;
+   		});
+   		return rdata;
+	}
+	$(document).ready(function(){
+		$("#templateTypeName").val("");
+		var nodes = getTemplateTreeData();
+  		$.fn.zTree.init($("#treeDemo"),setting,nodes);
+	});
+	//根据关联表中树id查询模板
+	function getTempByTypeId(nodeId){
+		//查询关联表中数据id
+		var array = new Array();
+		var url="/" + "ZDesk" + "/" + "/ZKM/TreeDataMapper" + "/" + "getDataByNodeId.action";
+		var params ={};
+		params.nodeId=nodeId;
+		ajaxFunction(url,params,false,function(data){
+			url="/" + "ZDesk" + "/" +"/ZKM/CustomText/getTemplateById.action";
+			params={};
+			for(var i in data[nodeId]){
+				var id=data[nodeId][i];
+				params.id=id;
+				ajaxFunction(url,params,false,function(d){
+					array.push(d.rows[0]);
+				});
+			}
+			$("#template #templateSelect").html("<option value=''>===请选择===</option>");
+			var str = "";
+			for(var i in array){
+				str += "<option value="+array[i].id+">"+array[i].name+"</option>";
+			}
+			$("#template #templateSelect").append(str);
+		});
+		$("#template,#templateBtn").removeClass("hide");
+	}
+	//打开模板数据
+	var maxSize;
+	function openTemplateData(){
+		$("#showTempData,#showTemplateDataTab,#showStr").html("");
+		var v=$("#templateSelect").val();
+		if(v!=''){
+			
+			var url ="/" + "ZDesk" + "/" + "/ZKM/CustomText" + "/" +"getTemplateById.action";
+			var params = {};
+			params.id=v;
+			ajaxFunction(url,params,false,function(data){
+				maxSize=data.rows[0].maxSize;
+			});
+			url ="/" + "ZDesk" + "/" + "/ZKM/CustomText" + "/" +"getTemplateDataByTemplateId.action";
+			params.templateId=v;
+			ajaxFunction(url,params,false,function(data){
+				if(data.rows.length==0){
+					zinglabs.alert("模板中没有数据");
+				}else{
+					var str = "";
+					var dataStr="";
+					for(var i in data.rows){
+						if(data.rows[i].type=='constant'){
+							str += "<tr class='hide'><td><input type='hidden' value='"+data.rows[i].content+"'/></td></tr>";
+							dataStr +=data.rows[i].content;
+						}else if(data.rows[i].type=='variable'){
+							str+="<tr><td>"+data.rows[i].content+":</td><td><input type='text' class='span2' onchange='writeText()'/></td></tr>";
+							dataStr += "["+data.rows[i].content+"]";
+						}
+					}
+					$("#showTemplateDataTab").html(str);
+					$("#showTempData").html(dataStr);
+				}
+			});
+		}
+	}
+	//生成模板数据
+	function getTemplateData(){
+		var str = "";
+		$("#showTemplateDataTab input").each(function(){
+			str += $(this).val();
+		});
+		return str;
+	}
+	//监听变量改变实时更新显示文本
+	function writeText(){
+		var str = getTemplateData();
+		if(str.length>maxSize){
+			zinglabs.alert("超过最大文本限制");
+		}else{
+			$("#showStr").html(str);
+		}
+	}
+	//返回文本
+	function returnText(){
+		var str="";
+		var flag=true;;
+		$("#showTemplateDataTab input").each(function(){
+			str += $(this).val();
+		});
+		$("#showTemplateDataTab input[type=text]").each(function(){
+			if($(this).val()==''||$(this).val()==undefined){
+				flag=false;
+			}
+		});
+		if($("#templateSelect").val()==''||$("#templateSelect").val()==undefined){
+			zinglabs.alert("请选择模板后再生成文本");
+			return;
+		}
+		if(flag){
+			if(str.length>maxSize){
+				zinglabs.alert("超过最大文本限制");
+			}else{
+				var pwin = window.parent;
+				reFillFn=getQueryString("reFillFn");
+				if(reFillFn!=''&&reFillFn!=undefined){
+					pwin[reFillFn](str);
+				}else{
+					zinglabs.alert("没有获取到回调函数名称");
+				}
+			}
+		}else{
+			zinglabs.alert("请填写变量后再生成文本");
+		}
+	}
+	</script>
+  </head>
+  <body>
+  	<h4 style="text-align: center;">自定义模板使用页面</h4>
+	<div style="border: 1px solid;width:99%;height:40px;padding-top:10px;">
+		<dl id="templateType" class="dl-horizontal pull-left">
+			<dt>分类:</dt>
+			<dd>
+				<div class="input-append">
+					<input id="templateTypeId" type="hidden"/>
+  					<input class="span2" id="templateTypeName" type="text" readonly>
+					<input type="button" class="btn" value="选择" onclick="showMenu()"/>
+				</div>
+			</dd>
+		</dl>
+		<dl id="template" class="dl-horizontal pull-left hide">
+			<dt>模板:</dt>
+			<dd>
+				<select id="templateSelect" class="span2" onchange="openTemplateData()"></select>
+			</dd>
+		</dl>
+		<span id="templateBtn" class="hide" style="margin-left:35px;">
+  			<button id="getDataBtn" type="button" class="btn" onclick="returnText()">生成文本</button>
+		</span>
+	</div>
+	<div style="border-bottom: 1px solid;min-height:60px;width:99%;">
+		<b>模板显示 ("[ ]"中内容为变量)</b>
+		<div id="showTempData" style="color:red;"></div>
+	</div>
+	<div style="width:30%;float:left;border-right:1px solid;">
+		<b>需要填写的变量:</b>
+		<table id="showTemplateDataTab" style="text-align: center;"></table>
+	</div>
+	<div style="width:70%;">
+		<b>显示拼接的文本:</b>
+		<div id="showStr" style="color: red;"></div>
+	</div>
+	<div id="menuContent" class="menuContent" style="display:none; position: absolute;">
+		<ul id="treeDemo" class="ztree" style="margin-top:0; width:160px;"></ul>
+	</div>
+  </body>
+</html>

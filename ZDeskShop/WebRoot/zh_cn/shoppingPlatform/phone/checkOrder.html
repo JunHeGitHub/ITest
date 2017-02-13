@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>确认订单</title>
+
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+
+<!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+<!-- <link rel="stylesheet" type="text/css" href="../css/checkOrder.css"> -->
+<link rel="stylesheet" type="text/css" href="../css/zzAlert.css">
+<link rel="stylesheet" type="text/css" href="../css/top.css">
+<link rel="stylesheet" type="text/css" href="../../../css/iscroll.css" />
+<script type="text/javascript"
+	src="../../../js/iscroll-master/build/iscroll-probe.js"></script>
+<script type="text/javascript" src="../js/zzAlert.js"></script>
+<script type="text/javascript" src="../js/upAddress.js"></script>
+<script type="text/javascript" src="../../../js/jquery.js"></script>
+<script type="text/javascript" src="../../../js/common_utils.js"></script>
+<script type="text/javascript" src="../../../js/appCommonUtil.js"></script>
+<script type="text/javascript" src="../js/checkOrder.js"></script>
+
+<style>
+		 #hd_back:before,#hd_back_none:before,#quickbuyback:before{
+		    content:"";
+		    width:15px;
+		    height:15px;
+		    position:absolute;
+		    top:10px;
+		    left:10px;
+		    border-bottom:1px solid #afafae;
+		    border-right:1px solid #afafae;
+		    -webkit-transform: rotate(135deg);
+		    -moz-transform: rotate(135deg);
+		    -o-transform: rotate(135deg);
+		    transform: rotate(135deg);
+		}
+		 
+		#hd_back:after,#hd_back_none:after,#quickbuyback:after{
+		    right:0;
+		}
+		
+		#toRight:before{
+			content:"";
+		    width:15px;
+		    height:15px;
+		    position:absolute;
+		    top: 80px;
+			left: 90%;
+		    border-top: 1px solid #afafae;
+			border-left: 1px solid #afafae;
+		    -webkit-transform: rotate(135deg);
+		    -moz-transform: rotate(135deg);
+		    -o-transform: rotate(135deg);
+		    transform: rotate(135deg);
+		
+		}
+	</style>
+
+
+</head>
+
+<body scroll="no">
+	<div class="wrap overflowHidden">
+		<!-- <div class="top">
+			<div class="back" onclick="zzBack();">返回</div>
+			<div>
+				<h1>确认订单</h1>
+			</div>
+		</div> -->
+		<div id="top" style="border-bottom:1px solid #DDDDDD;">
+			<a id="hd_back"  href="javascript:void(0);"  onclick="javascript:history.go(-1);"></a>
+			<span  style="padding-left:18px;margin-top: -10px;position: absolute;color:#afafae;"
+				onclick="javascript:history.go(-1);"
+			>返回</span>
+			<div class="site-nav">
+				<ul class="fix">
+					<li class="home"><a href="index.html">首页</a></li>
+					<li class="mysn"><a href="javascript:void(0);"
+						onclick="location='userCenter.html'">我的云贝</a></li>
+					<li class="mycart"><a href="javascript:void(0);"
+						onclick="location='demo.html'">购物车</a></li>
+					<li class="allcate"><a href="javascript:void(0);"
+						onclick="location='childFenlei.html'">商品分类</a></li>
+				</ul>
+			</div>
+		</div>
+		<div id="wrapper" class="container divFlotLeft" style="top:4%;overflow: visible;">
+			<div id="scroller" class="divFlotLeft">
+				<div id="container" class="containerSon divFlotLeft">
+					<div class="site topAndBottomLine  divFlotLeft" style="padding-top:10px;">
+						<div class="siteImg divFlotLeft">
+							<img alt="" src="../images/didianxz.png">
+						</div>
+						<div class="siteTit divFlotLeft">
+							<strong class="siteTitText overflowHidden divFlotLeft"><div
+									id="buyersName"></div></strong> <strong class="siteTitText1 "
+								id="buyersPhone"> </strong>
+						</div>
+						<div class="siteText divFlotLeft">
+							<div class="stText  overflowHidden divFlotLeft" id="buyersAddress"></div>
+							<div class="imgRjt divFlotLeft" onclick="showASD()">
+								 <img alt="" src="../images/yjt.png">  
+								<!-- <a href="javascript:void(0);" id="toRight"></a> -->
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="message topAndBottomLine colorHSBJ divFlotLeft">
+					<input placeholder="给卖家留言:" value="" type="text" class="messageText"
+						id="buyersMessage"> </input>
+				</div>
+				<div class="containerSon1 divFlotLeft">
+				
+				</div>
+			</div>
+		</div>
+		<div class="bottomDiv">
+			<div onclick="goSumbitOrder();" class="submitD divFlotRight">确认提交</div>
+			<div class="sumPrice divFlotRight">
+				<div class="goodsCount1">
+					<span class="pl15">合计: </span>
+					<span class="colorFFD5702">￥</span>
+					<span id="sumPrice" class="colorFFD5702">0</span>
+				</div>
+				<div class="goodsCount">
+					<span class="pl15">商品数量： </span><span id="count">X 0 件</span>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+	<div class="upAddress" style="display: none;">
+		<div id="ADSMap" class="map divFlotLeft ">
+			<div class="upAddressTitle divFlotLeft color929292">
+				<div onclick="closeASD()"
+					class="upAddressC divFlotLeft colorFD70431">取消</div>
+				<div onclick="okADS();"
+					class="upAddressO divFlotLeft colorD5702 colorFD70431">确定</div>
+
+			</div>
+			<div class="upAddressList divFlotLeft">
+				<div id="ADSList" class="ADSList divFlotLeft">
+					<!-- <div class="site divFlotLeft">
+						<div class="siteImg divFlotLeft">
+							<img alt="" src="../images/didian.png">
+						</div>
+						<div class="siteTit divFlotLeft">
+							<strong class="siteTitText divFlotLeft"> 收货人:<span
+								id="buyersName">杨超<span></strong> <strong
+								class="siteTitText1 divFlotLeft" id="buyersPhone">
+								13718200402 </strong>
+						</div>
+						<div class="siteText divFlotLeft">
+							<div class="stText divFlotLeft" id="buyersAddress">北京市海淀区信息路二号国际科技创业园2号院二号楼</div>
+						</div>
+					</div> -->
+
+				</div>
+				<!-- 编辑加添加 收货地址管理 -->
+				<div id="ADSEidt" style="display: none;width: 100%"
+					class="divFlotLeft">
+					<div i style="width: 100%" class="divFlotLeft">
+						<div id="ADSEtTitlT"
+							class="colorF929292 filterss ADSEtTitlT divFlotLeft ASDText">请选择省份</div>
+						<div id="ADSEtTitl" style="width: 100%" class="divFlotLeft">
+
+						</div>
+
+						<div id="ADSEtTitlDetails" style="width: 100%;display: none;"
+							class="divFlotLeft">
+							<div id="ADSEtTitlT"
+								class="filterss colorFD70431 ADSEtTitlT divFlotLeft ASDText">
+								<input id="ebuyersAddress" class=" colorF929292" maxlength="300"
+									value="" placeholder="请输入详细地址" type="text" />
+
+							</div>
+							<div id="ADSEtTitlT"
+								class="filterss colorFD70431 ADSEtTitlT divFlotLeft ASDText">
+								<input id="ebuyersName" placeholder="请输入收件人姓名" maxlength="20"
+									value="" class=" colorF929292" type="text" />
+
+							</div>
+							<div id="ADSEtTitlT"
+								class="filterss colorFD70431 ADSEtTitlT divFlotLeft ASDText">
+								<input id="ebuyersPhone" placeholder="请输入收件人联系电话" maxlength="20"
+									value="" class=" colorF929292" type="text" />
+							</div>
+						</div>
+						<!--  <div id="ADSEtTitlT" class="color929292 colorFD70431 ADSEtTitlT divFlotLeft ASDText">北京</div> -->
+					</div>
+					<div id="ADSEarea" style="width: 100%" class="divFlotLeft">
+						<!-- <div class="areaN divFlotLeft colorB6DF87   ASDText"> 北京</div> -->
+					</div >
+					<div style="width:100%;height: 55px;" class="divFlotLeft"></div>
+				</div>
+				<div id="ADSmsg" class="containerSon1 divFlotLeft"></div>
+			</div>
+		</div>
+		<div onclick="addADS()" class="tjImg">
+			<img width="55px" height="55px" src="../images/htj.png"> </img>
+		</div>
+	</div>
+</body>
+</html>

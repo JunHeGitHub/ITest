@@ -1,0 +1,1453 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>通用树列表</title>
+		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+		<meta http-equiv="description" content="this is my page">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<link rel="stylesheet" href="../../js/zTree/zTreeStyle/zTreeStyle.css"
+			type="text/css" />
+		<link rel="stylesheet" href="../../css/bootstrap.min.css"
+			type="text/css"></link>
+		<link rel="stylesheet" href="../../css/bootstrap-responsive.min.css"
+			type="text/css" />
+		<script type="text/javascript" src="../../js/jquery.js"></script>
+		<script type="text/javascript" src="../../js/bootstrap.min.js"></script>
+		<script type="text/javascript"
+			src="../../js/zTree/jquery.ztree.all-3.5.min.js"></script>
+		<script type="text/javascript" src="../../js/appCommonUtil.js"></script>
+		<script type="text/javascript" src="../../js/common_utils.js"></script>
+		<style type="text/css">
+#myModal9 {
+	min-width: 800px;
+	max-height: 600px;
+	margin-left: -30%;
+}
+
+#myModal9 .modal-body {
+	max-height: 1000px;
+}
+
+#myModal9 .modal-body #ttt {
+	width: 100%;
+	min-height: 300px;
+}
+
+#myModal10 {
+	min-width: 800px;
+	max-height: 600px;
+	margin-left: -30%;
+}
+
+#myModal10 .modal-body {
+	max-height: 1000px;
+}
+
+#myModal10 .modal-body #ttt {
+	width: 100%;
+	min-height: 300px;
+}
+
+#myModal12 {
+	min-width: 800px;
+	max-height: 600px;
+	margin-left: -30%;
+}
+
+#myModal12 .modal-body {
+	max-height: 1000px;
+}
+
+#myModal15 {
+	min-width: 800px;
+	max-height: 600px;
+	margin-left: -30%;
+}
+
+#myModal15 .modal-body {
+	max-height: 1000px;
+}
+
+dl dt {
+	margin-left: 17px;
+}
+</style>
+		<script type="text/javascript">
+		var SP="ZDesk"
+		var child;
+		var  treeNode_del;
+		var recordType;
+		var type;
+		var params={};
+		var commonTreeParam=[];
+		var jsons=[];
+		var jsons1=[];
+		var nodeType;
+		var parentId;
+		var isSearch;
+		var ids=[];
+		var objs={};
+		var rootValue =null;
+		var curStatus = null;
+		var changeNode = new Array();
+		var asyncNode = new Array();
+		var allasyncNode = new Array();
+		var treeNodes=[];
+		var treeObj;
+		var setting = {
+		data: {
+			simpleData: {
+				enable: true,
+				idKey:'id',
+				piKey:'pid'
+			},
+			key:{name:"text"}
+		},
+		async: {},
+		callback:{
+			beforeDrop:beforeDrop,
+			onDrop:onDrop,
+			beforeRemove:beforeRemove,//点击删除时触发，用来提示用户是否确定删除
+			beforeEditName: beforeEditName,//点击编辑时触发，用来判断该节点是否能编辑
+			beforeRename:beforeRename,//编辑结束时触发，用来验证输入的数据是否符合要求
+			onRemove:onRemove,
+			onRename:onRename,//编辑后触发，用于操作后台
+			onClick:zTreeOnClick,//点击节点触发的事件
+			removeNode:removeNode
+			},
+		check: {
+			enable: false,
+			chkStyle: "checkbox",
+			chkboxType: { "Y": "", "N": "" }
+		},
+		view: {
+		},
+		edit: {
+		drag: {
+				isCopy: false,
+				isMove: true,
+				prev: dropPrev,
+				inner: dropInner,
+				next: dropNext,
+				autoOpenTime: 1000
+			},
+		enable: true,
+		editNameSelectAll:true,
+		removeTitle:'删除',
+		renameTitle:'重命名'
+		}
+		};
+		$(document).ready(function(){
+		 
+		
+			load();
+		});
+		
+		
+		function dropPrev(treeId, nodes, targetNode){
+		return dropRoot(treeId, nodes, targetNode);
+		}
+		function dropInner(treeId, nodes, targetNode){
+		return dropRoot(treeId, nodes, targetNode);
+		}
+		function dropNext(treeId, nodes, targetNode){
+		return dropRoot(treeId, nodes, targetNode);
+		}
+		function dropRoot(treeId, nodes, targetNode){
+		if (!targetNode) {
+			return false;
+		}
+		return true;
+		}
+		// 拖拽前判断是否允许拖拽
+	 	function beforeDrop(treeId, treeNodes, targetNode, moveType) {
+		 return targetNode ? targetNode.drop !== false : true;
+		} 
+		// 拖拽操作结束时调用函数
+		function onDrop(event,treeId,treeNodes,targetNode,moveType){
+	     if(treeNodes[0].pId==null||treeNodes[0].pId==''){  //拖拽到根节点的情况
+		 var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+		 var nodes = treeObj.getNodes();
+		 treeNodes[0].pId='';
+		 var p={};
+		 p.id=treeNodes[0].id;
+		 p.pId='';
+		 ajaxFunction("/"+window.top.PRJ_PATH+"/"+SP+"/ZKMCommonTree/treeNodeClassificationUpdatePidIsNull.action", p, false, function(data) {
+			if (data.success) {
+				   var ids = [];
+				   for(var i=0;i<nodes.length;i++){
+					    ids.push(nodes[i].id);
+				   }
+				   var params = {};
+				   params.ids = ids.join(";");
+			ajaxFunction("/"+window.top.PRJ_PATH+"/"+SP+"/ZKMCommonTree/treeNodeClassificationRoot.action", params, false, function(data) {
+			if (data.success) {}
+		    });
+			}
+		});
+			return;
+		}
+	    var treeNodeChildren = treeNodes[0].getParentNode().children;
+		var ids = [];
+		for(var i=0;i<treeNodeChildren.length;i++){
+			ids.push(treeNodeChildren[i].id);
+		}
+		var params = {};
+		var treeNode = treeNodes[0];
+		//alert(JSON.stringify(treeNode));
+		params.treeNode = JSON.stringify(treeNode);
+		params.ids = ids.join(";");
+		params.indexs = ids.join(";");
+		ajaxFunction("/"+window.top.PRJ_PATH+"/"+SP+"/ZKMCommonTree/treeNodeClassification.action", params, false, function(data) {
+			if (data.success) {}
+		});
+	    }	
+		//加载方法，左侧配置表
+		function load(){
+		    var url="/"+window.top.PRJ_PATH+"/"+SP+"/ZKMCommonTree/getPeiZhiCommonTreeList.action";
+			var recordType=getQueryString("recordType");
+			var type=getQueryString("type");
+			if(recordType!=null && recordType!='' && recordType!=undefined){
+				params.recordType=recordType;
+			}
+			if(type!=null && type!='' && type!=undefined){
+				params.type=type;
+			}
+			ajaxFunction(url,params,false,function(data){
+				if(data.success){
+					commonTreeParam=data.data;
+				}else{
+					
+					
+					zinglabs.i18n.alert('tree_nodata');
+				}
+			});
+				if(commonTreeParam!=null && commonTreeParam!=''){
+				for(var i = 0;i<commonTreeParam.length;i++){
+					    var li=$('#li');
+						var obj=commonTreeParam[i];
+				if((commonTreeParam[i].nodeName==null || commonTreeParam[i].nodeName=='')&&commonTreeParam[i].recordType!=null&&commonTreeParam[i].recordType!=''){
+						$("<li><a tabindex='-1' class='btn' style='float: left; width:70px;'>"+commonTreeParam[i].recordType+"</a></li>").bind('click',obj,function(event){
+						jsons1=event.data;
+						getItemTree(event.data);
+						}).appendTo(li);
+				}
+				if(commonTreeParam[i].nodeName!=null &&commonTreeParam[i].nodeName!=''){
+					$("<li><a tabindex='-1' class='btn' style='float: left; width:70px;'>"+commonTreeParam[i].nodeName+"</a></li>").bind('click',obj,function(e)
+					{ 
+					 jsons1=e.data;
+					 getItemTree(e.data);
+					}).appendTo(li);
+				}
+					obj=="";
+			    }
+				}
+		}
+		
+		function getUrl(treeId, treeNode) {
+		var param = '';
+		if(typeof(treeNode) !=undefined && treeNode != null ){
+			param = "?id="+treeNode.id+"&recordType="+recordType+"&isSynchronous=1";
+			return "/"+window.top.PRJ_PATH+"/"+SP+"/ZKMCommonTree/getTreeNode.action"+param;
+		}else{
+			
+			
+			zinglabs.i18n.alert('tree_addNode');	
+			return "/"+window.top.PRJ_PATH+"/"+SP+"/ZKMCommonTree/getTreeNode.action?recordType="+treeNodes.recordType;
+		}
+	    }
+		function onAsyncError(event, treeId, treeNode, XMLHttpRequest, textStatus,errorThrown) {
+		var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+		zinglabs.i18n.alert('tree_yibushuxianyichange');
+			
+		zTree.updateNode(treeNode);
+		}
+		function checkParent(node) {
+		var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+		var parentNode = node.getParentNode();
+		if(rootValue == null){
+			node.highlight = true;
+			zTree.updateNode(node);
+			if(parentNode != null){
+			checkParent(parentNode);
+			}
+		}else if (rootValue !=null && parentNode != null && node.id != rootValue.id) {
+			node.highlight = true;
+			zTree.updateNode(node);
+			checkParent(parentNode);
+		}
+		}
+		function onAsyncSuccess(event, treeId,treeNode, msg) {
+		var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+		if(curStatus!=null && curStatus=="expand"){
+			asyncNodes(treeNode.children);
+		}else  if(curStatus!=null && curStatus=="searchExpand"){
+			asyncSearchNodes(treeNode.children);
+		}
+		if(isSearch){
+			for ( var i = 0; i < asyncNode.length; i++) {
+				checkParent(zTree.getNodesByParam("id", asyncNode[i].id, null)[0]);
+			}
+		} else {
+			zTree.updateNode(treeNode);
+		}
+		}
+		// 查询异步加载节点
+		function asyncSearchNodes(nodes) {
+		if (!nodes)
+			return;
+		curStatus="searchExpand";
+		var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+		for ( var i = 0, l = nodes.length; i < l; i++) {
+			if (nodes[i].isParent && nodes[i].zAsync) {
+				if (nodes[i].name.indexOf(lastName) != -1) {
+					changeNode.push(nodes[i]);
+				}
+				asyncSearchNodes(nodes[i].children);
+			} else {
+				if (nodes[i].name.indexOf(lastName) != -1) {
+					checkParent(nodes[i]);
+				}
+				//强行异步加载父节点的子节点
+				zTree.reAsyncChildNodes(nodes[i], "refresh", true);
+			  }
+		}
+	   }
+		// 异步加载节点
+		function asyncNodes(nodes) {
+		if (!nodes)
+			return;
+		curStatus="expand";
+		var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+		for ( var i = 0, l = nodes.length; i < l; i++) {
+			//展开 / 折叠 指定的节点
+			zTree.expandNode(nodes[i], true, false, false);
+			if (nodes[i].isParent && nodes[i].zAsync) {
+				asyncNodes(nodes[i].children);
+			} else {
+			//强行异步加载父节点的子节点
+				zTree.reAsyncChildNodes(nodes[i], "refresh", true);
+			}
+		}
+	}
+		function getItemTree(jsons){
+			commonTreeParam='';
+			if(jsons!=null && jsons!=''){
+			$("#treeDemo").html('');
+			$('#text_').val('');
+							$("#companyName_").val('');
+							$("#departmentName_").val('');
+							$("#leftClick_").val('');
+							$("#rightClick_").val('');
+							$("#leftParam_").val('');
+							$("#rightParam_").val('');
+			
+			
+			
+			var url="/"+window.top.PRJ_PATH+"/"+SP+"/ZKMCommonTree/getTreeNode.action";
+			jsons.id='';
+			jsons.isSynchronous=1;
+			jsons.beanName='';
+			if(jsons.isSynchronous=="1"){
+				setting.async.enable = true;
+					//Ajax 获取数据的 URL 地址
+				setting.async.url = getUrl;
+					//用于对 Ajax 返回数据进行预处理的函数
+				setting.async.dataFilter = ajaxDataFilter;
+					//Ajax 请求提交的静态参数键值对
+				setting.async.otherParam = ["roleName", getQueryString("roleName"),"beanName",'',"sortField",getQueryString("sortField")];
+					//用于捕获异步加载正常结束的事件回调函数
+				setting.callback.onAsyncSuccess = onAsyncSuccess;
+					//用于捕获异步加载出现异常错误的事件回调函数
+				setting.callback.onAsyncError = onAsyncError;
+					//setting.callback.beforeAsync= zTreeBeforeAsync;
+			}
+				nodeType=jsons.recordType;
+				treeNodes=jsons;
+				ajaxFunction(url,jsons,false,function (data){
+					if(data.success){
+					commonTreeParam=data.data;
+				   if(commonTreeParam==null||commonTreeParam==''){
+				   $.fn.zTree.init($("#treeDemo"), setting,null);
+				   //alert('无树结构'); 
+				   $("#recordType").val(jsons.recordType);
+				   $("#type_").val(jsons.type);
+					recordType=$("#recordType").val();
+					type=$("#type_").val();
+					return;
+				   }
+					else{
+					$.fn.zTree.init($("#treeDemo"), setting, commonTreeParam);					
+					$("#recordType").val(jsons.recordType);
+					$("#type_").val(jsons.type);
+					recordType=$("#recordType").val();
+					type=$("#type_").val();
+					}
+					}else{
+					
+					zinglabs.alert('没有数据，缺少必要参数！');	
+					$("#recordType").val('');
+					$("#type_").val('');
+					}
+				});
+			}
+			}
+			function ajaxDataFilter(treeId, parentNode, responseData) {
+		      	if (responseData) {
+				if (isSearch) {
+				asyncNode = new Array();
+				var returnData = responseData.data;
+				for ( var i = 0; i < returnData.length; i++) {
+				if (returnData[i] != null
+							&& returnData[i].name.indexOf(lastName) != -1) {
+						allasyncNode.push(returnData[i]);
+						asyncNode.push(returnData[i]);
+					}
+				}
+			}
+			return responseData.data;
+			}
+			return null;
+			}
+			function beforeRemove(treeId,treeNode){
+			zinglabs.confirm("您确定要删除节点吗？",function(){
+			var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+				treeObj.removeNode(treeNode);
+				onRemoved(treeNode);
+				 });
+			     
+			     return false;
+			   
+			}
+			function removeNode(treeNode){
+			 onRemoved(treeNode);
+			
+			}
+			function onRemove(e,treeId,treeNode){
+				 zinglabs.confirm("您确定要删除节点吗？",function(){
+				onRemoved(e,treeId,treeNode);
+				 });							
+			}
+			function onRemoved(treeNode){
+			 	var url="/"+window.top.PRJ_PATH+"/"+SP+"/ZKMCommonTree/deletezuzhijigouTreeNode.action";
+	      		var p={};
+	       		p.id=treeNode.id;
+   				ajaxFunction(url, p, false, function(data) {
+				if (data.success) {
+						zinglabs.i18n.alert('system_deleteSuccess');
+				
+				
+				}else{	
+				zinglabs.alert(data.mgs);
+				
+				}
+				});
+			}
+			function beforeEditName(treeId,treeNode){
+			return confirm("你确定要编辑该节点吗?");
+			}
+			function beforeRename(treeId,treeNode,newName,isCancel){
+			if(newName==''||newName==null){
+			
+			zinglabs.alert("您好名称不能为空");
+			return false;
+			}
+			return true;
+			}
+			function onRename(e,treeId,treeNode,isCancel){
+			var params={};
+			params.id=treeNode.id;
+			params.text=treeNode.text;
+			var url="/"+window.top.PRJ_PATH+"/"+SP+"/ZKMCommonTree/updateTreeNodeName.action";
+			ajaxFunction(url, params, false, function(data) {
+						if (data.success) {
+												zinglabs.i18n.alert('system_updateSuccess');
+						
+					
+						}else{	
+						zinglabs.alert(data.mgs);
+					
+						}
+					});
+			}
+			//添加树
+			function addConfigTree(){
+			 	$('#myModal9 #nodeName1').val('');
+				$('#myModal9 #recordType_').val('');
+				$('#myModal9 #type').val('');
+				$('#myModal9 #requestUrl').val('');
+				$('#myModal9 #isSynchronous').val('');
+			 	$("#myModal9").modal('show');
+			}
+			
+			function addTree(){
+		    var pat={};
+			var url="/"+window.top.PRJ_PATH+"/"+SP+"/ZKMCommonTree/commonTreeSave.action";
+			
+			
+			if($('#recordType_').val()==null||$('#recordType_').val()==''||$("#nodeName1").val()==''||$("#nodeName1").val()==null||$("#nodeName1").val()==undefined){
+checkName();
+			checkNodeName();			
+			//zinglabs.alert('分类类型不能为空');
+			return;
+			}
+			pat.nodeName=$('#nodeName1').val();
+			pat.recordType=$('#recordType_').val();
+			pat.type=$('#type').val();
+			pat.requestUrl=$('#requestUrl').val();
+			pat.isSynchronous=$('#isSynchronous').val();
+			ajaxFunction(url, pat, false, function(data) {
+			if (data.success) {
+								zinglabs.i18n.alert('system_saveSuccess');
+				
+							//zinglabs.alert('添加成功！');
+				
+				$("#ul li:not(':first')").remove();
+				load();
+				$("#treeDemo").html('');
+				$("#myModal9").modal('hide');
+			}else{
+												zinglabs.i18n.alert('tree_recordTypeAndTypeSame');
+				
+				//zinglabs.alert('添加失败！您的recordType和type值已存在');
+				
+			}
+			});
+			}
+			
+			function updateNodeSubmit(){
+			var url="/"+window.top.PRJ_PATH+"/"+SP+"/ZKMCommonTree/updateTreeNode.action";
+		   	var param={};
+		   		param.companyName=$('#myModal10 #companyName').val();
+				param.departmentName=$('#myModal10 #departmentName').val();
+				param.leftClick=$('#myModal10 #leftClick').val();
+				param.leftParam=$('#myModal10 #leftParam').val();
+				param.rightClick=$('#myModal10 #rightClick').val();
+				param.rightParam=$('#myModal10 #rightParam').val();
+				param.modleId=$('#myModal10 #modleId').val();
+				param.nodeTypeUrl=$('#myModal10 #nodeTypeUrl').val();
+				param.id=$('#myModal10 #id').val();
+		   	ajaxFunction(url, param, false, function(data) {
+					if (data.success) {
+																	zinglabs.i18n.alert('system_updateSuccess');
+					
+						
+				$("#myModal10").modal('hide');
+					}else{	
+						
+						zinglabs.alert(data.mgs);
+					}
+				});
+				$('#myModal10 #companyName').val('');
+				$('#myModal10 #departmentName').val('');
+				$('#myModal10 #modleId').val('');
+				$('#myModal10 #nodeTypeUrl').val('');
+				$('#myModal10 #leftClick').val('');
+				$('#myModal10 #leftParam').val('');
+				$('#myModal10 #rightClick').val('');
+				$('#myModal10 #rightParam').val('');
+				$('#myModal10 #id').val('');
+			}
+	      	//添加根节点
+			function addRootNode(){
+			var url="/"+window.top.PRJ_PATH+"/"+SP+"/ZKMCommonTree/addTreeNode.action";
+			if(nodeType==undefined || nodeType==null || nodeType==''){
+																					zinglabs.i18n.alert('tree_chooseRootType');
+				
+				
+				return;
+			}
+		  	params.recordType=nodeType;
+		  	params.createUser="ZSKadmin";
+		  	params.text=$('#rootText').val();
+		   	ajaxFunction(url, params, false, function(data) {
+					if (data.success) {
+					zinglabs.i18n.alert('system_saveSuccess');
+						
+						
+					}else{	
+					zinglabs.alert(data.mgs);
+						
+					}
+				});
+			}
+			function zTreeOnClick(event, treeId, treeNode) {
+ 	 		parentId=treeNode.id;
+   			jsons=treeNode;
+    		}
+          	//添加子节点
+          	function addNode_(){
+          	        $('#text_').val('');
+					$("#companyName_").val('');
+					$("#departmentName_").val('');
+					$("#leftClick_").val('');
+					$("#rightClick_").val('');
+					$("#leftParam_").val('');
+					$("#rightParam_").val('');
+			//if(jsons==null || jsons==""){			
+			//zinglabs.alert('请选择节点');
+			//return;
+			//}
+			    try{
+			    var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+				var nodes = treeObj.getSelectedNodes();
+			    }catch(e){
+			    zinglabs.i18n.alert('tree_chooseNode');
+			    return;
+			    }
+				
+			 	if(nodes!=''&&nodes!=null&&nodes.length==1){
+			 	 child=0;
+			 	$("#myModal15").modal('show');		 	
+			 	}else if(nodes==''||nodes==null){
+			 						zinglabs.i18n.alert('tree_chooseNode');
+			 	
+			 	}else{
+			 	//zinglabs.alert('操作错误');
+			 						zinglabs.i18n.alert('role_operationFailed');
+			 	
+			 	}
+			 	 //zinglabs.confirm("你确定要添加子节点吗？",function (){      
+				   //$("#myModal15").modal('show');
+			    //});
+          	}
+          	function addNode1_(){
+          			$('#text_').val('');
+					$("#nodeTypeUrl_").val('');
+					$("#modleId_").val('');
+					$("#leftClick_").val('');
+					$("#rightClick_").val('');
+					$("#leftParam_").val('');
+					$("#rightParam_").val('');         
+          	if(recordType==''||recordType==null){        	
+          	zinglabs.i18n.alert('tree_nochooseTree');
+          	
+          	return;
+          	}         	
+          	       child=1;
+				   $("#myModal15").modal('show');			             	         	
+          	}
+          	function addNodeRootOrChild(){
+          	if(child==0){
+          	addNode();
+          	}
+          	if (child==1){
+          	addNode1();
+          	}
+          	
+          	}
+			function addNode(){
+				var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+				var nodes = treeObj.getSelectedNodes();
+			 	if(nodes!=''&&nodes!=null&&nodes.length==1){						 	
+			 	//var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+			 	var newNode = {};
+			 		var recordType=$("#recordType").val();
+			 		var text=$("#text_").val();
+		 		if(text==""||text==null){
+		 		    
+		 		              	checkText();
+		 		    		 
+		 		 	return;
+		 		}			 		
+			 		var url="/"+window.top.PRJ_PATH+"/"+SP+"/ZKMCommonTree/addTreeNode.action";
+			 		var params={};
+				  	params.recordType=recordType;
+				  	params.createUser="ZSKadmin";
+				  	params.text=text;
+				  	params.parentId=nodes[0].id;
+				  	params.nodeTypeUrl=$("#nodeTypeUrl_").val();
+			  	params.modleId=$("#modleId_").val();
+			  	params.leftClick=$("#leftClick_").val();
+			  	params.rightClick=$("#rightClick_").val();
+			  	params.leftParam=$("#leftParam_").val();
+			  	params.rightParam=$("#rightParam_").val();
+				   	ajaxFunction(url, params, false, function(data) {
+							if (data.success) {
+							//alert(JSON.stringify(data));
+							newNode.id=data.data;
+									 		              	zinglabs.i18n.alert('system_saveSuccess');
+
+								child=-1;
+								$('#text_').val('');
+							$("#modleId_").val('');
+							$("#nodeTypeUrl_").val('');
+							$("#leftClick_").val('');
+							$("#rightClick_").val('');
+							$("#leftParam_").val('');
+							$("#rightParam_").val('');
+								$('#recordType').val(recordType);
+							}else{	
+								zinglabs.alert(data.mgs);								
+							}
+						});
+						 var nodess;						
+						if (nodes[0].zAsync){
+						newNode.text=text;
+                        nodess = treeObj.addNodes(nodes[0],newNode, false); 
+                       
+			 		$("#myModal15").modal('hide');
+			 		return;                  
+               }
+               else{
+              //nodes.reAsyncChildNodes(jsons, "refresh",'false');                   
+			 		$("#myModal15").modal('hide');
+			 		return;
+              }
+			}
+			else{
+			zinglabs.i18n.alert('tree_chooseNode');
+			
+			}
+			}
+		function addNode1(){
+		
+		 	var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+		 	var newNode = {};
+		 		var recordType=$("#recordType").val();
+		 		var text=$("#text_").val();
+		 		if(text==""||text==null){
+		 
+		 					checkText();
+		 				 		
+		 		 return;
+		 		}
+		 		var url="/"+window.top.PRJ_PATH+"/"+SP+"/ZKMCommonTree/addTreeNode.action";
+		 		var params={};
+			  	params.recordType=recordType;
+			  	params.createUser="ZSKadmin";
+			  	params.text=text;
+			  	params.parentId="";
+			  	params.nodeTypeUrl=$("#nodeTypeUrl_").val();
+			  	params.modleId=$("#modleId_").val();
+			  	params.leftClick=$("#leftClick_").val();
+			  	params.rightClick=$("#rightClick_").val();
+			  	params.leftParam=$("#leftParam_").val();
+			  	params.rightParam=$("#rightParam_").val();
+			   	ajaxFunction(url, params, false, function(data) {
+						if (data.success) {
+						newNode.id=data.data;
+							child=-1;
+									 					zinglabs.i18n.alert('system_saveSuccess');
+							
+							$('#text_').val('');
+							$("#nodeTypeUrl_").val('');
+							$("#modleId_").val('');
+							$("#leftClick_").val('');
+							$("#rightClick_").val('');
+							$("#leftParam_").val('');
+							$("#rightParam_").val('');
+							$('#recordType').val(recordType);
+						}else{	
+							zinglabs.alert(data.mgs);							
+						}
+					});
+					newNode.text=text;
+		 		newNode = treeObj.addNodes(null, newNode,true);
+		 		//getItemTree(jsons1);
+		 		//jsons=[];
+		 		$("#myModal15").modal('hide');
+		 		return;
+		}
+    	//删除节点
+		function deleteNodes(){
+		var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+			if(treeObj==null || treeObj==""){
+													 					zinglabs.i18n.alert('tree_chooseDelTree');
+				
+				
+				return;
+			}else{
+	   		var nodes = treeObj.getSelectedNodes();
+			}
+	   		if(nodes.length<=0){
+	   																 					zinglabs.i18n.alert('tree_chooseNode');
+	   			
+	   			return ;
+	   		}
+		var url="/"+window.top.PRJ_PATH+"/"+SP+"/ZKMCommonTree/deletezuzhijigouTreeNode.action";
+		objs.nodeId=getdelParams(ids,jsons).join(',');
+	   	ajaxFunction(url, objs, false, function(data) {
+				if (data.success) {					
+						   	zinglabs.i18n.alert('system_deleteSuccess');
+						   							
+				}else{					
+									zinglabs.alert(data.mgs);					
+				}
+			});
+		}
+		//获取删除参数
+		
+		function getdelParams(ids,node){
+			ids.push(node.id);
+			if (node.isParent){
+					for(var obj in node.children){ 
+						getdelParams(ids,node.children[obj]);
+					}
+			   }
+			return ids;
+		}
+		//修改节点
+		function updateNode(){
+				if(jsons==null || jsons==""){
+										   	zinglabs.i18n.alert('tree_chooseUpdateNode');
+					
+					return;
+				}
+				var url="/"+window.top.PRJ_PATH+"/"+SP+"/ZKMCommonTree/selectTreeNodeById.action";
+			var p={};
+			p.id=jsons.id;
+		   	ajaxFunction(url, p, false, function(data) {
+					if (data.success) {
+					jsons=data.data;
+			$('#myModal10 #companyName').val(jsons[0].companyName);
+			$('#myModal10 #departmentName').val(jsons[0].departmentName);
+			$('#myModal10 #leftClick').val(jsons[0].leftClick);
+			$('#myModal10 #leftParam').val(jsons[0].leftParam);
+			$('#myModal10 #rightClick').val(jsons[0].rightClick);
+			$('#myModal10 #rightParam').val(jsons[0].rightParam);
+			$('#myModal10 #id').val(jsons[0].id);
+			$('#myModal10 #modleId').val(jsons[0].modleId);
+			$('#myModal10 #nodeTypeUrl').val(jsons[0].nodeTypeUrl);
+			 $("#myModal10").modal('show');
+			 jsons='';
+					}else{	
+					zinglabs.alert(data.mgs);
+						
+					}
+				});
+		}
+		//删除树
+		function deleteTree(){
+			if(treeNodes!=null&&treeNodes!=''){
+				//var a=confirm("您确定要删除树吗？");
+				
+				zinglabs.confirm("您确定要删除树吗？",function (){      
+				    var params={};
+		 		params.nodeId=treeNodes.nodeId;
+				params.recordType=treeNodes.recordType;
+				params.type=treeNodes.type;
+				//alert(JSON.stringify(params));
+				var url="/"+window.top.PRJ_PATH+"/"+SP+"/ZKMCommonTree/commonTreeDelete.action";
+				var urls="/"+window.top.PRJ_PATH+"/"+SP+"/ZKMCommonTree/commonTreeDeleteByRecordType.action";
+				ajaxFunction(url, params, false, function(data) {
+					if (data.success) {
+						ajaxFunction(urls, params, false, function(data) {
+					if (data.success) {
+																   	zinglabs.i18n.alert('system_deleteSuccess');
+						
+							
+					}else{	
+						zinglabs.alert(data.mgs);
+						
+					}
+				});
+					}else{	
+						zinglabs.alert(data.mgs);
+						
+					}
+				});
+				
+				$("#ul li:not(':first')").remove();
+				
+			    load();
+			    $("#treeDemo").html('');
+			    });
+				
+				
+		 	
+			}else{
+			zinglabs.i18n.alert('tree_chooseTreeNode');
+			
+			}
+			 
+		}
+		
+		function zTreeBeforeAsync(treeId, treeNode) {
+	        	treeNode.children=treeNode.data;
+			    return true;
+	   }
+	   function showModel(){
+	   
+	   if(recordType==''||recordType==null){
+	    zinglabs.i18n.alert('tree_chooseTreeNode');
+	    return;
+	   }
+	   $("#myModal12").modal('show');
+	   
+	    $('#myModal12 #recordType12').val(recordType);
+	   $('#myModal12 #type12').val(type);
+	   }
+	   function getAddress(){	
+	  
+	     var recordType12=$('#myModal12 #recordType12').val();
+	     var type12=$('#myModal12 #type12').val();
+	     if(recordType12==''||recordType12==null){
+	       				zinglabs.i18n.alert('tree_chooseTreeNode');
+	       						
+	       
+	       return;
+	     }
+	     var address="/"+window.top.PRJ_PATH+"/zkmCommonTree.html?recordType="+recordType12;
+	     if($('#myModal12 #type12').val()!=''&&$('#myModal12 #type12').val()!=null){
+	       address+="&type="+$('#myModal12 #type12').val();
+	     }
+	     if($('#myModal12 #showButton12').val()!=''&&$('#myModal12 #showButton12').val()!=null){
+	       address+="&showButton="+$('#myModal12 #showButton12').val();
+	     }
+	     if($('#myModal12 #closeFn12').val()!=''&&$('#myModal12 #closeFn12').val()!=null){
+	       address+="&closeFn="+$('#myModal12 #closeFn12').val();
+	     }
+	     if($('#myModal12 #reFillFn12').val()!=''&&$('#myModal12 #reFillFn12').val()!=null){
+	       address+="&reFillFn="+$('#myModal12 #reFillFn12').val();
+	     }
+	     if($('#myModal12 #mode12').val()!=''&&$('#myModal12 #mode12').val()!=null){
+	       address+="&mode="+$('#myModal12 #mode12').val();
+	     }
+	     if($('#myModal12 #pchm12').val()!=''&&$('#myModal12 #pchm12').val()!=null){
+	       address+="&pchm="+$('#myModal12 #pchm12').val();
+	     }
+	     if($('#myModal12 #cchm12').val()!=''&&$('#myModal12 #cchm12').val()!=null){
+	       address+="&cchm="+$('#myModal12 #cchm12').val();
+	     }
+	     $('#myModal12 #recordType12').val('');
+	     $('#myModal12 #type12').val('');
+	     $('#myModal12 #showButton12').val('');
+	     $('#myModal12 #closeFn12').val('');
+	     $('#myModal12 #reFillFn12').val('');
+	     $('#myModal12 #mode12').val('');
+	     $('#myModal12 #pchm12').val('');
+	     $('#myModal12 #cchm12').val('');
+	     $("#myModal12").modal('hide');
+	     window.clipboardData.setData('text', address); 
+	     //return address;
+	     
+	   }
+	  
+	   function checkName(){
+	if($("#recordType_").val()==''||$("#recordType_").val()==null||$("#recordType_").val()==undefined){
+		CHECK_name =false ;
+		showTooltip('recordType_Div','此项不能为空！') ;
+	}else{
+		CHECK_name =true ;
+		hideTooltip('recordType_Div');
+	}
+}
+function  checkNodeName(){
+	if($("#nodeName1").val()==''||$("#nodeName1").val()==null||$("#nodeName1").val()==undefined){
+		CHECK_name =false ;
+		showTooltip('nodeName1_Div','此项不能为空！') ;
+	}else{
+		CHECK_name =true ;
+		hideTooltip('nodeName1_Div');
+	}
+}
+function  checkText(){
+	if($("#text_").val()==''||$("#text_").val()==null||$("#text_").val()==undefined){
+		CHECK_name =false ;
+		showTooltip('text-Div','此项不能为空！') ;
+	}else{
+		CHECK_name =true ;
+		hideTooltip('text-Div');
+	}
+}
+//验证未通过样式
+function showTooltip(id,title){
+	$("#"+id).attr('title',title) ;
+	$("#"+id).tooltip({
+		placement:'bottom'
+	}) ;
+	$("#"+id).tooltip('show') ;
+	$("#"+id).addClass('error') ;
+	
+}
+//还原样式
+function hideTooltip(id){
+	$("#"+id).tooltip('destroy') ;
+	$("#"+id).removeClass('error') ;
+}
+		</script>
+
+	</head>
+	<body>
+
+		<div style="margin-top: 15px">
+			<ul class="btn" style="width: 100px; list-style: none;" id="ul">
+				<li id="li" style='float: left; width: 60px; text-align: center;'>
+					<a><h4>
+							&nbsp;树列表
+						</h4> </a>
+				</li>
+			</ul>
+		</div>
+
+		<div style="position: absolute;left: 160px;top:18px">
+
+			<table>
+				<tr>
+					<td>
+						<a class="btn  " onclick="addConfigTree()"><i
+							class="icon-plus"></i>&nbsp;添加树&nbsp; </a>
+					</td>
+					<td>
+						<a class="btn  " onclick="updateNode()"><i class="icon-edit"></i>&nbsp;修改节点&nbsp;
+						</a>
+					</td>
+
+					<td>
+						<a class="btn  " onclick="addNode_()"><i class="icon-plus"></i>&nbsp;添加子节点&nbsp;&nbsp;&nbsp;
+						</a>
+					</td>
+					<td>
+						<a class="btn  " onclick="addNode1_()"><i class="icon-plus"></i>&nbsp;添加根节点&nbsp;&nbsp;&nbsp;
+						</a>
+					</td>
+
+					<td>
+						<a class="btn  " onclick="deleteTree()"><i class="icon-trash"></i>&nbsp;删除树&nbsp;&nbsp;&nbsp;
+						</a>
+					</td>
+					<td>
+						<a class="btn  " onclick="showModel()"><i
+							class="icon-arrow-right"></i>&nbsp;获取链接&nbsp;&nbsp;&nbsp; </a>
+					</td>
+				</tr>
+
+			</table>
+			<div class="span12 pull-left">
+				<ul id="treeDemo" class="ztree" style="overflow-y: auto;"></ul>
+			</div>
+
+		</div>
+
+		<div id="myModal9" class="modal hide fade in">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">×</a>
+				<h5>
+					添加树
+				</h5>
+			</div>
+			<div class="modal-body">
+				<form action="" class="form-horizontal">
+					<table style="margin-left: -40px">
+						<tr>
+							<td>
+								<div id="recordType_Div" class="control-group ">
+									<label class="control-label" style="color: red">
+										分类类型:
+
+									</label>
+									<div class="controls" style="">
+										<input type="text" id="recordType_" name="recordType"
+											ONBLUR="checkName()" placeholder="此项为必填项">
+									</div>
+								</div>
+							</td>
+							<td>
+								<div id="typeDiv" class="control-group ">
+									<label class="control-label">
+										类型:
+
+									</label>
+									<div class="controls">
+										<input type="text" id="type" name="type" placeholder="类型">
+									</div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div id="nodeName1_Div" class="control-group ">
+									<label class="control-label" style="color: red">
+										节点名称:
+
+									</label>
+									<div class="controls">
+										<input type="text" id="nodeName1" name="nodeName1"
+											placeholder="节点名称" ONBLUR="checkNodeName()">
+									</div>
+								</div>
+							</td>
+							<td>
+								<div id="requestUrlDiv" class="control-group ">
+									<label class="control-label">
+										请求地址:
+
+									</label>
+									<div class="controls">
+										<input type="text" id="requestUrl" name="requestUrl"
+											placeholder="请求地址">
+									</div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div id="isSynchronous_Div" class="control-group ">
+									<label class="control-label">
+										是否同步:
+
+									</label>
+									<div class="controls">
+										<select name="isSynchronous" id="isSynchronous"
+											placeholder="是否同步">
+											<option selected="selected" value="0">
+												同步
+											</option>
+											<option value="1">
+												异步
+											</option>
+
+										</select>
+
+									</div>
+							</td>
+							<td>
+
+							</td>
+						</tr>
+
+					</table>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<a class="btn btn-success" onclick="addTree()">确定</a>
+				<a class="btn" data-dismiss="modal">关闭</a>
+			</div>
+		</div>
+
+
+		<div id="myModal10" class="modal hide fade in">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">×</a>
+				<h3>
+					修改节点
+				</h3>
+			</div>
+			<div class="modal-body">
+				<form action="">
+					<input type="hidden" id="id" name="id">
+					<input type="hidden" id="companyName" name="companyName">
+					<input type="hidden" id="departmentName" name="departmentName">
+					<table>
+						<tr>
+							<th style="width: 110px; text-align: right">
+								模块名称:
+							</th>
+							<td>
+								<input type="text" id="modleId" name="modleId"
+									placeholder="modleId">
+							</td>
+							<th style="width: 110px; text-align: right">
+								页面链接:
+							</th>
+							<td>
+								<input type="text" id="nodeTypeUrl" name="nodeTypeUrl"
+									placeholder="nodeTypeUrl">
+							</td>
+						</tr>
+						<tr>
+
+
+							<th style="width: 110px; text-align: right">
+								左击事件:
+							</th>
+							<td>
+								<input type="text" id="leftClick" name="leftClick"
+									placeholder="左击事件">
+							</td>
+							<th style="width: 110px; text-align: right">
+								左击鼠标参数:
+							</th>
+							<td>
+								<input type="text" id="leftParam" name="leftParam"
+									placeholder="左击鼠标参数">
+							</td>
+						</tr>
+						<tr>
+							<th style="width: 110px; text-align: right">
+								右击事件:
+							</th>
+							<td>
+								<input type="text" id="rightClick" name="rightClick"
+									placeholder="右击事件">
+							</td>
+							<th style="width: 110px; text-align: right">
+								右击鼠标参数:
+							</th>
+							<td>
+								<input type="text" id="rightParam" name="rightParam"
+									placeholder="右击鼠标参数">
+							</td>
+						</tr>
+					</table>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<a class="btn btn-success" onclick="updateNodeSubmit()">提交</a>
+				<a class="btn" data-dismiss="modal">关闭</a>
+			</div>
+		</div>
+
+
+		<div id="myModal12" class="modal hide fade in">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">×</a>
+				<h3>
+					获取链接地址
+				</h3>
+			</div>
+			<div class="modal-body">
+				<form action="">
+					<table>
+						<tr>
+							<th style="width: 110px; text-align: right; color: red">
+								recordType:
+							</th>
+							<td>
+								<input type="text" id="recordType12" name="recordType12"
+									placeholder="数据的类型" readonly="readonly">
+							</td>
+							<th style="width: 110px; text-align: right">
+								type:
+							</th>
+							<td>
+								<input type="text" id="type12" name="type12"
+									placeholder="用type区分你所使用tree的类型"
+									readonly="readonly">
+							</td>
+						</tr>
+						<tr>
+
+
+							<th style="width: 110px; text-align: right">
+								reFillFn:
+							</th>
+							<td>
+								<input type="text" id="reFillFn12" name="reFillFn12"
+									placeholder="父页方法名">
+							</td>
+							<th style="width: 110px; text-align: right">
+								closeFn:
+							</th>
+							<td>
+								<input type="text" id="closeFn12" name="closeFn12"
+									placeholder="回调方法">
+							</td>
+
+						</tr>
+						<tr>
+
+
+
+							<th style="width: 110px; text-align: right">
+								showButton:
+							</th>
+							<td>
+								<select name="showButton12" id="showButton12">
+									<option selected="selected" value="">
+										不填
+									</option>
+									<option value="y">
+										y
+									</option>
+									<option value="s">
+										s
+									</option>
+								</select>
+
+							</td>
+							<th style="width: 110px; text-align: right">
+								mode:
+							</th>
+							<td>
+								<select name="mode12" id="mode12"
+									placeholder="mode=many,tree是多选状态,如果不填或者其他字符是单选状态">
+									<option selected="selected" value="single">
+										single
+									</option>
+									<option value="many">
+										many
+									</option>
+								</select>
+
+							</td>
+						</tr>
+
+						<tr>
+
+
+
+							<th style="width: 110px; text-align: right">
+								pchm:
+							</th>
+							<td>
+								<select name="pchm12" id="pchm12">
+									<option selected="selected" value="">
+										不填
+									</option>
+									<option value="s">
+										s
+									</option>
+									<option value="p">
+										p
+									</option>
+									<option value="ps">
+										ps
+									</option>
+								</select>
+
+							</td>
+							<th style="width: 110px; text-align: right">
+								cchm:
+							</th>
+							<td>
+								<select name="cchm12" id="cchm12">
+									<option selected="selected" value="">
+										不填
+									</option>
+									<option value="s">
+										s
+									</option>
+									<option value="p">
+										p
+									</option>
+									<option value="ps">
+										ps
+									</option>
+								</select>
+
+							</td>
+						</tr>
+					</table>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<a class="btn btn-success" onclick="getAddress()">复制链接地址</a>
+				<a class="btn" data-dismiss="modal">关闭</a>
+			</div>
+		</div>
+
+
+
+		<div id="myModal15" class="modal hide fade in">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">×</a>
+				<h3>
+					添加节点
+				</h3>
+			</div>
+			<div class="modal-body">
+			<form action="" class="form-horizontal">
+			<input type="hidden" id="id" name="id">
+			<input type="hidden" id="type_" name="type_">
+					<table style="margin-left: -40px">
+						<tr>
+							<td>
+								<div id="text-Div" class="control-group ">
+									<label class="control-label" style="color: red">
+										节点名称:
+
+									</label>
+									<div class="controls" style="">
+									<input type="text" id="text_" name="text" placeholder="此项为必填项" ONBLUR="checkText()">										
+									</div>
+								</div>
+							</td>
+							<td>
+								<div id="recordType-Div" class="control-group ">
+									<label class="control-label">
+										分类类型:
+
+									</label>
+									<div class="controls">
+										<input type="text" id="recordType" name="recordType"
+									readonly="readonly">
+									</div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div id="modleId-Div" class="control-group ">
+									<label class="control-label">
+										模块名称:
+
+									</label>
+									<div class="controls">
+										<input type="text" id="modleId_" name="modleId_">
+									</div>
+								</div>
+							</td>
+							<td>
+								<div id="nodeTypeUrl-Div" class="control-group ">
+									<label class="control-label">
+										页面链接:
+
+									</label>
+									<div class="controls">
+										<input type="text" id="nodeTypeUrl_" name="nodeTypeUrl_">
+									</div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div id="leftClick-Div" class="control-group ">
+									<label class="control-label">
+										左击事件:
+
+									</label>
+									<div class="controls">
+										<input type="text" id="leftClick_" name="leftClick_">
+
+									</div>
+							</td>
+							<td>
+									<div id="rightClick-Div" class="control-group ">
+									<label class="control-label">
+										右击事件:
+
+									</label>
+									<div class="controls">
+								<input type="text" id="rightClick_" name="rightClick_">
+
+									</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div id="leftParam-Div" class="control-group ">
+									<label class="control-label">
+										左击参数:
+
+									</label>
+									<div class="controls">
+								<input type="text" id="leftParam_" name="leftParam_">
+
+									</div>
+							</td>
+							<td>
+									<div id="rightParam-Div" class="control-group ">
+									<label class="control-label">
+										右击参数:
+
+									</label>
+									<div class="controls">
+								<input type="text" id="rightParam_" name="rightParam_">
+
+									</div>
+							</td>
+						</tr>
+					</table>
+				</form>
+				
+			</div>
+			<div class="modal-footer">
+				<a class="btn btn-success" onclick="addNodeRootOrChild()">提交</a>
+				<a class="btn" data-dismiss="modal">关闭</a>
+			</div>
+		</div>
+	</body>
+</html>
+

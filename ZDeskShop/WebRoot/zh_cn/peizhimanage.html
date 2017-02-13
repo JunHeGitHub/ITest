@@ -1,0 +1,930 @@
+
+<!DOCTYPE  HTML>
+<html>
+	<head>
+		<title>配置文件管理</title>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css" />
+		<!--<link rel="stylesheet" href="../js/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css" type="text/css"></link>
+		--><link rel="stylesheet" href="../js/dataTables/css/jquery.dataTables.css" type="text/css" />
+		<!--[if lt IE 9]>
+		<script type="text/javascript" src="../js/html5shiv.min.js"></script>
+		<![endif]-->
+		<link rel="stylesheet" href="../js/dataTables/css/DT_bootstrap.css" type="text/css" />
+		<link rel="stylesheet" href="../js/dataTables/css/dataTables.tableTools.min.css" type="text/css" />
+		<!-- ZDesk 通用css  -->
+		<link rel="stylesheet" href="../css/zinglabs.css" type="text/css" />
+		<link rel="stylesheet" href="../js/dataTables/css/font-awesome.css" />
+		<link rel="stylesheet" href="../js/dataTables/css/dataTables.colVis.min.css" type="text/css" />
+		<script type="text/javascript" src="../js/jquery.js"></script>
+		<script type="text/javascript" src="../js/bootstrap.js"></script>
+		<script type="text/javascript" src="../js/dataTables/js/jquery.dataTables.js"></script>
+		<script type="text/javascript" src="../js/dataTables/js/dataTables.colReorder.js"></script>
+		<script type="text/javascript" src="../js/dataTables/js/dataTables.colVis.js"></script>
+		<script type="text/javascript" src="../js/dataTables/js/dataTables.tableTools.min.js"></script>
+		<script type="text/javascript" src="../js/common_utils.js"></script>
+		<script type="text/javascript" src="../js/appCommonUtil.js"></script>
+		<script type="text/javascript" src="../js/appCommonCurdUtils_new.js"></script>
+		<script type="text/javascript" src="../js/dataTables/js/DT_bootstrap.js"></script>
+		<!--
+		<script type="text/javascript" src="../js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
+		<script type="text/javascript" src="../js/bootstrap-datetimepicker/bootstrap-datetimepicker.zh-CN.js"></script>
+		-->		
+		<script type="text/javascript" src="../js/json2.js"></script>
+		<script type="text/javascript" src="../js/My97DatePicker/WdatePicker.js"></script>
+		<script type="text/javascript" src="../js/log2.js"></script>
+		<script type="text/javascript" src="../js/jsonpath-0.8.0.js"></script>
+		<script type="text/javascript" src="../js/golbal_params.js"></script>
+		<!-- 遮罩产插件 -->
+		<script type="text/javascript" src="../js/jquery.blockUI.js"></script>
+		<!-- 验证及提示组件 -->
+		<script type="text/javascript" src="../js/jqueryValidate/jquery.validate.js"></script>
+		<style type="text/css">
+/*解决时间控件在模式对话框中的显示问题**/
+.error {
+	border-color: red !important;
+}
+
+.datetimepicker {
+	z-index: 99999 !important;
+}
+
+.bootstrap-datetimepicker-widget {
+	z-index: 99999 !important;
+}
+#tijiao{
+background-color:#2266ff;
+}
+
+/*临时解决datatable单元格变形问题  为保证宽度不变，ie兼容模式显示效果为换行 其它浏览器省略号
+  需要通过只显示部分原文解决此问题
+*/
+.dataTable th,.dataTable td {
+	width: 120px;
+	max-width: 120px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+</style>
+
+		<script type="text/javascript">
+	
+//遮罩属性		
+var maskContent = {
+		css : {
+			border : 'none',
+			padding : '15px',
+			backgroundColor : '#000',
+			'-webkit-border-radius' : '10px',
+			'-moz-border-radius' : '10px',
+			opacity : .5,
+			color : '#fff',
+			font : '14px'
+		},
+		message : '<img src="../img/wait.gif" border="0" />  正在加载中，请稍候...'
+	};
+var yijieshouxinxiCurdStatus="false";
+var fullName="DataItemAllocation";
+var rowSelTr=false;
+$(document).ready(function() {
+           
+   $.blockUI(maskContent);
+   var data=null;
+   //var pdata={};
+   $('#propeiGrid').DataTable({
+        //滚动条
+        //scrollY: 500,
+        //scrollX: false,
+        //延迟加载
+         deferRender: true,
+         processing: false,  
+         //开启服务端分页
+         //serverSide: true,
+         //服务器端分页ajax请求 可抽离出一个方法
+        //data:doSearch(),        
+        data:data,         
+        //ajax: search,       
+		pagingType: "full_numbers",
+        pageLength: 10,
+        bPaginate: true, //翻页功能
+        bLengthChange: true, //改变每页显示数据数量
+        bFilter: true, //过滤功能
+        bSort: true, //排序功能
+        bInfo: true,//页脚信息
+        bAutoWidth: false, //自动宽度
+        sPaginationType: "bootstrap",//分页样式
+        dom: 'TRlrtip',
+        columns: [
+            {title:"peizhiItem" ,data:'peizhiItem' ,width:'12%', visible: true},                                 
+            {title:"peizhiItemValue",data: 'peizhiItemValue' ,width:'12%', visible: true},                                 
+            {title:"desc" ,data: 'desc' ,width:'12%', visible: true},                                 
+            {title:"bItem" ,data: 'bItem' ,width:'12%', visible: true},                                 
+            {title:"sItem" ,data: 'sItem' ,width:'12%', visible: true},                                 
+            {title:"productionId" ,data: 'productionId' ,width:'12%', visible: true},                                 
+            {title:"generateTime" ,data: 'generateTime' ,width:'12%', visible: true},  
+                                             
+             ],
+             
+        columnDefs: [ {
+            "searchable": false,
+            "orderable": false,
+            "targets": 0
+        } ],
+               
+        oLanguage: {
+             infoFiltered:function(){
+             
+             },
+            "sLengthMenu": "每页显示 _MENU_条",
+            "sZeroRecords": "没有找到符合条件的数据",
+            "sProcessing": "&lt;imgsrc=’../img/wait.gif’ /&gt;",
+            "sInfo": "当前第 _START_ - _END_ 条　共计 _TOTAL_ 条",
+            "sInfoEmpty": "没有记录",
+            "sInfoFiltered": "(从 _MAX_ 条记录中过滤)",
+            "sSearch": "搜索：",
+            "oPaginate": {
+                "sFirst": "首页",
+                "sPrevious": "前一页",
+                "sNext": "后一页",
+                "sLast": "尾页"
+            }
+        }, tableTools: {
+            fnRowSelected: function ( nodes ) {                  
+                   var index=nodes[0]._DT_RowIndex;	
+                   rowSelTr=index;
+	               var data = table.row(index).data();
+	               openEdit(data);
+	               xinshi();
+             },
+            sRowSelect:'multi',
+            
+            aButtons: []
+            
+        }       
+    });     
+		    //自定义列插件绑定
+		    //绑定事件 on
+		    var table= $('#propeiGrid').DataTable();
+		    var params={};
+			params.peizhiItem=$("#peizhiItem").val();
+			params.bItem=$("#bItem").val();
+			params.productionId=$("#productionId").val();
+			setItemAllocationParam(params);
+		    var colvis = new $.fn.dataTable.ColVis(table,{ buttonText: '自定义显示列',exclude: [ 0 ,1] });
+			      $(colvis.button()).insertBefore('#cols'); 
+		    
+		    
+		   /* table.on( 'order.dt search.dt', function () {
+		        table.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+		            cell.innerHTML = i+1;
+		        } );
+		    } ).draw(true);*/    
+		                              
+		    initValidate("propeiAddForm");
+		    initValidate("propeiEditForm");
+		    
+		    $.unblockUI();
+    
+});
+		/*
+   function doSearch(params){
+	    var data=setItemAllocationParam(null);	   
+	    return data;
+	}*/
+   function doSearchByItems(){
+		var params={};
+		var data;
+		params.peizhiItem=$("#peizhiItem").val();
+		params.bItem=$("#bItem").val();
+		params.productionId=$("#productionId").val();
+		params.isClaer=0;
+		/*
+		if(params.peizhiItem=="" || params.peizhiItem==null || params.peizhiItem ==undefined){
+			params.peizhiItem="";
+			params.isClaer++;
+		}
+		if(params.bItem=="" || params.bItem==null || params.bItem ==undefined){
+			params.bItem="";
+			params.isClaer++;
+		}
+		if(params.productionId=="" || params.productionId==null || params.productionId ==undefined){
+			params.productionId="";
+			params.isClaer++;
+		}	*/
+		
+		if(params.peizhiItem!=""&&params.bItem==""&&params.productionId==""){
+		 data=getpeizhiItem(params);
+		$("#tijiao").hide();
+		}	
+		if(params.bItem!=""&&params.productionId==""&&params.peizhiItem==""){
+		 data=getbItem(params);
+		$("#tijiao").hide();
+		}	
+		if(params.productionId!=""&&params.peizhiItem==""&&params.bItem==""){
+		 data=getproductionId(params);
+		$("#tijiao").hide();
+		}		
+		if(params.productionId!=""&&params.peizhiItem!=""&&params.bItem==""){
+		 data=getproductionIdAndpeizhiItem(params);
+		$("#tijiao").hide();
+		}			
+		if(params.productionId!=""&&params.peizhiItem==""&&params.bItem!=""){
+		 data=getproductionIdAndbItem(params);
+		$("#tijiao").hide();
+		}	
+		if(params.productionId==""&&params.peizhiItem!=""&&params.bItem!=""){
+		 data=getpeizhiItemAndbItem(params);
+		$("#tijiao").hide();
+		}	
+		if(params.productionId!=""&&params.peizhiItem!=""&&params.bItem!=""){
+		 data=getproductionIdAndpeizhiItemAndbItem(params);
+		$("#tijiao").hide();
+		}
+	   /*
+		if(params.productionId!=""||params.peizhiItem!=""||params.bItem!=""){
+		 data=getjsonfirst(params);
+		$("#tijiao").hide();
+		}*/
+		
+		if(params.productionId==""&&params.peizhiItem==""&&params.bItem==""){		
+		 data=All_PARAM;
+		 $("#tijiao").hide();
+		}
+		refresh(data);
+	}
+	
+	//刷新
+	function refresh(data){	    
+	     var table=$('#propeiGrid').DataTable();
+	     //清空筛选
+	     table.search("").draw();
+	     $(".search-query").val("");
+	     //清空数据
+	     table.clear().draw();	     
+	     //重新加载数据
+	     table.rows.add(data).draw(true);
+	     $("#propeiAdd").hide();
+        $("#propeiEdit").hide();
+	     
+	}
+	function reload(){
+	    /*
+		var data = reloadItemAllocation();
+		var table=$('#propeiGrid').DataTable();
+	    //清空筛选
+	    table.search("").draw();
+	    $(".search-query").val("");
+	    //清空数据
+	    table.clear().draw();
+	    //重新加载数据
+	    table.rows.add(data).draw(true);*/
+	    reloadItemAllocation();
+	    
+	}
+	
+	
+	
+/**
+ *
+ * selector:被填充combo的选择表达式
+ * comboType：下列列表载入标识  字典索引
+ * comboParam：联动标识         联动索引
+ *
+ * @desc填充指定的combo
+ *
+ * */
+ function fillCombo(selector,comboType,comboParam){
+	    if(comboType.indexOf('@')==0){
+	       var len=comboType.indexOf('_');
+	       if(len>0){
+	          var type=comboType.substring(1,len);
+	          //参数
+	          var cs=comboType.substring((len+1),comboType.length)
+	          if(type=="sql"){
+	          
+	             var params={
+	                  nameSpace:cs,
+					  beanId:"commonSelectFilter",
+					  //模板生成
+					  dbid:"ZDesk",
+	             };
+	              commonSelect(params,true,function(data){
+			          try{
+			              if(data&&data.data){
+			               //TODO 进行一次转换
+                            dictData=data.data; 
+                            $.each(dictData, function(index,element) {
+						        $(selector).append('<option value="'+element.code+'">' + element.name + '</option>');
+						        
+						    }); 
+			              }
+			       }catch(ex){
+			             logErr("查询失败 failed "+ex.name + ": " + ex.message);
+			       }
+			       
+			       });  
+	             
+	          }else if(type=="static"){
+	              //TODO velocity 生成
+	               var data= [{'code':'123','name':'123'},{'code':'456','name':'456'},{'code':'789','name':'789'}];
+	               $(selector).append('<option value=""></option>');
+	               $.each(data, function(index,element) {
+						        $(selector).append('<option value="'+element.code+'">' + element.name + '</option>');
+						        
+					}); 
+	          
+	          }	        	       	     
+	       }else{
+	         //非正确规则格式
+	       } 
+	    }else{
+	        var dictData=window.top.getDictListfoIndexData(comboType)||{};
+	        $(selector).empty();
+	        $.each(dictData, function(index,element) {
+		        $(selector).append('<option value="'+element.code+'">' + element.name + '</option>');
+		    });
+		
+	    }
+}
+
+
+function doEdit(){
+    var bool= $("#propeiEditForm").validate().form();//判断表单内容是否合法
+    if(bool){
+	var url = "/" + ZDesk_ROU + "/" + "itemAllocation/itemAllocationAction" + "/" + "update.action";
+    var params=zkm_getHtmlFormJsons("propeiEditForm");
+    var rdata={};  
+   	$.ajax({
+		async :true,
+		type : "post",
+		url : url,
+		dataType : "json",
+		data : params,
+		success : function(data) {
+			if (data) {                          
+               reloadItemAllocation();	
+               //All_PARAM=getItemAllocationParam();  
+                $('#tijiao').hide();                    
+	           zinglabs.alert("修改成功");                         
+			}
+		},
+		error : function(r){
+		       zinglabs.alert("修改失败");			
+		}
+		});
+		}
+     
+}
+
+function doAdd(){  
+	  var bool= $("#propeiAddForm").validate().form();
+	  if(bool){
+	  var url = "/" + ZDesk_ROU + "/" + "itemAllocation/itemAllocationAction" + "/" + "add.action";
+	  var params=zkm_getHtmlFormJsons("propeiAddForm");
+	  var rdata={}; 
+   	  $.ajax({
+		async :true,
+		type : "post",
+		url : url,
+		dataType : "json",
+		data : params,
+		success : function(data) {
+			if (data) {			
+               reloadItemAllocation();
+                $('#tijiao').hide();   	         	   
+	           zinglabs.alert("添加成功");                                                 
+               //添加成功 数据清理状态 
+			   yijieshouxinxiCurdStatus=false;
+			}
+		},
+		error : function(r){
+			   zinglabs.alert("增加失败");	
+			   yijieshouxinxiCurdStatus="add";		
+		}
+		});
+		}
+     return rdata; 
+}
+
+/***
+ * @TODO
+ * 通用，调试完成后分文件，不要加Velocity代码
+ */
+
+function doDelete(){
+    zinglabs.confirm("确认要删除此项？",function(){
+      var params={};
+       $.blockUI(maskContent);
+	   params.tableName=fullName;
+	   //主键默认为id  如不为id 加上params.primarykey
+	   var tableTmp=$('#propeiGrid').DataTable();
+	   var cell=tableTmp.rows(".active").data();
+	   var ids="";
+	   for(var i=0;i<cell.length;i++){
+	          var key="id";
+	         if("primarykey" in params){
+	             key=params["primarykey"];
+	         }
+	         ids+=cell[i][key]+",";
+	     }
+	     params.columnValues=ids;
+	     commonDelete(params,true,function(data){
+	         if (data) {
+	                    if(data.success){
+	                        try{
+	                            tableTmp.row('.selected').remove().draw(false);	                           
+	                            $("#propeiEdit").hide();
+                                 $("#tijiao").hide();
+                                  reload(); 
+	                            showSuccess("删除成功!");
+	                            
+	                            cleanEditForm();
+	                        }catch(e){
+	                            logErr("Exception del need see log "+e.name + ": " + e.message);
+	                        }
+	                        
+	                    }else{
+	                        logErr("Exception del failed  "+data +" "+data.retcode);
+	                        showError("删除失败");
+	                    }
+	                }
+	           $.unblockUI();
+	       
+	    }); 
+ });
+};
+/***
+ *
+ * @desc 指定panel赋值 和清空
+ * @todo 只测试了主要类型 , checkbox、radio没测试
+ *
+ * pVars.id panel id
+ * pVars.data 赋值数据
+ * pVars.isClear 字符串 "true" 清空此panel
+ *
+ *
+ * @TODO
+ * 通用，调试完成后分文件，不要加Velocity代码
+ *
+ */
+function setPanelVal(pVars){
+    $('#'+pVars.id+' :input').each(function(index,obj) {
+        var type = obj.type;
+        var tag = obj.tagName.toLowerCase();
+        if(("isClear" in pVars) && pVars.isClear=='true'){
+            if (type == 'text' || type == 'password' || tag == 'textarea' || type=='hidden')
+                $(obj).val('');
+            else if (type == 'checkbox' || type == 'radio')
+                $(obj).attr('checked',false);
+            else if (tag == 'select')
+                $(obj).attr('selectedIndex',-1);
+           
+            }else{
+            var vTmp=pVars.data[this.name];
+        
+            if(BIsNullVal(vTmp)){
+                vTmp='';
+            }
+            if (type == 'text' || type == 'password'||type=='hidden' || tag == 'textarea')
+                $(obj).val(vTmp);                
+            else if (type == 'checkbox' || type == 'radio'){
+                $(obj).attr('checked',vTmp==''?false:vTmp);
+            }
+            else if (tag == 'select'){
+            	
+              // $(obj).find("option[value='"+vTmp+"']").attr("selected",true);
+                $(obj).val(vTmp==''?-1:vTmp);
+                
+            }
+        }
+         
+    }
+    
+    );
+}
+//每页显示条数
+function setPageNum(obj){
+    var table=$('#propeiGrid').DataTable();
+    table.page.len(obj.value).draw();
+}
+/***
+ * @TODO
+ * 通用，调试完成后分文件，不要加Velocity代码
+ */
+function BIsNullVal(value) {
+    return typeof(value)=="undefined" || value==null ||  (typeof(value)=='string' &&(value=="undefined" || value=='' || value=='null' )) ||  (typeof(value)=='boolean' &&value==false  );
+};    
+/***
+ * 必须处理的严重错误，测试阶段可以alert 生产环境特殊标识写入日志
+ * 发现就要分析原因
+ * @param err
+ */
+function logErr(errMsg) {
+    log.debug(errMsg);
+//    alert(errMsg);
+//    PT().log.error(errMsg);
+};
+
+
+/***
+ * 嵌入ifram可以返回top parent
+ * 非嵌入 可以返回 window ...
+ * @returns {Window}
+ * @constructor
+ */
+function PT(){
+    return window;
+};
+//初始化验证组件
+//fromid 表单ID
+function initValidate(fromid){
+  $("#"+fromid).validate({ 	   
+				      //错误信息处理方法
+				      errorPlacement: function (error, element){
+				       //if(element.)
+                       element.addClass('error');                   
+                         var errorInfo=error.html();
+                         element.tooltip("destroy");
+						 element.tooltip({trigger:"manual",
+						                 title:errorInfo,
+						                 placement:"left"
+						                 }) ;
+						 element.tooltip("show");
+                        },
+                       //成功信息处理方法
+	                    success: function ($e,dom) {
+	                           var element=$(dom);
+		                       element.tooltip('hide');
+		                       element.removeClass('error');
+	                       
+	                     }
+				});
+
+
+}
+
+//打开提交表单
+function openAdd(){
+  $("#propeiEdit").hide(); 
+  $("#propeiAdd").show();
+  $("#tijiao").show();
+  doCleanAddForm();
+ $("#generateTime").val(today());
+  
+}
+//获取当前时间
+function today(){ 
+    var today=new Date(); 
+    var h=today.getFullYear(); 
+    var m=today.getMonth()+1; 
+    var d=today.getDate(); 
+    var mytime=today.toLocaleTimeString(); 
+    return h+"-"+m+"-"+d+" "+mytime; 
+    }
+//打开提交表单
+function openEdit(data){ 
+   $("#propeiAdd").hide();
+    $("#propeiEdit").show();
+   yijieshouxinxiCurdStatus="edit"; 
+   data.generateTime=today();    
+   var pvars={"id":"propeiEdit","data":data}; 
+   
+   setPanelVal(pvars);
+   
+ 
+}
+//提交方法
+function doSubmit(){
+   
+ try{
+            
+            if(yijieshouxinxiCurdStatus=="add"){
+                doAdd();
+               
+            }else if(yijieshouxinxiCurdStatus=="edit"){
+                doEdit();
+                
+            }
+        }catch(e){
+            //编辑、增加页面状态清理。一定要确保页面数据已经不再使用。
+            zinglabs.alert("出现异常");
+            yijieshouxinxiCurdStatus="false";
+            logErr("Exception BtnAddSubmit need see log "+e.name + ": " + e.message);
+        }
+
+}
+//显示错误信息
+function showError(mgs){
+    zinglabs.alert(mgs);
+
+}
+//显示成功信息
+function showSuccess(mgs){
+ zinglabs.alert(mgs);
+}
+//清空添加表单
+function doCleanAddForm(){
+   yijieshouxinxiCurdStatus="add";
+   var pvars={"id":"propeiAdd","isClear":"true"};
+   setPanelVal(pvars);
+}
+
+function cleanSearchForm(){
+    $("#searchDataForm")[0].reset();
+}
+//清空修改表单
+function cleanEditForm(){
+    $("#propeiEditForm")[0].reset();
+}
+//显示提交按钮
+function xinshi(){
+$("#tijiao").show();
+} 
+
+    </script>
+	</head>
+	<body>
+		<!-- 容器 -->
+		<div class="z_container">
+			<!-- datatable部分 包含筛选项 -->							
+			<div class="head">
+				<!-- dataTable筛选项部分 -->
+				<div class="widget-box collapsible">
+					<div class="widget-title" style="height: 40px; line-height: 40px; overflow: hidden;">
+			<span class="icon" style="float: left; padding: 0px 10px;"> <i class="icon-search"></i> </span>
+			&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;peizhiItem：
+			<input id="peizhiItem" name="peizhiItem" type="text" maxlength="500" class="input-medium search-query" value="" />
+			&nbsp;&nbsp;&nbsp;bItem：
+			<input id="bItem" name="bItem" type="text" maxlength="500" class="input-medium search-query" value="" />
+			&nbsp;&nbsp;&nbsp;productionId：
+			<input id="productionId" name="productionId" type="text" maxlength="500" class="input-medium search-query" value="" />
+			&nbsp;&nbsp;&nbsp;
+			<button type="button" class="btn" onclick="doSearchByItems();"> <i class="icon-search"></i> 搜 索 </button>
+			&nbsp;&nbsp;&nbsp;
+			<button type="button" class="btn" onclick="reload();"> <i class="icon-refresh"></i>重新加载 </button>
+			&nbsp;&nbsp;&nbsp;每页显示条数：
+			<select name="pageSize" id="pageSize" style="width: 80px; margin-bottom: 0px;" onchange="setPageNum(this)">
+				<option selected="selected" value="10">10</option>
+				<option value="30">30</option>
+				<option value="50">50</option>
+				<option value="100">100</option>
+				<option value="-1">全部</option>
+			</select>
+			<div id="cols"></div>
+		</div>
+					
+				</div>
+				<!-- dataTable 部分 -->
+				<div class="widget-box">
+					<div class="widget-title">
+						<span class="icon"> <i class="icon-th"></i> </span>
+						<h5>
+							信息
+						</h5>
+						<!--TODO 里面可加一些按钮 -->
+					
+					</div>
+					<div class="widget-content nopadding">
+						<!-- 提示栏 -->
+						<div class="alert alert-error" id="errorDiv" style="display: none;">
+						</div>
+						<div class="alert alert-success" id="successDiv" style="display: none;">
+
+						</div>
+						<table id="propeiGrid" class="table table-striped table-bordered nowrap">
+
+						</table>
+
+					</div>
+
+				</div>
+			</div>
+			<!-- 表单部分 -->
+			<div class="foot ">
+				<div class="widget-box " style="margin-top: 0px">
+					<!-- 功能栏 -->
+					<div class="navbar-inner" style="padding-top: 10px">
+						<button class="btn btn-danger" onclick="openAdd()" style="background-color:#00ff33 "  >
+							添 加
+						</button>
+						&nbsp;
+						<button class="btn btn-danger" onclick="doDelete()">
+							删 除
+						</button>
+						&nbsp;
+						<button  id="tijiao" class="btn btn-danger" onclick="doSubmit()" style="display: none" style="background-color:#880033">
+							提交
+						</button>	
+																	
+					</div>
+										
+					<!-- 表单项  update insert 先用一个表单 有需要就分开 -->
+					<div class="widget-content container" id="propeiAdd" style="display: none">
+						<form id="propeiAddForm">
+							<div class="row" style="margin-left: -200px">
+								<div class="span4 ">
+									<div class="form-horizontal">
+										<div class="control-group">
+											<label class="control-label" >
+												peizhiItem:
+												<span style="color: red">*</span>
+											</label>
+											<div class="controls">
+												<input type="text" id="peizhiItem" name="peizhiItem" data-rule-required="true"  data-msg-required="peizhiItem不能为空哦！" />
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="span4 offset1">
+									<div class="form-horizontal">
+										<div class="control-group" style="margin-left: -50px">
+											<label class="control-label" >
+												peizhiItemValue:
+												<span style="color: red">*</span>
+											</label>
+											<div class="controls">
+												<input type="text" id="peizhiItemValue" name="peizhiItemValue" data-rule-required="true"  data-msg-required="peizhiItemValue不能为空哦！">
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="span4 offset1">
+								<div class="form-horizontal">
+									<div class="control-group" style="margin-left: -100px">
+										<label class="control-label" >
+											desc:
+											
+										</label>
+										<div class="controls">
+											<input type="text" id="desc" name="desc" >
+										</div>
+									</div>
+								</div>
+							</div>
+								
+							</div>
+							<div class="row" style="margin-left: -200px">
+								<div class="span4 ">
+									<div class="form-horizontal">
+										<div class="control-group">
+											<label class="control-label" >
+												bItem:
+											</label>
+											<div class="controls">
+											<input type="text" id="bItem" name="bItem" >
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="span4 offset1">
+								<div class="form-horizontal">
+									<div class="control-group" style="margin-left: -50px">
+										<label class="control-label" >
+											sItem:
+										</label>
+										<div class="controls">
+											<input type="text" id="sItem" name="sItem"  >
+										</div>
+									</div>
+								</div>
+							</div>
+								<div class="span4 offset1">
+									<div class="form-horizontal">
+										<div class="control-group" style="margin-left: -100px">
+											<label class="control-label" >
+												productionId:
+												<span style="color: red">*</span>
+											</label>
+											<div class="controls" >
+												<input type="text" id="productionId" name="productionId" data-rule-required="true" data-msg-required="productionId不能为空哦！"  >
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+                         <div class="row" style="margin-left: -200px">
+								<div class="span4 ">
+									<div class="form-horizontal">
+										<div id="indexNameDiv" class="control-group">
+											<label class="control-label" >
+												generateTime:
+											</label>
+											<div class="controls">
+												<input type="text"  id="generateTime" name="generateTime" >
+											</div>
+										</div>
+									</div>
+								</div>
+								</div>	
+							
+						</form>
+					</div>
+				</div>
+				<div id="propeiEdit" class="widget-content container" style="display: none">
+					<form id="propeiEditForm">
+						<input type="hidden" name="id">
+						<div class="row" style="margin-left: -200px">
+								<div class="span4 ">
+									<div class="form-horizontal">
+										<div class="control-group">
+											<label class="control-label">
+												peizhiItem:
+												<span style="color: red">*</span>
+											</label>
+											<div class="controls">
+												<input type="text" id="peizhiItem" name="peizhiItem" data-rule-required="true"  data-msg-required="peizhiItem不能为空哦！" />
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="span4 offset1">
+									<div class="form-horizontal">
+										<div class="control-group" style="margin-left: -50px">
+											<label class="control-label" >
+												peizhiItemValue:
+												<span style="color: red">*</span>
+											</label>
+											<div class="controls">
+												<input type="text" id="peizhiItemValue" name="peizhiItemValue" data-rule-required="true"  data-msg-required="peizhiItemValue不能为空哦！">
+											</div>
+										</div>
+									</div>
+								</div>
+								
+							<div class="row" style="margin-left: -200px">
+								
+								<div class="span4 offset1">
+								<div class="form-horizontal">
+									<div class="control-group" style="margin-left: -100px">
+										<label class="control-label" >
+											desc:
+											
+										</label>
+										<div class="controls">
+											<input type="text" id="desc" name="desc"  >
+										</div>
+									</div>
+								</div>
+							</div>
+								
+                           <div class="row" style="margin-left: 200px">
+								<div class="span4 ">
+									<div class="form-horizontal">
+										<div id="indexNameDiv" class="control-group">
+											<label class="control-label" >
+												bItem:
+											</label>
+											<div class="controls">
+												<input type="text" id="bItem" name="bItem" >
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="span4 offset1">
+								<div class="form-horizontal">
+									<div class="control-group" style="margin-left: -50px">
+										<label class="control-label" >
+											sItem:
+										</label>
+										<div class="controls">
+											<input type="text" id="sItem" name="sItem">
+										</div>
+									</div>
+								</div>
+							</div>
+								<div class="span4 offset1">
+									<div class="form-horizontal">
+										<div class="control-group" style="margin-left: -100px">
+											<label class="control-label" >
+												productionId:
+												<span style="color: red">*</span>
+											</label>
+											<div class="controls">
+												<input type="text" id="productionId" name="productionId" data-rule-required="true" data-msg-required="productionId不能为空哦！"  >
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							 <div class="row" style="margin-left: 200px">
+								<div class="span4 ">
+									<div class="form-horizontal">
+										<div id="indexNameDiv" class="control-group">
+											<label class="control-label" >
+												generateTime:
+											</label>
+											<div class="controls">
+												<input type="text" id="generateTime" name="generateTime" >
+											</div>
+										</div>
+									</div>
+								</div>
+								</div>	
+								
+					</form>
+				</div>
+			</div>
+		</div>
+	</body>		
+</html>

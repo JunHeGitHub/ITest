@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.zinglabs.apps.skillGroupInfo">
+    <select id="selectSkillGroupInfo" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+        SELECT  * FROM  IM_SkillGroupInfo   <if test="skId != null and skId != ''">WHERE skId = #{skId}</if>  GROUP BY skType
+    </select>
+    <insert id="insertSkillGroupInfo" parameterType="java.util.Map">
+        INSERT into IM_SkillGroupInfo (skName,skId,skType) values (#{skName},#{skId},#{skType});
+    </insert>
+    <update id="updateSkillGroupInfo" parameterType="java.util.HashMap">
+        update IM_SkillGroupInfo
+        SET
+            skName=#{skName},skType=#{skType}
+        where skId =#{skId  }
+    </update>
+
+    <select id="selectAgentSkillGroup" resultType="java.util.HashMap" parameterType="java.util.Map">
+        SELECT * FROM IM_AgentSkillGroup WHERE  cardUrl = #{cardUrl} ;
+    </select>
+    <select id="selectAgentSkillGroupMem" resultType="java.util.HashMap" parameterType="java.util.Map">
+        SELECT * FROM IM_AgentSkillGroupMem WHERE  cardUrl = #{cardUrl} ;
+    </select>
+
+    <delete id="deleteAllAgentSkillGroup" parameterType="java.util.Map">
+        DELETE FROM IM_AgentSkillGroup WHERE skId = #{skId}
+    </delete>
+    <delete id="deleteAllAgentSkillGroupMem" parameterType="java.util.Map">
+        DELETE FROM IM_AgentSkillGroupMem WHERE skId = #{skId}
+    </delete>
+
+    <insert id="insertAgentSkillGroup" parameterType="java.util.Map">
+        INSERT INTO IM_AgentSkillGroup (
+        cardUrl
+        ,skId
+        ,status
+        ,roleCode
+        ,workCount
+        ,taskTime
+        ,`name`
+        ,tId
+        ,woowCount
+        )
+        values (#{cardUrl}
+        <if test="skId != null and skId != ''">,#{skId}</if>
+        <if test="skId == null or skId == ''">,''</if>
+        <if test="status != null and status != ''">,#{status}</if>
+        <if test="status == null or status == ''">,''</if>
+        <if test="roleCode != null and roleCode != ''">,#{roleCode}</if>
+        <if test="roleCode == null or roleCode == ''">,''</if>
+        <if test="workCount != null and workCount != ''">,#{workCount}</if>
+        <if test="workCount == null or workCount == ''">,0</if>
+        <if test="taskTime != null and taskTime != ''">,#{taskTime}</if>
+        <if test="taskTime == null or taskTime == ''">,now()</if>
+        <if test="name != null and name != ''">,#{name}</if>
+        <if test="name == null or name == ''">,''</if>
+        <if test="tId != null and tId != ''">,#{tId}</if>
+        <if test="tId == null  or tId == ''">,0</if>
+        <if test="woowCount != null and woowCount != ''">,#{woowCount}</if>
+        <if test="woowCount == null or woowCount == ''">,0</if>
+        ) ;
+    </insert>
+    <insert id="insertAgentSkillGroupMem" parameterType="java.util.Map">
+        INSERT INTO IM_AgentSkillGroupMem (
+        cardUrl
+        ,skId
+        ,status
+        ,roleCode
+        ,workCount
+        ,taskTime
+        ,`name`
+        ,tId
+        ,woowCount
+        )
+        values (#{cardUrl}
+        <if test="skId != null and skId != ''">,#{skId}</if>
+        <if test="skId == null or skId == ''">,''</if>
+        <if test="status != null and status != ''">,#{status}</if>
+        <if test="status == null or status == ''">,''</if>
+        <if test="roleCode != null and roleCode != ''">,#{roleCode}</if>
+        <if test="roleCode == null or roleCode == ''">,''</if>
+        <if test="workCount != null and workCount != ''">,#{workCount}</if>
+        <if test="workCount == null or workCount == ''">,0</if>
+        <if test="taskTime != null and taskTime != ''">,#{taskTime}</if>
+        <if test="taskTime == null or taskTime == ''">,now()</if>
+        <if test="name != null and name != ''">,#{name}</if>
+        <if test="name == null or name == ''">,''</if>
+        <if test="tId != null and tId != ''">,#{tId}</if>
+        <if test="tId == null  or tId == ''">,0</if>
+        <if test="woowCount != null and woowCount != ''">,#{woowCount}</if>
+        <if test="woowCount == null or woowCount == ''">,0</if>
+        ) ;
+    </insert>
+
+    <update id="updateAgentSkillGroup" parameterType="java.util.Map">
+        update IM_AgentSkillGroup
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name !='' and name != null">`name` = #{name},</if>
+            <if test="skId !='' and skId != null">`skId` = #{skId},</if>
+            <if test="status !='' and status != null">`status` = #{status},</if>
+            <if test="roleCode !='' and roleCode != null">`roleCode` = #{roleCode},</if>
+            <if test="tId !='' and tId != null">`tId` = #{tId},</if>
+        </trim>
+        WHERE cardUrl = #{cardUrl}
+    </update>
+    <update id="updateAgentSkillGroupMem" parameterType="java.util.Map">
+        update IM_AgentSkillGroupMem
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name !='' and name != null">`name` = #{name},</if>
+            <if test="skId !='' and skId != null">`skId` = #{skId},</if>
+            <if test="status !='' and status != null">`status` = #{status},</if>
+            <if test="roleCode !='' and roleCode != null">`roleCode` = #{roleCode},</if>
+            <if test="tId !='' and tId != null">`tId` = #{tId},</if>
+        </trim>
+        WHERE cardUrl = #{cardUrl}
+    </update>
+
+    <select id="SelectUserFrom_chatWorkflow_bindingAnd_cardUser" resultType="java.util.HashMap"
+            parameterType="java.util.HashMap">
+        SELECT c_b.zdeskUserName,c_b.cardUrl,cu.startus,cu.roleCode,cu.tId FROM chatWorkflow_binding c_b,cardUser cu
+        WHERE zdeskUserLoginName IN (
+        <foreach collection="zdeskUserLoginName" index="index" item="item" separator=",">
+            #{item}
+        </foreach>) AND c_b.cardUrl=cu.cardUrl;
+    </select>
+
+
+    <select id="Selectbangding" resultType="java.util.HashMap"
+            parameterType="java.util.HashMap">
+        SELECT * FROM chatWorkflow_binding c_b,cardUser cu
+        WHERE c_b.zdeskUserLoginName =#{zdeskUserLoginName} AND cu.companyId = #{companyId} AND c_b.cardUrl=cu.cardUrl;
+    </select>
+
+    <select id="SelectCardUrlFromIM_AgentSkillGroup" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+        SELECT * FROM IM_AgentSkillGroup im  WHERE im.skId = #{skId};
+    </select>
+    <select id="SelectLoginNameFromChatWorkflow_binding" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+        SELECT * FROM  chatWorkflow_binding WHERE  cardUrl =#{cardUrl} GROUP BY cardUrl;
+    </select>
+    
+    	<!-- 根据skId删除技能组 -->
+	<delete id="deleteSK_GroupByskId" parameterType="java.util.Map">
+		DELETE FROM IM_SkillGroupInfo WHERE skId =#{skId  }
+	</delete>
+</mapper>

@@ -1,0 +1,16 @@
+ /**
+   第一列checkBox 样式
+   可根据需要引用
+ **/  
+.DTTT_selectable tbody tr td:first-child {
+        text-align: center;
+ }
+/*fa-square-o*/
+.DTTT_selectable tbody tr td:first-child:before {
+        content: "\f096"; 
+        font-family: FontAwesome;
+ }
+ 
+.DTTT_selectable tbody tr.active td:first-child:before {
+        content: "\f046"; /* fa-check-square-o */
+ } 

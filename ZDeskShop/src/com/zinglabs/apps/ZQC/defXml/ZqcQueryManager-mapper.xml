@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.zinglabs.apps.ZQC.defXml">
+
+	<select id= "queryZQCInfo" resultType="java.util.Map" parameterType="java.util.HashMap">
+    	select *
+		from SU_QC_SOURCE_RECORD_DATA 
+		where is_mp3='txt'
+		<if test="searchItems!=null and searchItems!=''">
+			and ${searchItems}
+		</if>
+		 and data_state in (${data_state_parames}) and score_state in (${score_state_parames})
+     	limit ${offset},${rows}
+    </select >
+    
+    
+    <select id= "getTotalRow" resultType="java.util.Map" parameterType="java.util.HashMap">
+   		select count(1) as total from SU_QC_SOURCE_RECORD_DATA where is_mp3='txt'
+					<if test="searchItems!=null and searchItems!=''">
+						and ${searchItems}
+					</if>
+					 and data_state in (${data_state_parames}) and score_state in (${score_state_parames})
+				
+    </select>
+    
+    <!-- ZQC导出EXCEL-->
+	 <select id="propEXCEL" resultType="java.util.Map" parameterType="java.util.HashMap" flushCache="true">
+		SELECT 
+		<if test="pingFenTableName=='T_GRADE_DETAIL_NEW'">
+	        a.begin_time_devoir,
+	     </if> 
+	     <if test="pingFenTableName=='T_GRADE_DETAIL_FUJIAN_NEW'">
+	        a.begin_time_retest,
+	     </if>
+	      <if test="shangSuTableName=='SA_AGENT_ARGUMENT'">
+	        d.agent_user_dt,
+	     </if> 
+		a.begin_time,
+		b.grade_id, 
+		a.owner,
+		a.alias1,
+		a.pfx_total, 
+		concat(group_concat( c.DESCRIPTION)) as aaa,
+		concat(group_concat( c.grade_score)) as bbb,
+		concat(group_concat( IF(c.remark_describe ='','空', c.remark_describe))) as ccc,
+		concat(group_concat( c.grade_index_id)) as ddd,
+		b.grade_remark,
+		grade_name
+	from SU_QC_SOURCE_RECORD_DATA a,
+${pingFenTableName} b, ${pingYuTableName} c 
+	<if test="shangSuTableName=='SA_AGENT_ARGUMENT'">
+	       ,${shangSuTableName} d
+     </if> 
+	where 
+	
+		<if test="id != null and id != ''">
+	       a.id in (${id}) and 
+     	</if> 
+	
+	b.grade_id in (${grade_id})
+	and b.grade_id=c.grade_id
+	and b.file_name=a.file_name
+	<if test="shangSuTableName=='SA_AGENT_ARGUMENT'">
+	       and c.grade_id=d.grade_id
+	       and d.file_name=a.file_name
+     </if> 
+	GROUP BY b.grade_id
+	</select>
+	<!-- 获取评分值名称 -->
+	<select id= "queryDictinfo" resultType="java.util.Map" parameterType="java.util.HashMap">
+
+				select 
+					a.ID,
+					a.PARENTID,
+					a.IDPATH,
+					a.grade_index,
+					a.DESCRIPTION,
+					a.min_value,
+					a.max_value,
+					a.reference_value,
+					a.reference2_value,
+					a.percent,
+					a.value_remark,
+					a.weight,
+					a.is_involve,
+					a.reference2_name
+				 From dictinfo a , SA_QC_GRADE_DICTINFO b where a.grade_index=b.id 
+		        and  b.grade_name=#{grade_name} 
+    </select >
+</mapper>

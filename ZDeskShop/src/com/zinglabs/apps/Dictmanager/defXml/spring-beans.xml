@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="DictmanagerSqlSession" class="com.zinglabs.base.core.springSupport.DbidSqlsession" singleton="false">
+	<property name="namespance" value="com.zinglabs.apps.Dictmanager" ></property>
+	<property name="dbid" value="ZKM"></property>
+	</bean>
+	
+	<bean id="DictmanagerService" name="DictmanagerService" 
+			class="com.zinglabs.apps.Dictmanager.DictmanagerService"></bean>
+</beans>

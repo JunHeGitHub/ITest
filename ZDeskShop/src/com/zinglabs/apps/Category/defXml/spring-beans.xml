@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	
+	<bean id="CategorySqlSession" class="com.zinglabs.base.core.springSupport.DbidSqlsession" singleton="false">
+		<property name="dbid" value="ZKM"></property>
+	</bean>
+	<bean id="CategoryServices" name="CategoryServices" class="com.zinglabs.apps.Category.CategoryServices"></bean>
+</beans>

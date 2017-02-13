@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.zinglabs.apps.mybaits_xml_def.ZQC">
+	
+	
+	
+	 <!-- 插入初检，复检，复审评语表 -->
+    <insert id="insertPingYu" parameterType="java.util.HashMap" >
+    insert into  ${tableName}
+		  (grade_id,grade_index_id,DESCRIPTION,grade_score,remark_describe)
+		  VALUES(#{grade_id},#{grade_index_id},#{DESCRIPTION},#{grade_score},#{remark_describe})
+    </insert>
+    
+     <!-- 更新初检，复检，复审评语表 -->
+     <update id="updatePingYu"  parameterType="java.util.HashMap">
+		update ${tableName} set remark_describe=#{remark_describe},grade_score=#{grade_score} where 
+		grade_id=#{grade_id}
+		and grade_index_id=#{grade_index_id}
+   	</update>
+    
+    <!-- 查询初检，复检，复审评语表 -->
+	 <select id="selectPingYu" resultType="java.util.Map" parameterType="java.util.HashMap">
+		select * from ${tableName} where grade_id=#{grade_id}
+		<if test="grade_index_id != null and grade_index_id != ''">
+		 and grade_index_id=#{grade_index_id} 
+		 </if>
+	</select>
+	
+	<!--加载地区sql  -->
+	 <select id="loadQuartier" resultType="java.util.Map" parameterType="java.util.HashMap">
+		select distinct quartier from SU_QC_SOURCE_RECORD_DATA where quartier!='' or quartier!=null		
+	</select>
+	<!-- 根据文件名获取id -->
+	 <select id="getSU_QC_SOURCE_RECORD_DATA_id" resultType="java.util.Map" parameterType="java.util.HashMap">
+		select * from SU_QC_SOURCE_RECORD_DATA where file_name=#{file_name}
+	</select>
+	
+	<!-- 根据文件名获取多个id -->
+	 <select id="getSU_QC_SOURCE_RECORD_DATA_id2" resultType="java.util.Map" parameterType="java.util.HashMap">
+		select * from SU_QC_SOURCE_RECORD_DATA where file_name in (${file_name})
+	</select>
+	 
+    <!-- 修改上诉表 SA_AGENT_ARGUMENT状态score_state -->
+	<update id="xiugaishangsubiao"  parameterType="java.util.HashMap">
+		update SA_AGENT_ARGUMENT set
+		score_state=#{score_state},admin_remark=#{admin_remark},grade_remark=#{grade_remark},update_time=#{update_time},file_name=#{file_name}
+		where grade_id=#{grade_id}
+	</update>
+    
+
+	<!--加载客户满意度sql  -->
+	 <select id="loadClient_satisfy" resultType="java.util.Map" parameterType="java.util.HashMap">
+		select distinct client_satisfy from SU_QC_SOURCE_RECORD_DATA where  quartier!='' or quartier!=null	
+	</select>
+    <select id="getWulizu" resultType="java.util.Map" parameterType="java.util.HashMap">
+		select distinct business_type from SU_QC_SOURCE_RECORD_DATA	where  business_type!='' or business_type!=null		
+	</select>
+	
+	
+	<select id="getJiaocaimuluming" resultType="java.util.Map" parameterType="java.util.HashMap">
+		select distinct teach_dir_description from T_TEACH_LIB_DIR		
+	</select>
+	<select id="getIdByDescription" resultType="java.util.Map" parameterType="java.util.HashMap">
+		select  id from SA_QC_GRADE_DICTINFO
+		<trim prefix="where" prefixOverrides="AND|OR">
+		     <if test="grade_name!='' and grade_name!=null ">
+		        and  grade_name=#{grade_name} 
+		     </if> 
+	    </trim>		
+	</select>
+	<select id="getFenshuByGrade_id" resultType="java.util.Map" parameterType="java.util.HashMap">
+		select  * from T_GRADE_DETAIL_NEW
+		<trim prefix="where" prefixOverrides="AND|OR">
+		     <if test="grade_id!='' and grade_id!=null ">
+		        and  grade_id=#{grade_id} 
+		     </if> 
+	    </trim>		
+	</select>
+	<select id="getShangSuYuanYinByGrade_id" resultType="java.util.Map" parameterType="java.util.HashMap">
+		select  * from SA_AGENT_ARGUMENT
+		<trim prefix="where" prefixOverrides="AND|OR">
+		     <if test="grade_id!='' and grade_id!=null ">
+		        and  grade_id=#{grade_id} 
+		     </if> 
+	    </trim>		
+	</select>
+	<select id="getFenshuByGrade_id_fj" resultType="java.util.Map" parameterType="java.util.HashMap">
+		select  * from T_GRADE_DETAIL_FUJIAN_NEW
+		<trim prefix="where" prefixOverrides="AND|OR">
+		     <if test="grade_id!='' and grade_id!=null ">
+		        and  grade_id=#{grade_id} 
+		     </if> 
+	    </trim>		
+	</select>
+	<select id="getDescriptionByGrade_index" resultType="java.util.Map" parameterType="java.util.HashMap">
+		select * from dictinfo	
+		<trim prefix="where" prefixOverrides="AND|OR">
+		     <if test="grade_index!='' and grade_index!=null ">
+		        and  grade_index=#{grade_index} and parentid !=0
+		     </if> 
+	    </trim>		
+	</select>
+	<select id="getZhibiaoByGrade_id" resultType="java.util.Map" parameterType="java.util.HashMap">
+		select * from dictinfo	
+		<trim prefix="where" prefixOverrides="AND|OR">
+		     <if test="grade_index!='' and grade_index!=null ">
+		        and  grade_index=#{grade_index}
+		     </if> 
+	    </trim>		
+	</select>
+	<select id="getfenzhi" resultType="java.util.Map" parameterType="java.util.HashMap">
+		select sum(percent) fenshu from dictinfo 
+		<trim prefix="where" prefixOverrides="AND|OR">
+		     <if test="grade_index!='' and grade_index!=null ">
+		        and  grade_index=#{grade_index} and parentid =0
+		     </if> 
+	    </trim>		
+	</select>
+	<select id="getwulizu_search" resultType="java.util.Map" parameterType="java.util.HashMap">
+		select distinct business_type from SU_QC_SOURCE_RECORD_DATA 
+		<trim prefix="where" prefixOverrides="AND|OR">
+		     <if test="business_type!='' and business_type!=null ">
+		        and  business_type like #{business_type}
+		     </if> 
+	    </trim>		
+	</select>
+	<select id="getzuoxigonghao_search" resultType="java.util.Map" parameterType="java.util.HashMap">
+		select distinct alias1 from SU_QC_SOURCE_RECORD_DATA 
+		<trim prefix="where" prefixOverrides="AND|OR">
+		     <if test="alias1!='' and alias1!=null ">
+		        and  alias1 like #{alias1}
+		     </if> 
+	    </trim>		
+	</select>
+	<select id="getZhibiaoByDescription" resultType="java.util.Map" parameterType="java.util.HashMap">
+		select * From dictinfo a Left Join SA_QC_GRADE_DICTINFO b On a.grade_index=b.id 
+		<trim prefix="where" prefixOverrides="AND|OR">
+		     <if test="grade_name!='' and grade_name!=null ">
+		        and  b.grade_name=#{grade_name} 
+		     </if> 
+	    </trim>		
+	</select>
+	 <select id="getZuoxigonghao" resultType="java.util.Map" parameterType="java.util.HashMap">
+		select distinct alias1 from SU_QC_SOURCE_RECORD_DATA		
+	</select>	
+	 <select id="getTiaojianChaxun" resultType="java.util.Map" parameterType="java.util.HashMap">
+		select * from AGENT_TEACH_QUERY	WHERE 1=1
+		<include refid="selectID"/>	and AGENT_TEACH_QUERY.grade_id in(
+		select 	 distinct grade_id from AGENT_TEACH_QUERY_ZU_GONGHAO b
+		where b.zuoxigonghao=#{gonghao} or  b.wulizu in (#{zuzhi}) )
+	</select>
+	<select id="getTiaojianChaxun_jiaocaimuluchaxun" resultType="java.util.Map" parameterType="java.util.HashMap">
+		select * from T_TEACH_DETAIL_NEW	WHERE 1=1
+		<include refid="selectID_jc"/>		 
+	</select>
+	<select id="getTiaojianChaxun_jiaocaiku" resultType="java.util.Map" parameterType="java.util.HashMap">
+		select * from T_TEACH_LIB_DIR	WHERE 1=1
+		<include refid="selectID_jck"/>		 
+	</select>
+	<select id="getpingfenzhibiaoliulan" resultType="java.util.Map" parameterType="java.util.HashMap">
+		select * from SA_QC_GRADE_DICTINFO	WHERE 1=1
+		<include refid="selectID_zbll"/>		 
+	</select>
+	<sql id="selectID_zbll">
+		<if test="grade_name != null and grade_name != ''"> AND grade_name=#{grade_name}</if>
+		<if test="grade_index_desp != null and grade_index_desp != ''">AND grade_index_desp = #{grade_index_desp}</if> 
+		<if test="grade_index_creator != null and grade_index_creator != ''">AND grade_index_creator like #{grade_index_creator}</if>
+		<if test="grade_index_time_s != null and grade_index_time_s != '' ">AND grade_index_time&gt;#{grade_index_time_s}</if>
+		<if test="grade_index_time_e != null and grade_index_time_e != ''">AND grade_index_time &lt;#{grade_index_time_e}</if>
+	</sql>
+	<sql id="selectID_jc">
+		<if test="grade_id != null and grade_id != ''"> AND grade_id=#{grade_id}</if>
+		<if test="import_user != null and import_user != ''">AND import_user = #{import_user}</if> 
+		<if test="phone_number != null and phone_number != ''">AND phone_number=#{phone_number}</if>
+		<if test="teach_set_time_start != null and teach_set_time_start != '' ">AND <![CDATA[ teach_set_time >=  #{teach_set_time_start}]]></if>
+		<if test="teach_set_time_end != null and teach_set_time_end != ''">AND <![CDATA[ teach_set_time <= #{teach_set_time_end} ]]></if>
+		<if test="teach_name != null and teach_name != ''">AND teach_name like #{teach_name}</if>
+		<if test="remark != null and remark != '' ">AND remark like #{remark}</if>
+		<if test="file_name != null and file_name != ''">AND file_name =#{file_name}</if>
+		<if test="file_location != null and file_location != ''">AND file_location like #{file_location}</if>
+	</sql>
+	<sql id="selectID">
+		<if test="import_user != null and import_user != ''">AND import_user = #{import_user}</if> 
+		<if test="phone_number != null and phone_number != ''">AND phone_number=#{phone_number}</if>
+		<if test="teach_set_time_start != null and teach_set_time_start != '' ">AND <![CDATA[teach_set_time >= #{teach_set_time_start}]]></if>
+		<if test="teach_set_time_end != null and teach_set_time_end != ''">AND <![CDATA[teach_set_time  <= #{teach_set_time_end}]]></if>
+		<if test="file_name != null and file_name != ''">AND file_name like #{file_name}</if>
+		<if test="generate_time_start != null and generate_time_start != '' ">AND <![CDATA[ generate_time >= #{generate_time_start}]]></if>
+		<if test="generate_time_end != null and generate_time_end != ''">AND <![CDATA[ generate_time  <= #{generate_time_end}]]></if>
+	</sql>
+	<sql id="selectID_jck">
+		<if test="TEACH_DIR_DESCRIPTION != null and TEACH_DIR_DESCRIPTION != ''"> AND TEACH_DIR_DESCRIPTION=#{TEACH_DIR_DESCRIPTION}</if>
+	</sql>
+	<insert id="addNode" parameterType="java.util.HashMap" useGeneratedKeys="true" keyProperty="id">
+		insert into dictinfo
+		(parentid,grade_index,description
+		<if test="min_value!=null and min_value!=''">,min_value</if>
+		<if test="max_value!=null and max_value!=''">
+			,max_value
+		</if>
+		<if test="reference_value!=null and reference_value!=''">
+			,reference_value
+		</if>
+		<if test="percent!=null and percent!=''">
+			,percent
+		</if>
+		<if test="value_remark!=null and value_remark!=''">
+			,value_remark
+		</if>
+		) values
+		(#{parentid},#{grade_index},#{description}
+		<if test="min_value!=null and min_value!=''">,#{min_value}</if>
+		<if test="max_value!=null and max_value!=''">
+			,#{max_value}
+		</if>
+		<if test="reference_value!=null and reference_value!=''">
+			,#{reference_value}
+		</if>
+		<if test="percent!=null and percent!=''">
+			,#{percent}
+		</if>
+		<if test="value_remark!=null and value_remark!=''">
+			,#{value_remark}
+		</if>
+		)
+	</insert>
+	
+	<insert id="insertPingfen" parameterType="java.util.HashMap" >
+		insert into T_GRADE_DETAIL_NEW
+		(grade_id,use_grade_index
+		 <if test="first_owner!=null and first_owner!=''">
+			,first_owner
+		 </if>
+		   <if test="file_name!=null and file_name!=''">
+			,file_name
+		  </if>
+		  <if test="file_location!=null and file_location!=''">
+			,file_location
+		  </if>
+		  <if test="grade_remark!=null and grade_remark!=''">
+			,grade_remark
+		  </if>
+		  <if test="pfx_total!=null and pfx_total!=''">
+			,pfx_total
+		  </if>
+		  <if test="pfx_000!=null and pfx_000!=''">
+			,pfx_000
+		  </if>
+		  <if test="pfx_001!=null and pfx_001!=''">
+			,pfx_001
+		  </if>
+		  <if test="pfx_002!=null and pfx_002!=''">
+			,pfx_002
+		  </if>
+		  <if test="pfx_003!=null and pfx_003!=''">
+			,pfx_003
+		  </if>
+		  <if test="pfx_004!=null and pfx_004!=''">
+			,pfx_004
+		  </if>
+		  <if test="pfx_005!=null and pfx_005!=''">
+			,pfx_005
+		  </if>
+		  <if test="pfx_006!=null and pfx_006!=''">
+			,pfx_006
+		  </if>
+		  <if test="pfx_007!=null and pfx_007!=''">
+			,pfx_007
+		  </if>
+		  <if test="pfx_008!=null and pfx_008!=''">
+			,pfx_008
+		  </if>
+		  <if test="pfx_009!=null and pfx_009!=''">
+			,pfx_009
+		  </if>
+    	)VALUES
+    	(#{grade_id},#{use_grade_index}
+    		<if test="first_owner!=null and first_owner!=''">
+			,#{first_owner}
+		 	</if>
+    		<if test="file_name!=null and file_name!=''">
+			,#{file_name}
+		  </if>
+		  <if test="file_location!=null and file_location!=''">
+			,#{file_location}
+		  </if>
+		  <if test="grade_remark!=null and grade_remark!=''">
+			,#{grade_remark}
+		  </if>
+		  <if test="pfx_total!=null and pfx_total!=''">
+			,#{pfx_total}
+		  </if>
+		  <if test="pfx_000!=null and pfx_000!=''">
+			,#{pfx_000}
+		  </if>
+		  <if test="pfx_001!=null and pfx_001!=''">
+			,#{pfx_001}
+		  </if>
+		  <if test="pfx_002!=null and pfx_002!=''">
+			,#{pfx_002}
+		  </if>
+		  <if test="pfx_003!=null and pfx_003!=''">
+			,#{pfx_003}
+		  </if>
+		  <if test="pfx_004!=null and pfx_004!=''">
+			,#{pfx_004}
+		  </if>
+		  <if test="pfx_005!=null and pfx_005!=''">
+			,#{pfx_005}
+		  </if>
+		  <if test="pfx_006!=null and pfx_006!=''">
+			,#{pfx_006}
+		  </if>
+		  <if test="pfx_007!=null and pfx_007!=''">
+			,#{pfx_007}
+		  </if>
+		  <if test="pfx_008!=null and pfx_008!=''">
+			,#{pfx_008}
+		  </if>
+		  <if test="pfx_009!=null and pfx_009!=''">
+			,#{pfx_009}
+		  </if>
+    	)
+	</insert>
+	<insert id="insertPingfen_fujian" parameterType="java.util.HashMap" >
+		insert into T_GRADE_DETAIL_FUJIAN_NEW
+		(grade_id,use_grade_index,reowner
+		   <if test="file_name!=null and file_name!=''">
+			,file_name
+		  </if>
+		  <if test="file_location!=null and file_location!=''">
+			,file_location
+		  </if>
+		  <if test="grade_remark!=null and grade_remark!=''">
+			,grade_remark
+		  </if>
+		  <if test="pfx_total!=null and pfx_total!=''">
+			,pfx_total
+		  </if>
+		  <if test="pfx_000!=null and pfx_000!=''">
+			,pfx_000
+		  </if>
+		  <if test="pfx_001!=null and pfx_001!=''">
+			,pfx_001
+		  </if>
+		  <if test="pfx_002!=null and pfx_002!=''">
+			,pfx_002
+		  </if>
+		  <if test="pfx_003!=null and pfx_003!=''">
+			,pfx_003
+		  </if>
+		  <if test="pfx_004!=null and pfx_004!=''">
+			,pfx_004
+		  </if>
+		  <if test="pfx_005!=null and pfx_005!=''">
+			,pfx_005
+		  </if>
+		  <if test="pfx_006!=null and pfx_006!=''">
+			,pfx_006
+		  </if>
+		  <if test="pfx_007!=null and pfx_007!=''">
+			,pfx_007
+		  </if>
+		  <if test="pfx_008!=null and pfx_008!=''">
+			,pfx_008
+		  </if>
+		  <if test="pfx_009!=null and pfx_009!=''">
+			,pfx_009
+		  </if>
+		  <if test="grade_remark_fj!=null and grade_remark_fj!=''">
+			,grade_remark_fj
+		  </if>
+		 
+		  <if test="first_owner!=null and first_owner!=''">
+			,first_owner
+		  </if>
+		  <if test="first_score!=null and first_score!=''">
+			,first_score
+		  </if>
+    	)VALUES
+    	(#{grade_id},#{use_grade_index},#{reowner}
+    		<if test="file_name!=null and file_name!=''">
+			,#{file_name}
+		  </if>
+		  <if test="file_location!=null and file_location!=''">
+			,#{file_location}
+		  </if>
+		  <if test="grade_remark!=null and grade_remark!=''">
+			,#{grade_remark}
+		  </if>
+		  <if test="pfx_total!=null and pfx_total!=''">
+			,#{pfx_total}
+		  </if>
+		  <if test="pfx_000!=null and pfx_000!=''">
+			,#{pfx_000}
+		  </if>
+		  <if test="pfx_001!=null and pfx_001!=''">
+			,#{pfx_001}
+		  </if>
+		  <if test="pfx_002!=null and pfx_002!=''">
+			,#{pfx_002}
+		  </if>
+		  <if test="pfx_003!=null and pfx_003!=''">
+			,#{pfx_003}
+		  </if>
+		  <if test="pfx_004!=null and pfx_004!=''">
+			,#{pfx_004}
+		  </if>
+		  <if test="pfx_005!=null and pfx_005!=''">
+			,#{pfx_005}
+		  </if>
+		  <if test="pfx_006!=null and pfx_006!=''">
+			,#{pfx_006}
+		  </if>
+		  <if test="pfx_007!=null and pfx_007!=''">
+			,#{pfx_007}
+		  </if>
+		  <if test="pfx_008!=null and pfx_008!=''">
+			,#{pfx_008}
+		  </if>
+		  <if test="pfx_009!=null and pfx_009!=''">
+			,#{pfx_009}
+		  </if>
+		  <if test="grade_remark_fj!=null and grade_remark_fj!=''">
+			,#{grade_remark_fj}
+		  </if>
+		  <if test="first_owner!=null and first_owner!=''">
+			,#{first_owner}
+		  </if>
+		  <if test="first_score!=null and first_score!=''">
+			,#{first_score}
+		  </if>
+    	)
+	</insert>
+	<insert id="insertPingfen_fushen" parameterType="java.util.HashMap" >
+		insert into T_GRADE_DETAIL_FUSHEN_NEW
+		(grade_id,use_grade_index
+		   <if test="file_name!=null and file_name!=''">
+			,file_name
+		  </if>
+		  <if test="file_location!=null and file_location!=''">
+			,file_location
+		  </if>
+		  <if test="grade_remark!=null and grade_remark!=''">
+			,grade_remark
+		  </if>
+		  <if test="pfx_total!=null and pfx_total!=''">
+			,pfx_total
+		  </if>
+		  <if test="pfx_000!=null and pfx_000!=''">
+			,pfx_000
+		  </if>
+		  <if test="pfx_001!=null and pfx_001!=''">
+			,pfx_001
+		  </if>
+		  <if test="pfx_002!=null and pfx_002!=''">
+			,pfx_002
+		  </if>
+		  <if test="pfx_003!=null and pfx_003!=''">
+			,pfx_003
+		  </if>
+		  <if test="pfx_004!=null and pfx_004!=''">
+			,pfx_004
+		  </if>
+		  <if test="pfx_005!=null and pfx_005!=''">
+			,pfx_005
+		  </if>
+		  <if test="pfx_006!=null and pfx_006!=''">
+			,pfx_006
+		  </if>
+		  <if test="pfx_007!=null and pfx_007!=''">
+			,pfx_007
+		  </if>
+		  <if test="pfx_008!=null and pfx_008!=''">
+			,pfx_008
+		  </if>
+		  <if test="pfx_009!=null and pfx_009!=''">
+			,pfx_009
+		  </if>
+		  <if test="grade_remark_fj!=null and grade_remark_fj!=''">
+			,grade_remark_fj
+		  </if>
+    	)VALUES
+    	(#{grade_id},#{use_grade_index}
+    		<if test="file_name!=null and file_name!=''">
+			,#{file_name}
+		  </if>
+		  <if test="file_location!=null and file_location!=''">
+			,#{file_location}
+		  </if>
+		  <if test="grade_remark!=null and grade_remark!=''">
+			,#{grade_remark}
+		  </if>
+		  <if test="pfx_total!=null and pfx_total!=''">
+			,#{pfx_total}
+		  </if>
+		  <if test="pfx_000!=null and pfx_000!=''">
+			,#{pfx_000}
+		  </if>
+		  <if test="pfx_001!=null and pfx_001!=''">
+			,#{pfx_001}
+		  </if>
+		  <if test="pfx_002!=null and pfx_002!=''">
+			,#{pfx_002}
+		  </if>
+		  <if test="pfx_003!=null and pfx_003!=''">
+			,#{pfx_003}
+		  </if>
+		  <if test="pfx_004!=null and pfx_004!=''">
+			,#{pfx_004}
+		  </if>
+		  <if test="pfx_005!=null and pfx_005!=''">
+			,#{pfx_005}
+		  </if>
+		  <if test="pfx_006!=null and pfx_006!=''">
+			,#{pfx_006}
+		  </if>
+		  <if test="pfx_007!=null and pfx_007!=''">
+			,#{pfx_007}
+		  </if>
+		  <if test="pfx_008!=null and pfx_008!=''">
+			,#{pfx_008}
+		  </if>
+		  <if test="pfx_009!=null and pfx_009!=''">
+			,#{pfx_009}
+		  </if>
+		  <if test="grade_remark_fj!=null and grade_remark_fj!=''">
+			,#{fujian_remark}
+		  </if>
+    	)
+	</insert>
+	
+	<!--获取复审表generateTime  -->
+	 <select id= "getT_GRADE_DETAIL_FUSHEN_NEW_generateTime" resultType="java.util.Map" parameterType="java.util.HashMap">
+    	select * from T_GRADE_DETAIL_FUSHEN_NEW
+    	where  grade_id=#{grade_id}
+    </select >
+     
+     
+     <!--根据文件名获取数据状态和评分状态  -->
+	 <select id= "getSU_QC_SOURCE_RECORD_DATA_state" resultType="java.util.Map" parameterType="java.util.HashMap">
+    	select * from SU_QC_SOURCE_RECORD_DATA
+    	where  file_name=#{file_name}
+    </select >
+	 <update id="xiugai_state_fs" parameterType="java.util.HashMap">
+    	update SA_AGENT_ARGUMENT set score_state = #{score_state} where grade_id=#{grade_id}
+    </update>
+    
+     
+    <delete id="delPingfen" parameterType="java.util.HashMap">
+    	delete from T_GRADE_DETAIL_NEW where grade_id=#{grade_id}
+    </delete>
+    <delete id="delPingfen_fj" parameterType="java.util.HashMap">
+    	delete from T_GRADE_DETAIL_FUJIAN_NEW where grade_id=#{grade_id}
+    </delete>
+     <delete id="delPingfen_fs" parameterType="java.util.HashMap">
+    	delete from T_GRADE_DETAIL_FUSHEN_NEW where grade_id=#{grade_id}
+    </delete>
+	<!-- 删除上诉表数据 -->
+	<delete id="SA_AGENT_ARGUMENT_delete" parameterType="java.util.HashMap">
+    	delete from SA_AGENT_ARGUMENT where grade_id=#{grade_id}
+    </delete>
+    
+    <!-- 删除初检表数据 -->
+	<delete id="T_GRADE_DETAIL_NEW_delete" parameterType="java.util.HashMap">
+    	delete from T_GRADE_DETAIL_NEW where grade_id=#{grade_id}
+    </delete>
+	<!-- 加载质检员sql -->
+	 <select id= "load_Owner" resultType="java.util.Map" parameterType="java.util.HashMap">
+    	select distinct owner from SU_QC_SOURCE_RECORD_DATA where owner!='' or owner=null
+    </select >
+    
+     <!-- 删除教材数据 -->
+	<delete id="T_TEACH_DETAIL_NEW_delete" parameterType="java.util.HashMap">
+    	delete from T_TEACH_DETAIL_NEW where grade_id=#{grade_id}
+    </delete>
+    
+   
+</mapper>

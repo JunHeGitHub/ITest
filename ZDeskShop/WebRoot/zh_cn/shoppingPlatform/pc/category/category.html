@@ -1,0 +1,1166 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+	<head>
+		<title>分类管理</title>
+		 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0">
+		    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		    
+		    <link rel="stylesheet" href="../../../../css/bootstrap.min.css" type="text/css"/>
+		    <link rel="stylesheet" href="../../css/category.css" type="text/css"/>
+			<link rel="stylesheet" href="../../../../css/bootstrap-responsive.min.css" type="text/css"/>
+			<link rel="stylesheet" href="../../../../js/bootstrap-datetimepicker/css/datepicker.css" type="text/css"></link>
+			<link rel="stylesheet" href="../../../../js/zTree/zTreeStyle/zTreeStyle.css" type="text/css" />
+			<link rel="stylesheet" href="../../../../js/dataTables/css/dataTables.colVis.min.css" type="text/css"/>	
+			<link rel="stylesheet" href="../../../../js/dataTables/css/jquery.dataTables.css" type="text/css"/>
+			<link rel="stylesheet" href="../../../../js/dataTables/css/DT_bootstrap.css" type="text/css"/>
+			<link rel="stylesheet" href="../../../../js/dataTables/css/dataTables.tableTools.min.css" type="text/css"/>
+			<link rel="stylesheet" href="../../../../js/dataTables/css/font-awesome.css"/>
+			<link rel="stylesheet" href="../../../../js/dataTables/css/dataTables.colVis.min.css" type="text/css"/>
+			<link rel="stylesheet" href="../../../../css/bootstrap-responsive.min.css" type="text/css" />
+			
+			<script type="text/javascript" src="../../../../js/jquery.js"></script>
+			<script type="text/javascript" src="../../../../js/golbal_params.js"></script>
+			<script type="text/javascript" src="../../../../js/bootstrap.js"></script>
+			<script type="text/javascript" src="../../../../js/dataTables/js/jquery.dataTables.js"></script>
+			<script type="text/javascript" src="../../../../js/dataTables/js/dataTables.colReorder.js"></script>
+			<script type="text/javascript" src="../../../../js/dataTables/js/dataTables.colVis.js"></script>
+			<script type="text/javascript" src="../../../../js/dataTables/js/dataTables.tableTools.min.js"></script>
+			
+			<script type="text/javascript" src="../../../../js/common_utils.js"></script>
+			<script type="text/javascript" src="../../../../js/appCommonCurdUtils_new.js"></script>
+			<script type="text/javascript" src="../../../../js/appCommonUtil.js"></script>
+			<script type="text/javascript" src="../../../../js/dataTables/js/DT_bootstrap.js"></script>
+			
+			<script type="text/javascript" src="../../../../js/bootstrap-datetimepicker.min.js"></script>
+			<script type="text/javascript" src="../../../../js/log2.js"></script>
+			<script type="text/javascript" src="../../../../js/zTree/jquery.ztree.all-3.5.min.js"></script>
+
+	<script>
+  		var zTree,staticNode,rMenu,rightClickNode,parseNodes,
+  		 propValueGrid,propNameUpdateAgo,nodeNameUpdateAgo;
+  		var parentId;
+  		var propValueGridData,propGridData,dataStatus,whichDataTable,propValueParentId,propParentId; 
+  		var categoryTableName="tb_Category";
+  		var propTableName="tb_Prop"; 
+  		var validateResult = true;
+  		var setting = {  
+  			data: {
+				simpleData: {
+					enable: true,
+					idKey:'id',
+					piKey:'pid'
+				},
+				key:{name:"text"}
+			},
+			callback: {
+				onClick: clickNode,
+				onRightClick: zTreeOnRightClick
+			/*	beforeDrop:beforeDrop,
+				onDrop:onDrop 
+			 },edit: {
+				drag: {
+						isCopy: false,
+						isMove: true,
+						prev: dropPrev,
+						inner: dropInner,
+						next: dropNext,
+						autoOpenTime: 1000
+					},
+				enable: true,
+				showRemoveBtn: false,
+				showRenameBtn: false
+			},check: {
+				enable: true,
+				chkStyle: "checkbox",
+				chkboxType: { "Y": "", "N": "" } */
+			}
+			
+	    };  
+
+	// begin-------------------------------------------------
+	$(document).ready(function(){
+	   		
+	   		loadTree();  // 加载树；	
+	   // ===================================dataTable============================
+			$('#propGrid').DataTable({
+		        //滚动条
+		        //scrollY: 500,
+		        //scrollX: false,
+		        //延迟加载
+		         deferRender: true,
+		        //开启服务端分页
+		         processing: false,
+		         serverSide: true,
+		         //服务器端分页
+		         ajax: function (data, callback, settings) {
+		              // var params=searchGridData(staticNode,0);
+		             	if(BIsNullVal(propParentId)){
+		             		return;
+		             	}
+		             	propGridData = null;  //每次加载都清空最后一次选中行
+		               var params ={};
+		               var searchValue = $("#searchPropValue").val(); 
+		               if(!BIsNullVal(searchValue)){
+		               		params.propName = searchValue;
+		               }
+		               
+//		               params.categoryId = parentId;	
+		               params.categoryId = propParentId;	
+					   params.rows=settings._iDisplayLength;
+					   params.offset=settings._iDisplayStart; 
+					   params.tableName = propTableName; //数据表名； 
+					   ajaxFunction("/" +parent.PRJ_PATH + "/" + 'ZKM' + "/Category/getGridList.action", params, false, function(data) {
+							 if(data&&data.data){
+					                  var pdata={};
+					                  //数据
+					                  pdata.data=data.data;
+					                  //总条数
+					                  pdata.recordsTotal=data.total;
+					                   //过滤没有使用到总条数
+					                  pdata.recordsFiltered=data.total;
+					                  // 代表第几次画页面  如pdata.draw 不能删 如删掉不会翻页  
+					                  pdata.draw=settings.iDraw;
+					                  callback(pdata);
+					                }
+						});
+			 	 },
+				pagingType: "full_numbers",
+		        pageLength: $("#showNumbers").val(), //获取页面上的当前显示多少数据  
+		        bPaginate: true, //翻页功能 
+		        bLengthChange: false, //改变每页显示数据数量
+		        bFilter: true, //过滤功能
+		        bSort: true, //排序功能
+		        bInfo: true,//页脚信息
+		        bAutoWidth: true, //自动宽度
+		        sPaginationType: "bootstrap",//分页样式
+		        dom: 'TRlrtip',
+		        scrollCollapse: true,
+			    sScrollX:"100%",
+		        columns: [
+		              {title:"表序号" ,data: 'id', visible: false},
+		              {title:"分类名称" ,data: 'categoryId', visible: false},
+		              {title:"属性名称" ,data: 'propName'},                                 
+		              {title:"属性描述" ,data: 'propDesc'},    
+		              {title:"展现方式" ,data: 'showType'},      
+		              {title:"买家卖家" ,data: 'saleOrBuy'},                                  
+		              {title:"是否必填" ,data: 'requiredOrNot' },                                 
+		              {title:"状态" ,data: 'propUseOrNot'},                                 
+		              {title:"创建人" ,data: 'createPerson'},                                  
+		              {title:"创建时间" ,data: 'createDate'},                                  
+		              {title:"企业编号" ,data: 'companyId',  visible: false}
+		               ],
+		        oLanguage: {
+		             infoFiltered:function(){
+		             
+		             },
+		            "sLengthMenu": "每页显示 _MENU_条",
+		            "sZeroRecords": "没有找到符合条件的数据",
+		            "sProcessing": "&lt;imgsrc=’./loading.gif’ /&gt;",
+		            "sInfo": "当前第 _START_ - _END_ 条　共计 _TOTAL_ 条",
+		            "sInfoEmpty": "没有记录",
+		            "sInfoFiltered": "(从 _MAX_ 条记录中过滤)",
+		            "sSearch": "搜索：",
+		            "oPaginate": {
+		                "sFirst": "首页",
+		                "sPrevious": "前一页",
+		                "sNext": "后一页",
+		                "sLast": "尾页"
+		            }
+		        }, tableTools: {
+		        	//获取点击的行
+		            fnRowSelected: function ( nodes ) {
+		              var index=nodes[0]._DT_RowIndex;	
+		               var data = $('#propGrid').DataTable().row(index).data();
+ 		               propGridData = data;
+		            },
+		             sRowSelect:'os',
+		            aButtons: []
+		        },"fnCreatedRow" : function(nRow,aData,iDataIndex){
+		        	if(aData.showType=="text"){
+				 		$('td:eq(2)',nRow).html("文本框");   
+		        	}else if(aData.showType=="radio"){
+		        		$('td:eq(2)',nRow).html("单选");
+		        	}else if(aData.showType=="checkbox"){
+		        		$('td:eq(2)',nRow).html("多选");
+		        	}else if(aData.showType=="select"){
+		        		$('td:eq(2)',nRow).html("下拉列表");
+		        	}
+				 	$('td:eq(3)',nRow).html(aData.saleOrBuy == "1"?"卖家":"买家");  
+				 	$('td:eq(4)',nRow).html(aData.requiredOrNot == "1"?"必填项":"非必填项");  
+				 	$('td:eq(5)',nRow).html(aData.propUseOrNot == "1"?"启用":"禁用");  
+				 	// $('td:eq(7)',nRow).html(aData.createDate.split(" ")[0]); 
+				}
+		    });
+			
+			
+		 //属性值dataTable
+		 propValueGrid =  $('#propValueGrid').DataTable({
+		 	 	deferRender: true, 
+		         processing: false,
+		         serverSide: true,
+		         ajax: function (data, callback, settings) {
+		               //var params=searchGridData(staticNode,0);
+		             	var params ={};
+
+		             	if(BIsNullVal(propValueParentId)){ 
+		             		return;
+		             	}
+		               propValueGridData = null; 
+		             //  params.categoryId = parentId;	
+		               params.categoryId = propValueParentId;	
+		              
+					   params.rows=settings._iDisplayLength;
+					   params.offset=settings._iDisplayStart; 
+					   params.tableName = propTableName; //数据表名； 
+					   ajaxFunction("/" +parent.PRJ_PATH + "/" + 'ZKM' + "/Category/getGridList.action", params, false, function(data) {
+							 if(data&&data.data){
+					                  var pdata={};
+					                  //数据
+					                  pdata.data=data.data;
+					                  //总条数
+					                  pdata.recordsTotal=data.total;
+					                   //过滤没有使用到总条数
+					                  pdata.recordsFiltered=data.total;
+					                  // 代表第几次画页面  如pdata.draw 不能删 如删掉不会翻页  
+					                  pdata.draw=settings.iDraw;
+					                  callback(pdata);
+					                }
+						});
+			 	 },
+				pagingType: "full_numbers",
+		        pageLength: 10, //获取页面上的当前显示多少数据 
+		        bPaginate: true, //翻页功能 
+		        bLengthChange: false, //改变每页显示数据数量
+		        bFilter: true, //过滤功能
+		        bSort: true, //排序功能
+		        bInfo: true,//页脚信息
+		      //   bAutoWidth: false, //自动宽度
+		        sPaginationType: "bootstrap",//分页样式
+		        dom: 'TRlrtip',
+		        columns: [
+		              {title:"表序号" ,data: 'id', visible: false},
+		              {title:"分类名称" ,data: 'categoryId', visible: false},
+		              {title:"属性名称" ,data: 'propName'},       
+		              {title:"是否必填" ,data: 'requiredOrNot'  },                                 
+		              {title:"状态" ,data: 'propUseOrNot'},                                 
+		              {title:"创建人" ,data: 'createPerson'},                                  
+		              {title:"创建时间" ,data: 'createDate'}, 
+		              {title:"展现方式" ,data: 'showType',  visible: false},        
+		              {title:"买家卖家" ,data: 'saleOrBuy',  visible: false},                                  
+		              {title:"企业编号" ,data: 'companyId',  visible: false}
+		               ],
+		        oLanguage: {
+		             infoFiltered:function(){
+		             
+		             },
+		            "sLengthMenu": "每页显示 _MENU_条",
+		            "sZeroRecords": "没有找到符合条件的数据",
+		            "sProcessing": "&lt;imgsrc=’./loading.gif’ /&gt;",
+		            "sInfo": "当前第 _START_ - _END_ 条　共计 _TOTAL_ 条",
+		            "sInfoEmpty": "没有记录",
+		            "sInfoFiltered": "(从 _MAX_ 条记录中过滤)",
+		            "sSearch": "搜索：",
+		            "oPaginate": {
+		                "sFirst": "首页",
+		                "sPrevious": "前一页",
+		                "sNext": "后一页",
+		                "sLast": "尾页"
+		            }
+		        }, tableTools: {
+		            fnRowSelected: function ( nodes ) {
+		            	var index=nodes[0]._DT_RowIndex;	
+			            var data = $('#propValueGrid').DataTable().row(index).data(); 
+	 		             propValueGridData = data;
+		            },
+		            sRowSelect:'os',
+		            aButtons: []
+		        },"fnCreatedRow" : function(nRow,aData,iDataIndex){
+				 	$('td:eq(1)',nRow).html(aData.requiredOrNot == "1"?"必填项":"非必填项");  
+				 	$('td:eq(2)',nRow).html(aData.propUseOrNot == "1"?"启用":"禁用");  
+				 	// $('td:eq(4)',nRow).html(aData.createDate.split(" ")[0]);  
+				}
+		 });	
+			
+		 	rMenu = $("#rMenu");    // 右键菜单
+	   
+	     //======== 添加分类 ================================================== 
+		   $('.addCateroyWindow').on('click',function(){
+		   		$(".oneOrNot").css("display","block");
+		   		$("#oneOrNot").attr("checked",false);
+		        $('#addForm')[0].reset() ; 
+		        if(staticNode != null && staticNode != ""){
+		        	$("#parentId").val(staticNode.id);
+		        }
+		        dataStatus = "add"; 
+		        whichDataTable = null;  
+		        $('#addWindow').modal('show');
+		    });
+		   
+		   //关闭dialog按钮
+		   $(".addCloseBtn").on('click',function(){
+		   		$('#addWindow').modal('hide');
+		   }); 
+		    
+		   //添加保存按钮 
+		    $(".submitBtn").on('click',function(){
+		    	if(dataStatus == "add"){
+		    	   // 添加分类时如果设置为一级分类，如果选中则父ID为0；
+		    	    if($("#oneOrNot").prop("checked") == true){ 
+		    	    	$("#parentId").val(0); 
+		    	    }    
+				    doAdd("addWindow","addForm",categoryTableName);  
+				}else if(dataStatus == "edit"){
+					doEdit("addWindow","addForm",categoryTableName); 
+				}
+		    });
+		  
+		 
+		 //===============修改分类=======================================
+		 
+		 $(".editCateroyWindow").on('click',function(){
+		 		$(".oneOrNot").css("display","none"); 
+		 		if(!BIsNullVal(staticNode)){
+			 		$('#addForm')[0].reset() ; 
+			 		var obj = {};
+			 		obj.id = staticNode.id;
+			 		obj.parentId = staticNode.pid;
+			 		obj.nodeName = staticNode.text;
+			 		obj.categroyUseOrNot = staticNode.categroyUseOrNot;
+			 		obj.departmentId = staticNode.departmentId;
+			 		obj.companyId = staticNode.companyId;
+			 		
+			 		 var paramTmp={};
+					    paramTmp["id"]="addWindow";  
+					    paramTmp["data"]=obj; 
+					    setPanelVal(paramTmp);
+			       	    dataStatus = "edit";  
+			        	whichDataTable = null;   // 修改完成处用于判断是树还是dataTable;
+			        	
+			        nodeNameUpdateAgo = $("#nodeName").val(); // 修改前后的值	
+			        $('#addWindow').modal('show');
+		        }else{
+		        	zinglabs.alert("请选择要修改的分类!");
+		        }
+		 });
+		 
+		 
+		    
+	    //================添加属性===========================  
+		    $('.addPropWindow').on('click',function(){
+			      if(staticNode != null && staticNode != ""){
+				      $('#addPropForm')[0].reset() ;   // 清空form
+				      $(".willHidden").css("display","none"); 
+				      $(".buy").css("display","block");  //买家卖家属性隐藏 ，添加属性值的属性开启
+				      $("#categoryId").val(staticNode.id); //给当前数据赋父节点的值,值为左侧树节点的id
+			      	  dataStatus = "add";
+			      	  
+			      	  whichDataTable = "propGrid";
+			      	 $('#addPropWindow').modal('show'); 
+			      }else{
+			      	// $.messager.alert("请选择分类！");
+			      	zinglabs.alert("请选择分类！"); 
+			      }
+			    });
+			   
+			 //关闭dialog按钮
+			$(".propCloseBtn").on('click',function(){
+			   	$('#addPropWindow').modal('hide');
+			}); 
+			    
+		    //添加保存按钮 
+			$(".propSubmitBtn").on('click',function(){ 
+				if(dataStatus == "add"){
+				   doAdd("addPropWindow","addPropForm",propTableName);  
+				}else if(dataStatus == "edit"){
+					doEdit("addPropWindow","addPropForm",propTableName);  
+				}
+			});
+			
+			
+		//===========修改属性===========================================
+		 	$(".editPropWindow").on('click',function(){
+				if(!BIsNullVal(propGridData)){
+					$('#addPropForm')[0].reset() ;   // 清空form
+					  $(".willHidden").css("display","none"); //显示属性描述项
+					  $(".buy").css("display","block"); //显示属性描述项
+				       var paramTmp={};
+				       paramTmp["id"]="addPropWindow";  
+				       paramTmp["data"]=propGridData; 
+				       setPanelVal(paramTmp);
+				       dataStatus = "edit";
+				       propNameUpdateAgo = $("#propName").val();
+				      whichDataTable = "propGrid";    
+				      $('#addPropWindow').modal('show');
+				}else{
+					zinglabs.alert("请选择属性！");
+				}	 	
+		 	});
+		 
+		 //==========禁用属性===================
+		$(".disPropWindow").on('click',function(){
+			if(!BIsNullVal(propGridData)){
+				zinglabs.confirm("您确定要禁用此属性吗？",function(){
+				  
+					disableNodeOrRows(propGridData.id, "propGrid"); 
+				});
+				
+			}else{ 
+			 	zinglabs.alert("请选择要禁用的属性！"); 
+			}
+		});
+		 
+		 	
+		 	
+		//===========添加属性值===========================================	
+			$(".addData").on('click',function(){
+				if(!BIsNullVal(propGridData)){
+					$('#addPropForm')[0].reset() ;   // 清空form
+				    //  if(propGridData.id != null && propGridData.id != ""){
+				       // 	alert(propGridData.id);
+				      	$("#categoryId").val(propGridData.id);  
+				      	$("#saleOrBuy").val(propGridData.saleOrBuy);  
+				      	$("#showType").val("");    
+				    //   }
+				      $(".willHidden").css("display","block");  // 隐藏属性描述项
+				      $(".buy").css("display","none");  // 隐藏属性描述项
+				      dataStatus = "add";
+				       whichDataTable = "propValueGrid";
+				      $('#addPropWindow').modal('show');
+				}else{
+				//	$("#mgs").html("请选择属性!"); 
+					//$("#modal-1").modal('show'); 
+					zinglabs.alert("请选择属性！"); 
+				}
+			});
+			
+			
+		//==============查看属性值=======================	
+		$(".lookData").on('click',function(){ 
+				if(!BIsNullVal(propGridData)){
+					propValueParentId = "'"+propGridData.id+"'";  
+					//datatables 动态查询； 
+					var tableTmp=$("#propValueGrid").DataTable();  
+				    	tableTmp.draw(true);  
+				    propValueGridData = null; // 每次点击查看都清空选中行的值； 	
+		        	 $("#lookPropWindow").modal('show'); 
+	        	}else{
+	        		zinglabs.alert("请选择要查看的属性！");
+				} 
+		});
+		
+		//=================修改属性值========================================
+		$(".editPropValueWindow").on('click',function(){
+			if(!BIsNullVal(propValueGridData)){
+				      $('#addPropForm')[0].reset() ;   // 清空form
+					  $(".willHidden").css("display","block"); //显示属性描述项
+					  $(".buy").css("display","none"); //显示属性描述项
+				       var paramTmp={};
+				       paramTmp["id"]="addPropWindow";  
+				       paramTmp["data"]=propValueGridData;  
+				       setPanelVal(paramTmp);
+				       dataStatus = "edit";
+				      whichDataTable = "propValueGrid";   //设置变量，方便添加或修改成功后对dataTable更新  
+				      $('#addPropWindow').css("z-index","10000"); // 设置显示层级；
+				      $('#addPropWindow').modal('show');
+			}else{ 
+				//$("#mgs").html("请选择要修改的属性值"); 
+				//$("#modal-1").modal('show');  
+				alert("请选择要修改的属性值!"); 
+			}
+		});	
+		
+		//=================禁用属性值=========================================
+		
+		$(".disablePropValueWindow").on('click',function(){
+			if(!BIsNullVal(propValueGridData)){
+			
+			// 	console.log(zinglabs);
+				
+				if(confirm("您确定要禁用此属性值吗?")){
+				
+					disableNodeOrRows(propValueGridData.id, "propValueGrid"); 
+				}
+				
+				//zinglabs.confirm("您确定要禁用此属性值吗？",function(){ 
+				//});
+				
+			}else{
+				$("#mgs").html("请选择要禁用的属性值");
+				$("#modal-1").modal('show'); 
+				// zinglabs.alert("请选择要禁用的属性值");
+			}
+		});
+		
+		
+		//===============右侧查询框========================================
+		$(".searchPropValueBtn").on('click',function(){
+			
+			var tableTmp=$("#propGrid").DataTable(); 
+	   			tableTmp.draw(true);  
+	   		$("#searchPropValue").val('');	
+						
+		});
+		
+		
+		//提示框关闭按钮
+		$(".clBtn").on('click',function(){ 
+			$("#modal-1").modal('hide'); 
+		});
+		
+		
+		
+	});	
+	//=======$(function){ end }============================================
+	
+	
+	//=======================加载树========================================
+	function loadTree(){
+		var treeNodes,params=""; 
+		ajaxFunction("/" + parent.PRJ_PATH + "/" + 'ZKM' +"/Category/getTreeRoot.action", params, false, function(data) {
+			if (data.success) {
+				treeNodes=data.data;
+				$.fn.zTree.init($("#treeDemo"), setting, treeNodes);
+			}else{	
+				zinglabs.alert(data.mgs);
+			}
+		});
+	}
+	
+	//==================异步加载树节点====================================
+	function ansyTree(node){
+		var params={};
+		params.id=node.id;
+		ajaxFunction("/" + parent.PRJ_PATH + "/" + 'ZKM' +"/Category/getTreeRoot.action",params, false, function(data) {
+				if (data.success) {
+					treeNodes = data.data;
+					// 查询不是空赋值；
+					if(treeNodes != "" ){
+						var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+						node = treeObj.addNodes(node, treeNodes);
+					}
+				}else{	
+					zinglabs.alert(data.mgs);
+				}
+		});
+	}
+	
+	//=============点击树节点操作=============================================
+	function clickNode(event, treeId, treeNode){
+		staticNode = treeNode;
+		
+		//如果当前点击的节点没有子节点，那么就尝试查询子节点，有子节点就返回
+		if(treeNode.children == undefined){ 
+			ansyTree(treeNode);
+		}
+		
+		//控制按钮显示隐藏
+	// 	$(".addPropWindow").css("display","block"); 
+		
+		//--- 点击树，将当前的id和所有父节点的id传给全局属性
+			/*var id = "";
+			while(treeNode != null){
+				id += "'"+treeNode.id+"'"; 
+				treeNode =	treeNode.getParentNode();
+				if(treeNode != null){
+					id +=",";
+				}
+			}*/ 
+			propParentId ="'" + treeNode.id + "'"; 
+		//------------
+		//datatables 动态查询； 
+		var tableTmp=$("#propGrid").DataTable(); 
+	   	tableTmp.draw(true); 
+	   	 
+    }
+	
+	
+	
+	//=======================右键菜单======================================================
+	function showRMenu(type, x, y) {
+		$("#rMenu ul").show();
+		rMenu.css({"top":y+"px", "left":x+"px", "visibility":"visible"});
+		$("body").bind("mousedown", onBodyMouseDown);
+	}
+	
+	function onBodyMouseDown(event){
+			if (!(event.target.id == "rMenu" || $(event.target).parents("#rMenu").length>0)) {
+				rMenu.css({"visibility" : "hidden"});
+			}
+		}
+	
+	function hideRMenu() {
+			if (rMenu) rMenu.css({"visibility": "hidden"});
+			$("body").unbind("mousedown", onBodyMouseDown);
+	}
+	
+	function zTreeOnRightClick(event, treeId, treeNode) {
+		if (!treeNode && event.target.tagName.toLowerCase() != "button" && $(event.target).parents("a").length == 0) {
+				$.fn.zTree.getZTreeObj("treeDemo").cancelSelectedNode();
+				showRMenu("root", event.clientX, event.clientY);
+		} else if (treeNode && !treeNode.noR) {
+			$.fn.zTree.getZTreeObj("treeDemo").selectNode(treeNode);
+			showRMenu("node", event.clientX, event.clientY);
+		}
+		
+		//  当前右键的treeNode
+	  	rightClickNode = treeNode;
+		
+	}
+	
+	//==============右键菜单禁用树节点================
+	function disableNode(){
+		 hideRMenu();
+		zinglabs.confirm("您确定要禁用此节点吗？",function(){ 
+		    disableNodeOrRows( rightClickNode.id ,null); 
+		});	
+	}
+	
+	
+	
+	//查询当前分类名称是否存在，同级不同名。(失去焦点验证)
+	function validateCate(v){
+		var result="";
+		var params ={};
+		if(v == 1){
+			params.parentId = $("#parentId").val();
+			//如果复选框选中，则判断第一级是否存在。
+			if($("#oneOrNot").prop("checked") == true){
+				params.parentId = "0";	
+			}
+			// alert(params.parentId);
+			params.tableName="tb_Category";
+			params.nodeName = $("#nodeName").val();
+		}else{
+			params.tableName="tb_Prop";
+			params.parentId = $("#categoryId").val();
+			params.nodeName = $("#propName").val();
+		}
+			
+		ajaxFunction("/" + parent.PRJ_PATH +  "/" + 'ZKM' +"/Category/validate.action",params, false,  function(data) {
+			 validateResult = data.success;
+			if(data.success){ 
+				/*if(v == 2){ // 属性
+					// 判断编辑状态下，修改名称前后是否一致
+					if(dataStatus == "edit" && $("#propName").val() != propNameUpdateAgo){
+						$(".nodeName"+v).html('');  
+						validateResult = false; 
+					}else{
+						$(".nodeName"+v).html(data.mgs); 
+						validateResult = true;
+					}
+				}else{ // 分类
+					if(dataStatus == "edit" && $("#nodeName").val() != nodeNameUpdateAgo){
+						$(".nodeName"+v).html(data.mgs); 
+						validateResult = false;
+					}else{
+						$(".nodeName"+v).html(''); 
+						validateResult = true; 
+					}
+				}*/
+				$(".nodeName"+v).html(data.mgs);
+			}else{
+				$(".nodeName"+v).html('');
+				
+			}
+		});
+		return result;
+	}
+	
+	
+	//=======通用添加数据方法=============================
+	function doAdd(window,form,tableName){  
+	    var params={};
+	    
+	     if(window == "addPropWindow"){
+			 var s=fomateDate("YYYY-MM-dd hh:mm:ss",new Date());
+			//  $("#createPerson").val(getUserInfo().loginName);  // 获取登录用户名
+			  $("#createPerson").val('admin');   // 获取登录用户名
+			 $("#createDate").val(s);
+		  }
+
+	    var cValues=zkm_getHtmlFormJsons(""+form+""); 
+	    // params.primarykeyType = "integer"; 
+	    //添加属性时才给时间赋值 
+	    
+	    /*
+	     var s= fomateDate("YYYY-MM-dd hh:mm:ss",new Date());
+		 $("#createDate").val(s); */
+	    
+	    params.primarykeyType = "uuid";   
+	    params.columnValues=cValues;
+	    params.tableName=tableName; 
+	    //判断重名
+		if(validateResult){
+			return;
+		}
+		
+	
+	    commonInsertOrUpdate(params,true,function(data){
+	        try{
+	             if (data) {
+	                 if(data.success){
+	                    try{
+	                       //动态追加新增的节点
+	                       if(!BIsNullVal(whichDataTable)){
+		                       	 tableTmp=$("#"+whichDataTable).DataTable(); 
+		                       	 params.columnValues.id=data.idValues[0];
+                                 tableTmp.row.add(params.columnValues).draw();
+                                 doModalClean(whichDataTable); 
+		                     //   }
+	                       }else{
+							   loadTree();
+							   propValueParentId = "1"; // 不为0和空的任意值 
+							   propParentId = "1"; // 不为0和空的任意值 
+							   var tableTmp=$("#propGrid").DataTable(); 
+	   							   tableTmp.draw(true);
+	                       }
+	                       $("#mgs").html("添加数据"+data.mgs); 
+							$("#modal-1").modal('show'); 
+	                      // zinglabs.alert("添加数据"+data.mgs);
+	                    }catch(e){
+	                       logErr("Exception need see log "+e.name + ": " + e.message);
+	                    }
+	                     $('#'+window).modal('hide');
+	                  }else{
+	                      logErr("Exception add failed  "+data +" "+("Items" in data)); 
+	                   }
+	              }
+	         }catch(exx){
+	         	logErr("Exception add failed  "+data +" "+("Items" in data));
+	         }
+	    });
+	    
+	     // 初始化全局变量node； 
+	   	 staticNode = null;
+	   	 parentId = null;
+		// propValueGridData = null; 
+		//propGridData = null;
+		//  whichDataTable = null; 
+	   // 	  $(".addPropWindow").css("display","none"); 
+	}
+	
+	
+	//=================通用修改方法=====================================
+	function doEdit(window,form,tableName){ 
+		   var params={};
+		   //添加属性时才给时间赋值
+		   if(window == "addPropWindow"){
+			    var s=fomateDate("YYYY-MM-dd hh:mm:ss",new Date());
+			    $("#createPerson").val(getUserInfo().loginName);
+			    //  $("#createPerson").val('admin');
+			    $("#createDate").val(s);
+		    }
+		    
+		    /*
+		    if(validateResult){
+				return;
+			}*/
+		    
+		   var cValues=zkm_getHtmlFormJsons(""+form+"");  
+		    //主键的值
+		    params.columnValues=cValues;
+		    params.tableName=tableName;
+		    
+		    // 如果为真 验证不通过 则停止不执行
+			
+			// console.log(params);
+			// return;
+			
+		    //如更改不是id 需定义 params.primarykey
+		    commonUpdate(params,true,function(data){
+	      		 try{
+	                    if(data.success){
+	                        try{
+	                           if(!BIsNullVal(whichDataTable)){
+			                      /* if(whichDataTable == "propGrid"){
+			                         var tableTmp=$("#"+whichDataTable).dataTable();  
+			                         var tableDataTmp=$("#"+whichDataTable).DataTable();
+			                       	 var rowIndex=tableDataTmp.row('.selected').row().index();
+			                       //   var rowSelTr=tableDataTmp.$('tr.selected');   
+	                            	 tableTmp.fnUpdate(params.columnValues, rowIndex);
+			                       }else if(whichDataTable == "propValueGrid"){ */
+			                       	 var tableTmp=$("#"+whichDataTable).dataTable();
+                    				 var tableDataTmp=$("#"+whichDataTable).DataTable(); 
+			                       // 	 var rowSelTr=tableDataTmp.$('tr.selected');
+			                       	 //更新时使用的是选中行的的下标
+			                       	 var rowIndex=tableDataTmp.row('.selected').row().index(); 
+			                       	 parentId ="'"+ params.columnValues.categoryId+"'";
+	                            	 tableTmp.fnUpdate(params.columnValues, rowIndex);
+	                            	 doModalClean(whichDataTable);
+		                         //   }
+		                       }else{
+								   loadTree();
+								   var tableTmp=$("#propGrid").DataTable(); 
+								   propParentId = "1"; // 不为0和空的任意值 
+								   propValueParentId = "1"; // 不为0和空的任意值 
+	   								tableTmp.draw(true);
+		                       }
+		                       	$("#mgs").html("修改数据"+data.mgs); 
+								$("#modal-1").modal('show'); 
+		                    //   zinglabs.alert("修改数据"+data.mgs);
+	                        }catch(e){
+	                            logErr("Exception need see log "+e.name + ": " + e.message);
+	                        }
+	                        $('#'+window).modal('hide');
+	                    }else{
+	                        logErr("Exception edit failed  "+data +" "+("Items" in data));
+	                    }
+	                }catch(ex){
+	                    logErr("doEdit Excep "+ex.name + ": " + ex.message);
+	                }
+	   });
+	   
+	    staticNode = null;
+	   
+	}
+	
+	//=============禁用通用操作======================
+	function disableNodeOrRows( ids ,dataTablesName){
+			var params = {};
+			params.id = "'"+ids+"'";
+			params.propUseOrNot = 0;
+			params.categroyUseOrNot = 0
+		    ajaxFunction("/" + parent.PRJ_PATH +  "/" + 'ZKM' +"/Category/disableTreeNode.action",params, false,  function(data) {
+				if (data.success) {
+					$("#mgs").html(data.mgs); 
+					$("#modal-1").modal('show');
+					if(!BIsNullVal(dataTablesName)){
+						var tableTmp=$("#"+dataTablesName).DataTable();
+	                        tableTmp.row('.selected').remove().draw(false); 
+	                     doModalClean();   
+					}else{
+					   loadTree();
+					  	var tableTmp=$("#propGrid").DataTable(); 
+					  	propParentId = "1";  // 不为0和空的任意值
+					  	propValueParentId = "1";  // 不为0和空的任意值
+	   					tableTmp.draw(true);
+					}
+				}else{	
+					$("#mgs").html(data.mgs); 
+					$("#modal-1").modal('show'); 
+					// zinglabs.alert(data.mgs); 
+				}
+			});
+		staticNode = null;
+		rightClickNode = null;  
+	}
+
+	//========清空数据=======================
+	function doModalClean(whichDataTable) {
+	    var tableData= $('#'+whichDataTable).DataTable();
+	    tableData.$('tr.selected').removeClass('selected'); 
+	};
+
+
+	
+	//=============异常处理==================
+	function logErr(errMsg) {
+		log.debug(errMsg);
+	};	
+	
+	//===========设置dataTable显示数据条数========
+	function setPageNum(obj){
+	    var table=$('#propGrid').DataTable();
+	   	 table.page.len(obj.value).draw();
+	}
+	
+	
+	//=============修改时通用赋值=========================================
+	function setPanelVal(pVars){
+	    $('#'+pVars.id+' :input').each(function(index,obj) {
+	        var type = obj.type;
+	        var tag = obj.tagName.toLowerCase();
+	      if(("isClear" in pVars) && pVars.isClear=='true'){
+	            if (type == 'text' || type == 'password' || tag == 'textarea')
+	                $(obj).val('');
+	            else if (type == 'checkbox' || type == 'radio')
+	                $(obj).attr('checked',false);
+	            else if (tag == 'select')
+	                $(obj).attr('selectedIndex',-1);
+	        }else{
+	            var vTmp=pVars.data[this.name];
+	            if(BIsNullVal(vTmp)){
+	                vTmp='';
+	            }
+	            if (type == 'text' || type == 'password' || tag == 'textarea')
+	                $(obj).val(vTmp);
+	            else if (type == 'checkbox' || type == 'radio'){
+	                $(obj).attr('checked',vTmp==''?false:vTmp);
+	            }
+	            else if (tag == 'select'){
+	            	//当下拉的时候设置为值，不设置下标。原方法是设置下标
+	            	$(obj).val(vTmp);
+	               //  $(obj).attr('selectedIndex',vTmp==''?-1:vTmp);
+	            }
+	        }
+	    });
+	}
+	
+	
+	// 非空判断； 
+	function BIsNullVal(value) {
+	    return typeof(value)=="undefined" || value==null ||  (typeof(value)=='string' &&(value=="undefined" || value=='' || value=='null' )) ||  (typeof(value)=='boolean' &&value==false  );
+	};
+	
+	
+  	</script>	
+		
+
+
+	</head>
+	<body>
+		<div class="left">
+			<div style="width:99%;height:30px;">
+				<a href="javascript:;;" role="button"  style="margin-top: 10px;margin-left: 10px;margin-right: 10px;"  class="btn addCateroyWindow pull-left" ><i class="icon-plus"></i>添加分类</a>
+	   			<a href="javascript:;;" role="button"  style="margin-top: 10px;"  class="btn editCateroyWindow pull-left" ><i class="icon-edit"></i>修改分类</a>
+			</div>
+			<br/>
+			<ul id="treeDemo" class="ztree"></ul>
+		</div>
+		<div class="center" style="overflow-x:auto;">
+			<div style="float:left;">
+		            <div style="float:left;margin-top: 10px;margin-left:5px;">
+		            	<span style="font-size:16px;">属性名:</span><input type="text" id="searchPropValue" style="width:200px;height:30px;" />
+		            	<a href="javascript:;;" role="button" style="margin-top: -10px;margin-right: 10px; " class="btn searchPropValueBtn " ><i class="icon-search"></i>查询</a>
+		            </div>
+				
+				    <select name="showNumbers" id="showNumbers" style="width:70px;margin-top: 5px;margin-right: 10px;" class="pull-right" onchange="setPageNum(this)">
+				        <option selected="selected" value="10">
+				            10
+				        </option>
+				        <option value="30" >
+				            30
+				        </option>
+				        <option value="50" >
+				            50
+				        </option>
+				        
+				    </select>
+				    <span class="pull-right" style="margin:8px 10px 0px 10px;">每页显示:</span>
+	   			</div>
+		
+			<div id="detail" style="float:left;width:100%;">
+	   				<table  class="table table-striped table-bordered" id="propGrid"  style="white-space:nowrap;" ></table>
+	   		</div>
+	   		<!-- 功能按钮模块 开始 -->
+			<div class="widget-box collapsible" style="margin-top: -5px;">
+				<div class="widget-title"
+					style="height: 40px; line-height: 40px; overflow: hidden;">
+					<span class="icon" style="float: left; padding: 0px 10px;"></span> &nbsp;&nbsp;&nbsp;
+					
+					<a href="javascript:;;" role="button" style="margin-top: 10px;margin-right: 10px; " 
+						class="btn addPropWindow pull-left" ><i class="icon-plus"></i>添加属性</a>
+		            <a href="javascript:;;" role="button" style="margin-top: 10px;margin-right: 10px; " 
+		            	class="btn editPropWindow pull-left" ><i class="icon-edit"></i>修改属性</a>
+		            <a href="javascript:;;" role="button" style="margin-top: 10px;margin-right: 10px; " 
+		            	class="btn disPropWindow pull-left" ><i class="icon-edit"></i>禁用属性</a>
+		            <a href="javascript:;;" role="button" style="margin-top: 10px;margin-right: 10px; " 
+		            	class="btn addData pull-left" ><i class="icon-plus"></i>添加属性值</a>
+		            <a href="javascript:;;" role="button" style="margin-top: 10px;margin-right: 10px; " 
+		            	class="btn lookData pull-left" ><i class="icon-search"></i>查看属性值</a>
+							
+				</div>
+			</div>
+			<!-- 功能按钮结束 -->
+		</div>
+		
+		<!-- 隐藏内容 -->	
+		 <!-- 右键菜单 -->
+  <div id="rMenu" >
+	<ul>
+		<!-- <li  id="m_copy"    onclick="copyNode();">复制</li>  
+		<li  id="m_parse"   onclick="parseNode();">粘贴</li> -->
+		<li  id="m_disable" onclick="disableNode();">禁用</li>
+	</ul>
+  </div>
+  
+   		
+  <!-- 添加分类窗口 -->
+  <div id="addWindow" class='container-fluid modal hide  ' style='padding: 0px;' data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class='row-fluid '>
+        <div class='span12' style='padding: 10px;'>
+            <br>
+            	  <div class='span12 oneOrNot' style="display:none;font-family:tahoma;font-size:10px;">
+                      <input type="checkbox" name="oneOrNot" id="oneOrNot" style="vertical-align:middle;" /><span style="vertical-align:middle;">设为一级分类</span>
+                   </div>
+                <form id="addForm">
+                    <div class='span12' style="display:none;">
+                        <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >序号:</span>
+                        <input type="text" isDataId="true" id="id" name="id" >
+                    </div>
+                
+                            
+                     <div class='span12' style="display:none;">
+                            <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >父节点ID:</span>
+                            <input type="text"  id="parentId" name="parentId" value="0" >
+                     </div>
+                    
+                        <div class='span12'>
+                            <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >分类名称:</span>
+                            <input type="text" style="height:30px; width:200px;" 
+                            id="nodeName" name="nodeName" onblur="validateCate(1);" />
+                            <span style="color:red;" class="nodeName1"></span>
+                        </div>
+                    	
+                    	<div class='span12' >
+                            <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >所属部门:</span>
+                            <select id="departmentId" name="departmentId" style="width:200px;">
+                             	<option value="3">请选择</option>
+                             	<option value="1">销售部</option>
+                             	<option value="0">研发部</option>
+                             </select> 
+                        </div>
+                    
+                         <div class='span12' style="display:none;">
+                            <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >状态:</span>
+                              <input type="text" style="height:30px;" id="categroyUseOrNot" name="categroyUseOrNot" value = "1" /> -->
+                             <!--  <select id="categroyUseOrNot" name="categroyUseOrNot" style="width:200px;">
+                             	<option value="请选择">请选择</option>
+                             	<option value="1">启用</option>
+                             	<option value="0">禁用</option>
+                             </select> -->
+                        </div>
+                        
+                        
+                         <div class='span12' style="display:none;">
+                            <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >companyId:</span>
+                            <input type="text" id="companyId" name="companyId" value="1" >
+                        </div>
+                    
+                
+                </form>
+            <a href="javascript:;;" role="button" style="margin-top: 5px;margin-right: 10px;" class="btn submitBtn" ><i class="icon-book"></i>提交</a>
+            <a href="javascript:;;" role="button" style="margin-top: 5px;margin-right: 10px;" class="btn addCloseBtn" ><i class="icon-book"></i>关闭</a>
+        </div>
+    </div>
+</div>
+   		
+   		
+   	 <!-- 添加属性窗口 -->
+  <div id="addPropWindow" class='container-fluid modal hide'  data-backdrop="static" style='padding: 0px;' role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class='row-fluid '  >
+        <div class='span12' style='padding: 10px;'>
+            <br>
+                <form id="addPropForm">
+                    <div class='span12' style="display:none;">
+                        <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >序号:</span>
+                        <input type="text" isDataId="true" id="id" name="id" >
+                    </div>
+                
+                            
+                     <div class='span12' style="display:none;">
+                            <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >父节点ID:</span>
+                            <input type="text"  id="categoryId" name="categoryId" value="0">
+                     </div>
+                    
+                    
+                     <div class='span12 buy'  style="display:none;">
+                          <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >买家卖家:</span>
+                          <select id="saleOrBuy" name="saleOrBuy" style="width:200px;">
+                             	<option value="3"></option>
+                             	<option value="1">卖家</option>
+                             	<option value="0">买家</option>
+                             </select>  
+                       </div>
+                    
+                
+                        <div class='span12'>
+                            <span class="span5 buy" style="padding-top: 8px;padding-bottom: 4px;display:none;"  >属性名称:</span>
+                            <span class="span5 willHidden" style="padding-top: 8px;padding-bottom: 4px;display:none;" >属性值:</span>
+                            <input type="text" style="height:30px; width:200px;" 
+                            id="propName" name="propName" onblur="validateCate(2);" />
+                            <span style="color:red;" class="nodeName2"></span>
+                        </div>
+                    
+                    
+                     <div class='span12 buy' id="willHidden" style="display:block;">
+                            <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >属性描述:</span>
+                            <textarea id="propDesc" name="propDesc"  style="height:60px; width:200px;"></textarea>
+                     </div>
+                    
+                    
+                         <div class='span12' style="display:none;">
+                            <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >是否必填:</span>
+                             <input type="text"  id="requiredOrNot" name="requiredOrNot" value="1">
+                        <!--  <select id="requiredOrNot" name="requiredOrNot" style="width:200px;">
+                             	<option value="请选择">请选择</option>
+                             	<option value="1">是</option>
+                             	<option value="0">否</option>
+                             </select> --> 
+                        </div>
+                        
+                        <div class='span12 buy' style="display:none;">
+                            <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >展现方式:</span>
+                            <select id="showType" name="showType" style="width:200px;">
+                             	<option value="">请选择</option>
+                             	<option value="text">文本框</option>
+                             	<option value="radio">单选</option>
+                             	<option value="checkbox">多选</option>
+                             	<option value="select">下拉列表</option>
+                             </select>  
+                        </div>
+                        
+                         <div class='span12' style="display:none;">
+                            <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >属性状态:</span>
+                            <input type="text"  id="propUseOrNot" name="propUseOrNot" value="1">
+                           <!-- 
+                            <select id="propUseOrNot" name="propUseOrNot" style="width:200px;">
+                             	<option value="请选择">请选择</option>
+                             	<option value="1">启用</option>
+                             	<option value="0">禁用</option>
+                             </select> --> 
+                        </div>
+                        
+                        <div class='span12' style="display:none;">
+                            <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >创建人:</span>
+                            <input type="text" id="createPerson" name="createPerson"  value="">
+                        </div>
+                        
+                        <div class='span12' style="display:none;">
+                            <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >创建时间:</span>
+                            <input type="text" id="createDate" name="createDate" value="" >
+                        </div>
+                        
+                         <div class='span12' style="display:none;">
+                            <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >companyId:</span>
+                            <input type="text" id="companyId" name="companyId" value="1" >
+                        </div>
+                
+                </form>
+            <a href="javascript:;;" role="button" style="margin-top: 5px;margin-right: 10px;" class="btn propSubmitBtn" ><i class="icon-book"></i>提交</a>
+            <a href="javascript:;;" role="button" style="margin-top: 5px;margin-right: 10px;" class="btn propCloseBtn" ><i class="icon-book"></i>关闭</a>
+        </div>
+    </div>
+</div>	
+
+	<!-- 查看属性值 -->
+	<div id="lookPropWindow" class='container-fluid modal hide' style="width:60%;height:auto;"  data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <a href="javascript:;;" role="button" style="margin-top: 10px;margin-right: 10px; " class="btn editPropValueWindow pull-left" ><i class="icon-edit"></i>修改属性值</a>  
+		  <a href="javascript:;;" role="button" style="margin-top: 10px;margin-right: 10px; " class="btn disablePropValueWindow pull-left" ><i class="icon-edit"></i>禁用属性值</a>  
+		    <button type="button" style="width:50px;height:50px;" class="close" data-dismiss="modal" 
+               aria-hidden="true">X
+            </button>
+		<table  class="table table-striped table-bordered"
+					id="propValueGrid" cellspacing="0" style="overflow:hidden;white-space:nowrap;text-overflow: ellipsis; ">
+		</table>
+	</div>
+
+		<!-- 自定义提示框 -->
+		<div id='modal-1' class='container-fluid modal hide mgsModal'  data-backdrop="static"  style='z-index:2000;' tabindex='-1' role='dialog'> 
+		  <div class='modal-dialog'> 
+		    <div class='modal-content'>
+		      <div class='modal-header'>
+		        <button type='button' class='close clBtn' data-dismiss='modal '><span>×</span></button>
+		        <h4 class='modal-title'>提示</h4>
+		     </div>
+		      <div id="mgs" class='modal-body'>
+								
+		      </div>
+		      <div class='modal-footer'>
+		        <button type='button' class='btn btn-primary clBtn' data-dismiss='modal'>确定</button>
+		       </div> 
+		    </div>
+		  </div>
+		</div>
+	</body>
+</html>

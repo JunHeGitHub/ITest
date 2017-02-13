@@ -1,0 +1,590 @@
+<!DOCTYPE  HTML>
+<html>
+	<head>
+		<title>客户端留言</title>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
+		<link rel="stylesheet" href="../../css/bootstrap.min.css"
+			type="text/css" />
+		<link rel="stylesheet"
+			href="../../js/dataTables/css/jquery.dataTables.css" type="text/css" />
+		<!--[if lt IE 9]>
+		<script type="text/javascript" src="../../../js/html5shiv.min.js"></script>
+		<![endif]-->
+		<link rel="stylesheet" href="../../js/dataTables/css/DT_bootstrap.css"
+			type="text/css" />
+		<link rel="stylesheet"
+			href="../../js/dataTables/css/dataTables.tableTools.min.css"
+			type="text/css" />
+		<!-- ZDesk 通用css  -->
+		<link rel="stylesheet" href="../../css/zinglabs.css" type="text/css" />
+		<link rel="stylesheet" href="../../js/dataTables/css/font-awesome.css" />
+		<link rel="stylesheet"
+			href="../../js/dataTables/css/dataTables.colVis.min.css"
+			type="text/css" />
+		<script type="text/javascript" src="../../js/jquery.js"></script>
+		<script type="text/javascript" src="../../js/bootstrap.js"></script>
+		<!--datatables 组件 和 插件-->
+		<script type="text/javascript"
+			src="../../js/dataTables/js/jquery.dataTables.js"></script>
+		<!--  <script type="text/javascript" src="../../../js/dataTables/js/dataTables.colReorder.js"></script>-->
+		<script type="text/javascript"
+			src="../../js/dataTables/js/dataTables.colVis.js"></script>
+		<script type="text/javascript"
+			src="../../js/dataTables/js/dataTables.tableTools.min.js"></script>
+		<script type="text/javascript"
+			src="../../js/dataTables/js/DT_bootstrap.js"></script>
+		<!--ZDesk 函数库-->
+		<script type="text/javascript" src="../../js/common_utils.js"></script>
+		<script type="text/javascript" src="../../js/appCommonUtil.js"></script>
+		<script type="text/javascript"
+			src="../../js/appCommonCurdUtils_new.js"></script>
+		<!--日期组件 -->
+		<script type="text/javascript"
+			src="../../js/My97DatePicker/WdatePicker.js"></script>
+		<!-- 日志-->
+		<script type="text/javascript" src="../../js/log2.js"></script>
+		<!-- 遮罩插件 -->
+		<script type="text/javascript" src="../../js/jquery.blockUI.js"></script>
+		<!-- 验证及提示组件 -->
+		<script type="text/javascript"
+			src="../../js/jqueryValidate/jquery.validate.js"></script>
+		<!-- 自定义验证 -->
+		<script type="text/javascript"
+			src="../../js/jqueryValidate/customValidate.js"></script>
+		<!-- 中文验证提示 -->
+		<script type="text/javascript"
+			src="../../js/jqueryValidate/messages_cn.js"></script>
+		<!-- 业务 js-->
+		<script type="text/javascript" src="../../js/golbal_params.js"></script>
+		<script type="text/javascript" src="../../js/multiCombo.js"></script>
+		<script type="text/javascript" src="../../js/generatePage.js"></script>
+		<!-- 拖拽 js-->
+		<script type="text/javascript"
+			src="../../js/dataTables/js/ColResize.js"> </script>
+		<style type="text/css">
+/*解决时间控件在模式对话框中的显示问题**/
+.error {
+	border-color: red !important;
+}
+
+.datetimepicker {
+	z-index: 99999 !important;
+}
+
+.bootstrap-datetimepicker-widget {
+	z-index: 99999 !important;
+}
+
+/*临时解决datatable单元格变形问题  为保证宽度不变，ie兼容模式显示效果为换行 其它浏览器省略号
+  需要通过只显示部分原文解决此问题
+*/
+.dataTable th,.dataTable td {
+	max-width: 150px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: normal;
+}
+
+.checkbox-inline {
+	width: 52px;
+	display: inline-block;
+}
+
+.z_container .head {
+	margin-top: -12px;
+}
+
+.row {
+	padding-top: -3px;
+	margin-bottom: -10px;
+	display: table;
+}
+</style>
+		<script type="text/javascript">
+		
+//遮罩属性		
+var maskContent = {
+		css : {
+			border : 'none',
+			padding : '15px',
+			backgroundColor : '#000',
+			'-webkit-border-radius' : '10px',
+			'-moz-border-radius' : '10px',
+			opacity : .5,
+			color : '#fff',
+			font : '14px'
+		},
+		message : '<img src="../../img/wait.gif" border="0" />  正在加载中，请稍候...'
+	};		
+$(document).ready(function() {
+	$.blockUI(maskContent); 
+	$('#gongdanGrid').DataTable({
+		//滚动条
+        //scrollY: 500,
+        //scrollX: false,
+        //延迟加载
+        deferRender: true,
+        processing: false,  
+        //开启服务端分页
+        serverSide: true,
+        //服务器端分页ajax请求 可抽离出一个方法
+        ajax: doSearch,
+		pagingType: "full_numbers",
+        pageLength: 10,
+        bPaginate: true, //翻页功能
+        bLengthChange: true, //改变每页显示数据数量
+        bFilter: true, //过滤功能
+        bSort: true, //排序功能
+        bInfo: true,//页脚信息
+        bAutoWidth: false, //自动宽度
+        sPaginationType: "bootstrap",//分页样式
+        dom: 'ZTRlrtip',
+        columns: [
+              {title:"服务请求编号" ,data: 'gongdanId',width:'6%', visible:  true},
+			  {title:"来电时间" ,data: 'customerCallTime',width:'6%', visible:  true},
+			  {title:"创建人" ,data: 'chuangjianrenId',width:'6%', visible:  true},
+			  {title:"复核人" ,data: 'fuherenId',width:'6%', visible:  true},
+			  {title:"复核时间" ,data: 'fuheTime',width:'6%', visible:  true},
+			  {title:"工单状态" ,data: 'gongdanState',width:'6%', visible:  true},
+			  {title:"客户姓名" ,data: 'customerName',width:'6%', visible:  true},
+			  {title:"联系电话" ,data: 'phoneNum',width:'6%', visible:  true},
+			  {title:"邮件地址" ,data: 'email',width:'6%', visible:  true}
+		],
+        columnDefs: [ {
+            "searchable": false,
+            "orderable": false,
+            "targets": 0,
+			"render": function ( data, type, row,   meta ) {
+      			return  "<button class='btn btn-mini xiangxi'>"+data+"</button>";
+			}
+        } ],
+        
+        oLanguage: {
+             infoFiltered:function(){
+             
+             },
+            "sLengthMenu": "每页显示 _MENU_条",
+            "sZeroRecords": "没有找到符合条件的数据",
+            "sProcessing": "&lt;imgsrc=’./loading.gif’ /&gt;",
+            "sInfo": "当前第 _START_ - _END_ 条　共计 _TOTAL_ 条",
+            "sInfoEmpty": "没有记录",
+            "sInfoFiltered": "(从 _MAX_ 条记录中过滤)",
+            "sSearch": "搜索：",
+            "oPaginate": {
+                "sFirst": "首页",
+                "sPrevious": "前一页",
+                "sNext": "后一页",
+                "sLast": "尾页"
+            }
+        }, tableTools: {
+            fnRowSelected: function ( nodes ) {
+//                   var index=nodes[0]._DT_RowIndex;	
+//                   rowSelTr=index;
+//	               var data = table.row(index).data();
+//	               openEdit(data);
+             },
+            sRowSelect:'os',
+            
+            aButtons: []
+        }
+    });
+    var table= $('#gongdanGrid').DataTable();
+    $('#gongdanGrid tbody').on( 'click', '.xiangxi', function (obj) {
+		guanlianData =table.row( $(this).parents('tr') ).data();
+      	xiangxiDialog() ;
+    });
+});		
+var guanlianData={} ;
+function xiangxiDialog() {
+	
+	var typetitle = guanlianData.gongdanType ;
+	var leixing="" ;
+	if(typetitle!=undefined&&typetitle!=null&&typetitle!=""){
+		try{
+			leixing = formlist[typetitle] ;
+		}catch(e){
+		}
+	}
+	var title="详细信息" ;
+	if(leixing!=undefined&&leixing!=""){
+		title = leixing+":"+ title ;
+	}
+	var url = "gongdanxiangxi.html" ;
+//	var artDialog = artDialog();
+	var xiangxiDialog = zinglabs.dialog({
+		background: '#FFFFFF',   // 遮罩颜色
+ 		duration: 300,    // 遮罩透明度渐变动画速度
+ 		background: '#BBFFFF', // 背景色
+ 		opacity: 0.1, // 透明度
+ 		lock: 'true',
+		title : title,
+		content : '<iframe src='
+				+ url
+				+ ' style="border: 0; width: 100%; height: 100%"  frameborder="0"/>',
+		width : '650',
+		height : '460'
+	});
+	return xiangxiDialog;
+}
+function doSearch(data, callback, settings){
+	$.blockUI(maskContent);
+	var params=spellSelectParams("gongdanSearchForm");
+	params.tableName="BOC_gongdan";
+	params.rows=settings._iDisplayLength;
+	params.offset=settings._iDisplayStart;
+	$.blockUI(maskContent);
+	commonSelect(params,true,function(data){
+		try{
+			if(data&&data.data){
+				var pdata={};
+				var size=data.data.length;
+			    for(var i=0;i<size;i++){
+			    	data.data[i].DT_RowNumber=i+1;
+			    }
+			    //数据
+			    pdata.data=data.data;
+			    //总条数
+			    pdata.recordsTotal=data.total||0;
+			    //过滤没有使用到总条数
+			    pdata.recordsFiltered=data.total||0;
+			    // 代表第几次画页面  如pdata.draw 不能删 如删掉不会翻页  
+			    data.draw=settings.iDraw;
+			    callback(pdata);
+			}
+		}catch(ex){
+			logErr("查询失败 failed "+ex.name + ": " + ex.message);
+		}  
+		$.unblockUI();    
+	});       
+};
+
+function Search(){
+	var tableTmp=$("#gongdanGrid").DataTable();
+	tableTmp.draw(true);
+}
+
+function cleanSearchForm(){
+   $("#gongdanSearchForm")[0].reset();
+}
+
+</script>
+	</head>
+	<body>
+		<div class="z_container">
+			<div class="head">
+				<div class="widget-box collapsible">
+					<div class="widget-title">
+						<span class="icon"> <i class="icon-search"></i> </span>
+						<h5>
+							配置项搜索
+						</h5>
+						<div class="buttons">
+							<button class="btn btn-mini"
+								onclick="$('#kehuduanliuyanSearch').slideToggle(200);">
+								<i class="icon-retweet"></i>展开/关闭
+							</button>
+						</div>
+					</div>
+					<div class="collapse in" id="kehuduanliuyanSearch">
+						<div class="widget-content container">
+							<form action="" id="gongdanSearchForm">
+								<div class="row" style="margin-left: -200px">
+									<div class="span4">
+										<div class="form-horizontal">
+											<div class="control-group">
+												<label class="control-label" for="chuangjianrenId">
+													创建人:
+												</label>
+												<div class="controls">
+													<input type="text" id="chuangjianrenId"
+														name="chuangjianrenId" class="SFSearch" />
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="span4">
+										<div class="form-horizontal">
+											<div class="control-group">
+												<label class="control-label" for="customerCallTimetimebegin">
+													来电时间从:
+												</label>
+												<div class="controls">
+													<div class="input-append">
+														<input type="text" style="width: 170px"
+															id="customerCallTimetimebegin"
+															name="customerCallTimetimebegin" data-sType="moreThan" />
+														<span class="add-on"><i class="icon-calendar"
+															onclick="WdatePicker({el:'customerCallTimetimebegin',dateFmt:'yyyy-MM-dd HH:mm:ss'})"></i>
+														</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="span4 offset1">
+										<div class="form-horizontal">
+											<div class="control-group">
+												<label class="control-label" for="customerCallTimetimeend">
+													到:
+												</label>
+												<div class="controls">
+													<div class="input-append">
+														<input size="16" type="text" style="width: 170px"
+															id="customerCallTimetimeend"
+															name="customerCallTimetimeend" data-sType="lessThan" />
+														<span class="add-on"><i class="icon-calendar"
+															onclick="WdatePicker({el:'customerCallTimetimeend',dateFmt:'yyyy-MM-dd HH:mm:ss'})"></i>
+														</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row" style="margin-left: -200px">
+									<div class="span4">
+										<div class="form-horizontal">
+											<div class="control-group">
+												<label class="control-label" for="fuherenId">
+													复核人:
+												</label>
+												<div class="controls">
+													<input type="text" id="fuherenId"
+														name="fuherenId">
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="span4">
+										<div class="form-horizontal">
+											<div class="control-group">
+												<label class="control-label" for="fuheTimetimebegin">
+													复核时间从:
+												</label>
+												<div class="controls">
+													<div class="input-append">
+														<input type="text" style="width: 170px"
+															id="fuheTimetimebegin" name="fuheTimetimebegin"
+															data-sType="moreThan" />
+														<span class="add-on"><i class="icon-calendar"
+															onclick="WdatePicker({el:'fuheTimetimebegin',dateFmt:'yyyy-MM-dd HH:mm:ss'})"></i>
+														</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="span4 offset1">
+										<div class="form-horizontal">
+											<div class="control-group">
+												<label class="control-label" for="fuheTimetimeend">
+													到:
+												</label>
+												<div class="controls">
+													<div class="input-append">
+														<input size="16" type="text" style="width: 170px"
+															id="fuheTimetimeend" name="fuheTimetimeend"
+															data-sType="lessThan" />
+														<span class="add-on"><i class="icon-calendar"
+															onclick="WdatePicker({el:'fuheTimetimeend',dateFmt:'yyyy-MM-dd HH:mm:ss'})"></i>
+														</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row" style="margin-left: -200px">
+									<div class="span4">
+										<div class="form-horizontal">
+											<div class="control-group">
+												<label class="control-label" for="gongdanState">
+													工单状态:
+												</label>
+												<div class="controls">
+													<select style="width: 220px" id="gongdanState"
+														name="gongdanState" class="gongdanStateSearch"/>
+														<option value="" selected>
+															------请选择-------
+														</option>
+														<option value="新建">
+															新建
+														</option>
+														<option value="待复核">
+															待复核
+														</option>
+														<option value="复核中">
+															复核中
+														</option>
+														<option value="复核未通过">
+															复核未通过
+														</option>
+														<option value="内部处理中">
+															内部处理中
+														</option>
+														<option value="退回">
+															退回
+														</option>
+														<option value="联系中">
+															联系中
+														</option>
+														<option value="待回复">
+															待回复
+														</option>
+														<option value="已完成">
+															已完成
+														</option>
+														<option value="无需回复">
+															无需回复
+														</option>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="span4 ">
+										<div class="form-horizontal">
+											<div class="control-group">
+												<label class="control-label" for="channelName">
+													渠道名称
+												</label>
+												<div class="controls">
+													<select style="width: 220px" id="channelName"
+														name="channelName" onchange="" />
+														<option value="" selected>
+															------请选择-------
+														</option>
+														<option value="在线-文本">
+															在线-文本
+														</option>
+														<option value="在线-留言">
+															在线-留言
+														</option>
+														<option value="在线-语音">
+															在线-语音
+														</option>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="span4 offset1">
+										<div class="form-horizontal">
+											<div class="control-group">
+												<label class="control-label" for="gongdanType">
+													工单类型
+												</label>
+												<div class="controls">
+													<select style="width: 220px" id="gongdanType"
+														name="gongdanType"class="gongdanTypeSearch"/>
+														<option selected value="">
+															-------请选择-------
+														</option>
+														<option value="Tousuchulidan">
+															投诉处理单
+														</option>
+														<option value="Yewuxiebandan">
+															业务协查单
+														</option>
+														<option value="Wentizixundan">
+															问题咨询单
+														</option>
+														<option value="Jianyibiaoyangdan">
+															建议表扬单
+														</option>
+														<option value="Gonggongyewudan">
+															公共业务单
+														</option>
+														<option value="Zhengyizhangkuandan">
+															争议账款单
+														</option>
+														<option value="Fuwuyuyuedan">
+															服务预约单
+														</option>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row" style="margin-left: -200px">
+									<div class="span4">
+										<div class="form-horizontal">
+											<div class="control-group">
+												<label class="control-label" for="customerName">
+													客户姓名:
+												</label>
+												<div class="controls">
+													<input type="text" id="customerName" name="customerName">
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="span4 ">
+										<div class="form-horizontal">
+											<div class="control-group">
+												<label class="control-label" for="phoneNum">
+													联系电话
+												</label>
+												<div class="controls">
+													<input type="text" id="phoneNum" name="phoneNum">
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="span4 offset1">
+										<div class="form-horizontal">
+											<div class="control-group">
+												<label class="control-label" for="email">
+													邮件地址
+												</label>
+												<div class="controls">
+													<input type="text" id="email" name="email">
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</form>
+
+							<center>
+								<button type="button" id="btn_search" class="btn"
+									onclick="Search()">
+									<i class="icon-tag"></i> 搜索
+								</button>
+								<button type="button" id="btn_clean" class="btn"
+									onclick="cleanSearchForm()">
+									<i class="icon-remove"></i> 清空
+								</button>
+							</center>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- dataTable 部分 -->
+			<div class="widget-box">
+				<div class="widget-title">
+					<span class="icon"> <i class="icon-th"></i> </span>
+					<h5>
+						信息
+					</h5>
+					<div class="buttons">
+						<a class="btn btn-mini" onclick="refresh()" href="javascript:;;"><i
+							class="icon-refresh"></i> 刷 新</a>
+					</div>
+				</div>
+				<div class="widget-content nopadding">
+					<!--TODO 数据表格内容 -->
+					<table id="gongdanGrid"
+						class="table table-striped table-bordered nowrap listext"
+						data-resizable-columns-id="demo-table">
+					</table>
+
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

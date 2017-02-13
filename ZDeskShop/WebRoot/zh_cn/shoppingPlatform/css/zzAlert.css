@@ -1,0 +1,130 @@
+/* 遮罩 */
+.zz {
+	z-index: 200;
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	background: #303030;
+	filter: alpha(opacity = 50); /*IE滤镜，透明度50%*/
+	-moz-opacity: 0.5; /*Firefox私有，透明度50%*/
+	opacity: 0.5; /*其他，透明度50%*/
+}
+/* alert */
+.alertzz {
+	font-size: 17px;
+	z-index: 201;
+	width: 80%;
+	height: 30%;
+	position: fixed;
+	top: 30%;
+	left: 10%;
+	background: #C7C7C7;
+	border-radius: 5px;
+}
+
+.alertStr {
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	width: 100%;
+	height: 80%;
+	position: relative;
+	top: 0%;
+	left: 0%;
+	background: #FFFFFF;
+	text-align: center;
+}
+
+.alertBotton {
+	width: 50%;
+	height: 20%;
+	position: relative;
+	bottom: 20%;
+	left: 50%;
+	background: #EC5E38;
+	text-align: center;
+	color: #ffffff;
+	border-bottom-right-radius: 5px;
+	line-height: 30px;
+}
+
+.gogn {
+	line-height: 30px;
+	width: 50%;
+	height: 20%;
+	position: relative;
+	bottom: 0%;
+	left: 0%;
+	background: #F0CA37;
+	text-align: center;
+	bottom: 0%;
+	left: 0%;
+	color: #ffffff;
+	border-bottom-left-radius: 5px;
+}
+
+.zz-input {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+.zz-input div{
+	float: left;
+}
+.zz-Title {
+	height: 20%;
+	width: 100%;
+	line-height: 30px;
+}
+.zz-Text{
+	height: 80%;
+	width: 100%;
+	overflow-x: hidden;
+	overflow-y: auto;
+	background-color: #B6DF87;
+}
+.zz-TextSon{
+	height: 30%;
+	width: 96%;
+	position: relative;
+	left: 2%;
+	border: #E9E6E1;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;	
+}
+.zzTextSon-value{
+	width: 100%;
+	height: 100%;
+	line-height: 35px;
+	text-align: left;
+	position: relative;
+	left: 9px;
+	z-index: 2;
+}
+.zzOk{
+	color: #EC5E38;
+}
+.checkbox1{
+	position: relative;
+	left: 20%;
+	top:20%;
+}
+.zzBc{
+	color: #FBFAF3;
+}
+.zzRadio{
+	line-height: 40px;
+	width: 12%;
+	height: 100%;
+	position: relative;
+	top: -100%;
+	left: 88%;
+	z-index: 1;
+}
+
+.zzTextSon-value label{
+	float:left;
+	height: 100%;
+	width: 100%;
+}

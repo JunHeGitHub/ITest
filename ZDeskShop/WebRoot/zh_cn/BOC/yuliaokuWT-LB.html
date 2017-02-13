@@ -1,0 +1,233 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>语料库树列表</title>
+		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+		<meta http-equiv="description" content="this is my page">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<link rel="stylesheet" href="../../js/zTree/zTreeStyle/zTreeStyle.css"
+			type="text/css" />
+		<link rel="stylesheet" href="../../css/bootstrap.min.css"
+			type="text/css"></link>
+		<link rel="stylesheet" href="../../css/bootstrap-responsive.min.css"
+			type="text/css" />
+		<script type="text/javascript" src="../../js/jquery.js"></script>
+		<script type="text/javascript" src="../../js/bootstrap.min.js"></script>
+		<script type="text/javascript"
+			src="../../js/zTree/jquery.ztree.all-3.5.min.js"></script>
+		<script type="text/javascript" src="../../js/appCommonUtil.js"></script>
+		<script type="text/javascript" src="../../js/common_utils.js"></script>
+		<script type="text/javascript" src="yuliaokuWTTree.js"></script>
+		<script type="text/javascript" src="yuliaokuWT-LB.js"></script>
+		<!-- 遮罩产插件 -->
+		<script type="text/javascript" src="../../js/jquery.blockUI.js"></script>
+		<!-- 表格 -->
+		<link rel="stylesheet" href="../../css/bootstrap.min.css"
+			type="text/css"></link>
+		<link rel="stylesheet"
+			href="../../js/dataTables/css/jquery.dataTables.css" type="text/css"></link>
+		<!-- bootstrap 与 datatable结合 -->
+		<link rel="stylesheet" href="../../js/dataTables/css/DT_bootstrap.css"
+			type="text/css"></link>
+		<!-- 工具 -->
+		<link rel="stylesheet"
+			href="../../js/dataTables/css/dataTables.tableTools.min.css"
+			type="text/css"></link>
+		<!-- 动态列CSS -->
+		<!-- <link rel="stylesheet" href="../../../css/unicorn.main.css"
+			type="text/css"></link> -->
+		<link rel="stylesheet" href="../../js/dataTables/css/font-awesome.css"></link>
+		<link rel="stylesheet"
+			href="../../js/dataTables/css/dataTables.colVis.min.css"
+			type="text/css"></link>
+
+		<link rel="stylesheet"
+			href="../../js/ueditor/themes/default/css/ueditor.css" />
+
+		<script type="text/javascript" src="../../js/bootstrap.js"></script>
+		<script type="text/javascript"
+			src="../../js/dataTables/js/jquery.dataTables.js"></script>
+		<script type="text/javascript"
+			src="../../js/dataTables/js/dataTables.colReorder.js"></script>
+		<script type="text/javascript"
+			src="../../js/dataTables/js/dataTables.colVis.js"></script>
+		<script type="text/javascript"
+			src="../../js/dataTables/js/dataTables.tableTools.min.js"></script>
+		<script type="text/javascript"
+			src="../../js/dataTables/js/DT_bootstrap.js"></script>
+		<script type="text/javascript" src="../../common/common.js"></script>
+		<script type="text/javascript" src="../../js/common_utils.js"></script>
+		<script type="text/javascript" src="../../js/appCommonUtil.js"></script>
+		<script type="text/javascript"
+			src="../../js/appCommonCurdUtils_new.js"></script>
+		<script type="text/javascript" src="../../js/golbal_params.js"></script>
+
+		<script type="text/javascript" src="../../js/common_validation.js"></script>
+		<script type="text/javascript" src="../../js/golbal_params.js"></script>
+		<style type="text/css">
+#myModal9 {
+	min-width: 800px;
+	max-height: 600px;
+	margin-left: -30%;
+}
+
+#myModal9 .modal-body {
+	max-height: 1000px;
+}
+
+#myModal9 .modal-body #ttt {
+	width: 100%;
+	min-height: 300px;
+}
+
+#myModal10 {
+	min-width: 800px;
+	max-height: 600px;
+	margin-left: -30%;
+}
+
+#myModal10 .modal-body {
+	max-height: 1000px;
+}
+
+#myModal10 .modal-body #ttt {
+	width: 100%;
+	min-height: 300px;
+}
+
+#myModal12 {
+	min-width: 800px;
+	max-height: 600px;
+	margin-left: -30%;
+}
+
+#myModal12 .modal-body {
+	max-height: 1000px;
+}
+
+#myModal15 {
+	min-width: 800px;
+	max-height: 600px;
+	margin-left: -30%;
+}
+
+#myModal15 .modal-body {
+	max-height: 1000px;
+}
+
+dl dt {
+	margin-left: 17px;
+}
+
+.orderDivTree {
+	padding-left: 2px;
+	border: 1px solid #33AECC;
+	border-collapse: separate;
+	cellspacing: 1px;
+	cellpadding: 1px;
+	height: 500px;
+	min-width: 16%;
+	padding-bottom: 2px;
+	margin-top: 5px;
+	background-color: white;
+}
+</style>
+		<script type="text/javascript">
+$(function(){
+	companyId =  getUserInfo().companyId; //公司编号
+if(NewTreerecordType==null||NewTreerecordType==undefined||NewTreerecordType==""){
+		if(companyId==null||companyId==undefined||companyId==""){
+		zinglabs.alert("请配置对应树类型及公司编号,再使用该功能");
+		return;
+		}else{
+		zinglabs.alert("请配置对应树类型,再使用该功能");
+		return;
+			}
+		}
+		    
+ $('#WTTree').dataTable({
+		'bPaginate':true,//分页器
+		'bLengthChange': false,
+		'bStateSave':true, //保留状态
+		'bSort':true,//按列排序
+		'bInfo':true,//页脚信息
+		'bAutoWidth':true, //自动宽度
+		'bAutoHeight':true, //自动高度
+		//'sScrollX':'900',//垂直滚动条,滚动区域
+		//'sScrollXInner':'100%',
+		//'sScrollY':'200px',
+		//'width':'1000px',
+		'sPaginationType': 'bootstrap',//分页样式
+		'dom': 'TRlrtip',
+		serverSide: true,
+		 ajax : FYdoSearch,
+		//'data':rdata,
+		'columns': [
+			{"title":"文档标题" ,data: 'title',width:'15%'},
+			{"title":"类别" ,data: 'category',className: 'my_class'},	
+			{"title":"业务类别" ,data: 'businessType',className: 'my_class'},
+			{"title":"创建时间" ,data: 'createTime',className: 'my_class'}
+			
+		],
+		"oLanguage": {
+  			"sSearch": "搜索:",
+  			"sLengthMenu": "每页显示 _MENU_ 条记录",
+ 			"sZeroRecords": "Nothing found - 没有记录",
+  			"sInfo": "显示第  _START_ 条 -_END_ 条记录,一共  _TOTAL_ 条记录",
+  			"sInfoEmpty": "显示0条记录",
+  			"oPaginate": {
+  				"sFirst": "首页",
+   				"sPrevious": " 上一页 ",
+   				"sNext":     " 下一页 ",
+   				"sLast": "尾页"
+   			}
+  		}, tableTools: {
+          	//single 单选 multi 多选  os 可以按ctrl 选择
+           	// sRowSelect:'multi',
+           	//回调 单选
+           	fnRowSelected: function ( nodes ) {
+            	var index=nodes[0]._DT_RowIndex;
+            	var table=$("#test").DataTable();	
+				var seldata= table.row(index).data();
+				//OpenSel(seldata);
+            },
+         	 sRowSelect:'multi',
+            //sRowSelector:'td:first-child',
+            aButtons:     [ /*{
+            "sExtends":    "select_all",
+            "sButtonText": "选择全部",
+            "target":      "#select"
+              } , 'select_none' */]
+        	},
+	});
+});
+			
+</script>
+	</head>
+	<body>
+		<div>
+			<div style="float: left;" class="orderDivTree">
+				<h6>请选择节点</h6>
+			   	<hr>
+				<div class="" style="min-width: 15%;">
+					<ul id="treeDemo" class="ztree" style="overflow-y: auto;"></ul>
+				</div>
+
+			</div>
+			<div style="float: left;">
+				<div style="margin-top: 5px; margin-bottom: -10px;">
+					<button id="" type="button" class="btn" onclick="AddDataToTree()">
+						<i class="icon-random"></i>绑定到树
+					</button>
+					<button id="" type="button" class="btn" onclick="doRepeatBySon()">
+						<i class="icon-refresh"></i>刷新
+					</button>
+				</div>
+				<table width="800px" class="table table-striped table-bordered"
+					id="WTTree" cellspacing="0">
+				</table>
+			</div>
+		</div>
+	</body>
+</html>
+

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+    
+		<!-- 数据库表test ibasis SqlSession 操作 -->
+	<bean id="zkmSysdblogSqlSession" class="com.zinglabs.base.core.springSupport.DbidSqlsession" singleton="false">
+		<property name="namespance" value="com.zinglabs.apps.sysdblog.pojo"></property>
+		<property name="dbid" value="ZKM"/>
+		
+	</bean>
+	<bean id="zkmSysDBLogService" name="zkmSysDBLogService" class="com.zinglabs.apps.zkmSysdblog.ZkmSysDBLogService" >
+	</bean>
+</beans>

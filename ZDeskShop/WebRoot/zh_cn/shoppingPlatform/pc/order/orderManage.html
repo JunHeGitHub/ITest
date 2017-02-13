@@ -1,0 +1,431 @@
+<!DOCTYPE  HTML>
+<html>
+<head>
+<title>订单管理</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<script type="text/javascript" src="../../../../js/jquery.js"></script>
+<script type="text/javascript" src="../../../../js/bootstrap.js"></script>
+<script type="text/javascript"
+	src="../../../../js/dataTables/js/jquery.dataTables.js"></script>
+<!-- 遮罩产插件 -->
+<script type="text/javascript" src="../../../../js/jquery.blockUI.js"></script>
+<script type="text/javascript"
+	src="../../../../js/dataTables/js/dataTables.colReorder.js"></script>
+<script type="text/javascript"
+	src="../../../../js/dataTables/js/dataTables.colVis.js"></script>
+<script type="text/javascript"
+	src="../../../../js/dataTables/js/dataTables.tableTools.min.js"></script>
+<script type="text/javascript" src="../../../../js/common_utils.js"></script>
+<script type="text/javascript" src="../../../../js/appCommonUtil.js"></script>
+<script type="text/javascript" src="../../../../js/appCommonCurdUtils_new.js"></script>
+<script type="text/javascript"
+	src="../../../../js/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript"
+	src="../../../../js/dataTables/js/DT_bootstrap.js"></script>
+<!--
+		<script type="text/javascript" src="../js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
+		<script type="text/javascript" src="../js/bootstrap-datetimepicker/bootstrap-datetimepicker.zh-CN.js"></script>
+		-->
+
+<script type="text/javascript" src="../../../../js/log2.js"></script>
+
+<!-- 验证及提示组件 -->
+<script type="text/javascript"
+	src="../../../../js/jqueryValidate/jquery.validate.js"></script>
+
+<link rel="stylesheet" href="../../../../css/bootstrap.min.css"
+	type="text/css" />
+<!--<link rel="stylesheet" href="../js/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css" type="text/css"></link>
+		-->
+<link rel="stylesheet"
+	href="../../../../js/dataTables/css/jquery.dataTables.css" type="text/css" />
+<!--[if lt IE 9]>
+		<script type="text/javascript" src="../js/html5shiv.min.js"></script>
+		<![endif]-->
+<link rel="stylesheet" href="../../../../js/dataTables/css/DT_bootstrap.css"
+	type="text/css" />
+<link rel="stylesheet"
+	href="../../../../js/dataTables/css/dataTables.tableTools.min.css"
+	type="text/css" />
+<!-- ZDesk 通用css  -->
+<link rel="stylesheet" href="../../../../css/zinglabs.css" type="text/css" />
+<link rel="stylesheet" href="../../../../js/dataTables/css/font-awesome.css" />
+<link rel="stylesheet"
+	href="../../../../js/dataTables/css/dataTables.colVis.min.css"
+	type="text/css" />
+
+
+<style type="text/css">
+
+/*解决时间控件在模式对话框中的显示问题**/
+.error {
+	border-color: red !important;
+}
+
+.datetimepicker {
+	z-index: 99999 !important;
+}
+
+.bootstrap-datetimepicker-widget {
+	z-index: 99999 !important;
+}
+
+/*临时解决datatable单元格变形问题  为保证宽度不变，ie兼容模式显示效果为换行 其它浏览器省略号
+  需要通过只显示部分原文解决此问题
+*/
+.dataTable th,.dataTable td {
+	width: 120px;
+	max-width: 120px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+</style>
+
+<script type="text/javascript">
+
+	/* //遮罩属性		
+	var maskContent = {
+		css : {
+			border : 'none',
+			padding : '15px',
+			backgroundColor : '#000',
+			'-webkit-border-radius' : '10px',
+			'-moz-border-radius' : '10px',
+			opacity : .5,
+			color : '#fff',
+			font : '14px'
+		},
+		message : '<img src="../../img/wait.gif" border="0" />  正在加载中，请稍候...'
+	}; */
+</script>
+</head>
+<body>
+
+	<!-- 容器 -->
+	<div class="z_container">
+		<!-- datatable部分 包含筛选项 -->
+
+		<div class="head">
+			<!-- dataTable筛选项部分 -->
+			<div class="widget-box collapsible">
+				<div class="widget-title">
+					<span class="icon"> <i class="icon-search"></i>
+					</span>
+					<h5>配置项搜索</h5>
+					<div class="buttons">
+						<button class="btn btn-mini"
+							onclick="	jQuery.fx.off = false;$('#collapseOne').slideToggle(200);">
+							<i class="icon-retweet"></i>展开/关闭
+						</button>
+					</div>
+				</div>
+				<div class="collapse in" id="collapseOne">
+					<!--TODO 里面写查询项表单布局 -->
+					<div class="widget-content container">
+
+						<form action="" id="searchDataForm">
+
+							<div class="row" style="margin-left: -200px">
+								<div class="span4">
+									<div class="form-horizontal">
+										<!-- 日期 布局会遮住后面选择日期的按钮  临时同减小input宽度解决 -->
+										<div class="control-group">
+											<label class="control-label" for="generateTimetimebegin">
+												订单日期: </label>
+											<div class="controls">
+												<div class="input-append">
+													<input type="text" style="width: 179px"
+														id="generateTimetimebegin" name="timetimebegin"
+														data-sType="moreThan" readonly> <span
+														class="add-on"><i class="icon-calendar"
+														onclick="WdatePicker({el:'generateTimetimebegin',dateFmt:'yyyy-MM-dd HH:mm:ss'})"></i>
+													</span>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="span4 offset1">
+									<div class="form-horizontal">
+										<div class="control-group">
+											<label class="control-label" for="generateTimetimeend">
+												到: </label>
+											<div class="controls">
+												<div class="input-append">
+													<input size="16" type="text" style="width: 179px"
+														id="generateTimetimeend" name="timetimeend"
+														data-sType="lessThan" readonly> <span
+														class="add-on"><i class="icon-calendar"
+														onclick="WdatePicker({el:'generateTimetimeend',dateFmt:'yyyy-MM-dd HH:mm:ss'})"></i></span>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row" style="margin-left: -279px">
+								<div class="span4 offset1">
+									<div class="form-horizontal">
+										<div class="control-group">
+											<label class="control-label" for="msgImportLevel">
+												订单编号: </label>
+											<div class="controls">
+												<input type="text" id="msgImportLevel" name="orderNumber"
+													data-sType="like">
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="span4 offset1">
+									<div class="form-horizontal">
+										<div class="control-group">
+											<label class="control-label" for="inputEmail"> 下单姓名:
+											</label>
+											<div class="controls">
+												<input type="text" id="msgId" name="buyersName"
+													data-sType="like">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row" style="margin-left: -279px">
+								<div class="span4 offset1">
+									<div class="form-horizontal">
+										<div class="control-group">
+											<label class="control-label" for="inputEmail"> 收货地址:
+											</label>
+											<div class="controls">
+												<input type="text" id="msgId" name="buyersAddress"
+													data-sType="like">
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="span4 offset1">
+									<div class="form-horizontal">
+										<div class="control-group">
+											<label class="control-label" for="orderState"> 订单状态:
+											</label>
+											<div class="controls">
+												<select id="orderState" name="orderState">
+													<option value=''>--请选择--</option>
+													<!-- <option value="01" disabled="">代付款</option>
+													<option value="02" disabled="">已付款</option>
+													<option value="03" disabled="">订单已审核</option>
+													<option value="04">卖家已发货</option>
+													<option value="05">交易成功</option>
+													<option value="06">交易关闭</option> 
+													-->
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</form>
+						<div style="text-align:center">
+							<button type="button" id="btn_search" class="btn"
+								onclick="doSearchs()">
+								<i class="icon-search"> </i> 搜索
+							</button>
+							<button type="button" id="btn_clean" class="btn"
+								onclick="cleanSearchForm()">
+								<i class="icon-remove"> </i> 清空
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- dataTable 部分 -->
+			<div class="widget-box">
+				<div class="widget-title">
+					<span class="icon"> <i class="icon-th"></i>
+					</span>
+					<h5>信息</h5>
+					<!--TODO 里面可加一些按钮 -->
+					<div class="buttons">
+						<a class="btn btn-mini" onclick="refresh()" href="javascript:;;"><i
+							class="icon-refresh"></i> 刷 新</a>
+					</div>
+				</div>
+				<div class="widget-content nopadding">
+					<!-- 提示栏 -->
+					<div class="alert alert-error" id="errorDiv" style="display: none;">
+					</div>
+					<div class="alert alert-success" id="successDiv"
+						style="display: none;"></div>
+					<table id="testGrid"
+						class="table table-striped table-bordered nowrap">
+
+					</table>
+
+				</div>
+
+			</div>
+		</div>
+		<!-- 表单部分 -->
+		<div class="foot ">
+			<div class="widget-box " style="margin-top: 0px">
+				<!-- 功能栏 -->
+				<div class="navbar-inner" style="padding-top: 10px">
+					<button class="btn btn-primary" onclick="delOrder()">退单</button>
+					&nbsp;
+					<button class="btn btn-danger" onclick="openEdit()">更改状态</button>
+					&nbsp;
+					<button class="btn null" onclick="doSubmit()">提交</button>
+					<button class="btn btn-primary" onclick="manageCategory()">详情
+					</button>
+				</div>
+
+				<!-- title : "订单编号",
+				data : "orderNumber",
+				defaultContent : '',
+				width : '3%',
+				orderable : true
+			}, {
+				title : "下单时间",
+				data : "orderTime",
+				width : '6%',
+				visible : true
+			}, {
+				title : "订单状态",
+				data : "orderState",
+				width : '6%',
+				visible : true
+			}, {
+				title : "下单人姓名",
+				data : "buyersName",
+				width : '6%',
+				visible : true
+			}, {
+				title : "下单人电话",
+				data : "buyersPhone",
+				width : '6%',
+				visible : true
+			}, {
+				title : "下单人留言",
+				data : "buyersMessage",
+				width : '6%',
+				visible : true -->
+
+				<div id="testEdit" class="widget-content container"
+					style="display: none">
+					<form id="test">
+						<input type="hidden" name="id"> <input type="hidden"
+							name="price"> <input type="hidden" name="keyValue"
+							id='keyValue'>
+						<div class="row" style="margin-left: -200px">
+							<div class="span4">
+								<div class="form-horizontal">
+									<div class="control-group">
+										<label class="control-label" for="orderNumber"> 订单编号:
+										</label>
+										<div class="controls">
+											<input type="text" id="orderNumber" disabled="disabled"
+												name="orderNumber" />
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="span4 ">
+								<div class="form-horizontal">
+									<div class="control-group">
+										<label class="control-label" for="orderTime"> 订单日期: </label>
+										<div class="controls">
+											<div class="input-append date form_datetime"
+												data-date-language="zh-CN"
+												data-picker-position="bottom-left"
+												data-link-format="yyyy-MM-dd hh:mm:ss"
+												data-link-field="add_msgEndTime"
+												data-provide="datetimepicker-inline">
+												<input size="16" type="text" style="width: 179px"
+													id="orderTime" name="orderTime" readonly
+													disabled="disabled"> <span class="add-on"
+													onclick="WdatePicker({el:'',dateFmt:'yyyy-MM-dd HH:mm:ss'})"><i
+													class="icon-th"></i> </span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="span4 ">
+								<div class="form-horizontal">
+									<div class="control-group">
+										<label class="control-label" for="orderState1">订单状态:</label>
+										<div class="controls">
+											<select id="orderState1" name="orderState"
+												onchange="updateKeyValue();">
+												<option value='' disabled=''>--请选择--</option>
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row" style="margin-left:-200px">
+							<div class="span4">
+								<div class="form-horizontal">
+									<div class="control-group">
+										<label class="control-label" for="buyersName"> 下单人姓名:
+										</label>
+										<div class="controls">
+											<input type="text" id="buyersName" name="buyersName"
+												disabled="disabled" />
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="span4">
+								<div class="form-horizontal">
+									<div class="control-group">
+										<label class="control-label" for="buyersPhone"> 下单人电话:
+										</label>
+										<div class="controls">
+											<input type="text" id="buyersPhone" name="buyersPhone"
+												disabled="disabled" />
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="span4">
+								<div class="form-horizontal">
+									<div class="control-group">
+										<label class="control-label" for="buyersMessage">
+											下单人留言: </label>
+										<div class="controls">
+											<input type="text" id="buyersMessage" name="buyersMessage"
+												disabled="disabled" />
+										</div>
+									</div>
+								</div>
+
+							</div>
+						</div>
+						<div class="row" style="margin-left:-200px">
+							<div class="span4">
+								<div class="form-horizontal">
+									<div class="control-group">
+										<label class="control-label" for="buyersMessage">
+											公司ID: </label>
+										<div class="controls">
+											<input type="text" id="companyID" name="companyID"
+												disabled="disabled" />
+										</div>
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="../../js/tool.js"></script>
+	<script type="text/javascript" src="../../js/orderManage.js"></script>
+</body>
+</html>

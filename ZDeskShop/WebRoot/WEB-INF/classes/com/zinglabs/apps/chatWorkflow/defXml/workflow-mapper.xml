@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.zinglabs.apps.chatWorkflow">
+
+	<insert id="insert" parameterType="java.util.Map">
+		insert into `chatWorkflow_binding` 
+		(`zdeskUserId`,`zdeskUserLoginName`,`zdeskUserName`,`gender`,`cardUrl`,`currentState`,`bindingTime`,`unbundlingTime`,`RealName`)
+		values
+        (#{zdeskUserId},#{zdeskUserLoginName},#{zdeskUserName},#{gender},#{cardUrl},#{currentState},#{bindingTime},#{unbundlingTime},#{RealName})
+	</insert>
+
+    <delete id="delBindUser" parameterType="java.util.Map">
+        delete from `chatWorkflow_binding` where zdeskUserLoginName=#{zdeskUserLoginName}
+    </delete>
+	
+	<select id="selectByLoginName" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT cardUrl FROM chatWorkflow_binding WHERE zdeskUserLoginName=#{loginName} limit 1
+	</select>
+	
+	<delete id="deleteBindingById" parameterType="java.util.Map">
+		DELETE FROM chatWorkflow_binding WHERE id = #{id}
+	</delete>
+	
+	<select id="selectByCardUrl" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT id,cardUrl FROM chatWorkflow_binding WHERE cardUrl=#{cardUrl} limit 1
+	</select>
+	
+	<!-- 根据cardUrl获取登录名 -->
+	<select id="selectZDeskLoginNameBycardUrl" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT zdeskUserLoginName FROM chatWorkflow_binding WHERE cardUrl=#{cardUrl} limit 1
+	</select>	
+	
+	<!-- 根据登录名获取所属组织id -->
+	<select id="selectgetOrgByLoginName" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT o.id FROM commonTree_detail o,suSecurityUserOrg  ou
+		WHERE o.id=ou.orgCode AND ou.loginName='${loginName}'
+	</select>
+	
+	<!-- 组织机构所用 BEGIN -->
+	<select id="getBindingData" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT zdeskUserLoginName,cardUrl,gender,RealName FROM chatWorkflow_binding
+	</select>
+	
+	<select id="getAllOrg" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	   select *,'org' as  'dataType'  from commonTree_detail  where 
+	       `recordType`=#{recordType}    ORDER BY  sortField
+	</select>
+	
+	<select id="getAllUser" resultType="java.util.HashMap">
+	    SELECT
+			suser.loginName AS 'id',
+			suser.`name` AS 'text',
+			suser.phone_number,
+			GROUP_CONCAT(DISTINCT sur.roleId) AS 'role',
+			GROUP_CONCAT(DISTINCT sorg.orgCode) AS 'org',
+			'ren' AS 'dataType'
+		FROM
+			suSecurityUser suser
+		LEFT JOIN suSecurityUserRole sur ON suser.loginName = sur.loginName
+		LEFT JOIN suSecurityUserOrg sorg ON suser.loginName = sorg.loginName
+		GROUP BY sorg.loginName 
+	</select>
+	<!-- 组织机构所用 END -->
+	
+	<!-- 创建工作流 BEGIN -->
+	
+	<select id="getUserDataByNodeId" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT id,stepId,stepScope,scopeType,companyId FROM stepManage WHERE stepId=#{nodeid} and scopeType=#{scopeType}
+	</select>
+	
+	<select id="getAllFanWeiByTemplateId" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select id,stepId,stepScope,scopeType,companyId from stepManage 
+		where stepId in (select id from stepRecording where templateId=#{templateid}) 
+		and scopeType=#{scopeType} GROUP BY stepScope
+	</select>
+	
+	<!-- 获取技能组类型 -->
+	<select id="getMHJNZType">
+		select skType from IM_SkillGroupInfo GROUP BY skType
+	</select>
+	<!-- 创建工作流 END -->	
+	
+</mapper>

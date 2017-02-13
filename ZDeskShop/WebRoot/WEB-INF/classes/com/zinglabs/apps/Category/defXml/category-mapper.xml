@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.zinglabs.apps.category">
+
+
+		<!-- 分类树 -->
+		<select id="getTreeRoot" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+			select id ,parentId as 'pid',nodeName as 'text',departmentId,categroyUseOrNot,companyId from tb_Category 
+			
+				where categroyUseOrNot = 1 
+				
+				<if test="id !=null and id !=''"> and parentId=#{id}</if>
+				<if test="id == null or id ==''"> and parentId = '0'</if>
+		</select>
+		
+		<!-- 属性 -->
+		<select id="getPropNode" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+			select  id ,categoryId as 'pid', propName as 'text',requiredOrNot,propUseOrNot,createPerson,createDate,companyId from tb_Prop
+			
+			where propUseOrNot = 1 
+			
+			<if test="id != null and id !=''"> and categoryId = #{id}</if>
+			<if test="id == null or id ==''"> and categoryId = '0'</if>
+			<if test="rows!=null and rows !='' and offset !=null and offset!=''">limit ${offset},${rows}</if>
+		
+		</select>
+		
+		<!-- 分类管理-删除分类（删除为禁用） -->
+		<update id="updateCateNode" parameterType="java.util.HashMap">
+			update tb_Category 
+			<set>
+				<if test="parentId != null and parentId != ''">
+					parentId = ${parentId}
+				</if>
+				<if test="categroyUseOrNot != null and categroyUseOrNot != ''" >
+				 categroyUseOrNot = #{categroyUseOrNot}
+				 </if>
+			</set>
+			where id  in (${id})	
+		</update>
+		
+		<!-- 分类管理-删除属性（删除为禁用） -->
+		<update id="updatePropNode" parameterType="java.util.HashMap">
+			update tb_Prop 
+			<set>
+				<if test="categoryId != null and categoryId != ''">
+					categoryId = ${categoryId}
+				</if>
+				<if test="propUseOrNot != null and propUseOrNot != ''">
+					 propUseOrNot = #{propUseOrNot}
+				</if>
+			</set>
+			where id  in (${id})	
+		</update>
+		
+		<!-- 分类管理-获取禁用属性 -->
+		<select id="getDisableProp" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+			select  id ,categoryId as 'pid', propName as 'text',requiredOrNot,propUseOrNot,createPerson,createDate,companyId from tb_Prop
+			
+			where propUseOrNot = 0  limit ${offset},${rows}
+			
+		</select>
+		
+		<!-- 分类管理-获取禁用分类 -->
+		<select id="getDisableCate" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+			select id ,parentId as 'pid',nodeName as 'text',categroyUseOrNot,companyId from tb_Category 
+			
+				where categroyUseOrNot = 0  
+				limit ${offset},${rows} 
+		</select>
+		
+		<!-- 分类管理-分页查询属性数据 -->
+		<select id="getGridList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+			select * from ${tableName}
+			
+			where propUseOrNot = 1 
+			
+			<if test="categoryId != null and categoryId != ''">
+				 and categoryId in ( ${categoryId} )
+			</if>
+			<if test = "propName != null and propName != ''">
+				and propName  like CONCAT('%',#{propName},'%')
+			</if>
+			
+			<if test="saleOrBuy !=null and saleOrBuy != ''">
+				and saleOrBuy = #{saleOrBuy}
+			</if>
+			
+			<if test="orderBy !=null and orderBy!=''">order by ${orderBy}</if>
+			
+			<if test="rows!=null and rows !='' and offset !=null and offset!=''">limit ${offset},${rows}</if>
+			
+		</select>
+		
+		<!-- 分类管理-数据总条数 -->
+		<select id="getTotalData" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+			
+			select count(*) as total from ${tableName}
+			where propUseOrNot = 1  
+			<if test="categoryId != null and categoryId != ''">
+				 and categoryId in ( ${categoryId} )
+			</if>
+			<if test = "propName != null and propName != ''">
+				and propName  like CONCAT('%',#{propName},'%')
+			</if>
+			<if test="orderBy !=null and orderBy!=''">order by ${orderBy}</if>
+		</select>
+		
+		
+		
+		
+		<!-- 验证分类 同级不同名 -->
+		<select id="validateCate" parameterType="java.util.HashMap" resultType="java.util.HashMap" >
+			select count(*) as total from ${tableName} where
+				 parentId = #{parentId} and nodeName = #{nodeName}
+		</select>
+		
+		<!-- 验证属性、属性名称同级不同名 -->
+		<select id="validateProp" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+			select count(*) as total from ${tableName}	where 
+				categoryId = #{parentId} and propName = #{nodeName}		
+		</select>
+		
+		
+		
+		<!-- 地址管理-添加 -->
+		<insert id="addAddress" parameterType="java.util.HashMap">
+			INSERT INTO tb_ConsigneeAddress ( userId, area, street, address, consigneeName, 
+					consigneePhone, postCode, isDefaultAddress, createData)
+			 VALUES ( #{userId}, #{area}, #{street}, #{address}, #{consigneeName},
+			 	 #{consigneePhone}, #{postCode}, #{isDefaultAddress}, NOW());
+			
+		</insert>
+		
+		<!-- 地址管理-修改 -->
+		<update id="updateAddress" parameterType="java.util.HashMap">
+			UPDATE tb_ConsigneeAddress
+			 <trim prefix="SET" suffixOverrides=",">
+			 	<if test="userId != null and userId != ''">
+				  userId= #{userId}, 
+			 	</if>
+			 	<if test="area != null and area != ''">
+				  	area= #{area}, 
+			 	</if>
+			 	<if test="street != null and street != ''">
+				  street=  #{street}, 
+			 	</if>
+			 	<if test="address != null and address != ''">
+				  address=	#{address} , 
+			 	</if>
+			 	<if test="consigneeName != null and consigneeName != ''">
+				  consigneeName=  #{consigneeName}, 
+			 	</if>
+			 	<if test="consigneePhone != null and consigneePhone != ''">
+				  consigneePhone= #{consigneePhone}, 
+			 	</if>
+			 	<if test="postCode != null and postCode != ''">
+				  postCode= #{postCode}, 
+			 	</if>
+			 	<if test="isDefaultAddress != null and isDefaultAddress != ''">
+				  isDefaultAddress=  #{isDefaultAddress}
+			 	</if>
+				
+			</trim>
+				WHERE   1 = 1 
+				<if test="id != null and id != ''">
+					and	id = #{id}
+				</if>
+		</update>
+		
+		<delete id="delAddress" parameterType="java.util.HashMap">
+			delete from tb_ConsigneeAddress where id = #{id} 
+		</delete>
+		
+		
+		<!-- 地址管理-分页查询 -->
+		<select id="selectAddress" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+			select * from  tb_ConsigneeAddress  where 
+			userId = #{userId}
+			<if test="id != null and id != ''">
+				and id = #{id}
+			</if>
+			 order by isDefaultAddress desc, createData desc 
+			<if test="rows!=null and rows !='' and offset !=null and offset!=''">limit ${offset},${rows}</if>
+		</select>
+		
+		<!-- 地址管理-获取数据总数 -->
+		<select id="selectAddressCount" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+			select count(*) as total from  tb_ConsigneeAddress  where userId = #{userId}
+			<if test="id != null and id != ''">
+				and id = #{id}
+			</if>
+		</select>
+		
+		<!-- 评价管理界面 -->
+		<insert id="addPingJia" parameterType="java.util.HashMap">
+			INSERT INTO tb_assess (goodsId,groupId, content, goodLevel, serviceLevel, sendLevel, 
+				expressLevel, showOrNot, userId, userName, addDate) 
+			
+				<foreach collection="map" item="item" index="index" separator="union all">
+					select #{item.goodsId},#{item.groupId} ,#{item.content},  #{item.goodLevel}, #{item.serviceLevel},
+					 #{item.sendLevel}, #{item.expressLevel}, #{item.showOrNot}, #{item.userId},
+					  #{item.userName},  now() from dual
+				</foreach>
+		</insert>
+		
+		<select  id="selectAllPingJia" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+			select * from tb_assess where  1 = 1
+			<if test="goodsId != null and goodsId != ''">
+				and	goodsId =#{goodsId}
+			</if>
+			<if test="groupId != null and groupId != ''">
+				and	groupId =#{groupId}
+			</if>
+			order by addDate desc 
+			<if test="rows!=null and rows !='' and offset !=null and offset!=''">limit ${offset},${rows}</if>
+		</select>
+		<select  id="selectAllPingJiaCount" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+			select count(*) as total 
+				<if test="groupId != null and groupId != ''">
+				,(select count(*)  from tb_assess where groupId = #{groupId} and goodLevel  &gt; 3) as good ,
+				(select count(*)  from tb_assess where groupId = #{groupId} and goodLevel = 3) as center ,
+				(select count(*)  from tb_assess where groupId = #{groupId} and goodLevel  &lt; 3) as bad
+			 </if>
+			 from tb_assess where  1 = 1
+			<if test="goodsId != null and goodsId != ''">
+				and	goodsId =#{goodsId}
+			</if>
+			<if test="groupId != null and groupId != ''">
+				and	groupId =#{groupId}
+			</if>
+		</select>
+		
+		
+		
+		
+		<!-- 分类模块 2015-07-15 -->
+		<insert id="insertCate" parameterType="java.util.HashMap">
+			INSERT INTO tb_Category( `parentId`, `nodeName`, `categroyUseOrNot`,
+								`departmentId`, `companyId`) 
+			VALUES ( #{parentId},#{nodeName},#{categroyUseOrNot},#{departmentId},#{companyId} );			
+		</insert>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+</mapper>

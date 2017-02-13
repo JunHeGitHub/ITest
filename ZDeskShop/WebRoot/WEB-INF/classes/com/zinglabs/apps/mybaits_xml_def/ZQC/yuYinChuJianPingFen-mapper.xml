@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.zinglabs.apps.mybaits_xml_def.ZQC">
+
+	<select id= "yuYinZuoYeChuJianPingFen_initData" resultType="java.util.Map" parameterType="java.util.HashMap">
+    	select * from SU_QC_SOURCE_RECORD_DATA
+    	where is_mp3='mp3' and owner=#{owner} and data_state in (${data_state_parames}) and score_state in (${score_state_parames})
+    </select >
+    
+    <select id= "yuYinZuoYeChuJianPingFen_search" resultType="java.util.Map" parameterType="java.util.HashMap">
+    	select * from SU_QC_SOURCE_RECORD_DATA
+    	where is_mp3='mp3' and ${searchItems} and owner=#{owner} and data_state in (${data_state_parames}) and score_state in (${score_state_parames})
+    </select >
+</mapper>

@@ -1,0 +1,347 @@
+<!DOCTYPE  HTML>
+<html lang="en">
+	<head>
+		<title>dataTables测试</title>
+
+		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3" />
+		<meta http-equiv="description" content="this is my page" />
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css"></link>
+	    <link rel="stylesheet" href="../css/bootstrap-responsive.min.css" type="text/css"></link>
+		<link rel="stylesheet" href="../js/dataTables/css/jquery.dataTables.css" type="text/css"></link>
+		
+		<!-- bootstrap 与 datatable结合 -->
+		<link rel="stylesheet" href="../js/dataTables/css/DT_bootstrap.css" type="text/css"></link>
+		<!-- 工具 -->
+		<link rel="stylesheet" href="../js/dataTables/css/dataTables.tableTools.min.css" type="text/css"></link>
+		<!-- 动态列CSS -->
+		<link rel="stylesheet" href="../js/dataTables/css/unicorn.main.css" type="text/css"></link>
+	    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css"></link>
+		<link rel="stylesheet" href="../js/dataTables/css/dataTables.colVis.min.css" type="text/css"></link>
+		<script type="text/javascript" src="../js/jquery.js"></script>
+		<script type="text/javascript" src="../js/bootstrap.js"></script>
+		<script type="text/javascript" src="../js/dataTables/js/jquery.dataTables.js"></script>
+		<script type="text/javascript" src="../js/dataTables/js/dataTables.colReorder.js"></script>
+		<script type="text/javascript" src="../js/dataTables/js/dataTables.colVis.js"></script>
+		<script type="text/javascript" src="../js/dataTables/js/dataTables.tableTools.min.js"></script>
+		<script type="text/javascript" src="../js/dataTables/js/DT_bootstrap.js"></script>
+
+<style type="text/css" class="init"><!--
+	td.red {
+		font-weight: bold;
+		color: red;
+	}
+
+   tr td:first-child {
+        text-align: center;
+    }
+  /* fa-square-o */
+   tr td:first-child:before {
+        content: "\f096"; 
+        font-family: FontAwesome;
+    }
+ 
+    tr.active td:first-child:before {
+        content: "\f046"; /* fa-check-square-o */
+    } 
+</style>
+		<script type="text/javascript">
+
+
+$(document).ready(function() {
+   var data=doSearch(); 
+
+	 
+  $('#test').dataTable({
+        //滚动条 
+        scrollY: 500,
+        bPaginate: true, //翻页功能
+		bLengthChange: false, //改变每页显示数据数量
+		bFilter: false, //过滤功能
+		bSort: true, //排序功能
+		bInfo: true,//页脚信息
+		bAutoWidth: false, //自动宽度
+		sPaginationType: "bootstrap",//分页样式
+		//"sDom":"<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>" ,
+		data:data,
+	    dom: 'Rlfrtip',
+	  // dom: 'T<"clear">C<"clear">Rlfrtip',
+	   // dom: 'T<"clear">lfrtip',
+	    //自定义列插件
+        colVis: {
+           order: 'alpha',
+           buttonText: "自定义显示列"
+        },
+        order: [ 1, 'asc' ],
+		columns: [
+		 /*{ "title": 
+		   "<input type='checkbox' id='selectall' onclick='toggleChecks(this);' ></input>",
+		    "mDataProp": null, 
+		    "sWidth": "20px", 
+		    "sDefaultContent": "<input type='checkbox' class='case' onChange='setSelect()' ></input>",
+		     "bSortable": false 
+	
+		     },*/
+			{ title:"<input type='checkbox' id='selectall' onclick='toggleChecks(this);' ></input>",data: null, defaultContent: '', orderable: false },
+			{ 
+			  title:"id" ,
+			  data: 'peizhiItem'
+			},
+			/**title 表头  data json 对应key **/
+	        {"title":"配置项" ,data: 'peizhiItem',className: "my_class" },
+	        {"title":"配置值",data:'peizhiItemValue' },
+	        {"title":"排序",data:'desc',filter:'desc' },
+	        {"title": "bItem",data: 'bItem' },
+	        {"title": "sItem",data: 'sItem' },
+	        {"title": "productionId",
+	          sClass: "center",
+	          sName:"productionId",
+	          data: 'productionId'
+	        },
+	        { //自定义列
+	          title:"功能",
+			  //"sName": "cz",
+			  "sClass": "center",
+			  "bSearchable": false,
+			  "bStorable": false
+			 }
+	        
+        ],
+        //列高亮显示
+        createdRow: function ( row, data, index ) {
+           // if ( data[5].replace(/[\$,]/g, '') * 1 > 4000 ) {
+               // alert("123");
+                $('td', row).eq(2).addClass('red');
+           // }
+        } ,
+        //列筛选等属性 样式
+        columnDefs: [ {
+		     "targets": -1,
+		     "defaultContent": "<button>编辑</button>",
+		      data:null
+	          } ,
+	          {
+                // The `data` parameter refers to the data for the cell (defined by the
+                // `data` option, which defaults to the column being worked with, in
+                // this case `data: 0`.
+                render: function ( data, type, row ) {
+                    return data +' (单元格格式化)';
+                },
+                "targets": 1
+            }
+	    
+	    ],
+        oLanguage: {
+			"sLengthMenu": "每页显示 _MENU_条",
+			"sZeroRecords": "没有找到符合条件的数据",
+			"sProcessing": "&lt;imgsrc=’./loading.gif’ /&gt;",
+			"sInfo": "当前第 _START_ - _END_ 条　共计 _TOTAL_ 条",
+			"sInfoEmpty": "木有记录",
+			"sInfoFiltered": "(从 _MAX_ 条记录中过滤)",
+			"sSearch": "搜索：",
+			"oPaginate": {
+			"sFirst": "首页",
+			"sPrevious": "前一页",
+			"sNext": "后一页",
+			"sLast": "尾页"
+		    }
+        }, tableTools: {
+          //single 单选 multi 多选  os 可以按ctrl 选择
+            sRowSelect:'multi',
+           
+           
+          // sRowSelect:'os',
+          // sRowSelector:'td:first-child',
+            aButtons:     [ /*{
+                "sExtends":    "select_all",
+                "sButtonText": "选择全部",
+                "target":      "#select"
+              } , 'select_none' */]
+        }
+        
+        
+    }); 
+     //绑定事件 on
+     var table= $('#test').DataTable();
+	 $('#test tbody').on( 'click', 'button', function (obj) {
+	    var data = table.row( $(this).parents('tr') ).data();
+        alert(JSON.stringify(data));
+	} );
+	 
+	
+    //工具栏与bootstarp 结合
+    var tt = new $.fn.dataTable.TableTools(table);
+    $(tt.fnContainer()).insertBefore('#tools');
+    
+  
+
+      
+});
+function doSearch(){
+//通用查询action路径
+var url = "/" + "ZDesk" + "/" + "ZKM/CommonsCurd" + "/" + "Find.action";
+   var params={
+   
+   };
+   params.tableName ="DataItemAllocation";
+   params.nameSpace ="com.zinglabs.apps.commons.pojo";
+   params.nameSpaceId = "getList";
+   var rdata=[];
+   
+   	$.ajax({
+		async :false,
+		type : "post",
+		url : url,
+		dataType : "json",
+		data : params,
+		success : function(data) {
+			if (data) {
+              /*$("#test").dataTable({
+                 data:data
+              });*/
+              rdata=data.rows;
+			}
+		},
+		error : function(r){
+		   alert("error");			
+		}
+		});
+     return rdata;
+
+}
+//获取选中行
+function fnGetSelected(){
+    //注意DataTable大写 或者 $('#test').dataTable().api();
+     var table=$('#test').DataTable();
+ //   var data =table.column().data();
+    //获取选中行 通过dataTable查找
+    var cell=table.rows(".active").data();
+    //通过table TOLL 查找
+     var tt = new $.fn.dataTable.TableTools(table);
+      var selectData=tt.fnGetSelectedData();
+    
+    
+    alert( JSON.stringify(selectData) );
+    console.log( JSON.stringify(selectData));
+}
+//全选
+ function toggleChecks(obj){
+       var table=$('#test').DataTable();
+       var tableTools = new $.fn.dataTable.TableTools(table);
+       
+       
+       var ischeck=$("#selectall").is(':checked');
+       if(ischeck){
+         tableTools.fnSelectAll();
+       }else{
+         tableTools.fnSelectNone();
+       }
+        //$('.case').prop('checked', obj.checked);
+    }
+    
+function getSelectCheckBox(){
+      var selected= $('.case');
+       for(var i=0;i<selected.length;i++){
+              //  var select=selected.get
+       
+       }
+     ///  if($('.case').is(':checked'))
+
+}
+
+
+    </script>
+</head>
+	<body>
+	
+	<!-- 头 -->
+	<div class="widget-box collapsible">
+		<div class="widget-title">
+	       <span class="icon">
+				<i class="icon-search"></i>
+			</span>
+			<h5>模板搜索</h5>
+			<div class="buttons">
+			   <a href="#collapseOne" data-toggle="collapse" class="btn btn-mini"><i class="icon-retweet"></i>展开/关闭</a></div>
+			</div>
+			<div class="collapse in" id="collapseOne">
+				<div class="widget-content">
+			<input type="hidden" id="pageFuncId" name="pageFuncId" value="5257f8fd-9da2-4e83-8538-b6ffca22e45a"/>
+								模板名称：
+								<input name="name" type="text" maxlength="500" class="input-medium search-query"  value=""/>
+								每页显示条数：
+								<select name="pageSize" id="pageSize" style="width:70px">
+									<option selected="selected" value="10">
+										10
+									</option>
+									<option value="30" >
+										30
+									</option>
+									<option value="50" >
+										50
+									</option>
+									<option value="100" >
+										100
+									</option>
+									<option value="200" >
+										200
+									</option>
+									<option value="500" >
+										500
+									</option>
+									<option value="1000" >
+										1000
+									</option>
+
+								</select>
+								
+							<button type="submit" class="btn"><i class="icon-search"></i> 搜 索</button>
+			</div>
+			</div>
+							
+		<!-- class 或 = display -->
+		<table width="1000" class="table table-striped table-bordered"
+			id="test" cellspacing="0">
+
+		</table>
+		<input type="button" value="获取选中行" onclick="fnGetSelected()">
+		<input type="button" value="获取勾选" onclick="getSelectCheckBox()">
+		<div id="getSelectView">
+		</div>
+	
+		<div>
+
+
+				<form class="form-horizontal">
+					<div class="control-group">
+						<label class="control-label" for="inputEmail">
+							Email
+						</label>
+						<div class="controls">
+							<input type="text" id="inputEmail" placeholder="Email">
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="inputPassword">
+							Password
+						</label>
+						<div class="controls">
+							<input type="password" id="inputPassword" placeholder="Password">
+						</div>
+					</div>
+					<div class="control-group">
+						<div class="controls">
+							<label class="checkbox">
+								<input type="checkbox">
+								Remember me
+							</label>
+							<button type="submit" class="btn">
+								Sign in
+							</button>
+						</div>
+					</div>
+				</form>
+
+		</div>
+	</body>
+</html>

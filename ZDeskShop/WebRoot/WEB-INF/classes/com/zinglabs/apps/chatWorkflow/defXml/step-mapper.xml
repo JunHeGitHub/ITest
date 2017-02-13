@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.zinglabs.apps.chatWorkflow">
+	<!-- 查询节点的范围 -->
+	<select id="scopeSelect" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		select GROUP_CONCAT(stepScope) stepScope,scopeType from stepManage
+		WHERE  stepId = #{stepId}
+		GROUP BY scopeType
+		order by scopeType 
+	</select>
+	<!-- 当模板选技能组向节点表stepRecording中插入一条数据 -->
+	<select id="stepSkillInsert" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		INSERT INTO stepRecording (id,templateId,stepName,description,serial,createDate) 
+		VALUES(#{id},#{templateId},#{stepName},#{description},#{serial},#{createDate})
+	</select>
+	<!-- 向节点表stepRecording中插入一条数据 -->
+	<select id="stepInsert" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		INSERT INTO stepRecording (id,templateId,stepName,description,cardUrl,executor_name,executor,serial,createDate) 
+		VALUES(#{id},#{templateId},#{stepName},#{description},#{cardUrl},#{executor_name},#{executor},#{serial},#{createDate})
+	</select>
+	<!-- 向stepManage添加相应数据 -->
+	<select id="InsertStepManage" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		INSERT INTO stepManage (stepId,stepScope,scopeType) 
+		VALUES(#{stepId},#{stepScope},#{scopeType})
+	</select>
+	<!-- 修改节点表stepRecording -->
+	<select id="updateStep" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		UPDATE stepRecording SET stepName=#{stepName},executor=#{executor},cardUrl=#{cardUrl},executor_name=#{executor_name},description=#{description},serial=#{serial},createDate=#{createDate} WHERE id=#{id} 
+	</select>
+	<!-- 修改stepManage表中相应的数据 -->
+	<select id="UpdateStepManage" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		DELETE FROM stepManage WHERE stepId=#{stepId}
+	</select>
+	<!-- 查询stepManage表中stepScope对应的组织机构名和角色名 -->
+	<select id="selectStepManage" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		SELECT GROUP_CONCAT( cd.text )stepScope,sm.scopeType 
+		,GROUP_CONCAT(sm.stepScope)scope,sm.scopeType 
+		FROM stepManage sm 
+		LEFT JOIN commonTree_detail cd ON cd.id=sm.stepScope
+		WHERE sm.stepId=#{stepId}
+		GROUP BY sm.scopeType
+	</select>
+	<!-- 总览  查询该模板下的所有节点 及节点的执行人状态 -->
+	<select id="searchStep" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		SELECT * FROM Workflow_Relation_Table WHERE workflow_id=#{workflow_id} AND role=#{role}
+	</select>
+	<!-- 现况  显示当前用户相关的节点 及执行状态 -->
+	<select id="searchNowStep" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT * FROM Workflow_Relation_Table WHERE workflow_id=#{workflow_id} AND cardUrl=#{cardUrl}
+	</select>
+
+</mapper>

@@ -1,0 +1,1028 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>商品管理</title>
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0" >
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" >
+    
+    
+    <link rel="stylesheet" href="../../../../css/bootstrap.min.css" type="text/css" ></link>
+	<link rel="stylesheet" href="../../../../js/zTree/zTreeStyle/zTreeStyle.css" type="text/css" ></link>
+	<link rel="stylesheet" href="../../../../js/dataTables/css/DT_bootstrap.css" type="text/css" ></link>
+	<link rel="stylesheet" href="../../../../js/dataTables/css/jquery.dataTables.css" type="text/css"></link>
+	<link rel="stylesheet" href="../../../../js/ueditor/themes/default/css/ueditor.css" ></link>
+	
+	<script type="text/javascript" charset="utf-8" src="../../../../js/ueditor/ueditor.config.js"></script>
+	<script type="text/javascript" charset="utf-8" src="../../../../js/ueditor/ueditor.all.js"> </script>
+	<!--建议手动加在语言，避免在ie下有时因为加载语言失败导致编辑器加载失败-->
+	<!--这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文-->
+	<script type="text/javascript" charset="utf-8" src="../../../../js/ueditor/lang/zh-cn/zh-cn.js"></script>
+	
+	<script type="text/javascript" src="../../../../js/jquery.js"></script>
+	<script type="text/javascript" src="../../../../js/golbal_params.js"></script>
+	<script type="text/javascript" src="../../../../js/bootstrap.js"></script>
+	<script type="text/javascript" src="../../../../js/dataTables/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="../../../../js/jqueryValidate/jquery.validate.js"></script>
+	
+	<script type="text/javascript" src="../../../../js/dataTables/js/dataTables.colVis.js"></script>
+	<script type="text/javascript" src="../../../../js/dataTables/js/dataTables.tableTools.min.js"></script>
+	
+	<script type="text/javascript" src="../../../../js/common_utils.js"></script>
+	<script type="text/javascript" src="../../../../js/appCommonCurdUtils_new.js"></script>
+	<script type="text/javascript" src="../../../../js/appCommonUtil.js"></script>
+	<script type="text/javascript" src="../../../../js/dataTables/js/DT_bootstrap.js"></script>
+	<script type="text/javascript" src="../../../../js/bootstrap.min.js"></script>
+	
+	<script type="text/javascript" src="../../../../js/log2.js"></script>
+	<script type="text/javascript" src="../../../../js/zTree/jquery.ztree.all-3.5.min.js"></script>
+	<script type="text/javascript" src="../../js/uuid.js"></script>
+	<script type="text/javascript" src="../../js/goods.js"></script>
+	
+	<style>
+		body,div {
+			margin: 0;
+			padding: 0;
+		}
+
+.left {
+	float: left;
+	width: 240px;
+	height: 100%;
+	border-right: 1px solid #696969;
+	/*background: #00f;*/
+	_margin-right: -3px;
+}
+
+.center { 
+	margin: 0 0px;
+	_margin: 0 0px;
+}
+
+div#rMenu {
+	position: absolute;
+	visibility: hidden;
+	top: 0;
+	background-color: #555;
+	text-align: left;
+	padding: 2px;
+}
+
+div#rMenu ul {
+	margin: 1px;
+	padding: 0px;
+}
+
+div#rMenu li {
+	margin: 1px 0;
+	padding: 0 5px;
+	cursor: pointer;
+	list-style-type: none;
+	background-color: #DFDFDF;
+}
+
+.dataTable th,.dataTable td {
+	width: 120px;
+	max-width: 120px;
+	/*min-width: 120px;*/
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.modal {
+	margin: 0px, 10%, 0px, 10%;
+	position: absolute;
+	left: 40%;
+}
+
+#addPropWindow.modal {
+	left: 50%;
+	top: 30%;
+}
+
+#addWindow.modal {
+	left: 50%;
+	top: 30%;
+}
+
+.span5 {
+	width: 100px;
+}
+
+.span12 {
+	width: 100%;
+}
+
+.backImg {
+	background: url('../../images/image.png') no-repeat;
+}
+
+#edui149 {
+	width:50px;
+	height:50px;
+}
+.ui-popup{
+	z-index:999999999999 !important
+}
+	</style>
+	
+
+  	<script type="text/javascript">
+		//==========ueditor编辑器==============
+		var keyId,count,goodsCategory,imgId;
+		var goodsGrid,detailGoodsGrid;//dataTables全局变量
+		var paramData ; //主商品信息；
+		var detailGoodsData; // 单个商品信息;
+		var paramStatus; //状态（修改还是添加）
+		var paramValue = {};  
+		
+		var editor = new UE.ui.Editor({  
+				autoHeightEnabled: false,
+    			autoFloatEnabled: false ,
+    			initialFrameWidth:600,
+    			initialFrameHeight:200, 
+				iframeCssUrl: '../../../../js/ueditor/themes/iframe.css',
+				
+				toolbars:[
+							['Paragraph',
+							 'RowSpacing',
+							 'FontFamily',
+							 'FontSize',
+							 'justifyleft',
+							 'justifycenter',
+							 'justifyright', 
+							 'justifyjustify',
+							 'bold',
+							 'italic',
+							 'underline',
+							 'fontborder',
+							 'strikethrough', 
+							 '|', 'forecolor', 
+							 'backcolor', 
+							 'insertorderedlist',
+							 'insertunorderedlist',
+							 'insertimage']
+					     ]
+		});
+		
+		editor.render("editor");
+		// var d;    
+		
+		var	upLoadImg= new UE.ui.Editor({
+				initialFrameWidth:600,
+    			initialFrameHeight:200
+		});   
+		upLoadImg.render("image_4"); 
+		
+		upLoadImg.ready(function(){ 
+       		 upLoadImg.hide();//隐藏UE框体              
+       		 upLoadImg.addListener('beforeInsertImage',function(t, arg){ 
+       			 if(arg.length < 1){ 
+       				 zinglabs.alert('请上传一张图片');
+			        return;
+			     }
+        		var imgsrc = arg[0].src; 
+               $("#"+imgId+"").attr("src", imgsrc);   
+          });
+      });
+		
+		
+		
+		function upImage(id){   
+		    $("#image_4").css("height","100px"); 
+			imgId = id; 
+			var d = upLoadImg.getDialog("insertimage"); 				
+			 d.render(); 
+		   	d.open(); 
+		}
+		
+	 $(function(){
+	 	
+	 	// alert(getUserInfo().name);  
+	 	//alert(getUserInfo().loginName);  
+	 	console.log(getUserInfo());  
+	 	
+	    initTree();  // 加载树； 
+	    	
+	    loadGoods()  //加载主商品列表
+	    	
+	    	//商品详细表
+	   	 detailGoodsGrid = 	$('#detailGoods').DataTable({
+		         deferRender: true,
+		         processing: false,
+		         serverSide: true,
+		         ajax: function (data, callback, settings) {
+		         	  //第一次未点击zhu商品，不加载数据；
+		         	   if(BIsNullVal(paramData)){
+		         	   		return;
+		         	   }
+		         	   
+		               var params = {}; 
+		               params.flag="detail";
+		               params.groupId = paramData.groupId;
+					   params.rows=settings._iDisplayLength;
+					   params.offset=settings._iDisplayStart; 
+					   ajaxFunction("/" +parent.PRJ_PATH + "/" + 'ZKM' + "/goodsManager/selectMainGoods.action", params, false, function(data) {
+							 if(data&&data.data){
+							 	 // clearData(); // 清空已存在的数据；
+					                detailGoodsData = null;
+					                  var pdata={};
+					                  pdata.data=data.data; //数据
+					                  pdata.recordsTotal=data.total; //总条数
+					                  pdata.recordsFiltered=data.total;  //过滤没有使用到总条数
+					                  pdata.draw=settings.iDraw;// 代表第几次画页面  如pdata.draw 不能删 如删掉不会翻页 
+					                  callback(pdata);
+					         }
+						});
+			 	 },
+				pagingType: "full_numbers",
+		        pageLength: $("#showNumbers").val(), //获取页面上的当前显示多少数据  
+		        bPaginate: true, //翻页功能 
+		        bLengthChange: false, //改变每页显示数据数量
+		        bFilter: true, //过滤功能
+		       //  bSort: true, //排序功能
+		        bInfo: true,//页脚信息
+		      //   bAutoWidth: false, //自动宽度
+		        sPaginationType: "bootstrap",//分页样式
+		        dom: 'TRlrtip',
+		       // scrollCollapse: true,
+			   // sScrollX:"100%",
+		        columns: [
+		              {title:"表序号" ,data: 'id', visible: false,width:150},
+		              {title:"组商品号" ,data: 'groupId', visible: false,width:150},
+		              {title:"主商品号" ,data: 'goodsId', visible: false,width:150},
+		              {title:"商品编号" ,data: 'goodsCode', visible: false,width:150},
+		              {title:"商品名称" ,data: 'goodsName' ,width:150}, 
+		              {title:"商品标题" ,data: 'goodsTitle',width:150},
+		              {title:"库存" ,data: 'goodsCount',width:150},                                 
+		              {title:"商品成本价" ,data: 'goodsCostPrice',width:150},
+		              {title:"商品销售价" ,data: 'goodsSalePrice',width:150},
+		              {title:"商品备注" ,data: 'goodsMark',width:150},    
+		              {title:"创建时间" ,data: 'createDate',width:150},                                   
+		              {title:"企业编号" ,data: 'companyId',  visible: false,width:150},
+		              {title:"商品描述" ,data: 'goodsDesc',  visible: false,width:150},
+		              {title:"数据状态" ,data: 'dataStatus',  visible: false,width:150}, 
+		              {title:"商品图片" ,data: 'goodsImgs',  visible: false,width:150},
+		              {title:"商品标签" ,data: 'goodsLabel',  visible: false,width:150},
+		              {title:"显示价格" ,data: 'goodsShowPrice',  visible: false,width:150}, 
+		              {title:"商品分类" ,data: 'goodsCateGory',  visible: false,width:150},
+		              {title:"商品属性" ,data: 'goodsProp',  visible: false,width:150}
+		               ],
+		        oLanguage: {
+		             infoFiltered:function(){
+		             
+		             },
+		            "sLengthMenu": "每页显示 _MENU_条",
+		            "sZeroRecords": "没有找到符合条件的数据",
+		            "sProcessing": "&lt;imgsrc=’./loading.gif’ /&gt;",
+		            "sInfo": "当前第 _START_ - _END_ 条　共计 _TOTAL_ 条",
+		            "sInfoEmpty": "没有记录",
+		            "sInfoFiltered": "(从 _MAX_ 条记录中过滤)",
+		            "sSearch": "搜索：",
+		            "oPaginate": {
+		                "sFirst": "首页",
+		                "sPrevious": "前一页",
+		                "sNext": "后一页",
+		                "sLast": "尾页"
+		            }
+		        }, tableTools: {
+		        	//获取点击的行
+		            fnRowSelected: function ( nodes ) {
+		               var index=nodes[0]._DT_RowIndex;	
+		               detailGoodsData = detailGoodsGrid.row(index).data();
+		            },
+		            sRowSelect:'os',
+		            aButtons: []
+		        },"fnCreatedRow" : function(nRow,aData,iDataIndex){ // 格式化行
+		        	// $('td:eq(6)',nRow).html(aData.createDate.split(" ")[0]);
+				}
+		    });
+	    	
+	    	
+	    	// 打开添加商品窗口
+	    	$(".addGoodsWindow").on('click',function(){
+	    		if(BIsNullVal(keyId)){
+					zinglabs.alert("你要添加的商品尚未选择分类，请选择分类后再添加。"); 
+					return;
+				}
+				 
+				$("#goodsName").attr("disabled",false); //添加时可操作；
+				$("#goodsCostPrice").attr("disabled",false);  //修改前禁止修改成本价;   
+	          //  editor.execCommand('cleardoc');  //清空编辑器
+	    		//$('#insertGoods')[0].reset();  //清空form;
+	            paramStatus="add"; //添加状态
+				
+				
+				//图片未清空，现在值是当前页面的地址xxx/goods.html
+	           /*  for(var i=0;i<5;i++){ 
+	            	 $("#image_"+i)[0].src  = $("#image_"+i)[0].src;   
+	             }*/
+	             initImg(); //图片区域初始化
+	            	             
+	            
+	    		$("#addGoodsWindow").modal('show'); 
+	    	});
+	    	
+	    	//打开编辑商品窗口；
+	    	$(".editGoodsWindow").on('click',function(){
+	    		if(BIsNullVal(detailGoodsData)){
+					zinglabs.alert("请选择要修改的商品");  
+					return;
+				}
+				
+				
+				$("#goodsName").attr("disabled",true);  //修改前禁止修改商品名称;
+				$("#goodsCostPrice").attr("disabled",true);  //修改前禁止修改成本价; 
+				
+	            //分类信息；  
+	            loadProp(detailGoodsData.goodsCateGory);
+	            
+	    		var paramTmp ={};
+	    		paramTmp["id"]="addGoodsWindow";
+	            paramTmp["data"]=detailGoodsData;
+	            setPanelVal(paramTmp); // 修改前form赋值
+	            paramStatus="edit"; //修改时设置状态
+	            
+	         
+	            editor.setContent(detailGoodsData.goodsDesc);  //Ue编辑器赋值
+	            
+	            
+	            initImg(); //先初始化图片区域，然后赋值
+	            
+	            //商品图片赋值 
+	            var  img =	detailGoodsData.goodsImgs.split(",");
+	            for(var i=0;i<img.length;i++){ 
+		            $("#image_"+i)[0].src  = img[i];  
+	            }
+	           
+	             // 属性默认赋值
+	             var str = detailGoodsData.goodsProp.split("-"); 
+	             for(var i = 0 ; i < str.length;i++){ 
+	             	$("#"+str[i].split(":")[0]).val(str[i].split(":")[1]);  
+	             }
+	            
+	    		$("#addGoodsWindow").modal('show');
+	    	
+	    	});
+	    	
+	    	
+	    	
+	    	//查看某商品的所有规格商品
+	    	$(".lookAllPropGoods").on('click',function(){
+	    		if(BIsNullVal(paramData)){
+					zinglabs.alert("请选择要查看的商品"); 
+					return;
+				}
+	    		
+	    		detailGoodsData = null; //每次查看其他规格商品，清空规格中已选规格 
+	    		
+	    		detailGoodsGrid.draw(true); 
+	    		//$("#detailGoods").DataTable().draw(true); 
+		    	 
+		    	$("#dg").remove(); //每次选择都删除弹出的那个tab  <a  href='#'>x</a>
+		    	 
+		    	$("#myTab").append("<li id='dg' class='active'><a href='#detailG' id='selectTitle'  data-toggle='tab'>"+paramData.goodsName+"所有规格</a></li>");  
+		    	$("#s1").removeClass('active');
+				$("#right").removeClass(" active in"); 
+				$("#detailG").addClass(" active in "); 
+		    	
+	    	});
+	    	
+		    
+		    //点击添加商品时
+	    	$(".insertGoods").on('click',function(){
+	    	
+				 doAdd();
+	    	});
+	    	
+	    	//添加、修改窗口点击关闭以及添加完成 确定按钮
+	    	$(".clearForm").on('click',function(){
+	    		editor.execCommand('cleardoc'); 
+	    		$('#insertGoods')[0].reset();  
+	    		
+	    		//图片未清空，现在值是当前页面的地址xxx/goods.html
+	            /* for(var i=0;i<5;i++){ 
+	            	 $("#image_"+i)[0].src  = $("#image_"+i)[0].src;   
+	             }*/
+	            initImg(); 
+	             
+	    		keyId = null; //keyId清空 
+	    		
+	    		$("#addGoodsWindow").modal('hide');
+	    	}); 
+	    	
+	    	//提示框关闭按钮
+			$(".clBtn").on('click',function(){ 
+				editor.execCommand('cleardoc'); 
+	    		$('#insertGoods')[0].reset();  
+				$("#goodsName").attr("disabled",false); 
+				$("#goodsCostPrice").attr("disabled",false);  //修改前禁止修改成本价; 
+	    		paramValue = null; //清空上次添加操作保存的值
+	    		
+	    		//图片未清空，现在值是当前页面的地址xxx/goods.html
+	           /*  for(var i=0;i<5;i++){ 
+	            	 $("#image_"+i)[0].src  = $("#image_"+i)[0].src;   
+	             }*/
+	             
+	             initImg();
+	    		
+	    		keyId = null; //keyId清空
+	    		
+				$("#alertModal").modal('hide'); 
+				$("#addGoodsWindow").modal('hide'); //关闭window; 
+			});
+	    	
+	    	//========添加成功后点击继续，先清空form ，然后赋默认值；
+	    	$(".add").on('click',function(){
+	    		
+	    		
+	    		editor.execCommand('cleardoc');  //清空编辑器；
+	    		// $("#addGoodsWindow").modal('hide'); //关闭window;
+	    		$('#insertGoods')[0].reset(); //表单清空；
+	    		
+	    		$("#groupId").val(paramValue.groupId);
+	    		$("#goodsId").val(paramValue.goodsId);
+	    		$("#goodsCode").val(Math.uuidFast());
+	    		$("#goodsName").val(paramValue.goodsName);
+	    		$("#goodsCateGory").val(paramValue.goodsCateGory);
+	    		$("#goodsName").attr("disabled",true);   //禁用商品名称项；
+	    		
+	    	});
+	    	
+	    	initImg();//初始化图片   	 
+	    	
+	    });
+	    
+	
+	function doAdd(){
+		var params = {}; // 参数对象；
+		
+		//=====获取图片集合
+		
+		var imgSrc = ""; 
+		for(var i=0;i<5;i++){
+			// alert($("#image_"+i)[0].src);
+			if(BIsNullVal($("#image_"+i)[0].src) || $("#image_"+i)[0].src.indexOf(".html") > 0  ){
+				continue; // 如果没有图片继续循环至到结束 
+			}
+			
+			//imgSrc += $("#image_"+i)[0].src.split(window.location.host)[1]; 
+			imgSrc += $("#image_"+i)[0].src; 
+			if(5-1 != i){
+				imgSrc += ",";
+			}
+		}
+	// 	alert(window.location.host);
+		// var newstr = imgSrc.replace(imgSrc.split(window.location.host)[0],""); 
+		
+		// 图片路径改为相对路径
+		var e = new RegExp(window.location.protocol +"//" +window.location.host,"g");  
+		imgSrc  = imgSrc.replace(e, "");  
+		
+		
+		if(BIsNullVal(imgSrc)){
+			$(".goodsImgs").css("display","block");
+			return;
+		}else{
+			$(".goodsImgs").css("display","none");
+		} 
+		
+		// 获取属性值： 属性id 格式为 获取属性集合 为全局变量,
+		/*
+		if(BIsNullVal(keyId)){
+			alert("你要添加的商品尚未选择分类，请选择分类后再添加。");  
+			return;
+		}*/
+		
+		var key = keyId.split(",");  
+		var prop = ""; 
+		for(var i = 0; i < key.length; i++){
+			$("."+key[i]).css("display","none");
+			if(BIsNullVal($("#"+key[i]).val())){
+				// alert("请选择"+key[i]);
+				$("."+key[i]).css("display","block");
+				return;
+			//}else{
+			//	$("."+key[i]).display("display","none");
+			}
+		   	var propValue = key[i] + ":" +$("#"+key[i]).val();
+		   	prop +=	propValue;
+		   	if(key.length -1 != i){
+		   		prop += "-"; 
+		   	}
+		}
+		
+			 
+			 
+			 // 判断添加还是修改操作 如果是修改 ，重新赋值 
+			 if(paramStatus == "edit"){
+			 	params.id = $("#id").val();
+			 	params.groupId = $("#groupId").val();
+			 	params.goodsId = $("#goodsId").val();
+			 	params.goodsCode = $("#goodsCode").val();
+			 	
+			 }else{
+			 	 params.id = Math.uuidFast(); // id 
+				 // 第一次添加为UUID，添加完后，如果用户点击继续添加，则取默认id
+				 if(BIsNullVal($("#groupId").val())){
+					 params.groupId = Math.uuidFast(); // 组ID
+				 }else{
+				 	params.groupId = $("#groupId").val();
+				 }
+				 
+				 //商品主Id
+				 if(BIsNullVal($("#goodsId").val())){ 
+					 params.goodsId = params.id; //商品主ID 为第一次添加的商品ID 
+				 }else{
+				 	params.goodsId = paramValue.id;
+				 }
+				 params.goodsCode = Math.uuidFast();//商品编码 
+			 }
+			 
+			 params.goodsName = $("#goodsName").val();//商品名称
+			 params.goodsTitle= $("#goodsTitle").val();//商品标题
+			 if(BIsNullVal(params.goodsTitle)){
+			 	$(".goodsTitle").css("display","block");
+			 	return;
+			 }else{
+			 	$(".goodsTitle").css("display","none");
+			 }
+			 
+			 //替换数据中带有http://xxxx.xx.x.:xxxx
+		/*	 var edStr = editor.getContent();
+			 alert(edStr);
+			 edStr = edStr.replace(e, ""); */
+			 params.goodsDesc = editor.getContent(); // 商品详细
+			// params.goodsImgs = $("#goodsImgs").val();//商品图片
+			 params.goodsImgs = imgSrc ; //商品图片 
+			 params.goodsLabel=$("#goodsLabel").val(); // 商品标签
+			 params.goodsCateGory = $("#goodsCateGory").val();//商品分类
+			 params.goodsType = $("#goodsType").val();//商品类型
+			 if(BIsNullVal(params.goodsType)){
+			 	$(".goodsType").css("display","block");
+			 	return;
+			 }else{
+			 	$(".goodsType").css("display","none");
+			 }
+			 params.goodsProp = prop; // 商品属性
+			 params.goodsCount = $("#goodsCount").val(); // 商品数量
+			 if(BIsNullVal(params.goodsCount)){
+			 	$(".goodsCount").css("display","block");
+			 	return;
+			 }else{
+			 	$(".goodsCount").css("display","none");
+			 }
+			 params.goodsCostPrice = $("#goodsCostPrice").val();//商品成本价 
+			 if(BIsNullVal(params.goodsCostPrice)){
+			 	$(".goodsCostPrice").css("display","block"); 
+			 	return;
+			 }else{
+			 	$(".goodsCostPrice").css("display","none"); 
+			 }
+			 params.goodsShowPrice = $("#goodsShowPrice").val(); // 商品显示价格
+			 params.goodsSalePrice = $("#goodsSalePrice").val(); // 商品销售价
+			 if(BIsNullVal(params.goodsSalePrice)){
+			 	$(".goodsSalePrice").css("display","block");
+			 	return;
+			 }else{
+			 	$(".goodsSalePrice").css("display","none");
+			 }
+			 params.goodsStatus = $("#goodsStatus").val();  // 商品状态
+			 params.goodsMark = $("#goodsMark").val();    // 商品备注
+		     params.companyId = $("#companyId").val();  // 所属公司或部门
+		 
+			 params.paramStatus = paramStatus; // 后台用于判断是添加操作还是修改操作； 
+			 params.propChange="noChange"; // 没变化
+			 //如果变化改变值；
+			 if(params.status == "edit" && detailGoodsData.goodsProp != params.goodsProp){
+			 	params.propChange="change";
+			 }
+			 
+			 params.state="商品创建"; 
+			 params.saleCount = "0";
+			 params.orderId = ""; // 订单号，这里是空；
+			 params.updateCount = params.goodsCount; //更改数量等于添加时数量 
+			 //操作流水记录表数据项； 如果价格或者数量不等于更改前 的价格或者数量，则操作商品流水表
+			 if(paramStatus == "edit" &&(detailGoodsData.goodsCount != params.goodsCount || 
+			 				detailGoodsData.goodsSalePrice != params.goodsSalePrice)){
+			 	params.state="商品变更";
+			 	//修改数量为修改的数量 - 已经存在的数量；
+			 	params.updateCount = params.goodsCount - detailGoodsData.goodsCount; 
+			 	
+			 }
+			
+			// console.log(params);
+ 			//  return; 
+
+		 	ajaxFunction("/" + parent.PRJ_PATH + "/" + 'ZKM' +"/goodsManager/insertGoods.action",params,  false, function(data) {
+		 	     
+		 		if(data.success){
+		 			var  count = 0; 
+		 			if(paramStatus == "add"){
+		 				count++;
+			 			$("#mess").html("添加商品成功");  
+			 			$("#alertModal").modal('show');
+			 			//添加成功后，将数据完整保存，如果用户点击继续添加，直接从里面取默认数据；  
+			 			if(count = 1){
+	                         goodsGrid.draw(true);  
+			 			}
+			 			paramValue = params;
+			 			
+		 			}else{
+		 				 detailGoodsGrid.draw(true);  
+		 				$("#editMsg").html("修改商品成功");
+		 				$("#editAlertModal").modal('show');
+		 			}
+		 			
+		 			
+		 			
+		 		}else{
+		 			if(paramStatus == "add"){
+		 				$("#editMsg").html("添加商品失败");
+		 			}else{
+		 				$("#editMsg").html("修改商品失败");
+		 			}
+		 			$("#editAlertModal").modal('show'); 
+		 		}	
+		 	});
+		 	
+		 // 	keyId = null; //keyId清空 
+		 	
+	}
+	
+	</script> 
+  	
+</head>
+  <body>
+  		<div class="left">
+			<ul id="treeDemo" class="ztree"></ul>
+		</div>
+		<div class="center" style="overflow-x:auto;">
+			 <ul id="myTab" class="nav nav-tabs">
+				<li id="s1" class="active"><a href="#right" data-toggle="tab">商品</a></li>
+			 </ul>
+			
+			<div id="myTabContent" class="tab-content" > 
+					<div id="right" class="tab-pane fade in active" >
+						
+					<!-- 条件查询框开始 -->		 
+					 <div class="row-fluid" style="margin-top: -6px;">
+						<div class="widget-box">
+							<div class="widget-title"
+								style="height: 40px; line-height: 40px; overflow: hidden;">
+								<span class="icon" style="float: left; padding: 0px 10px;">
+									<i class="icon-search"></i> </span>
+										&nbsp;&nbsp;&nbsp;每页显示条数：
+									<select name="showNumbers" id="showNumbers"
+										style="width: 80px; margin-bottom: 0px;"
+										onchange="setPageNum(this.value)">
+										<option selected="selected" value="10">
+											10
+										</option>
+										<option value="20">
+											20
+										</option>
+										<option value="50">
+											50
+										</option>
+										<option value="100">
+											100
+										</option>
+									</select>
+								<div class="buttons" style="margin-top: 0px;" id="cols">
+									<button type="button" class="btn"
+										onclick="showSearchItems('searchItems');">
+										展开/关闭筛选项
+									</button>
+								</div>
+							</div>
+						</div>
+							
+						<div id="searchItems" class="widget-content row"
+							style="margin: 0 auto; text-align: center; width: 99%; border-left: 1px solid #ccc; border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; margin-top: -18px; margin-bottom: 18px; display: none;">
+								<form action="" id="searchDataForm">
+											<input type="hidden" id="searchCateGory" name="searchCateGory"  style="height:30px; width:150px;" />
+									<table>
+										<tr>
+											<td>
+					                            <span style="margin:10px;">商品名称:
+					                            <input type="text" id="searchName" name="searchName"  style="height:30px; width:150px;" />
+					                     		</span>
+					                     	</td>
+					                     	<td>
+					                            <span style="margin:10px;">商品标题:
+					                            <input type="text" id="searchTitle" name="searchTitle"  style="height:30px; width:150px;" />
+					                     		</span>
+					                     	</td>
+											<td>
+					                            <span style="margin:10px;">商品状态:
+					                            	<select id="searchStatus" name="searchStatus" style="height:30px; width:150px;">
+							                            <option value="">请选择</option>
+							                            <option value="1">上架</option> <!-- selected="selected" -->
+							                            <option value="0" >下架</option>
+							                          </select> 
+					                     		</span>
+					                     	</td>
+										</tr>
+										<tr>
+											<td>
+												<span style="margin:10px;">商品类别:
+					                           		 <select id="searchType" name="searchType" style="height:30px; width:150px;">
+							                             	<option value="">请选择</option>
+							                             	<option value="1">虚拟类</option>
+							                             	<option value="0">实物类</option>
+							                          </select> 
+					                     		</span>
+											</td>
+										</tr>
+									</table>
+								</form>
+								<button type="button" id="btn_search" class="btn"
+									onclick="tableSearch();">
+									<i class="icon-tag"></i> 搜索
+								</button>
+								<button type="button" id="btn_search" class="btn"
+										onclick="chongzhi('searchDataForm');">
+										<i class="icon-repeat"></i> 重置
+								</button>
+							</div>
+						</div>	
+						<!-- 条件查询框结束 -->
+						<!-- 主商品列表 -->	
+						<div id="detail" style="text-align:center; float:left;width:100%;   ">
+					   			<br/>
+					   		<table  class="table table-striped table-bordered" id="goodsGrid" 
+								style="overflow:hidden;white-space:nowrap;text-overflow: ellipsis; "  ></table>
+					   	</div>
+					   	<!-- 结束 -->
+					   	<!-- 功能按钮模块 开始 -->
+						<div class="widget-box collapsible" style="margin-top: -5px;">
+							<div class="widget-title"
+								style="height: 40px; line-height: 40px; overflow: hidden;">
+								<span class="icon" style="float: left; padding: 0px 10px;"></span> &nbsp;&nbsp;&nbsp;
+								 <a href="javascript:;;" role="button" style="margin-top: 10px;margin-right: 10px; "
+						            	 class="btn addGoodsWindow pull-left" ><i class="icon-plus"></i>添加商品</a>
+						            
+						         <a href="javascript:;;" role="button" style="margin-top: 10px;margin-right: 10px; "
+						            onclick="appendGoods();" class="btn  pull-left" ><i class="icon-plus"></i>追加商品</a>	  
+						          
+						         <a href="javascript:;;" role="button" style="margin-top: 10px;margin-right: 10px;" 
+				   					class="btn pull-left" onclick="delGoods(paramData,goodsGrid);"  ><i class="icon-edit"></i>删除</a>	   
+						            	  
+						         <a href="javascript:;;" role="button" style="margin-top: 10px;margin-right: 10px; "
+						             class="btn lookAllPropGoods pull-left" ><i class="icon-search"></i>查看所有规格商品</a>
+							</div>
+						</div>
+					   	<!-- 功能按钮结束 -->
+				</div> 	
+				   	
+				   	
+					<div class="tab-pane fade" id="detailG">
+						<div id="detailAllGoods" style="align:center; float:left;width:100%;">
+				   			<table  class="table table-striped table-bordered" 
+				   			style="white-space:nowrap;"  
+										id="detailGoods">
+							</table>
+							<!-- 功能按钮 -->
+							<div class="widget-box collapsible" style="margin-top: -5px;">
+								<div class="widget-title"
+									style="height: 40px; line-height: 40px; overflow: hidden;">
+									<span class="icon" style="float: left; padding: 0px 10px;"></span> &nbsp;&nbsp;&nbsp;
+									<a href="javascript:;;" role="button" style="margin-bottom: 10px;margin-right: 10px;" 
+				   					class="btn editGoodsWindow pull-left" ><i class="icon-edit"></i>修改</a>	
+				   					
+				   					<a href="javascript:;;" role="button" style="margin-bottom: 10px;margin-right: 10px;" 
+				   					class="btn pull-left" onclick="delGoods(detailGoodsData,detailGoodsGrid);" ><i class="icon-edit"></i>删除</a>	
+								</div>
+							</div>
+						   	<!-- 功能按钮结束 -->
+				   		</div>
+					</div>
+				</div>
+		</div>
+		
+		<!-- 页面隐藏内容 -->
+		
+		<!-- 添加商品表单 -->
+		<div id="addGoodsWindow" class='container-fluid modal hide' style="width:800px;height:480px;border:0px solid #5599FF;  left: 40%; overflow-x :auto;overflow-y :auto;"  data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" >
+			   
+			<button type="button" style="width:50px;height:15px;" class="close clearForm" data-dismiss="modal" 
+	               aria-hidden="true">X
+	        </button>
+			
+			 <div style="float:left; width:99%; overflow-x:hidden;border:0px solid black; padding-top:10px;"> 
+			      	 <form id="insertGoods"  role="form" >
+	                    <div class='span12' style="display:none;">
+	                        <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >序号:</span>
+	                        <input type="text" isDataId="true" id="id" name="id" >
+	                    </div>
+	                            
+	                     <div class='span12' style="display:none;">
+	                            <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >组ID:</span>
+	                            <input type="text" id="groupId" name="groupId"   style="height:30px; width:200px;" >
+	                     </div>
+	                     
+	                     <div class='span12' style="display:none;">
+	                            <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >商品主ID:</span>
+	                            <input type="text" id="goodsId" name="goodsId"   style="height:30px; width:200px;" >
+	                     </div>
+	                     
+	                     <div class='span12' style="display:none;">
+	                            <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >商品编码:</span>
+	                            <input type="text" id="goodsCode" name="goodsCode"   style="height:30px; width:200px;" >
+	                     </div>
+	                     
+	                     <div class='span12' style="display:inline;float:left;" >
+	                            <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" ><span style="color:red;">*</span>&nbsp;商品名称:</span>
+	                            <input type="text" id="goodsName" name="goodsName"  style="height:30px;float:left; width:200px;" 
+	                            onblur="checkGoodsName();" >
+	                               <span style="color:red;display:none;" class="str"></span>
+	                     </div>
+	                     
+	                     <div class='span12' style="display:inline;float:left;">
+	                            <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" ><span style="color:red;">*</span>&nbsp;商品标题:</span>
+	                            <input type="text" id="goodsTitle" name="goodsTitle"   style="height:30px;float:left; width:200px;" 
+	                            	data-rule-required="true" data-msg-required="请输入商品标题"
+	                            />
+	                            <span style="color:red;display:none;" class="goodsTitle">请输入商品标题</span>
+	                     </div>
+	                     
+	                     <div class='span12'>
+	                            <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >商品图片:</span>
+	                          	<div style="float:left;" id="imgs">
+	                          		
+	                          	</div>
+	                          	<span style="color:red;display:none;" class="goodsImgs">请上传商品图片</span>
+	                     </div>
+	                     	                     
+	                     <div class='span12' style="margin-top:5px;">
+	                     	<table>
+	                     		<tr>
+	                     			<td style="margin-top:-40px;"> <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >商品描述:</span></td>
+	                     			<td>
+	                     				<div  style="margin-left:-5px;">
+	                     					<script id="editor" ></script>
+	                     				</div>
+	                     			</td>
+	                     		</tr>
+	                     	</table>
+	                     </div>
+	                     
+	                     <!-- 动态填充属性 -->
+	                     <div id="prop" >
+	                     	
+	                     	
+	                     </div>
+	                     
+	                     
+	                     <div class='span12' style="padding-top:3px; display:none; "> <!--  -->
+	                            <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >商品分类:</span>
+	                            <input type="text" id="goodsCateGory" name="goodsCateGory"  style="height:30px; width:200px;" >
+	                     </div>
+	                    
+	                     <div class='span12' style="display:inline;float:left;">
+	                          <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >商品类型:</span>
+	                          <select id="goodsType" name="goodsType" style="height:30px;float:left; width:200px;">
+	                             	<option value="">请选择</option>
+	                             	<option value="1">虚拟类</option>
+	                             	<option value="0">实物类</option>
+	                          </select>  
+	                          <span style="color:red;display:none;" class="goodsType">请选择商品类型</span>
+	                     </div>
+	                       
+	                     <div class='span12' style="display:inline;float:left;">
+	                            <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >数量:</span>
+	                            <input type="text" id="goodsCount" name="goodsCount" placeholder="0" 
+	                            onkeyup="javascript:this.value=this.value.replace(/[^\d]/g,'');"   style="height:30px;float:left; width:200px;" >
+	                    		<span style="color:red;display:none;" class="goodsCount">请输入该商品数量</span>
+	                     </div>
+	                    
+	                      <div class='span12' style="display:inline;float:left;">
+	                         <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >成本价:</span>
+	                         <input type="text"  id="goodsCostPrice" name="goodsCostPrice"   
+	                         	 	style="height:30px;float:left; width:200px;" 
+	                         	 	placeholder="0.00"  class="tooltips"
+	                         	 	data-toggle="tooltip"  data-title="成本价不可修改，如需修改，请删除后重新添加"
+	                         	  onfocus="this.value=cancelLast(this.value)"
+	                              onblur="this.value=addMin(this.value,'goodsCostPrice');"	
+	                              onkeyup="javascript:this.value=this.value.replace('/[^\d]/g','')";  
+	                         	 >
+	                         	 <span style="color:red;display:none;" class="goodsCostPrice">请输入该商品成本价格</span>
+	                      	<!-- onblur="addMin(this.value,'goodsCostPrice');" -->
+	                      </div>
+	                      
+	                       <div class='span12' style="display:inline;float:left;">
+	                         <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >页面显示价:</span>
+	                         <input type="text"  id="goodsShowPrice" name="goodsShowPrice"   
+	                         	 	style="height:30px; float:left; width:200px;" placeholder="0.00" 
+	                         	  onfocus="this.value=cancelLast(this.value)"
+	                              onblur="this.value=addMin(this.value,'goodsShowPrice');"	
+	                              onkeyup="javascript:this.value=this.value.replace('/[^\d]/g','')";
+	                         	 	 >
+	                         	 <span style="color:red;display:none;" class="goodsShowPrice">请输入销售价格</span>
+	                      	<!-- onblur="addMin(this.value,'goodsCostPrice');" -->
+	                      </div>
+	                      
+	                      
+	                      
+	                    
+	                     <div class='span12' style="display:inline;float:left;">
+	                            <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >销售价:</span>
+	                            <input type="text"  id="goodsSalePrice" name="goodsSalePrice" " 
+	                              style="height:30px;float:left; width:200px;" placeholder="0.00" 
+	                              onfocus="this.value=cancelLast(this.value)"
+	                              onblur="this.value=addMin(this.value,'goodsSalePrice');"
+	                              onkeyup="javascript:this.value=this.value.replace('/[^\d]/g','')";
+	                               >
+	                               <span style="color:red;display:none;" class="goodsSalePrice">请输入销售价格</span>
+	                             <!-- onkeyup="javascript:this.value=this.value.replace(/[^\d]/g,'');  -->
+	                     </div>
+	                     
+	                     <div class='span12'>
+	                          <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >商品状态:</span>
+	                          <select id="goodsStatus" name="goodsStatus" style="height:30px; width:200px;">
+	                            <option value="1">上架</option> <!-- selected="selected" -->
+	                            <option value="0" >下架</option>
+	                          </select>  
+	                    </div>
+	                       
+	                      <div class='span12' style="padding-top:5px;">
+	                            <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >商品标签:</span>
+	                            <input type="text" id="goodsLabel" name="goodsLabel"  style="height:30px; width:200px;" >
+	                     </div>  
+	                        
+	                     <div class='span12'>
+	                          <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >商品备注:</span>
+	                          <input type="text"  id="goodsMark" name="goodsMark" style="height:30px; width:200px;" >
+	                     </div>
+	                     
+	                     
+	                    <div class='span12' style="display:none;">
+	                         <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >创建时间:</span>
+	                         <input type="text" id="createDate" name="createDate" style="height:30px; width:200px;" value="2015-03-10" >
+	                     </div>
+	                        
+	                     <div class='span12' style="display:none;">
+	                         <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >数据日期:</span>
+	                         <input type="text" id="dataDate" name="dataDate" style="height:30px; width:200px;"  value="2015-03-10">
+	                     </div>
+	                        
+	                    <div class='span12' style="display:none;">
+	                         <span class="span5" style="padding-top: 8px;padding-bottom: 4px;" >companyId:</span>
+	                         <input type="text" id="companyId" name="companyId" value="1" style="height:30px; width:200px;">
+	                     </div>
+	                </form>
+	                 <a href="javascript:;;" role="button" style="margin-top: 5px;margin-right: 10px;margin-left:100px;" class="btn insertGoods " ><i class="icon-ok"></i>提交</a>
+           			 <a href="javascript:;;" role="button" style="margin-top: 5px;margin-right: 10px;buttom:20px;" class="btn clearForm" ><i class="icon-book"></i>清空</a>
+	             </div> 
+               </div>
+
+		
+		
+		
+
+		<!-- alert(提示) -->
+		<div id='alertModal' class='container-fluid modal hide  mgsModal' 
+			style="left: 50%;top:25%;" 
+			 data-backdrop="static"  style='z-index:2000;' tabindex='-1' role='dialog'> 
+		  <div class='modal-dialog'> 
+		    <div class='modal-content'>
+		      <div class='modal-header'>
+		      <!--   <button type='button' class='close clBtn' data-dismiss='modal '><span>×</span></button>  -->
+		        <h4 class='modal-title'><span style='font:#0066FF;'>提示</span></h4>
+		     </div>
+		      <div id="mess" class='modal-body' style="height:100px;" >
+		      				
+		      	
+		      </div>
+		      <div class='modal-footer'>
+		        <button type='button' class='btn btn-primary add'  data-dismiss='modal'>继续添加</button>
+		        <button type='button' class='btn  clBtn' data-dismiss='modal'>确定</button>
+		       </div> 
+		    </div>
+		  </div>
+		</div>
+		
+		
+		
+		<!-- 修改alert(提示) -->
+		<div id='editAlertModal' class='container-fluid modal hide   mgsModal' 
+			style="left: 50%;top:25%;" 
+		 data-backdrop="static"  style='z-index:2000;' tabindex='-1' role='dialog'> 
+		  <div class='modal-dialog'> 
+		    <div class='modal-content' >
+		      <div class='modal-header' >
+		        <h4 class='modal-title'><span style='font:#0066FF;'>提示</span></h4>
+		     </div>
+		      <div id="editMsg" class='modal-body' style="height:100px;">
+		      				
+		      	
+		      </div>
+		      <div class='modal-footer'>
+		        <button type='button' class='btn  clBtn' data-dismiss='modal'>确定</button>
+		       </div> 
+		    </div>
+		  </div>
+		</div>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.zinglabs.apps.appCommonCurd.pojo">
+
+	<select id="select_content_weixin" resultType="java.util.Map" parameterType="java.util.Map" flushCache="true">
+		select * from graphicInformationManager where Category=#{Category} GROUP BY contentClass
+	</select>
+	
+</mapper>

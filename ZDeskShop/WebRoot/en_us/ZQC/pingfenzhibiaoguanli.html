@@ -1,0 +1,178 @@
+<!DOCTYPE  HTML><html lang="en"><head>
+		<title>评分指标管理</title>
+		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+		<meta http-equiv="description" content="this is my page">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<link rel="stylesheet" href="../../js/zTree/zTreeStyle/metroZJ.css" type="text/css">
+		<link rel="stylesheet" href="../../css/bootstrap.min.css" type="text/css">
+		<link rel="stylesheet" href="../../css/bootstrap-responsive.min.css" type="text/css">
+		
+		
+		
+		
+		
+		
+		
+		
+		<style type="text/css">
+</style>
+		
+
+	<script type="text/javascript" src="../../js/jquery.js"></script>
+<script type="text/javascript" src="../../js/bootstrap.min.js"></script>
+<script type="text/javascript" src="pingfenzhibiaoguanli.js"></script>
+<script type="text/javascript" src="../../js/zTree/jquery.ztree.all-3.5.min.js"></script>
+<script type="text/javascript" src="../../js/appCommonUtil.js"></script>
+<script type="text/javascript" src="../../js/appCommonCurdUtils.js"></script>
+<script type="text/javascript" src="../../js/common_validation.js"></script>
+<script type="text/javascript" src="../../js/common_utils.js"></script>
+<script type="text/javascript">
+		//@@相当于当前树的配置表的id，根据他可以找到相应的树
+		var grade_index;
+		//@@判断是更新操作还是添加操作
+		var updateOrAdd=0;//0代表更新1代表添加3代表添加根节点
+		var setting = {
+		data: {
+			    simpleData: {
+				enable: true,
+				idKey:'id',
+				piKey:'pid'
+			},
+			key:{name:"text"}
+		},
+		async: {},
+		callback:{		
+			//beforeRemove:beforeRemove,//点击删除时触发，用来提示用户是否确定删除
+			//beforeEditName: beforeEditName,//点击编辑时触发，用来判断该节点是否能编辑
+			//beforeRename:beforeRename,//编辑结束时触发，用来验证输入的数据是否符合要求
+			//onRemove:onRemove,
+			//onRename:onRename,//编辑后触发，用于操作后台
+			onClick:zTreeOnClick,//点击节点触发的事件
+			//removeNode:removeNode
+			},
+		check: {
+			enable: false,
+			chkStyle: "checkbox",
+			chkboxType: { "Y": "", "N": "" }
+		}
+		};
+		$(document).ready(function(){	
+		    $("#baocunshujuku").addClass('hide');	//最先隐藏保存按钮		           												 		
+			getItemTree();
+		});
+	   
+		</script>
+</head><body>
+
+		<table class="table table-bordered table-condensed">
+			<tbody>
+				
+				<tr class="info">
+					<td colspan="2">
+						<div id="grade_index" style="margin-top: 15px"></div>
+						<button type="button" id="btn_jisuanzuigaofen" class="btn" style="margin-left: 260px; margin-top: -40px" onclick="doJisuanfenzhi();">
+							<i class="icon-tag"></i>Computing the most high</button>
+						<input type="text" id="jisuanfenzhi" class="btn" readonly style="margin-left: 15px; margin-top: -30px; width: 35px" placeholder="总分">
+						<button type="button" id="btn_tianjiajiedian" class="btn" style="margin-left: 20px; margin-top: -40px" onclick="doAdd();">
+							<i class="icon-tag"></i>Adding node</button>
+						<button type="button" id="btn_tianjiagenjiedian" class="btn" style="margin-left: 20px; margin-top: -40px" onclick="addGenjiedian();">
+							<i class="icon-tag"></i>Add the root node</button>
+						<button type="button" id="btn_shanchujiedian" class="btn" style="margin-left: 20px; margin-top: -40px" onclick="deljJiedian();">
+							<i class="icon-trash"></i>Delete node</button>
+					</td>
+				</tr>
+				<tr class="warning">
+					<td style="width: 30%">
+						<div style="overflow-y: auto;">
+							<ul id="treeDemo" class="ztree" style="overflow-y: auto;"></ul>
+						</div>
+					</td>
+					<td style="width: 70%">
+						<div style="overflow-y: auto;">
+							<form id="gexiangzhibiao">
+								<input type="hidden" id="id" name="id" class="input" readonly style="padding: 0; margin: 0; background-color: #CAE1FF; width: 100%">
+								<table class="table table-bordered table-condensed">
+									<tbody>
+										<tr class="info">
+											<td colspan="2">
+												<input type="text" id="genjiedian" name="genjiedian" class="input" readonly style="padding: 0; margin: 0; background-color: #CAE1FF; width: 100%">
+											</td>
+
+										</tr>
+										<tr class="info">
+											<td style="width: 120px;">
+												评分项名称<span style="color: red;">**</span>
+											</td>
+											<td><div id="description_DIV">
+												<input type="text" id="description" name="description" class="input" readonly style="padding: 0; margin: 0; background-color: #CAE1FF; width: 100%"></div>
+											</td>
+										</tr>
+										<tr class="info">
+											<td>
+												评分最小值
+											</td>
+											<td>
+												<input type="text" id="min_value" name="min_value" class="input" readonly style="padding: 0; margin: 0; background-color: #CAE1FF; width: 100%">
+											</td>
+										</tr>
+										<tr class="info">
+											<td>
+												评分最大值
+											</td>
+											<td>
+												<input type="text" id="max_value" name="max_value" class="input" readonly style="padding: 0; margin: 0; background-color: #CAE1FF; width: 100%">
+											</td>
+										</tr>
+										<tr class="info">
+											<td>
+												评分中间值
+											</td>
+											<td>
+												<input type="text" id="reference_value" name="reference_value" class="input" readonly style="padding: 0; margin: 0; background-color: #CAE1FF; width: 100%">
+											</td>
+										</tr>
+										<tr class="info">
+											<td>
+												评分值设定
+											</td>
+											<td>
+												<input type="text" id="reference2_value" name="reference2_value" class="input" readonly style="padding: 0; margin: 0; background-color: #CAE1FF; width: 100%">
+											</td>
+										</tr>
+										<tr class="info">
+											<td>
+												该项总分
+											</td>
+											<td><div id="percent_DIV">
+												<input type="text" id="percent" class="input" name="percent" readonly style="padding: 0; margin: 0; background-color: #CAE1FF; width: 100%"></div>
+											</td>
+										</tr>
+										<tr class="info">
+											<td>
+												评分指定描述
+											</td>
+											<td>
+												<textarea id="value_remark" name="value_remark" readonly style="padding: 0; margin: 0; background-color: #CAE1FF; width: 100%; height: 150px"></textarea>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</form>
+							<div id="bianji" class="">
+								<button type="button" id="btn_xiugai" name="min_value" class="btn" style="margin-left: 250px" onclick="doUpdate();">
+									<i class="icon-pencil"></i>修改</button>
+							</div>
+							<div id="baocunshujuku" class="">
+								<button type="button" id="btn_baocun" name="min_value" class="btn" style="margin-left: 250px" onclick="doUpdate_ruku();">
+									<i class="icon-ok"></i>保存</button>
+								<!--  <button type="button" id="btn_jisuan" name="min_value" class="btn" style="margin-left: 380px;margin-top: -53px" onclick="doUpdate();"><i class="icon-pencil"></i>取消</button>-->
+							</div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	
+
+
+</body></html>

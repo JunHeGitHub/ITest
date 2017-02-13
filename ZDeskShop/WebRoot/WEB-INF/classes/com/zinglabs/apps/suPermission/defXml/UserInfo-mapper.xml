@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.zinglabs.apps.suPermission">
+	<!-- 根据登录名查询用户信息 -->
+	<select id="getUser" resultType="java.util.Map"
+		parameterType="java.util.HashMap">
+		SELECT
+			id,loginName,name,
+			pwd,startus,viewIndex,
+			phone_number,agent_level,
+			agent_information,job_number,
+			seat_number,createDate,
+			lastLoginDate,lastModifyPassword,
+			companyId,companyName,departmentId,departmentName,alias3
+		FROM suSecurityUser
+		<where>
+			loginName = #{loginName}
+		</where>
+	</select>
+	<!-- 查询所有用户 -->
+	<select id="getUserList" resultType="java.util.Map"
+		parameterType="java.util.HashMap">
+		SELECT
+			id,loginName,name,
+			pwd,startus,viewIndex,
+			phone_number,agent_level,
+			agent_information,job_number,
+			seat_number,createDate,
+			lastLoginDate,lastModifyPassword,
+			companyId,companyName,departmentId,departmentName,alias3
+		FROM suSecurityUser
+	</select>
+	<!-- 条件查询总条数 -->
+	<select id="searchUserTotal" resultType="java.util.Map" parameterType="java.util.Map">
+		select COUNT(0) total from (SELECT temp.loginName FROM(
+			SELECT
+				u.id,u.loginName,u. NAME,u.pwd,u.startus,u.viewIndex,u.phone_number,u.agent_level,
+				u.agent_information,u.job_number,u.seat_number,u.createDate,u.lastLoginDate,u.lastModifyPassword,
+				u.companyId,u.companyName,u.departmentId,u.departmentName,o.orgCode
+			FROM
+				suSecurityUser u LEFT JOIN suSecurityUserOrg o ON u.loginName = o.loginName) temp
+		LEFT JOIN suSecurityUserRole ro ON temp.loginName = ro.loginName
+		<trim prefix="WHERE" prefixOverrides="AND ">
+			<if test="loginName!=null and loginName !=''">AND temp.loginName like #{loginName}</if>
+			<if test="name!=null and name !=''">AND temp.name like #{name}</if>
+			<if test="orgIds!=null and orgIds !=''">AND temp.orgCode in(${orgIds})</if>
+			<if test="roleIds!=null and roleIds !=''">AND ro.roleId in(${roleIds})</if>
+		</trim>
+		GROUP BY temp.loginName ) temp1;
+	</select>
+	<!-- 条件查询 -->
+	<select id="searchUser" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT temp.id,temp.loginName,temp.name,temp.pwd,temp.startus,temp.viewIndex,
+			temp.phone_number,temp.agent_level,temp.agent_information,temp.job_number,
+			temp.seat_number,temp.createDate,temp.lastLoginDate,temp.lastModifyPassword,
+			temp.companyId,temp.companyName,temp.departmentId,temp.departmentName,temp.orgCode,
+			temp.alias3,ro.roleId FROM(
+			SELECT
+				u.id,u.loginName,u. NAME,u.pwd,u.startus,u.viewIndex,u.phone_number,u.agent_level,
+				u.agent_information,u.job_number,u.seat_number,u.createDate,u.lastLoginDate,u.lastModifyPassword,
+				u.companyId,u.companyName,u.departmentId,u.departmentName,u.alias3,o.orgCode
+			FROM
+				suSecurityUser u LEFT JOIN suSecurityUserOrg o ON u.loginName = o.loginName) temp
+		LEFT JOIN suSecurityUserRole ro ON temp.loginName = ro.loginName
+		<trim prefix="WHERE" prefixOverrides="AND ">
+			<if test="loginName!=null and loginName !=''">AND temp.loginName like #{loginName}</if>
+			<if test="name!=null and name !=''">AND temp.name like #{name}</if>
+			<if test="orgIds!=null and orgIds !=''">AND temp.orgCode in(${orgIds})</if>
+			<if test="roleIds!=null and roleIds !=''">AND ro.roleId in(${roleIds})</if>
+		</trim>
+		GROUP BY temp.loginName
+		<if test="rows!=null and rows !='' and offset !=null and offset!=''">limit ${offset},${rows}</if>
+	</select>
+	<select id="excelUser" resultType="java.util.Map" parameterType="java.util.Map" >
+		SELECT
+			id,temp.loginName,name,pwd,job_number,phone_number,agent_level,
+			agent_information,startus,roles,orgs,companyId,companyName,departmentId,
+			departmentName,seat_number,viewIndex,createDate,lastLoginDate,lastModifyPassword,alias3
+		FROM (
+				SELECT
+					u.*, uo.orgs
+				FROM
+					suSecurityUser u
+				LEFT JOIN (
+					SELECT
+						uo.loginName,
+						GROUP_CONCAT(ot.text) orgs
+					FROM
+						suSecurityUserOrg uo
+					LEFT JOIN commonTree_detail ot ON uo.orgCode = ot.id
+					GROUP BY uo.loginName
+				) uo ON u.loginName = uo.loginName
+		) temp LEFT JOIN (
+			SELECT
+				ur.loginName,
+				GROUP_CONCAT(r. NAME) roles
+			FROM
+				suSecurityUserRole ur
+			LEFT JOIN suSecurityRole r ON ur.roleId = r.id
+			GROUP BY ur.loginName
+		) ur ON temp.loginName = ur.loginName
+		<trim prefix="WHERE" prefixOverrides="AND ">
+			<if test="loginName!=null and loginName !=''">AND temp.loginName like #{loginName}</if>
+			<if test="name!=null and name !=''">AND temp.name like #{name}</if>
+			<if test="orgs !=null and orgs !=''">AND orgs in(${orgs})</if>
+			<if test="roles and roles !=''">AND roles in(${roles})</if>
+		</trim>	
+	</select>
+	<!-- 查询用户关联角色 -->
+	<select id="getRoleMapperList" resultType="java.util.Map"
+		parameterType="java.util.HashMap">
+		SELECT ru.loginName,GROUP_CONCAT(r.name) roles 
+		FROM suSecurityRole r,suSecurityUserRole ru 
+		WHERE ru.roleId=r.id
+		GROUP BY ru.loginName
+	</select>
+	<!-- 查询用户关联组织 -->
+	<select id="getOrgMapperList" resultType="java.util.Map"
+		parameterType="java.util.HashMap">
+		SELECT ou.loginName,GROUP_CONCAT(o.text) orgs
+		FROM commonTree_detail o,suSecurityUserOrg ou
+		WHERE ou.orgCode=o.id
+		GROUP BY ou.loginName
+	</select>
+	<!-- 根据用户名查询角色名 -->
+	<select id="getRoleByloginNameToList" resultType="java.util.Map"
+		parameterType="java.util.HashMap">
+		SELECT r.name FROM suSecurityRole r,suSecurityUserRole  ru
+		WHERE r.id=ru.roleId AND ru.loginName='${loginName}'
+	</select>
+	<!--根据用户名查询组织机构名  -->
+	<select id="getOrgByloginNameToList" resultType="java.util.Map"
+		parameterType="java.util.HashMap">
+		SELECT o.text FROM commonTree_detail o,suSecurityUserOrg  ou
+		WHERE o.id=ou.orgCode AND ou.loginName='${loginName}'
+	</select>
+	<!-- 根据roleId获取用户名集合 -->
+	<select id="getLoginNameListFromRoleId" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT ru.loginName FROM suSecurityUserRole ru
+		WHERE ru.roleId='${roleId}'
+	</select>
+	<!-- 根据id删除用户 -->
+	<delete id="deleteUserById" parameterType="java.util.Map">
+		DELETE FROM suSecurityUser WHERE id in(${idList})
+	</delete>
+	<!-- 根据loginName删除用户角色关联或用户组织关联 -->
+	<delete id="deleteOrgOrRoleByLoginName" parameterType="java.util.Map">
+		DELETE FROM ${tableName} WHERE loginName in(${loginNameList})
+	</delete>
+	<!-- 保存用户角色关联 -->
+	<insert id="insertUserRole" parameterType="java.util.HashMap">
+		INSERT suSecurityUserRole(loginName,roleId) values(#{loginName},#{roleId})
+	</insert>
+	<!-- 根据loginName筛选用户信息 -->
+	<select id="getUserByLoginNameScreen" resultType="java.util.Map"
+		parameterType="java.util.HashMap">
+		SELECT
+			id,loginName,name,
+			pwd,startus,viewIndex,
+			phone_number,agent_level,
+			agent_information,job_number,
+			seat_number,createDate,
+			lastLoginDate,lastModifyPassword,
+			companyId,companyName,departmentId,departmentName,alias3
+		FROM suSecurityUser
+		<if test="loginNameList!=null and loginNameList!=''">
+			WHERE loginName NOT IN(${loginNameList});
+		</if>
+	</select>
+	<!-- 修改用户状态 0正常 1锁定 2删除 -->
+	<update id="updateUserStartus" parameterType="java.util.HashMap">
+		UPDATE suSecurityUser SET startus='${startus}' WHERE id='${id}'
+	</update>
+	<!-- 修改用户最后登录时间 -->
+	<update id="updateUserLastLoginDate" parameterType="java.util.HashMap">
+		UPDATE suSecurityUser SET lastLoginDate='${lastLoginDate}' WHERE id='${id}'
+	</update>
+	<!-- 修改用户最后修改密码时间 -->
+	<update id="updateUserLastModifyPassword" parameterType="java.util.HashMap">
+		UPDATE suSecurityUser SET lastModifyPassword='${lastModifyPassword}' WHERE id='${id}'
+	</update>
+	<!-- 角色处理 -->
+	<!-- 查询 用户-角色 关联表 -->
+	<select id="getUserRoleByLoginName" parameterType="java.util.Map" resultType="java.util.Map">
+		select * from suSecurityUserRole where loginName in (${loginNameList}) order by loginName asc;
+	</select>
+	<!-- 查询用户拥有角色的名称 -->
+	<select id="getRoleNameById" parameterType="java.util.Map" resultType="java.util.Map">
+		select id,name from suSecurityRole where id in (${idList});
+	</select>
+	<!-- 组织机构处理 -->
+	<!-- 查询 用户-角色 关联表 -->
+	<select id="getUserOrgByLoginName" parameterType="java.util.Map" resultType="java.util.Map">
+		select * from suSecurityUserOrg where loginName in (${loginNameList}) order by loginName asc;
+	</select>
+	<!-- 查询用户所属组织机构的名称 -->
+	<select id="getOrgNameById" parameterType="java.util.Map" resultType="java.util.Map">
+		select id,text from commonTree_detail where id in (${idList});
+	</select>
+	<select id="getAllUserInfo" resultType="java.util.HashMap">
+	    SELECT
+			suser.loginName AS 'id',
+			suser.`name` AS 'text',
+			suser.phone_number,
+			GROUP_CONCAT(DISTINCT sur.roleId) AS 'role',
+			GROUP_CONCAT(sorg.orgCode) AS 'org',
+			'ren' AS 'dataType'
+		FROM
+			suSecurityUser suser
+		LEFT JOIN suSecurityUserRole sur ON suser.loginName = sur.loginName
+		LEFT JOIN suSecurityUserOrg sorg ON suser.loginName = sorg.loginName
+		GROUP BY sorg.loginName 
+	</select>
+	<select id="roleIdMapUser" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+	   select roleId,GROUP_CONCAT(loginName) from suSecurityUserRole GROUP BY roleId
+	</select>
+</mapper>

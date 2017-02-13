@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>新建公告流程</title>		
+		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+		<meta http-equiv="description" content="this is my page">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
+		<link rel="stylesheet" href="../../css/bootstrap.min.css" type="text/css"></link>
+		<link rel="stylesheet" href="../../css/bootstrap.css" type="text/css"></link>
+		<link rel="stylesheet" href="../../js/dataTables/css/jquery.dataTables.css" type="text/css"></link>
+		<link rel="stylesheet" href="../../js/dataTables/css/DT_bootstrap.css" type="text/css"></link>
+		<!-- 工具 -->		
+		<link rel="stylesheet" href="../../js/dataTables/css/dataTables.tableTools.min.css" type="text/css"></link>
+		<!-- 动态列CSS -->
+		<link rel="stylesheet" href="../../js/dataTables/css/font-awesome.css"></link>
+		<link rel="stylesheet" href="../../js/dataTables/css/dataTables.colVis.min.css" type="text/css"></link>
+		<link rel="stylesheet"
+			href="../../js/ueditor/themes/default/css/ueditor.css" />
+		<!--时间控件-->
+	<!-- 	<link rel="stylesheet" href="../../js/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" type="text/css"></link>  -->
+	    <script type="text/javascript" src="../activitiModelsManager/activiti.js"></script>
+		<script type="text/javascript" src="../../js/jquery.js"></script>
+		<script type="text/javascript" src="../../js/bootstrap.js"></script>
+		<script type="text/javascript" src="../../js/dataTables/js/jquery.dataTables.js"></script>
+		<script type="text/javascript" src="../../js/dataTables/js/dataTables.colReorder.js"></script>
+		<script type="text/javascript" src="../../js/dataTables/js/dataTables.colVis.js"></script>
+		<script type="text/javascript" src="../../js/dataTables/js/dataTables.tableTools.min.js"></script>
+		<script type="text/javascript" src="../../js/dataTables/js/DT_bootstrap.js"></script>
+		
+		<script type="text/javascript" src="../../js/My97DatePicker/WdatePicker.js"></script>
+		
+
+		<script type="text/javascript" src="../../js/golbal_params.js"></script>
+		<script type="text/javascript" src="../../js/appCommonUtil.js"></script>
+		<script type="text/javascript" src="../../js/appCommonCurdUtils_new.js"></script>
+		<script type="text/javascript" src="../../js/common_utils.js"></script>
+        <script type="text/javascript" src="../../js/bootstrap-datetimepicker/bootstrap-datetimepicker.js"></script>
+        <!-- 文本编辑器 -->
+	   <script type="text/javascript" charset="utf-8" src="../../js/ueditor/ueditor.config.js"></script>  
+       <script type="text/javascript" charset="utf-8" src="../../js/ueditor/ueditor.all.js"></script>  
+       
+       <script type="text/javascript" charset="utf-8" src="../../js/ueditor/lang/zh-cn/zh-cn.js"></script>
+      
+		
+<style type="text/css">
+		
+/**栅格布局调整开始*/ /**调整内容：一行4列，列宽：span4*/
+.form-horizontal .control-label {
+	float: left;
+	width: 100px;
+	text-align: right;
+	padding-left: 0px !important;
+	padding-top: 2px;
+	padding-bottom: 1px;
+}
+
+.form-horizontal .controls {
+	padding: 5px 0px;
+	line-height: 5px;
+	width: 200px !important;
+	margin-left: 0px !important;
+	float: left;
+	padding-bottom: 2px;
+	padding-top: 0px;
+}
+.container {
+    border: 1px solid #33AECC;
+    
+	 width: 920px !important;
+	 position:absolute;
+	 left：0px;
+}
+.row {
+	margin-left: 0px !important;
+}
+H6 {
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+[class *='span'] {
+	margin-left: 0px;
+}
+
+/**栅格布局调整结束*/ /*iframe区域*/
+.iframe {
+	width: 925px;
+	height:600px;
+}
+/*工单整体区域*/
+.orderDiv {
+	padding-left: 2px;
+	border: 1px solid #33AECC;
+	border-collapse: separate;
+	border-left-width: 1px;
+	border-right-width: 1px;
+	border-right-color: #33AECC;
+	cellspacing: 0px;
+	cellpadding: 0px;
+	width: 920px;
+	height:600px;
+	/*min-height: 100px;*/
+	padding-bottom: 1px;
+	
+}
+</style>
+<script type="text/javascript">
+var A_PROCESSDEFINITIONID = "" ; //流程标识
+var A_PROCESSINSTANCEID="";//流程实例标识
+var PROCESSDEFINTION_ID=getQueryString('PROCESSDEFINTION_ID');//流程id
+var TYPE ="" ; //页面类型标识(新建流程页面&提交流程页面)
+var A_TASKID="" ; //任务标识
+var WORK_ID="" ; //业务标识
+var ueditor ;
+var id="";
+var flowNode="";
+var a=window.top.GOLBAL_PARAM["userAllPermisson"].base;//获取该用户的权限标识
+var ZKM_ROU="ZKM";
+
+var companyId=getUserInfo().companyId;
+
+var winTopData = window.top[PROCESSDEFINTION_ID] ;
+$(document).ready(function(){
+
+	$("#messageState").attr("readonly","readonly");
+    $("#messageState").attr("disabled","disabled");
+    //初始化文本编辑器
+    ueditor=new baidu.editor.ui.Editor({
+        //这里可以选择自己需要的工具按钮名称,此处仅选择如下五个
+        toolbars:[['fullscreen', 'source', '|', 'undo', 'redo', '|',
+                 'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 
+                 'superscript', 'subscript', 'removeformat', 'formatmatch', 
+                 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 
+                 'backcolor', 'insertorderedlist', 'insertunorderedlist', 
+                 'selectall', 'cleardoc','|','rowspacingtop', 'rowspacingbottom', 'lineheight']],
+        //focus时自动清空初始化时的内容
+        autoClearinitialContent:true,
+        //关闭字数统计
+        wordCount:false,
+        //关闭elementPath
+        elementPathEnabled:false,
+        autoHeightEnabled: false,//编辑器自动变高失效
+        initialFrameWidth :770,//设置编辑器宽度
+		initialFrameHeight:100,//设置编辑器高度
+    });
+    ueditor.render('editor');
+    //加载下拉字典项
+    selectValue1();   
+    //获取权限，判断权限标识   
+   //  getFun();
+    TYPE = getQueryString("TYPE")!=undefined? getQueryString("TYPE"):'';
+	
+	A_PROCESSINSTANCEID=winTopData!=undefined?winTopData.a_processInstanceId:'';
+    A_PROCESSDEFINITIONID = PROCESSDEFINTION_ID;
+    	if(TYPE=='commonProcess'){
+    	A_TASKID = winTopData!=undefined?winTopData.a_id:'';
+		rowData = winTopData;//选中的列表数据
+		id=rowData.id;
+		flowNode=rowData.flowNode;
+		initForm(rowData);
+	}
+	inputState();
+ //   try{window.parent.changeHight();}catch(e){}
+	$("#appointedCheckUserID").val('') ;
+});
+//window.onload = function() {try{window.parent.changeHight();}catch(e){}}
+//判断按经办或复核是文本框的状态
+function inputState(){
+    if(flowNode=="jingban"||flowNode==null||flowNode==""||flowNode==undefined){
+        $("#disponseOpinion").attr("readonly",false);
+        $("#messageState").val("新建");    
+     }
+     if (flowNode=="fuhe"){
+         $("#checkOneOpinion").attr("readonly",false);
+  
+     }
+}
+//提交方法 点击提交按钮
+function doSubmit(){
+	if(TYPE=="new"){
+		$('#tijiao').click(createProcess()) ;
+	}else if(TYPE=="commonProcess"){
+		$('#tijiao').click(submitProcess()) ;
+	}
+}
+function docreate(param,fn){
+   var acurl = "/ZDesk/*/activityCommon/doStartAlsoSubmitByProcessDefinitionId.action";
+	putLoginNameToParam(param);
+	ajaxFunction(acurl,param,true,function(data){
+		if(fn!=undefined && fn!=null && fn!='' && typeof(fn)=='function'){
+			fn(data);
+		}
+	});
+}
+
+//创建流程方法  
+//activitiProcessManager/commonProcess.html?PROCESSDEFINTION_ID=announcementProcess&
+function createProcess(){
+    var tresult=checkTitle();
+    var sresult=checkApproveState();
+    var dresult=checkbDate();
+    var uresult=checkSecurityUser();
+    var presult=checkPublihArea();
+    if(tresult=="true"&&sresult=="true"&&dresult=="true"&&uresult=="true"&&presult=="true"){
+	    var pat = {};
+	    pat = zkm_getHtmlFormJsons('announceForm');
+	    $("select").each(function(){
+	        pat[$(this).attr("name")]=$(this).find("option:selected").val();
+	     });
+	    pat['isUpdate']="0";
+	    pat['A_UUID']="true";
+	    pat['A_TASKID'] =A_TASKID ;
+	    approveState=pat.approveState;
+        pat['flowNode']="fuhe";
+        pat['zkm_userName']=getUserInfo().loginName==undefined?"":getUserInfo().loginName;
+        if(approveState=="待审批"){
+            pat['A_FORMCLASS']="AnnounceInsert";
+            pat['A_PROCESSINSTANCEID']=A_PROCESSINSTANCEID;
+	        pat['createUser']=getUserInfo().loginName==undefined?"":getUserInfo().loginName;
+	        pat['content']=jiequ(ueditor.getContent() );
+	        pat['disponseUser']=$("#appointedCheckUserID").val();
+	        pat['A_ASSIGNEE']=$("#appointedCheckUserID").val();
+	        pat['A_PROCESSDEFINITIONID'] =A_PROCESSDEFINITIONID;	        
+	        pat['flowNode']="fuhe";	  
+	        docreate(pat,function(data){
+	           if(data.success==true){  	
+			        // zinglabs.alert(data.mgs);
+			        refresh(); 
+			        try{
+						window.parent.doRepeat() ;
+					}catch(e){}
+			     }
+	        
+	        });	     
+        }else{
+             zinglabs.i18n.alert('BOC_approveStateIsApprove');
+         }
+	 }
+}
+//提交方法 
+function submitProcess(){
+    var tresult=checkTitle();
+    var sresult=checkApproveState();
+    var dresult=checkbDate();
+    var uresult=checkSecurityUser();
+    var presult=checkPublihArea();
+    if(tresult=="true"&&sresult=="true"&&dresult=="true"&&uresult=="true"&&presult=="true"){
+	     var pat = {};
+	     pat = zkm_getHtmlFormJsons('announceForm');
+	      $("select").each(function(){
+	        pat[$(this).attr("name")]=$(this).find("option:selected").val();
+	     })
+	     appointedCheckUserID= $("#appointedCheckUserID").val();
+	     approveState=pat.approveState;
+	     pat['loginName']=getUserInfo().loginName==undefined?"":getUserInfo().loginName;
+	     pat['id']=id;     
+	     pat['flowId'] = A_PROCESSINSTANCEID ;
+	     pat['A_PROCESSINSTANCEID']=A_PROCESSINSTANCEID;
+	     pat['content']=jiequ(ueditor.getContent());
+	     pat['A_TASKID'] =A_TASKID;
+	     pat['A_PROCESSDEFINITIONID']=A_PROCESSDEFINITIONID;
+	     pat['isUpdate']="0";	     	     
+	     approveState=pat.approveState;
+	     if(A_TASKID!=""&&A_TASKID!=null){	        
+	         if(flowNode=="jingban"||flowNode==""){
+                 if(approveState=="待审批"){
+                    pat['approveState']="待审批" ;
+                    pat['A_FORMCLASS']="AnnounceUpdate";
+	                pat['disponseUser']=$("#appointedCheckUserID").val();
+	                pat['A_ASSIGNEE']=$("#appointedCheckUserID").val();
+	                pat['flowNode']="fuhe";  
+	                pat['createUser']=getUserInfo().loginName==undefined?"":getUserInfo().loginName;
+	                doCompletTask(pat,function(data){
+	                    if(data.success==true){  	
+			                // zinglabs.alert(data.mgs);
+			                refresh(); 
+			                try{
+								window.parent.doRepeat() ;
+							}catch(e){}
+			             }
+	                });
+                  }else{
+                      zinglabs.alert('状态只能为待审批。');
+                   }
+             }else if(flowNode=="fuhe"){
+                 if(approveState=="待审批"){               
+                      zinglabs.alert('请将审批状态选择通过或者拒绝。');
+                  }else{
+                      if(approveState=="通过"){
+                          pat['flow_type']="1";
+                          pat['flowNode']="end";  
+                      }
+                      if(approveState=="拒绝"){
+                          pat['flow_type']="2";
+                          pat['A_ASSIGNEE']=$("#createUser").val();
+                          pat['flowNode']="jingban";  
+                      }
+                      pat['A_FORMCLASS']="AnnounceUpdate";
+                      pat.ids =winTopData.securityUser;
+	                  pat.aid =winTopData.id;
+                      doCompletTask(pat,function(data){
+                          // zinglabs.alert(data.mgs);
+                          refresh();
+                          try{
+							window.parent.doRepeat() ;
+							}catch(e){}
+                       });
+                  }               
+             }
+	 }else{
+		 zinglabs.alert('提交失败');	
+	  }
+ } 
+}
+//点击保存按钮
+function doSave(){
+    var tresult=checkTitle();
+ //   var sresult=checkApproveState();
+    var dresult=checkbDate();
+    var uresult=checkSecurityUser();
+    var result=checkLength();
+    var presult=checkPublihArea();
+    if(tresult=="true"&&dresult=="true"&&uresult=="true"&&result=="true"&&presult=="true"){       
+         var pat = {}; 
+         var columnValues={};
+         loginName=getUserInfo().loginName;     
+	     pat = zkm_getHtmlFormJsons('announceForm');
+	     approveState=pat.approveState;
+	     pat["approveState"]="" ;
+	      $("select").each(function(){
+	        pat[$(this).attr("name")]=$(this).find("option:selected").val();
+	     })	     
+	     if(pat['applyTime']==undefined||pat['applyTime']==''){
+	     	delete pat['applyTime'];
+	     }
+	     pat['content']=jiequ(ueditor.getContent() );
+	     pat['A_TASKID'] =A_TASKID ;
+	     pat['A_PROCESSINSTANCEID']=A_PROCESSINSTANCEID;
+	     pat['A_UUID']="true";
+	     pat['isUpdate']="0";
+	     pat['zkm_userName']=getUserInfo().loginName==undefined?"":getUserInfo().loginName;
+	     pat['createUser']=getUserInfo().loginName==undefined?"":getUserInfo().loginName;
+	     pat['disponseUser']=getUserInfo().loginName==undefined?"":getUserInfo().loginName;
+	     pat['A_ASSIGNEE']=getUserInfo().loginName==undefined?"":getUserInfo().loginName;
+         pat['A_PROCESSDEFINITIONID'] =A_PROCESSDEFINITIONID;
+         if(TYPE=="new"&&A_TASKID==""&&flowNode==""){
+            pat['A_FORMCLASS']="AnnounceInsert";
+            pat.approveState="新建" ;
+		    doStartProcess(pat,function(data){
+	            if(data.success==true){
+	            var rdata =data.data.data;
+	            id = rdata.id ;
+	            $("#createTime").val(rdata.createTime) ;
+	            A_TASKID = data.data.a_id;
+	            TYPE = "commonProcess" ;
+	            flowNode = "jingban" ;
+	            A_PROCESSINSTANCEID = data.data.a_processInstanceId ;
+	            approveState='待审批' ;
+			        zinglabs.alert("保存成功");	
+			    	try{
+						window.parent.doRepeat() ;
+					}catch(e){}
+			    }
+	        });     
+		 }else{
+		 	pat.tableName="BOC_gonggao";
+		 	pat.columnValues= zkm_getHtmlFormJsons('announceForm');
+		 	$("#announceForm select").each(function(){
+	     		pat.columnValues[$(this).attr("name")]=$(this).find("option:selected").val();
+	     	});
+	     	if(pat['applyTime']==undefined||pat['applyTime']==''){
+	     	try{
+	     		delete pat['applyTime'];
+	     		delete pat.columnValues['applyTime'];
+	     		}catch(e){}
+	     	}
+		 	pat.columnValues.id=id;
+		    commonUpdate(pat,false,function(data){
+		      	if(data.success==true){
+		      		zinglabs.alert(data.mgs);
+		      		try{
+						window.parent.doRepeat() ;
+					}catch(e){}
+		      	}
+		    });
+		 }
+     }
+}  
+
+//删除		
+function doDelete(){
+    zinglabs.confirm(zinglabs.i18n.getText("BOC_sureDeleteAnnounce"),function (){
+         var pat = {};
+
+	    // pat = zkm_getHtmlFormJsons('announceForm') ;
+	     
+	    // $("select").each(function(){
+	    //    pat[$(this).attr("name")]=$(this).find("option:selected").val();
+	   ///  });
+	    // appointedCheckUserID= $("#appointedCheckUserID").val();
+	     pat['A_TASKID'] =A_TASKID ;
+	    // pat['submitUser']=getUserInfo().loginName==undefined?"":getUserInfo().loginName;
+        // pat['appointedCheckTime']=getTime();
+    
+        pat['id']=window.top[PROCESSDEFINTION_ID].id;
+         pat['A_PROCESSINSTANCEID']=A_PROCESSINSTANCEID;
+         pat['loginName']=getUserInfo().loginName==undefined?"":getUserInfo().loginName;
+         // pat['zkm_userName']=getUserInfo().loginName==undefined?"":getUserInfo().loginName;
+         pat['A_FORMCLASS']="AnnounceDelete";   
+         
+         if(A_TASKID!=""&&A_TASKID!=null){            
+	          doClearTask(pat,function(data){
+	             if(data.success==true){
+			         zinglabs.i18n.alert('BOC_deleteAnnounSuccess');
+			         refresh();
+			         try{
+						window.parent.doRepeat() ;
+					 }catch(e){}
+			      }
+		     });
+	      }else{
+		    zinglabs.i18n.alert('BOC_TaskIDRefuse');	
+	     } 
+    });
+}   
+
+//表单验证
+//验证输入的长度
+function checkLength(){
+    var result="true";
+    var content=jiequ(ueditor.getContent());//消息内容
+    var checkOneOpinion=$("#checkOneOpinion").val();//复核意见
+    var disponseOpinion=$("#disponseOpinion").val();//办理意见
+    if(content.length>1500){
+        zinglabs.i18n.alert('BOC_contentLength');
+        result="false"
+    }
+    if(checkOneOpinion.length>1500){
+        zinglabs.i18n.alert('BOC_checkOneOpinionLength');
+        result="false"
+    }
+    if(disponseOpinion.length>1500){
+        zinglabs.i18n.alert('BOC_disponseOpinionLength');
+        result="false"
+    }
+    return result;
+}
+//验证标题
+function checkTitle(){
+    var tresult="true";
+    var title=$("#title").val();
+	if(title.length<5){
+		CHECK_indexCode =false ;
+		showTooltip('titleDiv','标题长度需大于5！') ;
+		tresult="false";
+	}else if(title.length>300){
+	    CHECK_indexCode =false ;
+		showTooltip('titleDiv','标题长度需小于300！') ;
+		tresult="false";
+	}else{
+		hideTooltip('titleDiv');
+		CHECK_indexCode =true ;
+		tresult="true";
+	}
+	return tresult;
+}
+//验证审批状态
+function checkApproveState(){
+     var sresult="true"
+    var approveState= $("#approveState").val();
+    if(approveState==''||approveState==null||approveState==undefined){
+	    CHECK_indexCode =false ;
+		showTooltip('approveStateDiv','请选择审批状态！') ;
+		sresult="false";
+	}else{
+		hideTooltip('approveStateDiv');
+		CHECK_indexCode =true ;
+		sresult="true";
+	}
+	return sresult;
+}
+
+//验证生效时间
+function checkbDate(){
+   var dresult="true";
+   var bDate=$("#bDate").val();
+    if(bDate==''||bDate==null||bDate==undefined){
+	    CHECK_indexCode =false ;
+		showTooltip('bDateDiv','请选择生效时间') ;
+		dresult="false";
+	}else{
+	     var eDate=$("#eDate").val();
+         if(eDate > bDate){
+	         hideTooltip('bDateDiv');
+		     CHECK_indexCode =true ;
+		     dresult="true";
+	      }else{
+	           zinglabs.i18n.alert('BOC_endTimeBigBeginTime');
+	           dresult="false";
+	      }	
+	}
+	return dresult;
+}
+//验证接收人
+function checkSecurityUser(){
+    var uresult="true";
+    var securityUser=$("#securityUser").val();
+    if(securityUser==''||securityUser==null||securityUser==undefined){
+	    CHECK_indexCode =false ;
+		showTooltip('securityUserDiv','请选择接收人') ;
+		uresult="false";
+	}else{
+		hideTooltip('securityUserDiv');
+		CHECK_indexCode =true ;
+		uresult="true";
+	}
+	return uresult;
+}
+//验证发布范围
+function checkPublihArea(){
+    var presult="true";
+   var publishArea=  $('#publishArea option:selected').text();
+    if(publishArea=="--------请选择--------"){
+	    CHECK_indexCode =false ;
+		showTooltip('publishAreaDiv','请选择发布范围！') ;
+		presult="false";
+	}else{
+		hideTooltip('publishAreaDiv');
+		CHECK_indexCode =true ;
+		presult="true";
+	}
+	return presult;
+}
+//验证未通过样式
+function showTooltip(id,title){
+	$("#"+id).attr('title',title) ;
+	$("#"+id).tooltip('show') ;
+	$("#"+id).addClass('control-group error') ;
+}
+//还原样式
+function hideTooltip(id){
+	$("#"+id).tooltip('destroy') ;
+	$("#"+id).removeClass('error') ;
+}
+
+function initForm(data){
+	var cfs=$("#announceForm input[name],textarea[name],select[name]");
+	var str='';
+	for(var key in data){
+		if(data[key]==undefined||data[key]==null){
+			data[key]="";
+		}
+		$("#"+key).val(data[key]);
+	}
+//	alert(data.content) ;
+	try{
+		ueditor.addListener("ready", function () {        // ueditor准备好之后才可以使用        
+				ueditor.setContent(data.content,false);
+			});
+	}catch(e){alert(1) ;}
+}
+
+//加载下拉列表的内容
+ function selectValue1(){
+    comType('basilicType');
+    comType('approveState');
+    comType('area'); 
+    comType('messageState'); 
+    comType('publishArea'); 
+    
+ }
+ 
+ //加载字典项
+function comType(selectid){
+    var data=getDictListfoIndexData(selectid);
+	$("#"+""+selectid+"").empty();
+    $("#"+""+selectid+"").append("<option value=''>--------请选择--------</option>"); 
+	for(var i in data){
+	    $("#"+""+selectid+"").append("<option value='"+data[i].name+"'>"+data[i].name+"</option>"); 
+	}
+	$("#approveState").val("待审批");
+ }
+//添加接收者树
+function userDialog(url){
+    var userDig = dialog({
+	    title : '接收人员',
+		content : '<iframe src=' + url + ' style="border: 0; width: 100%; height: 100%"  frameborder="0"/>',
+		width : '300',
+		height : '400'
+	});
+	userDig.show();
+	return userDig;
+}
+function adduser() {
+	var url = "/ZDesk/zh_cn/common/userMappingOrg.html?mode=many&showButton=y&pchm=s&cchm=s&reFillFn=getSelectNode&clearFn=clear&closeFn=closeDig";
+	closeDialog=userDialog(url);
+}
+//获取所选取的用户树的值
+function getSelectNode(ids,names){
+    var name="";
+    var id="";
+    for(var i=0;i<names.length;i++){
+        name=names[i]+","+name;
+    }
+    for(var i=0;i<ids.length;i++){
+        id=ids[i]+","+id;
+    }
+    $("#securityUser").val(id);
+    closeDig();
+ }
+ //关闭dialog
+function closeDig(){
+	window.closeDialog.close().remove();
+	window.focus();
+}
+
+//清除
+function clear(){
+     name="";
+     $("#securityUser").val('');
+}
+//添加指定复核人
+function CheckUserDialog(url){
+    var CheckUserDig = dialog({
+	    title : '指定复核人',
+		content : '<iframe src=' + url + ' style="border: 0; width: 100%; height: 100%"  frameborder="0"/>',
+		width : '300',
+		height : '400'
+	});
+	CheckUserDig.show();
+	return CheckUserDig;
+}
+function addCheckUser() {
+	var url = "/ZDesk/zh_cn/common/userMappingOrg.html?showButton=y&pchm=s&cchm=s&reFillFn=getSelectNodes&clearFn=clears&closeFn=closeDigs&permissionName=复核标识&FilterBeanId=MessageQuanxianFilter";
+	closeDialog=CheckUserDialog(url);
+}
+
+//获取所选取的用户树的值
+function getSelectNodes(ids,names){
+	 $("#appointedCheckUserID").val("");
+    $("#appointedCheckUserID").val(ids);
+     closeDigs();
+ }
+ //关闭dialog
+function closeDigs(){
+	window.closeDialog.close().remove();
+	window.focus();
+}
+
+//清除
+function clears(){
+     name="";
+     $("#appointedCheckUserID").val('');
+}
+ //刷新
+function refresh(){
+    window.parent.doRepeat();
+    var cfs=$("#announceForm input[name],textarea[name],script[name],select[name]");
+	for(var i=0;i<cfs.length;i++){
+	    var e=cfs[i];					
+		$(e).val('');
+	}
+	$("#name").val('');
+	$("#announceDiv").hide();
+}
+ //将内容的前三位和后三位截取掉
+ function jiequ(s){
+  var end=s.length-4;
+  var r=s.substring(3,end);
+  return r;
+ }
+ function jiequ2(s2){
+    var c=jiequ(s2);
+    var c=c.substring(0,6);
+   return c;
+ }
+</script>
+
+	
+</head>
+	<body style="">
+		<div class="container " id="announceDiv">
+			<div style="">
+				<form action="" class="form-horizontal " id="announceForm">
+				<div id="id" name="id"  style="hidden:true" ></div>
+					<div>
+						<div class="row">
+							<h6>
+								公告流程
+							</h6>
+							<div class="row">
+								<div class="span4">
+									<div class="control-group ">
+										<label class="control-label">
+											<span style="color: red;">*</span>消息标题:
+										</label>
+										<div  id="titleDiv" class="controls">
+											<input type="text" style="width: 155px" id="title" name="title" />
+										</div>
+									</div>
+								</div>
+								<div class="span4">
+									<div class="control-group ">
+										<label class="control-label">消息状态:</label>
+										<div class="controls ">
+											<select type="text" style="width: 170px" id="messageState" name="messageState" /></select>
+										</div>
+									</div>
+								</div>
+								<div class="span4">
+									<div class="control-group">
+										<label class="control-label"><span style="color: red;">*</span>审批状态:</label>
+										<div id="approveStateDiv"  class="controls">
+											<select type="text" style="width: 170px" id="approveState" name="approveState" /></select>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row" >
+								<div class="span4" style="margin-top:-20px">
+									<div class="control-group ">
+										<label class="control-label">
+											创建时间:
+										</label>
+										<div class="controls">
+											<input type="text" style="width: 155px" id="createTime" name="createTime" readonly="readonly"/>
+										</div>
+									</div>
+								</div>
+								<div class="span4" style="margin-top:-20px">
+									<div class="control-group ">
+										<label class="control-label">创建者:</label>
+										<div class="controls">
+											<input type="text" style="width: 155px" id="createUser" name="createUser" readonly="readonly"/>
+										</div>
+									</div>
+								</div>
+								<div class="span4" style="margin-top:-20px">
+									<div class="control-group " style="width: 600px !important">
+										<label class="control-label">
+											紧急程度:
+										</label>
+										<div class="controls" style="width: 300px !important">
+											<select type="text" style="width: 170px" id="basilicType" name="basilicType" />
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+														
+							<div class="row">
+							
+								<div class="span4" style="margin-top:-20px">
+									<div class="control-group ">
+										<label class="control-label">申请时间:</label>
+										<div id="eDateDiv" class="controls" >
+										   <div class="input-append">
+											<input type="text" style="width: 130px" id="applyTime" name="applyTime" readonly="readonly" />
+											<span class="add-on"><i class="icon-calendar"
+												   onclick="WdatePicker({el:'applyTime',dateFmt:'yyyy-MM-dd HH:mm:ss'})"></i></span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="span4"  style="margin-top:-20px">
+									<div class="control-group">
+										<label class="control-label"><span style="color: red;">*</span>发布范围:</label>
+										<div id="publishAreaDiv"  class="controls">
+											<select style="width: 170px" id="publishArea" name="publishArea" /></select>
+										</div>
+									</div>
+								</div>
+								<div class="span4" style="margin-top:-20px">
+									<div class="control-group " style="width: 600px !important">
+										<label class="control-label">
+											地区:
+										</label>
+										<div class="controls" style="width: 300px !important">
+											<select style="width: 170px" id="area"
+												name="area" />
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+							    <div class="span4" style="margin-top:-20px">
+									<div class="control-group ">
+										<label class="control-label"  for="bDate">
+											<span style="color: red;">*</span>生效时间:</label>
+   							               <div id="bDateDiv" class="controls" >
+   							                 <div class="input-append">
+   							                 
+											    <input type="text" style="width: 130px" id="bDate" name="bDate" readonly="readonly"/>
+                                               <span class="add-on"><i class="icon-calendar"
+												   onclick="WdatePicker({el:'bDate',dateFmt:'yyyy-MM-dd HH:mm:ss'})"></i></span>
+										      </div>
+										</div>
+									</div>
+								</div>
+								<div class="span4" style="margin-top:-20px">
+									<div class="control-group ">
+										<label class="control-label" for="eDate">失效时间:</label>
+										<div id="eDateDiv" class="controls" >
+										   <div class="input-append">
+											  <input type="text" style="width: 130px" id="eDate" name="eDate" readonly="readonly" />
+											   <span class="add-on"><i class="icon-calendar"
+												   onclick="WdatePicker({el:'eDate',dateFmt:'yyyy-MM-dd HH:mm:ss'})"></i></span>
+										  </div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="span12" style="margin-top:-20px">
+									<div class="control-group ">
+										<label class="control-label">消息内容:</label>
+										<div class="controls">
+										   <script id="editor" name="content" type='text/javascript' style="width:868px;height:60px;"></script>
+										   
+										</div>
+									</div>
+								</div>			
+							</div>
+				
+							<div class="row">
+								<div class="span6" style="margin-top:-20px">
+									<div class="control-group ">
+										<label class="control-label"><span style="color: red;">*</span>接收者:</label>
+										<div id="securityUserDiv" class="controls">
+											<input type="text" id="securityUser" name="securityUser" value="" class=""  style="width:243px"  readonly="readonly"/>					
+										  	 <button id="securityUser" type="button" class="btn" onclick="adduser()" 
+										  	 style="margin-left:252px;margin-top:-37px;height:31px;width:60px">选择</button>&nbsp;							
+										</div>
+									</div>
+								</div>
+								<div class="span6" style="margin-top:-20px">
+									<div class="control-group ">
+										<label class="control-label">指定复核人:</label>
+										<div class="controls">
+											<input id="appointedCheckUserID" type="text" name="appointedCheckUserID" style="width:243px"  value="" class="" readonly="readonly"/>
+										  	 <button id="CheckUser" type="button" class="btn" onclick="addCheckUser()" style="margin-left:253px;margin-top:-37px;height:31px;width:60px">选择</button>							
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="span6" style="margin-top:-25px">
+									<div class="control-group ">
+										<label class="control-label">
+											办理意见:
+										</label>
+										<div class="controls">
+											<textarea id="disponseOpinion" name="disponseOpinion" style="width:300px;height:50px" 
+											class="blueTextBolder_Area"readonly="readonly"></textarea>
+										</div>
+									</div>
+								</div>
+								
+								<div class="span6" style="margin-top:-25px">
+									<div class="control-group ">
+										<label class="control-label">
+											复核意见:
+										</label>
+										<div class="controls">
+											<textarea id="checkOneOpinion" name="checkOneOpinion" style="width:300px;height:50px"
+											 class="blueTextBolder_Area" readonly="readonly"></textarea>
+										</div>
+									</div>
+								</div>	
+							</div>				
+						</div>
+				 <div class="row">
+				   <div class="span6" style="margin-left:370px;margin-top:-10px">
+		              <button id="tijiao" type="button" class="btn" onclick="doSubmit()"><i class="icon-search"></i>提交</button>
+			          <button id="save"type="button" class="btn" onclick="doSave()"><i class="icon-search"></i>保存</button>
+			          <button id="delete" type="button" class="btn" onclick="doDelete()"><i class="icon-search"></i>删除</button>	
+			       </div>
+			    </div>
+				</form>
+			</div>	
+		</div>
+	</body>
+</html>

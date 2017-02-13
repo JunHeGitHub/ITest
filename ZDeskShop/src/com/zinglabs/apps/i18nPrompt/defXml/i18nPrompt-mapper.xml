@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.zinglabs.apps.i18nPrompt">
+
+	<insert id="insert" parameterType="java.util.List">
+		insert into `i18nPrompt` (`id`,`promptKey`,`promptValue`,`languge`,`langugeCode`,`projectName`,`projectCode`) values
+        <foreach collection="list" item="v" index="index"  separator=",">  
+            (#{v.id},#{v.promptKey},#{v.promptValue},#{v.languge},#{v.langugeCode},#{v.projectName},#{v.projectCode}) 
+        </foreach> 
+	</insert>
+	
+	<update id="update" parameterType="java.util.HashMap">
+		update `i18nPrompt` set `promptKey`=#{promptKey},`promptValue`=#{promptValue},
+		`languge`=#{languge},`langugeCode`=#{langugeCode},`projectName`=#{projectName},`projectCode`=#{projectCode}
+		where `id` = #{id}
+	</update>
+	
+	<delete id="delete" parameterType="java.util.List">
+		delete FROM `i18nPrompt` where `id` in 
+		<foreach collection="list" item="ids"  open="(" separator="," close=")">#{ids}</foreach> 
+	</delete>
+	
+	<select id="select" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT id,promptKey,promptValue,languge,langugeCode,projectName,projectCode FROM i18nPrompt
+	</select>
+	
+	<select id="selectById" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT promptKey FROM i18nPrompt WHERE id=#{id} limit 1
+	</select>
+	
+	<select id="selectByPromptKey" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT id FROM i18nPrompt WHERE promptKey=#{promptKey}
+	</select>
+	
+	<select id="selectByLangugeCOdeAndProjectType" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT id,promptKey,promptValue,languge,langugeCode,projectName,projectCode FROM i18nPrompt WHERE langugeCode=#{langugeCode} AND projectCode=#{projectCode}
+	</select>
+	
+	<select id="selectPromptMap" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT promptKey,promptValue FROM i18nPrompt WHERE langugeCode=#{langugeCode} AND projectCode=#{projectCode}
+	</select>
+	
+	<select id="selectPromptKey" resultType="java.util.HashMap">
+		SELECT promptKey FROM i18nPrompt group by promptKey
+	</select>
+	
+	<select id="selectDefaultValue" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT languge,langugeCode,projectName,projectCode FROM i18nPrompt WHERE langugeCode=#{langugeCode} AND projectCode=#{projectCode} limit 1
+	</select>
+	
+	<select id="selectByPromptKeyAndPromptValue" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT id,promptKey,promptValue,languge,langugeCode,projectName,projectCode FROM i18nPrompt 
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			langugeCode=#{langugeCode} AND projectCode=#{projectCode}
+			<if test="promptKey !=null and promptKey != ''">
+				AND promptKey like CONCAT('%',#{promptKey},'%')
+			</if>
+			<if test="promptValue !=null and promptValue != ''">
+				AND promptValue like CONCAT('%',#{promptValue},'%')
+			</if>
+		</trim>
+	</select>
+	
+	<select id="selectExistForPromptKey" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT id,promptKey,promptValue,languge,langugeCode,projectName,projectCode FROM i18nPrompt 
+		WHERE langugeCode=#{langugeCode} AND projectCode=#{projectCode} AND promptKey=#{promptKey}
+	</select>
+	
+	<select id="selectLangugeCode" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT languge,langugeCode,projectName,projectCode FROM i18nPrompt GROUP BY langugeCode
+	</select>
+	
+	<select id="selectExistForLangugeCode" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT id,promptKey,promptValue,languge,langugeCode,projectName,projectCode FROM i18nPrompt 
+		WHERE langugeCode=#{langugeCode} GROUP BY langugeCode
+	</select>
+	
+	<select id="selectPromptForLangugeCode_zh_CN" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT id,promptKey,promptValue,languge,langugeCode,projectName,projectCode FROM i18nPrompt 
+		WHERE langugeCode=#{langugeCode}
+	</select>
+	
+</mapper>

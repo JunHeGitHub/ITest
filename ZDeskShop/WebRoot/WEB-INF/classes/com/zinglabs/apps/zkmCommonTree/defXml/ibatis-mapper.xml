@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.zinglabs.apps.zkmCommonTree">
+
+    <sql id="companyFilter">
+        <if test="companyId !=null and companyId !=''">
+			and companyId=#{companyId}
+		</if>
+		<if test="companyName !=null and companyName !=''">
+			and companyName=#{companyName}
+		</if>
+		<if test="departmentId!=null and departmentId !=''">
+			and departmentId=#{departmentId}
+		</if>
+		<if test="departmentName !=null and departmentName !=''">
+			and departmentName=#{departmentName}
+		</if>
+    </sql>
+
+	<select id="getTreeNode" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		select id,`text`,iconCls,leaf,recordType,`parentId` as 'pId' ,'true' as 'isParent',leftClick,leftParam,rightClick,rightParam,companyName,departmentName,nodeTypeUrl,modleId  from commonTree_detail where recordType=#{recordType}
+		<if test="id !=null and id !=''">and parentId=#{id}</if>
+		<if test="id ==null or id ==''">and parentId=''</if>
+		<if test="companyId!=null and companyId!=''">
+			and companyId=#{companyId}
+		</if>
+		<![CDATA[ 
+			 order by sortField asc
+		   ]]>
+	</select>
+	<select id="getAllTreeNode" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		select id,text,iconCls,leaf,recordType,`parentId` as pId ,'true' as 'isParent',leftClick,leftParam,rightClick,rightParam,companyName,departmentName,nodeTypeUrl,modleId  from commonTree_detail  
+		<trim prefix="where" prefixOverrides="AND|OR">
+		     <if test="recordType!='' and recordType !=null ">
+		        and  recordType=#{recordType}
+		     </if> 
+	    </trim>
+			<![CDATA[ 
+			 order by sortField desc
+			]]> 
+	</select>
+	
+	<select id="getAllZhijianTreeNode" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		select id,description as text,grade_index,`parentid` as pId,min_value,max_value,reference_value,reference2_value,reference2_name,percent,value_remark,description,weight,is_involve from dictinfo  
+		<trim prefix="where" prefixOverrides="AND|OR">
+		     <if test="grade_index!='' and grade_index!=null ">
+		        and  grade_index=#{grade_index}
+		     </if> 
+	    </trim>
+			<![CDATA[ 
+			 order by percent desc
+			]]> 
+	</select>
+	<select id="getCaidanTreeNode" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		select id,name as text,name,url as u,`parentId` as pId,isStart,sort_,type from tree_weixincaidan  
+		
+			<![CDATA[ 
+			 order by sort_ desc
+			]]> 
+	</select>
+	<select id="getCaidanTreeNode_isStart" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+SELECT id,name as text,name,url as u,`parentId` as pId,isStart,sort_,type from tree_weixincaidan where parentId in (SELECT id from tree_weixincaidan where type=#{type} and parentId=0) and isStart=1 UNION
+SELECT id,name as text,name,url as u,`parentId` as pId,isStart,sort_,type from tree_weixincaidan where parentId in (SELECT id from tree_weixincaidan where parentId in (SELECT id from tree_weixincaidan where type=#{type} and parentId=0) and isStart=1) and isStart=1;
+		
+			
+	</select>
+	<select id="getCaidanTreeNode_isStart_child" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+SELECT id,name as text,name,url as u,`parentId` as pId,isStart,sort_,type from tree_weixincaidan where parentId in (SELECT id from tree_weixincaidan where parentId in (SELECT id from tree_weixincaidan where type=#{type} and parentId=0) and isStart=1) and isStart=1;
+		
+			
+	</select>
+	
+	<!--组织结构删除节点时需要查询根节点的第一层孩子(递归删除) -->
+	<select id="getTreeNodeByPidIsId" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select id,`text`,leaf,recordType,`parentId`,leftClick,leftParam,rightClick,rightParam,companyName,departmentName,nodeTypeUrl,modleId  from commonTree_detail 
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+		<if test="id!=null and id!=''">
+			and parentId=#{id}
+		</if>
+		<if test="pId!=null and pId!=''">
+			and parentId=#{pId}
+		</if>
+		<if test="recordType!=null and recordType!=''">
+			and recordType=#{recordType}
+		</if>
+		</trim>
+		<![CDATA[ 
+			 order by sortField asc
+		   ]]>
+	</select>
+	
+	<select id="getTreeNodeByPidIsId_zj" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select * from dictinfo 
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+		<if test="id!=null and id!=''">
+			and parentid=#{id}
+		</if>
+		<if test="grade_index!=null and grade_index!=''">
+			and grade_index=#{grade_index}
+		</if>
+		</trim>
+	</select>
+	<select id="getCaidanTreeNode_geshu" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	SELECT id,name as text,name,url as u,parentId as pId,isStart,sort_,type from tree_weixincaidan t where t.parentId in(SELECT id FROM tree_weixincaidan s WHERE s.type=#{type} and s.parentId=0) AND t.isStart=1
+	</select>
+	<select id="getCaidanTreeNode_geshu_isStart" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	SELECT id,name as text,name,url as u,parentId as pId,isStart,sort_,type from tree_weixincaidan t where t.parentId in(SELECT id FROM tree_weixincaidan s WHERE s.type=#{type} and s.parentId=0) AND t.isStart=0
+	</select>
+	<select id="getCaidanTreeNode_ById" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	SELECT id,name as text,name,url as u,parentId as pId,isStart,sort_,type from tree_weixincaidan t where t.parentId=#{id}
+	</select>
+	<select id="getCaidanTreeNode_geshu_child" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select id,name as text,name,url as u,parentId as pId,isStart,sort_,type from tree_weixincaidan  where isStart=1 and parentId=#{parentId}
+	</select>
+	<select id="getSecurityPermissionTreeNode"
+		parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select id,`text`,leaf,recordType,`parentId`,leftClick,leftParam,rightClick,rightParam,companyName,departmentName,nodeTypeUrl,modleId  from commonTree_detail 
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+		
+		<if test="companyId!=null and companyId!=''">
+			and companyId=#{companyId}
+		</if>
+		<if test="departmentId!=null and departmentId!=''">
+			and departmentId=#{departmentId}
+		</if>
+		<if test="recordType!=null and recordType!=''">
+			and recordType=#{recordType}
+		</if>
+		<if test="id !=null and id !=''">and parentId=#{id}</if>
+		</trim>
+	</select>
+	<select id="getAllSecurityPermissionTreeNode"
+		parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select id,`text`,leaf,recordType,`parentId`,leftClick,leftParam,rightClick,rightParam,nodeTypeUrl,modleId  from commonTree_detail tree inner join
+		suSecurityRoleMapPermission p on tree.id=p.permissionCode where
+		tree.recordType=#{recordType}
+		<trim prefix="and">
+			<foreach collection="items" item="roleCode" open="("
+				close=")" separator="or">
+				p.roleCode=#{roleCode}
+			</foreach>
+		</trim>
+		<if test="companyId!=null and companyId!=''">
+			and zk1.companyId=#{companyId}
+		</if>
+		<if test="departmentId!=null and departmentId!=''">
+			and zk1.departmentId=#{departmentId}
+		</if>
+	</select>
+	<select id="getCommonTreeParam" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		select id,leftClick,rightClick,nodeId,nodeName as
+		text,beanName,recordType,isSynchronous,requestUrl,type,normalNode,leftparam,rightparam from zkmCommonTree
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="recordType !=null and recordType !=''">
+				and `recordType`=#{recordType}
+			</if>
+			<if test="type !=null and type !=''">and `type`=#{type}</if>
+		</trim>
+	</select>
+	<select id="selectTreeNodeById" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		select id,`text`,leaf,recordType,`parentId`,leftClick,leftParam,rightClick,rightParam,companyName,departmentName,nodeTypeUrl,modleId from commonTree_detail where id=#{id}
+	</select>
+	<select id="getCommonTreeFilter" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		select * from zkmInfoSecurity where dataType=#{dataType} and
+		roleName=#{roleName} and
+		<foreach collection="myList" item="item" index="index" open="("
+			separator="or" close=")">
+			infoId = #{item.id}
+		</foreach>
+	</select>
+	<select id="checkCommonTreeSaveData"
+		parameterType="java.util.HashMap" resultType="Integer">
+		select count(1) from zkmCommonTree where `type`=#{type} and
+		`recordType`=#{recordType}
+	</select>
+	<!-- 获取配置表的列表 -->
+	<select id="getPeiZhiCommonTreeList"
+		parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select * from zkmCommonTree
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="recordType!=null and recordType!=''">
+				and recordType=#{recordType}
+			</if>
+			<if test="type!=null and type!=''">
+				and type=#{type}
+			</if>
+		</trim>
+	</select>
+	
+	<insert id="addTreeNode" parameterType="java.util.HashMap">
+		insert into commonTree_detail
+		(id,text,recordType,parentId,createUser,createTime
+		<if test="companyId!=null and companyId!=''">,companyId</if>
+		<if test="modleId!=null and modleId!=''">
+			,modleId
+		</if>
+		<if test="leftClick!=null and leftClick!=''">
+			,leftClick
+		</if>
+		<if test="rightClick!=null and rightClick!=''">
+			,rightClick
+		</if>
+		<if test="leftParam!=null and leftParam!=''">
+			,leftParam
+		</if>
+		<if test="rightParam!=null and rightParam!=''">
+			,rightParam
+		</if>
+		<if test="departmentId!=null and departmentId!=''">
+			,departmentId
+		</if>
+		<if test="nodeTypeUrl!=null and nodeTypeUrl!=''">
+			,nodeTypeUrl
+		</if>
+		) values
+		(#{id},#{text},#{recordType},#{parentId},#{createUser},now()
+		<if test="companyId!=null and companyId!=''">,#{companyId}</if>
+		<if test="modleId!=null and modleId!=''">
+			,#{modleId}
+		</if>
+		<if test="leftClick!=null and leftClick!=''">
+			,#{leftClick}
+		</if>
+		<if test="rightClick!=null and rightClick!=''">
+			,#{rightClick}
+		</if>
+		<if test="leftParam!=null and leftParam!=''">
+			,#{leftParam}
+		</if>
+		<if test="rightParam!=null and rightParam!=''">
+			,#{rightParam}
+		</if>
+		<if test="departmentId!=null and departmentId!=''">
+			,#{departmentId}
+		</if>
+		<if test="nodeTypeUrl!=null and nodeTypeUrl!=''">
+			,#{nodeTypeUrl}
+		</if>
+		)
+	</insert>
+	<insert id="addTreeNode_zhijian" parameterType="java.util.HashMap" useGeneratedKeys="true" keyProperty="id">
+		insert into dictinfo
+		(parentid,grade_index,description
+		<if test="min_value!=null and min_value!=''">,min_value</if>
+		<if test="max_value!=null and max_value!=''">
+			,max_value
+		</if>
+		<if test="reference_value!=null and reference_value!=''">
+			,reference_value
+		</if>
+		<if test="percent!=null and percent!=''">
+			,percent
+		</if>
+		<if test="value_remark!=null and value_remark!=''">
+			,value_remark
+		</if>
+		) values
+		(#{parentid},#{grade_index},#{description}
+		<if test="min_value!=null and min_value!=''">,#{min_value}</if>
+		<if test="max_value!=null and max_value!=''">
+			,#{max_value}
+		</if>
+		<if test="reference_value!=null and reference_value!=''">
+			,#{reference_value}
+		</if>
+		<if test="percent!=null and percent!=''">
+			,#{percent}
+		</if>
+		<if test="value_remark!=null and value_remark!=''">
+			,#{value_remark}
+		</if>
+		)
+	</insert>
+	<insert id="addzuzhijigouTreeNode"
+		parameterType="java.util.HashMap">
+		insert into commonTree_detail
+		(`code`,`name`,`typeName`,`modleName`,`attrIndex`,`parentIndex`)
+		values
+		(#{code},#{text},#{typeName},#{text},#{code},#{parentIndex})
+	</insert>
+	<insert id="commonTreeSave">
+		insert into zkmCommonTree
+		(`leftClick`,`rightClick`,`nodeId`,`nodeName`,`recordType`,`isSynchronous`,`requestUrl`,`type`,`normalNode`,`leftparam`,`rightparam`)
+		values
+		(#{leftClick},#{rightClick},#{nodeId},#{nodeName},#{recordType},#{isSynchronous},#{requestUrl},#{type},#{normalNode},#{leftparam},#{rightparam})
+	</insert>
+	<update id="updatezuzhijigouTreeNode"
+		parameterType="java.util.HashMap">
+		update commonTree_detail set `name`=#{text},`modleName`=#{text}
+		where code=#{id}
+	</update>
+	<!-- 组织机构修改节点信息 -->
+	<update id="updateTreeNode" parameterType="java.util.HashMap">
+		update commonTree_detail 
+		<set>
+		<if test="companyName!=null and companyName!=''">
+			`companyName`=#{companyName},
+		</if>
+		<if test="departmentName!=null and departmentName!=''">
+			`departmentName`=#{departmentName},
+		</if>
+		<if test="leftClick!=null and leftClick!=''">
+			`leftClick`=#{leftClick},
+		</if>
+		<if test="leftClick==null or leftClick==''">
+			`leftClick`='',
+		</if>
+		<if test="leftParam!=null and leftParam!=''">
+			`leftParam`=#{leftParam},
+		</if>
+		<if test="leftParam==null or leftParam==''">
+			`leftParam`='',
+		</if>
+		<if test="rightClick!=null and rightClick!=''">
+			`rightClick`=#{rightClick},
+		</if>
+		<if test="rightClick==null or rightClick==''">
+			`rightClick`='',
+		</if>
+		<if test="rightParam!=null and rightParam!=''">
+			`rightParam`=#{rightParam},
+		</if>
+		<if test="rightParam==null or rightParam==''">
+			`rightParam`='',
+		</if>
+		<if test="text!=null and text!=''">
+			`text`=#{text},
+		</if>
+		<if test="modleId!=null and modleId!=''">
+			`modleId`=#{modleId},
+		</if>
+		<if test="modleId==null or modleId==''">
+			`modleId`='',
+		</if>
+		<if test="nodeTypeUrl!=null and nodeTypeUrl!=''">
+			`nodeTypeUrl`=#{nodeTypeUrl}
+		</if>
+		<if test="nodeTypeUrl==null or nodeTypeUrl==''">
+			`nodeTypeUrl`=''
+		</if>
+		</set>
+		where id=#{id}	
+	</update>
+	<!-- 修改节点名称 -->
+	<update id="updateTreeNodeName" parameterType="java.util.HashMap">
+		update commonTree_detail 
+		<set>		
+		<if test="text!=null and text!=''">
+			`text`=#{text},
+		</if>		
+		</set>
+		where id=#{id}	
+	</update>
+	<!-- 组织机构拖拽(将拖拽到根节点的特殊位置) -->
+	<update id="updateCurrentNode">
+		update commonTree_detail set
+		parentId=#{pId} where id=#{id}
+	</update>
+	<!-- 组织机构拖拽(将拖拽到根节点之后根节点间排序) -->
+	<update id="updateZkmInfoBaseSortField">
+		update commonTree_detail set sortField=
+		case
+		<foreach collection="list" item="item" index="index">
+			when
+			id=#{item.id}
+			then
+			#{item.sortField}
+		</foreach>
+		else
+		sortField
+		end
+	</update>
+	<delete id="deleteTreeNode" parameterType="java.util.HashMap">
+		delete from commonTree_detail 
+		<trim prefix="where" prefixOverrides="AND|OR">
+		     <if test="id!='' and id!=null ">
+		        and  id=#{id}
+		     </if>
+		     <if test="recordType!='' and recordType!=null ">
+		        and  recordType=#{recordType}
+		     </if> 
+	    </trim>
+	</delete>
+	<delete id="deleteTreeNode_ZJ" parameterType="java.util.HashMap">
+		delete from dictinfo 
+		<trim prefix="where" prefixOverrides="AND|OR">
+		     <if test="id!='' and id!=null ">
+		        and  id=#{id}
+		     </if>
+		     <if test="recordType!='' and recordType!=null ">
+		        and  recordType=#{recordType}
+		     </if> 
+	    </trim>
+	</delete>
+	<delete id="deleteZjChildNode" parameterType="java.util.HashMap">
+		delete from dictinfo 
+		<trim prefix="where" prefixOverrides="AND|OR">
+		     <if test="id!='' and id!=null ">
+		        and  id=#{id}
+		     </if>
+		     <if test="grade_index!='' and grade_index!=null ">
+		        and  grade_index=#{grade_index}
+		     </if> 
+	    </trim>
+	</delete>
+	<delete id="deleteTreeNode_caidan" parameterType="java.util.HashMap">
+		delete from tree_weixincaidan 
+		<trim prefix="where" prefixOverrides="AND|OR">
+		     <if test="id!='' and id!=null ">
+		        and  id=#{id}
+		     </if>
+	    </trim>
+	</delete>
+	<delete id="deletezuzhijigouTreeNode"
+		parameterType="java.util.HashMap">
+		delete from commonTree_detail where
+		<foreach collection="list" item="item" index="index"
+			separator="or">
+			id=#{item}
+		</foreach>
+	</delete>
+	<delete id="commonTreeDelete" parameterType="java.util.HashMap">
+		delete from zkmCommonTree where `recordType`=#{recordType} 
+		<if test="type!=null and type!=''">
+			and `type`=#{type}
+		</if>
+	</delete>
+	
+	
+	<!-- 用户组织机构关联表查询 -->
+	<select id="getUserOrgeList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select * from suSecurityUserOrg where loginName=#{loginName}
+	</select>
+	<!-- 组织机构根节点 -->
+	<select id="getRootNodes" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	   select commonTree_detail.*,'org' as  'dataType'  from commonTree_detail  where `recordType`=#{recordType}
+	     and  parentId = ''  ORDER BY  sortField
+	</select>
+	<!-- 组织机构子节点 -->
+	<select id="getChilds" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	   select *,'org' as  'dataType'  from commonTree_detail  where 
+	       `recordType`=#{recordType} and  parentId &lt;&gt;''  
+	        <include refid="companyFilter"/>
+	        ORDER BY  sortField
+	</select>
+	
+	<select id="getAllOrg" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	   select *,'org' as  'dataType'  from commonTree_detail  where 
+	       `recordType`=#{recordType}  
+	         <include refid="companyFilter"/>
+	         ORDER BY  sortField
+	</select>
+	<!-- 后期合并用户helper里 -->
+	<select id="getAllUser" resultType="java.util.HashMap">
+	    SELECT
+			suser.loginName AS 'id',
+			suser.`name` AS 'text',
+			suser.phone_number,
+			GROUP_CONCAT(DISTINCT sur.roleId) AS 'role',
+			GROUP_CONCAT(DISTINCT sorg.orgCode) AS 'org',
+			'ren' AS 'dataType'
+		FROM
+			suSecurityUser suser
+		LEFT JOIN suSecurityUserRole sur ON suser.loginName = sur.loginName
+		LEFT JOIN suSecurityUserOrg sorg ON suser.loginName = sorg.loginName
+		 <include refid="companyFilter"/>
+		GROUP BY sorg.loginName 
+	</select>
+	<!-- 根据权限id找到角色id -->
+	<select id="roleIdByPermissionName" resultType="java.util.HashMap">
+		SELECT
+			sRole.id
+		FROM
+			suSecurityRoleMapPermission sRolePermission inner join suSecurityRole sRole ON sRolePermission.roleCode = sRole.name , (SELECT s.id from suSecurityPermission s WHERE `name`= #{permissionName}) sp
+		where sRolePermission.permissionCode = sp.id
+	</select>
+	
+</mapper>
+
+
+
+

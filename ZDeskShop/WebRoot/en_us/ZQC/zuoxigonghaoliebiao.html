@@ -1,0 +1,157 @@
+<!DOCTYPE  HTML><html lang="en"><head>
+		<title></title>
+
+		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+		<meta http-equiv="description" content="this is my page">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<link rel="stylesheet" href="../../css/bootstrap.css" type="text/css">
+		<link rel="stylesheet" href="../../js/dataTables/css/jquery.dataTables.css" type="text/css">
+
+		<!-- 工具 -->
+		<link rel="stylesheet" href="../../js/dataTables/css/dataTables.tableTools.min.css" type="text/css">
+		<!-- bootstrap 与 datatable结合 -->
+		<link rel="stylesheet" href="../../js/dataTables/css/DT_bootstrap.css" type="text/css">
+		<link rel="stylesheet" href="../../js/dataTables/css/font-awesome.css">
+		<link rel="stylesheet" href="../../js/dataTables/css/Z_DataTalbeCheckBox.css">
+		<link rel="stylesheet" href="../../js/dataTables/css/dataTables.colVis.min.css" type="text/css">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+
+		
+
+	<script type="text/javascript" src="../../js/jquery.js"></script>
+<script type="text/javascript" src="../../js/bootstrap.js"></script>
+<script type="text/javascript" src="../../js/common_utils.js"></script>
+<script type="text/javascript" src="../../js/dataTables/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="../../js/dataTables/js/dataTables.colReorder.js"></script>
+<script type="text/javascript" src="../../js/dataTables/js/dataTables.colVis.js"></script>
+<script type="text/javascript" src="../../js/dataTables/js/dataTables.tableTools.min.js"></script>
+<script type="text/javascript" src="../../js/dataTables/js/DT_bootstrap.js"></script>
+<script type="text/javascript" src="../../js/golbal_params.js"></script>
+<script type="text/javascript" src="../../js/appCommonUtil.js"></script>
+<script type="text/javascript" src="../../js/appCommonCurdUtils.js"></script>
+<script type="text/javascript" src="./ZQC_common.js"></script>
+<script type="text/javascript" src="./zuoxigonghaoliebiao.js"></script>
+<script type="text/javascript">
+		$(document).ready(function() {
+			window.parent.ZQC_GOLBAL_PARAM["zuoxigonghaoData"]={};
+		    $('#tableForUserData').dataTable({
+			    dom: 'TRlfrtip',
+				bProcessing : true, //是否启用正在加载中...
+		        bPaginate: true, //翻页功能
+				bLengthChange: false, //改变每页显示数据数量
+				bFilter: false, //过滤功能
+				bSort: true, //排序功能
+				bInfo: true,//页脚信息
+				bAutoWidth: false, //自动宽度
+				sPaginationType: "bootstrap",//分页样式
+			    scrollCollapse: true,
+				scrollX:"100%",
+				"bScrollCollapse": true,
+				columns: [
+					{ title:"<center><input type='checkbox' id='selectall2' onclick=toggleChecks('tableForUserData','selectall2'); ></input></center>",data: null, defaultContent: '', orderable: false,width:10 },
+					/**title 表头  data json 对应key **/
+{title:"坐席工号",data:"alias1"}
+		        ],
+		        oLanguage: {
+					"sLengthMenu": "每页显示 _MENU_条",
+					"sZeroRecords": "没有找到符合条件的数据",
+					"sProcessing": "数据正在加载，请稍后...",
+					"sInfo": "当前第 _START_ - _END_ 条　共计 _TOTAL_ 条",
+					"sInfoEmpty": "没有记录",
+					"sInfoFiltered": "(从 _MAX_ 条记录中过滤)",
+					"sSearch": "搜索：",
+					"oPaginate": {
+					"sFirst": "首页",
+					"sPrevious": "前一页",
+					"sNext": "后一页",
+					"sLast": "尾页"
+				    }
+		        }, 
+		        tableTools: {
+		            //single 单选 multi 多选  os 可以按ctrl 选择		            
+		            //回调 单选
+		            fnRowSelected: function ( nodes ) {
+		            	choseOK();
+		            },
+		            sRowSelect:'multi',
+		            "aButtons": []
+		        }
+		    });
+		    
+			//绑定事件 on
+		    var table= $('#tableForUserData').DataTable();
+		    
+		    //数据载入
+		    initUserData();
+		    
+		});	
+
+			</script>
+</head><body>
+		<!-- 头部导航条 -->
+		<!-- 数据表格展示模块 开始 -->
+		<div class="row-fluid" style="margin-top: -33px;margin-bottom:-50px;">
+			<div class="widget-box">
+				<div class="widget-box">
+					<div class="widget-title" style="height: 40px; line-height: 40px; overflow: hidden;">
+						<span class="icon" style="float: left; padding: 0px 10px;">
+							<i class="icon-search"></i> </span>
+						&nbsp;&nbsp;&nbsp;每页显示条数：
+						<select name="pageSize" id="pageSize" style="width: 80px; margin-bottom: 0px;" onchange="setPageNum('tableForData','pageSize')">
+							<option selected value="10">
+								10
+							</option>
+							<option value="30">
+								30
+							</option>
+							<option value="50">
+								50
+							</option>
+							<option value="100">
+								100
+							</option>
+						</select>
+						<div class="buttons" style="margin-top: 0px;" id="cols">
+							<button type="button" class="btn" onclick="showSearchItems('searchItems');">Expand/close the search term</button>
+						</div>
+					</div>
+				</div>
+				<!-- 搜索项模块 开始 -->
+				<div id="searchItems" class="widget-content row" style="margin: 0 auto; text-align: center; width: 100%; border-left: 1px solid #ccc; border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; margin-top: -18px; margin-bottom: 18px; display: none;">
+					<form action="" id="searchUserDataForm">
+						<table id="searchUserDataTable" style="margin: auto; width: 100%;margin-left: 12%">
+							<tbody><tr>
+								<td style="text-align: right;">坐席工号：:</td>
+								<td style="text-align: left;">
+									<input type="text" id="alias1" name="alias1" style="margin-bottom: 0px; width: 170px;">
+								</td>
+							</tr>
+						</tbody></table>
+					</form>
+
+					<button id="btn_searchUserData" class="btn" onclick="searchData();">
+						<i class="icon-tag"></i>提交搜索</button>
+
+				</div>
+				<!-- 搜索项模块 结束 -->
+				<!-- 数据表格展示模块 开始 -->
+				<!-- class 或 = display -->
+				<table id="tableForUserData" style="width: 100% !important;margin-bottom:-300px;" class="table table-striped table-bordered nowrap" cellspacing="0">
+
+				</table>
+			</div>
+		</div>
+	
+</body></html>

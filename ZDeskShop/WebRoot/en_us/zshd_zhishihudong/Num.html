@@ -1,0 +1,247 @@
+<!DOCTYPE  HTML>
+<html lang="en">
+	<head>
+		<title>最热问题</title>
+
+		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3" />
+		<meta http-equiv="description" content="this is my page" />
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="../../css/bootstrap.css" type="text/css"></link>
+		<link rel="stylesheet" href="../../js/dataTables/css/jquery.dataTables.css" type="text/css"></link>
+
+		<!-- 工具 -->
+		<link rel="stylesheet"href="../../js/dataTables/css/dataTables.tableTools.min.css"type="text/css"></link>
+		<!-- bootstrap 与 datatable结合 -->
+		<link rel="stylesheet" href="../../js/dataTables/css/DT_bootstrap.css" type="text/css"></link>
+		<link rel="stylesheet" href="../../js/dataTables/css/font-awesome.css"></link>
+		<link rel="stylesheet" href="../../js/dataTables/css/Z_DataTalbeCheckBox.css"></link>
+		<link rel="stylesheet" href="../../js/dataTables/css/dataTables.colVis.min.css" type="text/css"></link>
+		<script type="text/javascript" src="../../js/jquery.js"></script>
+		<script type="text/javascript" src="../../js/bootstrap.js"></script>
+		<script type="text/javascript" src="../../js/common_utils.js"></script>
+		<script type="text/javascript" src="../../js/dataTables/js/jquery.dataTables.js"></script>
+		<script type="text/javascript" src="../../js/dataTables/js/dataTables.colReorder.js"></script>
+		<script type="text/javascript" src="../../js/dataTables/js/dataTables.colVis.js"></script>
+		<script type="text/javascript" src="../../js/dataTables/js/dataTables.tableTools.min.js"></script>
+		<script type="text/javascript" src="../../js/dataTables/js/DT_bootstrap.js"></script>
+		<script type="text/javascript" src="../../js/golbal_params.js"></script>
+		<script type="text/javascript" src="../../js/appCommonUtil.js"></script>
+		<script type="text/javascript" src="../../js/html5.js"></script>
+		<script type="text/javascript" src="../../js/appCommonCurdUtils_new.js"></script>
+
+		<style type="text/css" class="init">
+	.orderDiv {
+	padding-left: 2px;
+	border: 1px solid #33AECC;
+	border-collapse: separate;
+	border-left-width: 1px;
+	border-right-width: 1px;
+	border-right-color: #33AECC;
+	cellspacing: 0px;
+	cellpadding: 0px;
+	min-height: 100px;
+	padding-bottom: 1px;
+	margin-left: 0px;
+    *zoom: 1;
+}
+
+		</style>
+
+		<script type="text/javascript">
+		
+
+		/**
+		 * 此变量用于获取对应问题的信息
+		 */
+		//var GOLBAL_PARAM={};
+		//GOLBAL_PARAM["i18nPrompt"]=getI18nPromptData();
+				
+		
+		$(document).ready(function() {
+			var ta=doSearch();
+			 var numdata=ta.slice(0,200);
+			$('#promptManager').dataTable({
+				data:numdata,//数据赋值
+			    dom: 'TRlfrtip',
+				bProcessing : true, //是否启用正在加载中...
+		        bPaginate: true, //翻页功能
+				bLengthChange: true, //改变每页显示数据数量
+				bFilter: false, //过滤功能
+				bSort: true, //排序功能
+				bInfo: true,//页脚信息
+				bAutoWidth: false, //自动宽度
+				sPaginationType: "bootstrap",//分页样式
+			    scrollCollapse: false,
+				scrollX:"100%",
+				"sScrollX":"100%",
+				'sScrollY':'400px',
+		        "aaSorting":[[26,'desc']],
+				//"bScrollCollapse": true,
+				columns: [
+					{ title:"<center><input type='checkbox' id='selectall' onclick='toggleChecks(this);' ></input></center>",data: null, defaultContent: '', orderable: false,width:10 },
+					/**title 表头  data json 对应key **/
+			        {"title":"标题" ,data: 'title',width:'30px'},
+			        {"title":"业务分类",data:'classification'},
+			        {"title":"建议人",data:'userName'},
+			        {"title":"建议时间",data: 'suggestTime'},
+			        {"title":"序号",data: 'questionId',width:'6%',"bVisible": false},
+			        {"title":"建议渠道",data: 'suggestChannel',width:'6%',"bVisible": false},
+			        {"title":"所在专组",data: 'placeGroup',width:'6%',"bVisible": false},
+			        {"title":"建议/工单内容",data: 'suggestContent',width:'6%',"bVisible": false},
+			        {"title":"工单编号",data: 'orderNumber',width:'6%',"bVisible": false},
+			        {"title":"负责人",data: 'principal',width:'6%',"bVisible": false},
+			        {"title":"是否转发",data: 'transpond',width:'6%',"bVisible": false},
+			        {"title":"处理进度",data: 'dealSchedule',width:'6%',"bVisible": false},
+			        {"title":"答复内容",data: 'answerContent',width:'6%',"bVisible": false},
+			        {"title":"答复日期",data: 'answerTime',width:'6%',"bVisible": false},
+			        {"title":"分行/总行部门",data: 'dept',width:'6%',"bVisible": false},
+			        {"title":"发送时间",data: 'postTime',width:'6%',"bVisible": false},
+			        {"title":"发送内容",data: 'postContent',width:'6%',"bVisible": false},
+			        {"title":"问题数量",data: 'questionNum',width:'6%',"bVisible": false},
+			        {"title":"催办日期",data: 'cuiBanTime',width:'6%',"bVisible": false},
+			        {"title":"催办方式",data: 'cuiBanWay',width:'6%',"bVisible": false},
+			        {"title":"回复时间",data: 'replayTime',width:'6%',"bVisible": false},
+			        {"title":"回复内容及处理结果",data: 'replayContent',width:'6%',"bVisible": false},
+			        {"title":"是否及时回复",data: 'timelyReplay',width:'6%',"bVisible": false},
+			        {"title":"其他说明",data: 'other',width:'6%',"bVisible": false},
+			        {"title":"点击数",data: 'cilckNum',width:'6%',"bVisible": false},
+			        {"title":"关注数",data: 'attentionNum',width:'6%'}
+		        ],
+		        oLanguage: {
+					"sLengthMenu": "每页显示 _MENU_条",
+					"sZeroRecords": "没有找到符合条件的数据",
+					"sProcessing": "数据正在加载，请稍后...",
+					"sInfo": "当前第 _START_ - _END_ 条　共计 _TOTAL_ 条",
+					"sInfoEmpty": "没有记录",
+					"sInfoFiltered": "(从 _MAX_ 条记录中过滤)",
+					"sSearch": "搜索：",
+					"oPaginate": {
+					"sFirst": "首页",
+					"sPrevious": "前一页",
+					"sNext": "后一页",
+					"sLast": "尾页"
+				    }
+		        }, 
+		        tableTools: {
+		            //single 单选 multi 多选  os 可以按ctrl 选择		            
+		            //回调 单选
+		            fnRowSelected: function ( nodes ) {
+		               var index=nodes[0]._DT_RowIndex;	
+		               var data = table.row(index).data();
+					  //scroll2data("addAndUpdate");
+		            },
+		            sRowSelect:'single',
+		            "aButtons": []
+		        }
+		    });
+		    
+			//绑定事件 on
+		    var table= $('#promptManager').DataTable();
+		    
+		    $('#promptManager tbody').dblclick('click',function(e){
+		    	scroll2data("addAndUpdate");
+		    	/*
+		    	var index = $(this).context._DT_RowIndex; //行号
+		    	var data = table.row(index).data();
+		    	$("#i18nPromptImport").hide();
+		        $("#addLangugeModal").hide();
+		        $("#promptKey").attr("readonly",true);
+		        $("#addAndUpdate").slideDown(200);
+		        $("#btn_add").show();
+				$("#btn_submit").show();
+				$("#btn_shou").show();
+		    	initForm(data);
+				*/
+			});
+			$('#promptManager_filter').html("积分："+integralNum);
+			var attr=document.getElementById("promptManager_filter");
+			attr.setAttribute("style", "margin-right:40px"); 
+			
+		    //自定义列插件绑定
+		    var colvis = new $.fn.dataTable.ColVis(table,{ buttonText: '自定义显示列',exclude: [ 0 ,1] });
+		    $(colvis.button()).insertBefore('#cols'); 
+			});
+			
+				function doSearch(){
+				var pat={};
+		        var rdata=[];
+		        pat.columnValues={};
+		        pat.isPagination=false;
+	            pat.tableName = "zshd_question";
+			    commonSelect(pat,false,function(data){
+			                if(data&&data.data){
+			                	for(var i=0;i<data.data.length;i++){
+		             				if(data.data[i].title.length>10){
+		                				data.data[i].title=data.data[i].title.substr(0,9)+"......";
+		             				}
+		         				}	
+			                  rdata=data.data;
+		               		}
+		    	});
+			     return rdata;
+		}
+		
+			//刷新
+			function refresh(){
+			     var table=$('#promptManager').DataTable();
+			     //清空筛选
+			     table.search("").draw();
+			     //清空数据
+			     table.clear().draw();
+			     //重新加载数据
+			     var data=doSearch(); 
+			     table.rows.add(data).draw(true);
+			     $('#addAndUpdate').hide();
+			
+			}
+			//每页显示条数
+			function setPageNum(obj){
+			  var table=$('#promptManager').DataTable();
+			  table.page.len(obj.value).draw();
+			  //alert(obj.value);
+			}
+					
+			//测试获取提示信息是否正常
+			function testI18n(){
+				var input=$("#testI18n").val();
+				var pat={'${0}':'123','${1}':'456'};
+				//alert(zinglabs.i18n.getText(input,pat));
+				zinglabs.i18n.alert(input,pat);
+			}
+			
+			</script>
+
+	</head>
+	<body>
+		<!-- 头部导航条 -->
+		<!-- 数据表格展示模块 开始 -->
+		<div class="row-fluid" style="margin-top: -33px;">
+			<div class="widget-box">
+			    <div class="widget-box">
+			    </div>
+				<div class="widget-content nopadding" style="margin-top:-20px;position:relative;">
+					<!-- class 或 = display -->
+					<table style="width:100% !important;margin: 0;" class="table table-striped table-bordered nowrap"
+						id="promptManager" cellspacing="0"></table>
+				</div>
+			</div>
+		</div>
+	
+		<div class="widget-box collapsible" style="margin-top: -15px;">
+			<div class="widget-title"
+				style="height: 40px; line-height: 40px; overflow: hidden;">
+				<span class="icon" style="float: left; padding: 0px 10px;"><i
+					class="icon-cog"></i> </span> &nbsp;&nbsp;&nbsp;
+				<button type="button" class="btn" onclick="refresh();">
+					<i class="icon-refresh"></i>刷 新
+				</button>
+				<button type="button" class="btn" onclick="reloadI18nPromptCache();">
+					重载提示缓存
+				</button>
+
+			</div>
+		</div>
+		<!-- 功能按钮模块 结束 -->
+
+	</body>
+</html>

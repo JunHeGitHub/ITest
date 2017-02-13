@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.zinglabs.apps.suPermission">
+	<!-- 根据用户名获取用户对象 -->
+	<select id="FindMHUserByLoginNameSel" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+	   SELECT loginName FROM `MH_ZDeskUserCompany` WHERE loginName=#{loginName};
+	</select>
+	<!-- 新增有效用户 -->
+	<insert id="AddUserInsOfMHIns" parameterType="java.util.HashMap">
+	INSERT INTO `MH_ZDeskUserCompany`(loginName,companyId) VALUES (#{loginName},#{companyId});
+	</insert>
+	<!-- 根据用户用获取chatWorkflow_binding表中已绑定的用户 -->
+	<select id="findMHuserByLoginNameIsBinding" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT zdeskUserLoginName FROM `chatWorkflow_binding` WHERE zdeskUserLoginName in(${loginNames});
+	</select>
+	<!-- 删除MH_ZDeskUserCompany用户 -->
+	<delete id="deleteMH" parameterType="java.util.HashMap">
+		DELETE FROM MH_ZDeskUserCompany WHERE loginName in(${loginNames});
+	</delete>
+</mapper>

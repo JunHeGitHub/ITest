@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.zinglabs.apps.zshdSearch">
+	<!-- 根据条件查询用户(高级查询) -->
+	<select id="searchQuestion" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT * from zshd_question WHERE 1=1
+		<include refid="selectu"/>
+	</select>
+	<sql id="selectu">
+		<if test="questionId != null and questionId != ''"> AND questionId like #{questionId}</if>
+		<if test="title != null and title != ''"> AND title like #{title}</if>
+		<if test="userName != null and userName != ''"> AND userName=#{userName}</if>
+		<if test="loginName != null and loginName != ''"> AND loginName=#{loginName}</if>
+		
+		<if test="suggestChannel != null and suggestChannel != ''"> AND suggestChannel=#{suggestChannel}</if>
+		<if test="placeGroup != null and placeGroup != ''"> AND placeGroup=#{placeGroup}</if>
+		<if test="classification != null and classification != ''"> AND classification=#{classification}</if>
+		<if test="suggestContent != null and suggestContent != ''"> AND suggestContent like #{suggestContent}</if>
+		<if test="orderNumber != null and orderNumber != ''"> AND orderNumber=#{orderNumber}</if>
+		<if test="principal != null and principal != ''"> AND principal=#{principal}</if>
+		<if test="transpond != null and transpond != ''"> AND transpond=#{transpond}</if>
+		<if test="dealSchedule != null and dealSchedule != ''"> AND dealSchedule=#{dealSchedule}</if>
+		<if test="answerContent != null and answerContent != ''"> AND answerContent like #{answerContent}</if>
+		<if test="dept != null and dept != ''"> AND dept=#{dept}</if>
+		<if test="postContent != null and postContent != ''"> AND postContent like #{postContent}</if>
+		<if test="questionNum != null and questionNum != ''"> AND questionNum=#{questionNum}</if>
+		<if test="cuiBanWay != null and cuiBanWay != ''"> AND cuiBanWay=#{cuiBanWay}</if>
+		<if test="replayContent != null and replayContent != ''"> AND replayContent like #{replayContent}</if>
+		<if test="timelyRepaly != null and timelyRepaly != ''"> AND timelyRepaly=#{timelyRepaly}</if>
+		<if test="other != null and other != ''"> AND other like #{other}</if>
+
+	
+	    <!--建议时间  -->
+		<if test="beginTime != null and beginTime != '' and endTime!=null and endTime!=''"> AND suggestTime &lt;= #{endTime} AND suggestTime &gt;= #{beginTime}</if>	
+		<!--催办日期 -->
+		<if test="cuiBanBeginTime != null and cuiBanEndTime != ''"> AND cuiBanTime &lt;= #{cuiBanEndTime} AND cuiBanTime &gt;= #{cuiBanBeginTime}</if>	
+		<!-- 答复时间 -->
+		<if test="answerBeginTime != null and answerEndTime != ''"> AND answerTime &lt;= #{answerEndTime} AND answerTime &gt;= #{answerBeginTime}</if>	
+		<!-- 发送时间 -->
+		<if test="postBeginTime != null and postEndTime != ''">AND postTime &lt;= #{postEndTime} AND postTime &gt;= #{postBeginTime}</if>	
+		<!-- 回复时间 -->
+		<if test="replayBeginTime != null and replayEndTime != ''"> AND replayTime &lt;= #{replayEndTime} AND replayTime &gt;= #{replayBeginTime}</if>	
+
+	</sql>
+	
+<!-- 积分流水查询 -->
+ <select id="integralQuery" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT * from zshd_integral WHERE 1=1
+		<include refid="selectin"/>
+	</select>
+	<sql id="selectin">
+		<if test="loginName != null and loginName != ''"> AND loginName=#{loginName}</if>
+		
+	    <!--积分时间  -->
+		<if test="beginTime != null and beginTime != '' and endTime!=null and endTime!=''"> AND integralTime &lt;= #{endTime} AND integralTime &gt;= #{beginTime}</if>	
+		
+	</sql>
+	  
+   <!-- 我关注的问题查询 -->
+	 <select id="attentionQuestion" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT * from zshd_attentionQuestion WHERE 1=1
+		<include refid="selecta"/>
+	</select>
+	<sql id="selecta">
+		<if test="title != null and title != ''"> AND title like #{title} AND attentionName=#{attentionName}</if>
+		<if test="classification != null and classification != ''"> AND classification=#{classification} AND attentionName=#{attentionName}</if>	
+		
+	</sql>
+
+	<!-- 根据登录名查积分数(我的问题) -->
+	<select id="doSeatchByUserName" parameterType="java.util.HashMap" resultType="java.lang.Integer" flushCache="true">
+		SELECT sum(integralNum) from zshd_integral WHERE loginName=#{loginName}
+	</select>
+	
+	<!--互动问题   查询表单 -->
+	<select id="search" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT * from zshd_question WHERE 1=1
+		<include refid="selecth"/>
+	</select>
+	<sql id="selecth">
+		<if test="SquestionId != null and SquestionId != ''"> AND questionId like #{SquestionId}</if>
+		<if test="Stitle != null and Stitle != ''"> AND title like #{Stitle}</if>
+		<if test="SuserName != null and SuserName != ''"> AND userName=#{SuserName}</if>
+		<if test="SloginName != null and SloginName != ''"> AND loginName=#{SloginName}</if>
+		
+		<if test="SsuggestChannel != null and SsuggestChannel != ''"> AND suggestChannel=#{SsuggestChannel}</if>
+		<if test="SplaceGroup != null and SplaceGroup != ''"> AND placeGroup=#{SplaceGroup}</if>
+		<if test="classification != null and classification != ''"> AND classification=#{classification}</if>
+		<if test="SsuggestContent != null and SsuggestContent != ''"> AND suggestContent like #{SsuggestContent}</if>
+		<if test="SorderNumber != null and SorderNumber != ''"> AND orderNumber=#{SorderNumber}</if>
+		<if test="SdealSchedule != null and SdealSchedule != ''"> AND dealSchedule=#{SdealSchedule}</if>
+
+	
+	    <!--建议时间  -->
+		<if test="startDate != null and startDate != '' and endDate !=null and endDate !=''"> AND suggestTime &lt;= #{endDate} AND suggestTime &gt;= #{startDate}</if>	
+	</sql>
+	
+	<!-- 积分排行 -->
+	<select id="doIntegraNum" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT SUM(a.integralNum) number,a.userName FROM zshd_integral a GROUP BY a.userName ORDER BY number DESC
+	</select>
+	<!-- 根据选中的questionId和关注人查询关注表里 的数据 -->
+	<select id="guanzhu" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+		SELECT count(1) number from zshd_attentionQuestion WHERE questionId in (${questionId}) AND attentionName in (${attentionName})
+	</select>
+	
+	<!-- 查询问题表你所有的数据   互动问题页下的  最新问题 -->
+	<select id="doSeatchAll" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select * from zshd_question order by suggestTime desc
+	</select>
+	
+	<!-- 查询问题表你所有的数据   互动问题页下的  最热问题 -->
+	<select id="doSearchNum" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select * from zshd_question order by attentionNum desc
+	</select>
+	
+	<!-- 我的问题  根据时间段查询 -->
+	<select id="MyQuestion" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT * from zshd_question WHERE 1=1
+		<include refid="Question"/>
+	</select>
+	<sql id="Question">
+		<!--积分时间  -->
+		<if test="mybeginTime != null and mybeginTime != '' and myendTime != null and myendTime != ''"> AND suggestTime &lt;= #{myendTime} AND suggestTime &gt;= #{mybeginTime} AND loginName=#{loginName}</if>
+	</sql>
+</mapper>

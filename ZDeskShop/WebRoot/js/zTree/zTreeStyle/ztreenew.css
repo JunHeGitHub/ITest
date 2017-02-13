@@ -1,0 +1,191 @@
+.tree {
+    min-height:20px;
+    padding:19px;
+    margin-bottom:20px;
+    background-color:#fbfbfb;
+    border:1px solid #999;
+    -webkit-border-radius:4px;
+    -moz-border-radius:4px;
+    border-radius:4px;
+    -webkit-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05)
+}
+/*-------------------------------------
+zTree Style
+
+version:    3.4
+author:     Hunter.z
+email:      hunter.z@263.net
+website:    http://code.google.com/p/jquerytree/
+
+-------------------------------------*/
+
+.ztree * {padding:0; margin:0; font-size:11.9px; font-family:  "Helvetica Neue",Helvetica,Arial,sans-serif;}
+.ztree {margin:0; padding:5px; color:black}
+.ztree li{padding:0; margin:0; list-style:none; line-height:21px; text-align:left; white-space:nowrap; outline:0}
+.ztree li ul{ margin:0; padding:0 0 0 18px}
+.ztree li ul.line{ background:url(./img/line_conn.png) 0 0 repeat-y;}
+
+.ztree li a {padding-right:3px; margin:0; cursor:pointer; height:21px; color:#08c; background-color: transparent; text-decoration:none; display: inline-block}
+.ztree li a:hover {text-decoration:underline; color:#005580;}
+.ztree li a.curSelectedNode {padding-top:0px;
+
+/*background-color:#e5e5e5; */color:black;  height:21px; opacity:0.7;}
+.ztree li a.curSelectedNode_Edit {padding-top:0px; background-color:#e5e5e5; color:black; height:21px; border:1px #666 solid; opacity:0.8;}
+.ztree li a.tmpTargetNode_inner {padding-top:0px; background-color:#aaa; color:white; height:21px; border:1px #666 solid;
+    opacity:0.8; filter:alpha(opacity=80)}
+.ztree li a.tmpTargetNode_prev {}
+.ztree li a.tmpTargetNode_next {}
+.ztree li a input.rename {height:14px; width:80px; padding:0; margin:0;
+    font-size:12px; border:1px #7EC4CC solid; *border:0px}
+
+.ztree li span.button {line-height:0; margin:0; width:21px; height:18px; display: inline-block; vertical-align:middle;
+    border:0 none; cursor: pointer;outline:none;
+    background-color:transparent; background-repeat:no-repeat; background-attachment: scroll;
+    background-image:url("./img/metronew.png"); *background-image:url("./img/metronew.gif")}
+
+.ztree li span.button.chk {width:13px; height:13px; margin:0 2px; cursor: auto}
+.ztree li span.button.chk.checkbox_false_full {background-position: -5px -5px;}
+.ztree li span.button.chk.checkbox_false_full_focus {background-position: -5px -26px;}
+.ztree li span.button.chk.checkbox_false_part {background-position: -5px -48px;}
+.ztree li span.button.chk.checkbox_false_part_focus {background-position: -5px -68px;}
+.ztree li span.button.chk.checkbox_false_disable {background-position: -5px -89px;}
+.ztree li span.button.chk.checkbox_true_full {background-position: -26px -5px;}
+.ztree li span.button.chk.checkbox_true_full_focus {background-position: -26px -26px;}
+.ztree li span.button.chk.checkbox_true_part {background-position: -26px -48px;}
+.ztree li span.button.chk.checkbox_true_part_focus {background-position: -26px -68px;}
+.ztree li span.button.chk.checkbox_true_disable {background-position: -26px -89px;}
+.ztree li span.button.chk.radio_false_full {background-position: -47px -5px;}
+.ztree li span.button.chk.radio_false_full_focus {background-position: -47px -26px;}
+.ztree li span.button.chk.radio_false_part {background-position: -47px -47px;}
+.ztree li span.button.chk.radio_false_part_focus {background-position: -47px -68px;}
+.ztree li span.button.chk.radio_false_disable {background-position: -47px -89px;}
+.ztree li span.button.chk.radio_true_full {background-position: -68px -5px;}
+.ztree li span.button.chk.radio_true_full_focus {background-position: -68px -26px;}
+.ztree li span.button.chk.radio_true_part {background-position: -68px -47px;}
+.ztree li span.button.chk.radio_true_part_focus {background-position: -68px -68px;}
+.ztree li span.button.chk.radio_true_disable {background-position: -68px -89px;}
+
+.ztree li span.button.switch {width:21px; height:21px}
+.ztree li span.button.root_open{background-position:-59px -42px}
+.ztree li span.button.root_close{background-position:-60px -41px}
+.ztree li span.button.roots_open{background-position: -105px 0;}
+.ztree li span.button.roots_close{background-position: -126px 0;}
+.ztree li span.button.center_open{background-position: -103px -20px;}
+.ztree li span.button.center_close{background-position: -122px -20px;}
+.ztree li span.button.bottom_open{background-position: -101px -40px;}
+.ztree li span.button.bottom_close{background-position: -121px -40px;}
+.ztree li span.button.noline_open{background-position: -126px -84px;}
+.ztree li span.button.noline_close{background-position: -105px -84px;}
+.ztree li span.button.root_docu{ background:none;}
+.ztree li span.button.roots_docu{background-position: -84px 0;}
+.ztree li span.button.center_docu{background-position: -84px -21px;}
+.ztree li span.button.bottom_docu{background-position: -84px -42px;}
+.ztree li span.button.noline_docu{ background:none;}
+
+.ztree li span.button.ico_open{margin-right:2px; background-position: -148px -17px; vertical-align:top; *vertical-align:middle}
+.ztree li span.button.ico_close{margin-right:2px; margin-right:2px; background-position: -150px 5px; vertical-align:top; *vertical-align:middle}
+.ztree li span.button.ico_docu{margin-right:2px; background-position: -147px -42px; vertical-align:top; *vertical-align:middle}
+.ztree li span.button.edit {margin-left:3px; margin-right: -5px; background-position: -189px -20px; vertical-align:top; *vertical-align:middle}
+
+.ztree li span.button.remove {margin-left:2px; margin-right: -1px; background-position: -189px -41px; vertical-align:top; *vertical-align:middle}
+
+
+.ztree li span.button.ico_loading{margin-right:2px; background:url(./img/loading.gif) no-repeat scroll 0 0 transparent; vertical-align:top; *vertical-align:middle}
+
+ul.tmpTargetzTree {background-color:#FFE6B0; opacity:0.8; filter:alpha(opacity=80)}
+
+span.tmpzTreeMove_arrow {width:16px; height:21px; display: inline-block; padding:0; margin:2px 0 0 1px; border:0 none; position:absolute;
+    background-color:transparent; background-repeat:no-repeat; background-attachment: scroll;
+    background-position:-200px -30px; background-image:url("./img/1.png"); *background-image:url("./img/1.gif")}
+
+ul.ztree.zTreeDragUL {margin:0; padding:0; position:absolute; height:auto;overflow:hidden; background-color:#cfcfcf; border:1px #00B83F dotted; opacity:0.8; filter:alpha(opacity=80)}
+.zTreeMask {z-index:10000; background-color:#cfcfcf; opacity:0.0; filter:alpha(opacity=0); position:absolute}
+
+.ztree li {
+    list-style-type:none;
+    margin:0;
+    padding:10px 5px 0 5px;
+    position:relative
+}
+.ztree li::before, .ztree li::after {
+    content:'';
+    left:-20px;
+    position:absolute;
+    right:auto
+}
+.ztree li::before {
+    border-left:1px solid #999;
+    bottom:50px;
+    height:100%;
+    top:-14px;
+    width:1px
+}
+.ztree li::after {
+    border-top:1px solid #999;
+    height:20px;
+    top:24px;
+    width:33px
+}
+.ztree li span {
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+    border-top-width: 1px;
+border-right-width-value: 1px;
+border-right-width-ltr-source: physical;
+border-right-width-rtl-source: physical;
+border-bottom-width: 1px;
+border-left-width-value: 1px;
+border-left-width-ltr-source: physical;
+border-left-width-rtl-source: physical;
+border-top-style: solid;
+border-right-style-value: solid;
+border-right-style-ltr-source: physical;
+border-right-style-rtl-source: physical;
+border-bottom-style: solid;
+border-left-style-value: solid;
+border-left-style-ltr-source: physical;
+border-left-style-rtl-source: physical;
+border-top-color: #999;
+border-right-color-value: rgb(153, 153, 153);
+border-right-color-ltr-source: physical;
+border-right-color-rtl-source: physical;
+border-bottom-color: #999;
+border-left-color-value: rgb(153, 153, 153);
+border-left-color-ltr-source: physical;
+border-left-color-rtl-source: physical;
+-moz-border-top-colors: none;
+-moz-border-right-colors: none;
+-moz-border-bottom-colors: none;
+-moz-border-left-colors: none;
+border-image-source: none;
+border-image-slice: 100% 100% 100% 100%;
+border-image-width: 1 1 1 1;
+border-image-outset: 0 0 0 0;
+border-image-repeat: stretch stretch;
+    border:1px solid #999;
+    border-bottom-width:1px;
+    border-left-width:1px;
+    border-radius:5px;
+    display:inline-block;
+    padding:3px 3px;
+    text-decoration:none;
+    background-color:#e5e5e5;
+    opacity:0.5;
+    color:black;
+}
+.ztree li.parent_li>span {
+    cursor:pointer
+}
+.ztree>ul>li::before, .ztree>ul>li::after {
+    border:0
+}
+.ztree li:last-child::before {
+    height:39px
+}
+.ztree li.parent_li>span:hover, .ztree li.parent_li>span:hover+ul li span {
+    background:#eee;
+    border:1px solid #94a0b4;
+    color:#000
+}

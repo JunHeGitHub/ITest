@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="questionSqlSession" class="com.zinglabs.base.core.springSupport.DbidSqlsession" singleton="false">
+		<property name="namespance" value="com.zinglabs.apps.zshdSearch" ></property>
+		<property name="dbid" value="ZKM"></property>
+	</bean>
+	
+	
+	<bean id="QuestionService"  name="QuestionService"   class="com.zinglabs.apps.zshdSearch.QuestionService"></bean>
+</beans>

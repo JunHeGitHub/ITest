@@ -1,0 +1,330 @@
+<!DOCTYPE  HTML><html lang="en"><head>
+		<title>ScoreInfo.html</title>
+
+		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+		<meta http-equiv="description" content="this is my page">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<link rel="stylesheet" href="../../css/bootstrap.css" type="text/css">
+		<link rel="stylesheet" href="../../css/bootstrap-datetimepicker.min.css" type="text/css">
+
+		<link rel="stylesheet" href="../../js/dataTables/css/jquery.dataTables.css" type="text/css">
+
+		<!-- 工具 -->
+		<link rel="stylesheet" href="../../js/dataTables/css/dataTables.tableTools.min.css" type="text/css">
+		<!-- bootstrap 与 datatable结合 -->
+		<link rel="stylesheet" href="../../js/dataTables/css/DT_bootstrap.css" type="text/css">
+		<link rel="stylesheet" href="../../js/dataTables/css/font-awesome.css">
+		<link rel="stylesheet" href="../../js/dataTables/css/Z_DataTalbeCheckBox.css">
+		<link rel="stylesheet" href="../../js/dataTables/css/dataTables.colVis.min.css" type="text/css">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<link rel="stylesheet" href="../../js/artdialog/ui-dialog.css" type="text/css">
+		
+		
+		<!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+		
+	<script type="text/javascript" src="../../js/jquery.js"></script>
+<script type="text/javascript" src="../../js/bootstrap.js"></script>
+<script type="text/javascript" src="../../js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="../../js/bootstrap-datetimepicker.fr.js"></script>
+<script type="text/javascript" src="../../js/common_utils.js"></script>
+<script type="text/javascript" src="../../js/dataTables/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="../../js/dataTables/js/dataTables.colReorder.js"></script>
+<script type="text/javascript" src="../../js/dataTables/js/dataTables.colVis.js"></script>
+<script type="text/javascript" src="../../js/dataTables/js/dataTables.tableTools.min.js"></script>
+<script type="text/javascript" src="../../js/dataTables/js/DT_bootstrap.js"></script>
+<script type="text/javascript" src="../../js/golbal_params.js"></script>
+<script type="text/javascript" src="../../js/appCommonUtil.js"></script>
+<script type="text/javascript" src="../../js/appCommonCurdUtils.js"></script>
+<script type="text/javascript" src="../../js/html5.js"></script>
+<script language="javascript" src="../../js/artdialog/dialog-plus.js"></script>
+<script type="text/javascript" src="ZQC_common.js"></script>
+<script type="text/javascript" src="wenbenpingfenchaxun.js"></script>
+<script type="text/javascript">
+		
+		//sArgName表示要获取哪个参数的值  
+		
+	$(document).ready(function(){
+		checkButton();
+	
+		})
+		
+	//判断上诉按钮隐藏显示
+	function checkButton(){
+		var score_state=getQueryString("score_state");
+		var checkBtn=getQueryString("checkBtn");
+		if(score_state=='已上诉'||checkBtn==1){
+			$("#shangsuBtn").hide();
+		}else{
+			$("#shangsuBtn").show();
+		}
+	}	
+	//获取grade_id函数
+	function getGrade_id(){
+		var grade_id;
+		return grade_id=getQueryString("grade_id");
+	}
+		
+	//根据grade_id获取各项初检评分信息
+	function FujianScore(){
+			var aa=getGrade_id();
+			var grade_id=aa;
+			
+		 	var grade_id=grade_id;
+			var rdata;
+		   	var pat = zkm_getHtmlFormJsons('searchItems');
+			pat.primaryKey = "id";
+			pat.nameSpace="com.zinglabs.apps.mybaits_xml_def.ZQC";
+			pat.nameSpaceId="T_GRADE_DETAIL_FUJIAN_NEW_score";
+			pat.grade_id=grade_id;
+	//		pat.where = appendSearchItem('searchItems');
+			commonSelectForComplex(pat,false,function(data){			
+			if(data.rows!= null){				
+			  rdata=data.rows;				 	
+			}			
+		});
+		return rdata;
+	}
+		//根据grade_id获取各项复检评分信息
+	function lookScore(){
+			
+			var grade_id=getGrade_id();
+			
+		 	var grade_id=grade_id;
+			var rdata;
+		   	var pat = zkm_getHtmlFormJsons('searchItems');
+			pat.tableName = "T_GRADE_DETAIL_FUSHEN_NEW";
+			pat.primaryKey = "id";
+			pat.nameSpace="com.zinglabs.apps.mybaits_xml_def.ZQC";
+			pat.nameSpaceId="T_GRADE_DETAIL_NEW_score";
+			pat.grade_id=grade_id;
+	//		pat.where = appendSearchItem('searchItems');
+			commonSelectForComplex(pat,false,function(data){			
+			if(data.rows!= null){				
+			  rdata=data.rows;				 	
+			}			
+		});
+		return rdata;
+	}	
+				
+	//根据grade_id获取各项复审评分信息
+	function FushenScore(){
+			
+			var grade_id=getGrade_id()
+			
+		 	var grade_id=grade_id;
+			var rdata;
+		   	var pat = zkm_getHtmlFormJsons('searchItems');
+			pat.tableName = "T_GRADE_DETAIL_FUSHEN_NEW";
+			pat.primaryKey = "id";
+			pat.nameSpace="com.zinglabs.apps.mybaits_xml_def.ZQC";
+			pat.nameSpaceId="T_GRADE_DETAIL_FUSHEN_NEW_score";
+			pat.grade_id=grade_id;
+	//		pat.where = appendSearchItem('searchItems');
+			commonSelectForComplex(pat,false,function(data){			
+			if(data.rows!= null){				
+			  rdata=data.rows;				 	
+			}			
+		});
+		return rdata;
+	}
+	//查询各项分数
+	function  loadDescription(){
+		$("#grade_table_tr1 td").remove();
+		$("#grade_table_tr2 td").remove();
+		var data_state=getQueryString("data_state");
+		var score_state=getQueryString("score_state");
+		var chujian=lookScore();
+		var fushen=FushenScore();
+		var fujian=FujianScore();
+		var score;
+		if(score_state=='复审已发布'||score_state=='上诉成功'||score_state=='上诉失败'){
+			score=FushenScore();
+		}
+		if(score_state=='初检已发布'||data_state=='初检已分配'){
+			score=lookScore();
+		}
+		if(score_state=='复检已发布'||data_state=='复检已分配'){
+			score=FujianScore();
+		}
+		var num=0;
+		if(score!=undefined){
+			num=score.length;
+		}
+		if(num!=0){
+			var index=score[0].use_grade_index;
+			var description=doSearch_description(index);
+			var scoreArray=[
+							score[0].pfx_000,
+							score[0].pfx_001,
+							score[0].pfx_002,
+							score[0].pfx_003,
+							score[0].pfx_004,
+							score[0].pfx_005,
+							score[0].pfx_006,
+							score[0].pfx_007,
+							score[0].pfx_008,
+							score[0].pfx_009,
+							score[0].pfx_010,
+							score[0].pfx_011,
+							score[0].pfx_012,
+							score[0].pfx_013
+							];
+			for(var i=0;i<description.length;i++){
+				var aaa=description[i].description;
+				if(scoreArray[i]== undefined){
+	        		scoreArray[i]=0;
+	        	}
+	        	$("#grade_table_tr1").append("<td style='text-align: center;'>"+description[i].description+"</td>");
+	       		$("#grade_table_tr2").append("<td style='text-align: center;'><span>"+scoreArray[i]+"</span></td>");
+	        }
+	        $("#grade_table_tr1").append("<td style='text-align: center;'>总分</td>");
+	        $("#grade_table_tr2").append("<td style='text-align: center;'>"+score[0].pfx_total+"</td>");
+	        if(chujian.length!=0){
+	       	 $("#chujian").val(chujian[0].grade_remark);
+	        }
+	        if(fushen.length!=0){
+	        	$("#fushen").val(fushen[0].grade_remark);
+	        }
+	        if(fujian.length!=0){
+	        	$("#fujian").val(fujian[0].grade_remark);
+	        }
+        }
+       
+	}
+	
+	
+	
+	//上诉  更新SU_QC_SOURCE_RECORD_DATA  插入复审表数据
+	function UpdateAndInsert(){
+		updateSU_QC_SOURCE_RECORD_DATA();//修改SU_QC_SOURCE_RECORD_DATA表状态
+		
+		var grade_id=getGrade_id()
+		var rdata;
+		var agent_user_remark=$("#agent_user_remark").val();		
+		
+	   	var pat = zkm_getHtmlFormJsons('searchItems');
+		pat.tableName = "SA_AGENT_ARGUMENT";
+		pat.primaryKey = "id";
+		pat.nameSpace="com.zinglabs.apps.mybaits_xml_def.ZQC";
+		pat.nameSpaceId="SA_AGENT_ARGUMENT_insert";
+		pat.score_state='座席上诉';							//状态
+		pat.agent_user_dt='';								//上诉时间，配置文件传当前时间
+		pat.agent_user_remark=agent_user_remark;			//上诉原因，（座席复审说明）
+		pat.grade_remark='';								//评分内容
+		pat.grade_id=grade_id;  							//grade_id
+		pat.pfx_total=getQueryString("total");					//分数
+		pat.owner=getQueryString("owner");						//质检员
+		pat.generate_time_state=getQueryString("generate_time_state");	//评估开始时间
+		pat.file_name=getQueryString("file_name");	//文件名
+		var chujian=lookScore();
+		if(chujian.length!=0){
+			pat.grade_remark=chujian[0].grade_remark;		
+		}								
+		
+//		pat.where = appendSearchItem('searchItems');
+		commonSelectForComplex(pat,false,function(data){			
+			
+		});
+		}
+	
+	function updateSU_QC_SOURCE_RECORD_DATA(){
+		var pat={};
+		var id=getQueryString("id");
+		var rdata;		
+		pat.nameSpace="com.zinglabs.apps.mybaits_xml_def.ZQC";
+		pat.nameSpaceId="SU_QC_SOURCE_RECORD_DATA_update";
+		pat.id=id;
+		pat.work_state='上诉';
+		pat.score_state='已上诉';
+//		pat.where = appendSearchItem('searchItems');
+		commonSelectForComplex(pat,false,function(data){			
+		
+		});
+	}
+		</script>
+</head><body>
+	
+		<form action="">
+			<table class="table table-bordered table-condensed" id="xitongguanliyuanfushen">
+				<tbody>
+					<tr class="warning">
+						<td style="width: 100%" colspan="2">
+							<div style="overflow-y: auto;" id="dongtaichuangjianTable">
+								<table id="grade_table" class="table table-bordered table-condensed">
+									
+									<tbody><tr id="grade_table_tr1" class="info">
+
+									</tr>
+									<tr id="grade_table_tr2" class="info">
+
+									</tr>
+								</tbody></table>
+							</div>
+						</td>
+					</tr>
+					<tr class="warning">
+						<td colspan="2" style="text-align: left;">
+							初检评语
+						</td>
+					</tr>
+					<tr class="warning">
+						<td colspan="2">
+							<textarea id="chujian" name="value_remark" readonly style="padding: 0; margin: 0; width: 100%; height: 50px"></textarea>
+						</td>
+					</tr>
+					<tr class="warning"> 
+						<td colspan="2" style="text-align: left;">
+							复检评语
+						</td>
+					</tr>
+					<tr class="warning">
+						<td colspan="2">
+							<textarea id="fujian" name="value_remark" readonly style="padding: 0; margin: 0; width: 100%; height: 80px"></textarea>
+						</td>
+					</tr>
+					<tr class="warning">
+						<td colspan="2" style="text-align: left;">
+							复审评语
+						</td>
+					</tr>
+					<tr class="warning">
+						<td colspan="2">
+							<textarea id="fushen" name="value_remark" readonly style="padding: 0; margin: 0; width: 100%; height: 50px"></textarea>
+						</td>
+					</tr>
+					<tr class="warning" id="shangsuyuanyin">
+						<td colspan="2" style="text-align: left;">
+							上诉原因描述
+						</td>
+					</tr>
+					<tr class="warning">
+						<td colspan="2">
+							<textarea id="agent_user_remark" name="agent_user_remark" style="padding: 0; margin: 0; width: 100%; height: 50px"></textarea>
+						</td>
+					</tr>
+					<tr class="warning">
+						<td colspan="2" style="text-align: center;">
+							<button type="button" id="shangsuBtn" class="btn" onclick="UpdateAndInsert();">
+								<i class="icon-tag"></i>提交上诉</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
+	
+
+</body></html>

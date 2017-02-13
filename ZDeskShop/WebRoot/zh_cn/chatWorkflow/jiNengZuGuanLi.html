@@ -1,0 +1,977 @@
+<!DOCTYPE  HTML>
+<html lang="en">
+<head>
+    <title></title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3"/>
+    <meta http-equiv="description" content="this is my page"/>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="../../css/bootstrap.min.css"
+          type="text/css"/>
+    <!--<link rel="stylesheet" href="../../js/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css" type="text/css"></link>
+    -->
+    <link rel="stylesheet"
+          href="../../js/dataTables/css/jquery.dataTables.css" type="text/css"/>
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="../../js/dataTables/css/DT_bootstrap.css"
+          type="text/css"/>
+    <link rel="stylesheet"
+          href="../../js/dataTables/css/dataTables.tableTools.min.css"
+          type="text/css"/>
+    <!-- ZDesk 通用css  -->
+    <link rel="stylesheet" href="../../css/zinglabs.css" type="text/css"/>
+    <link rel="stylesheet" href="../../js/dataTables/css/font-awesome.css"/>
+    <link rel="stylesheet"
+          href="../../js/dataTables/css/dataTables.colVis.min.css"
+          type="text/css"/>
+    <script type="text/javascript" src="../../js/jquery.js"></script>
+    <script type="text/javascript" src="../../js/bootstrap.js"></script>
+    <script type="text/javascript"
+            src="../../js/dataTables/js/jquery.dataTables.js"></script>
+    <script type="text/javascript"
+            src="../../js/dataTables/js/dataTables.colReorder.js"></script>
+    <script type="text/javascript"
+            src="../../js/dataTables/js/dataTables.colVis.js"></script>
+    <script type="text/javascript"
+            src="../../js/dataTables/js/dataTables.tableTools.min.js"></script>
+    <script type="text/javascript" src="../../js/common_utils.js"></script>
+    <script type="text/javascript" src="../../js/appCommonUtil.js"></script>
+    <script type="text/javascript"
+            src="../../js/appCommonCurdUtils_new.js"></script>
+    <script type="text/javascript"
+            src="../../js/dataTables/js/DT_bootstrap.js"></script>
+    <!--
+    <script type="text/javascript" src="../js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="../js/bootstrap-datetimepicker/bootstrap-datetimepicker.zh-CN.js"></script>
+    -->
+    <script type="text/javascript"
+            src="../../js/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript" src="../../js/log2.js"></script>
+    <!-- 遮罩产插件 -->
+    <script type="text/javascript" src="../../js/jquery.blockUI.js"></script>
+    <!-- 验证及提示组件 -->
+    <script type="text/javascript"
+            src="../../js/jqueryValidate/jquery.validate.js"></script>
+    <script type="text/javascript" src="../../js/jqueryValidate/localization/messages_zh.min.js"></script>
+    <script type="text/javascript" src="js/mh.js"></script>
+    <style type="text/css">
+        /*解决时间控件在模式对话框中的显示问题**/
+        .error {
+            border-color: red !important;
+        }
+
+        .datetimepicker {
+            z-index: 99999 !important;
+        }
+
+        .bootstrap-datetimepicker-widget {
+            z-index: 99999 !important;
+        }
+
+        /*临时解决datatable单元格变形问题  为保证宽度不变，ie兼容模式显示效果为换行 其它浏览器省略号
+          需要通过只显示部分原文解决此问题
+        */
+        .dataTable th, .dataTable td {
+            width: 120px;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        input {
+            width: 160px;
+        }
+
+        select {
+            width: 160px;
+        }
+    </style>
+    <script type="text/javascript">
+
+        //遮罩属性
+        var maskContent = {
+            css: {
+                border: 'none',
+                padding: '15px',
+                backgroundColor: '#000',
+                '-webkit-border-radius': '10px',
+                '-moz-border-radius': '10px',
+                opacity: .5,
+                color: '#fff',
+                font: '14px'
+            },
+            message: '<img src="../../img/wait.gif" border="0" />  正在加载中，请稍候...'
+        };
+        var PROJECT = window.top.PRJ_PATH || "ZDesk";
+        // 模块
+        var MODULES = window.top.ZDesk_ROU || "ZDesk";
+        //获取选中的用户
+        var checkUsersAdd = "";
+        var checkCardUrlAdd = "" ;
+        var checkUsersUpdate = "";
+        var checkCardUrlUpdate = "";
+        var skTypeDic;
+        var roleTable = false;
+        var rowSelTr = false;
+        var data = "";
+        var partId = "";
+        function initGrid() {
+            getSKID();
+            initOrderFormValidate();
+            $('#jinengzu1Grid').DataTable({
+                //延迟加载
+                deferRender: true,
+                processing: false,
+                serverSide: true,
+                ajax: doSearch,
+                pagingType: "full_numbers",
+                pageLength: 10,
+                bPaginate: true, //翻页功能
+                bLengthChange: true, //改变每页显示数据数量
+                bFilter: true, //过滤功能
+                bSort: true, //排序功能
+                bInfo: true,//页脚信息
+                bAutoWidth: false, //自动宽度
+                sPaginationType: "bootstrap",//分页样式
+                dom: 'TRlrtip',
+                columns: [{
+                    title: "技能组类别",
+                    data: 'skType',
+                    width: '20%',
+                    visible: true
+                }, {
+                    title: "技能组名称",
+                    data: "skName",
+                    defaultContent: '',
+                    width: '20%',
+                    orderable: true
+                }, {
+                    title: "技能组标识",
+                    data: 'skId',
+                    width: '20%',
+                    visible: true
+                }, {
+                    title: "修改时间",
+                    data: 'generateTime',
+                    visible: true
+                }],
+                columnDefs: [{
+                    "searchable": false,
+                    "orderable": false,
+                    "targets": 0
+                }],
+
+                oLanguage: {
+                    infoFiltered: function () {
+
+                    },
+                    "sLengthMenu": "每页显示 _MENU_条",
+                    "sZeroRecords": "没有找到符合条件的数据",
+                    "sProcessing": "&lt;imgsrc=’./loading.gif’ /&gt;",
+                    "sInfo": "当前第 _START_ - _END_ 条　共计 _TOTAL_ 条",
+                    "sInfoEmpty": "没有记录",
+                    "sInfoFiltered": "(从 _MAX_ 条记录中过滤)",
+                    "sSearch": "搜索：",
+                    "oPaginate": {
+                        "sFirst": "首页",
+                        "sPrevious": "前一页",
+                        "sNext": "后一页",
+                        "sLast": "尾页"
+                    }
+                },
+                tableTools: {
+                    fnRowSelected: function (nodes) {
+                        var index = nodes[0]._DT_RowIndex;
+                        rowSelTr = index;
+                        var data = table.row(index).data();
+                        partId = data.id;
+                        createPeople = data.createPeople;
+                        openEdit(data);
+                    },
+                    sRowSelect: 'single',
+                    aButtons: []
+                }
+            });
+            commonOption = null;
+            var table = $('#jinengzu1Grid').DataTable();
+            $.unblockUI();
+        }
+        $(document).ready(function () {
+            initGrid();
+        });
+
+        function logErr(errMsg) {
+            log.debug(errMsg);
+        }
+
+        function openAdd() {
+            $("#jinengzuAdd").show();
+            $("#jinengzuEdit").hide();
+
+
+        }
+        function doAdd() {
+            var bool1 = $("#jinengzuAddForm").validate().form();
+            var params = {};
+            var companyId = getQueryString("companyId");
+            params = zkm_getHtmlFormJsons("jinengzuAddForm");
+            if (!bool1) {
+                return;
+            }
+            ;
+            $.blockUI(maskContent);
+            if(checkCardUrlAdd!=""){deleteSkillAgentInfo(checkCardUrlAdd) ;}
+            params.checkUsersAdd = checkUsersAdd;
+            var companyId = getQueryString("companyId");
+            if (companyId != undefined && companyId != "") {
+                params.idbid = companyId;
+            } else {
+                params.isCookieDBId = "true";//使用Cookie中的数据源
+            }
+            var AddSkillGroupInfo = "/" + PROJECT + "/" + MODULES + "/SkillGroupInfo" + "/" + "addGroup.action";
+            ajaxFunction(AddSkillGroupInfo, params, true, function (ajaxData) {
+                if (ajaxData.success) {
+                    $("#jinengzuAdd").hide();
+                    cleanForm("jinengzuAddForm");
+                    tableSearch();
+                    getSKID();
+                    checkUsersAdd = "";
+                    checkCardUrlAdd = "" ;
+                    checkUsersUpdate = "";
+                    checkCardUrlUpdate = "";
+                }
+                zinglabs.alert(ajaxData.mgs);
+            	$.unblockUI();
+            });
+        }
+        function cleanForm(formid) {
+            $("#" + formid + " :input").each(function (index, obj) {
+                var $obj = $(obj);
+                $obj.val('');
+            });
+
+        }
+        function openEdit(data) {
+            $("#jinengzuAdd").hide();
+            $("#jinengzuEdit").show();
+            try {
+                $('#jinengzuEditForm :input').each(function (index, obj) {
+                    var $obj = $(obj);
+                    var key = $obj.attr('name');
+                    if (data[key] != undefined) {
+                        $obj.val(data[key]);
+                    }
+                });
+            } catch (e) {
+                logErr("openEdit error :打开编辑表单，列表数据载入编辑表单出现js异常！");
+            }
+        }
+
+        function hanzi(data) {
+            var re1 = /[\u4e00-\u9fa5]/g;
+            if (re1.test(data.skId)) {
+                zinglabs.alert("技能组标识不能包含中文汉字！");
+                return true;
+            }
+            return false;
+        }
+        function doEdit() {
+        	var bool1 = $("#jinengzuAddForm").validate().form();
+        	if (!bool1) {
+                return;
+            };
+            $.blockUI(maskContent);
+            if(checkCardUrlUpdate!=""){deleteSkillAgentInfo(checkCardUrlUpdate) ;}
+            var params = {};
+            var companyId = getQueryString("companyId");
+            params = zkm_getHtmlFormJsons("jinengzuEditForm");
+            params.checkUsersUpdate = checkUsersUpdate;
+            var companyId = getQueryString("companyId");
+            if (companyId != undefined && companyId != "") {
+                params.idbid = companyId;
+            } else {
+                params.isCookieDBId = "true";//使用Cookie中的数据源
+            }
+            var AddSkillGroupInfo = "/" + PROJECT + "/" + MODULES + "/SkillGroupInfo" + "/" + "updateGroup.action";
+            ajaxFunction(AddSkillGroupInfo, params, true, function (ajaxData) {
+                zinglabs.alert(ajaxData.mgs);
+                tableSearch();
+                getSKID();
+                checkUsersAdd = "";
+                checkCardUrlAdd = "" ;
+                checkUsersUpdate = "";
+                checkCardUrlUpdate = "";
+                $.unblockUI();
+            });
+        }
+        function deleteSkillAgentInfo(cardUrl) {
+            var params = {};
+            params.tableName = "IM_AgentSkillGroup";
+            params.primarykey = "cardUrl";
+            params.columnValues = cardUrl;
+            commonDelete(params, false, function (data) {
+                if (data) {
+                    if (data.success) {
+                        try {
+                            tableTmp.row('.selected').remove().draw(false);
+                            //showSuccess("删除成功!");
+                        } catch (e) {
+                            $.unblockUI();
+                            logErr("Exception del need see log " + e.name + ": " + e.message);
+                        }
+
+                    } else {
+                        logErr("Exception del failed  " + data + " " + data.retcode);
+                        $.unblockUI();
+                        showError("删除失败");
+                    }
+                }
+                $.unblockUI();
+            });
+            params.tableName = "IM_AgentSkillGroupMem";
+            commonDelete(params, false, function (data) {
+                if (data) {
+                    if (data.success) {
+                        try {
+                            //showSuccess("删除成功!");
+                        } catch (e) {
+                            $.unblockUI();
+                            logErr("Exception del need see log " + e.name + ": " + e.message);
+                        }
+
+                    } else {
+                        logErr("Exception del failed  " + data + " " + data.retcode);
+                        showError("删除失败");
+                        $.unblockUI();
+                    }
+                }
+                $.unblockUI();
+            });
+
+        }
+        //        function doSearch() {
+        //            var GetSkillGroupInfo = "/" + APP_PROJECT_NAME + "/" + APP_MODULES_NAME+"/SkillGroupInfo" + "/" + "getGroup.action";
+        //            var params ={} ;
+        //            ajaxFunction(GetSkillGroupInfo, params, true,function(ajaxData) {
+        //
+        //
+        //            }) ;
+        //        }
+        function doSearch(data, callback, settings) {
+            var params = spellSelectParams("searchDataForm");
+            params.tableName = "IM_SkillGroupInfo";
+            //         params.isPagination = false;
+            params.rows = settings._iDisplayLength;
+            params.offset = settings._iDisplayStart;
+            var companyId = getQueryString("companyId");
+            if (companyId != undefined && companyId != "") {
+                params.idbid = companyId;
+            } else {
+                params.isCookieDBId = "true";//使用Cookie中的数据源
+            }
+            $.blockUI(maskContent);
+            commonSelect(params, true, function (data) {
+                try {
+                    if (data && data.data) {
+                        var pdata = {};
+                        var size = data.data.length;
+                        for (var i = 0; i < size; i++) {
+                            data.data[i].DT_RowNumber = i + 1;
+                        }
+                        pdata.data = data.data;
+                        //数据
+                        pdata.data = data.data;
+                        //总条数
+                        pdata.recordsTotal = data.total || 0;
+                        //过滤没有使用到总条数
+                        pdata.recordsFiltered = data.total || 0;
+                        // 代表第几次画页面  如pdata.draw 不能删 如删掉不会翻页
+                        pdata.draw = settings.iDraw;
+                        callback(pdata);
+                        //table.rows.add(pdata).draw();
+                    }
+                } catch (ex) {
+                    logErr("查询失败 failed " + ex.name + ": " + ex.message);
+                }
+                $.unblockUI();
+            });
+        }
+        
+        //删除技能组
+        
+function doDelete() {
+	var tableTmp = $('#jinengzu1Grid').DataTable();
+	var cell = tableTmp.rows(".active").data();
+	if (cell.length == 0) {
+		zinglabs.alert("请选择要删除的数据！");
+		return;
+	}
+	zinglabs.confirm("确认要删除此项？", function() {
+		var params = {};
+		$.blockUI(maskContent);
+		params.tableName = "IM_SkillGroupInfo";
+		 var companyId = getQueryString("companyId");
+            if (companyId != undefined && companyId != "") {
+                params.idbid = companyId;
+            } else {
+                params.isCookieDBId = "true";//使用Cookie中的数据源
+            }
+            var AddSkillGroupInfo = "/" + PROJECT + "/" + MODULES + "/SkillGroupInfo" + "/" + "deleteGroup.action";
+            params.skId=$("#jinengzuEditForm input[name=skId]").val();
+            ajaxFunction(AddSkillGroupInfo, params, true, function (ajaxData) {
+                if (ajaxData.success) {
+                    $("#jinengzuAdd").hide();
+                    $("#jinengzuEdit").hide();
+                    cleanForm("jinengzuEditForm");
+                    cleanForm("jinengzuAddForm");
+                    tableSearch();
+                    getSKID();
+                    checkUsersAdd = "";
+                    checkCardUrlAdd = "" ;
+                    checkUsersUpdate = "";
+                    checkCardUrlUpdate = "";
+                }
+                zinglabs.alert(ajaxData.mgs);
+            	$.unblockUI();
+            });
+
+	});
+};
+        
+
+        /**
+         * 搜索
+         * */
+        function tableSearch() {
+            var table = $('#jinengzu1Grid').DataTable();
+            table.draw(true);
+        }
+
+        /**
+         * 群组树
+         * */
+        var userDig;
+        function userDialog(url, title, width, height) {
+            userDig = dialog({
+                title: title,
+                content: '<iframe src=' + url + ' style="border: 0; width: 100%; height: 100%"  frameborder="0"/>',
+                width: '300',
+                height: '400'
+            });
+            userDig.show();
+            return userDig;
+        }
+        function addOrg() {
+            var companyId = getQueryString("companyId");
+            var url = "/" + PROJECT + "/zh_cn/common/userMappingOrg.html?showButton=y&reFillFn=reUserAdd&closeFn=closeDig&mode=many&pchm=ps&cchm=ps&disponse=0&FilterBeanId=TreeSkillGroupInfo&companyId=" + companyId;
+            closeDialog = userDialog(url, "请选择分配人员", "300", "400");
+        }
+        function editOrg() {
+            var thisSkId;
+            var companyId = getQueryString("companyId");
+            thisSkId = $("#jinengzuEditForm input[name=skId]").val();
+            var url = "/" + PROJECT + "/zh_cn/common/userMappingOrg.html?showButton=y&reFillFn=reUserUpdate&closeFn=closeDig&mode=many&pchm=ps&cchm=ps&disponse=0&FilterBeanId=TreeSkillGroupInfo&skId=" + thisSkId + "&companyId=" + companyId;
+            closeDialog = userDialog(url, "请选择分配人员", "300", "400");
+        }
+
+        /**
+         * 添加用户，组织机构树回调
+         * */
+        function reUserAdd(node) {
+            checkUsersAdd = "";
+            checkCardUrlAdd = "" ;
+            if (!Z_IsNotEmtArray(node)) {
+                for (var i = 0; i < node.length; i++) {
+                    if (node[i].dataType == "org") {
+                        continue;
+                    }
+                    if (checkUsersAdd == "") {
+                        checkUsersAdd = checkUsersAdd + node[i].id;
+                        checkCardUrlAdd = checkCardUrlAdd + node[i].cardUrl;
+                    } else {
+                        checkUsersAdd = checkUsersAdd + "," + node[i].id;
+                        checkCardUrlAdd = checkCardUrlAdd+ "," + node[i].cardUrl;
+                    }
+                }
+                if (checkUsersAdd == "") {
+                    checkUsersAdd = "clear";
+                }
+            }
+            closeDig();
+        }
+        /**
+         * 更改用户，组织机构树回调
+         * */
+        function reUserUpdate(node) {
+            checkUsersUpdate = "";
+            if (!Z_IsNotEmtArray(node)) {
+                for (var i = 0; i < node.length; i++) {
+                    if (node[i].dataType == "org") {
+                        continue;
+                    }
+                    if (checkUsersUpdate == "") {
+                        checkUsersUpdate = checkUsersUpdate + node[i].id;
+                        checkCardUrlUpdate = checkCardUrlUpdate + node[i].cardUrl;
+                    } else {
+                        checkUsersUpdate = checkUsersUpdate + "," + node[i].id;
+                        checkCardUrlUpdate = checkCardUrlUpdate + "," +node[i].cardUrl;
+                    }
+                }
+                if (checkUsersUpdate == "") {
+                    checkUsersUpdate = "clear";
+                }
+            }
+            closeDig();
+        }
+        //关闭dialog
+        function closeDig() {
+            closeDialog.close();
+            window.focus();
+        }
+        function cleanSearchForm() {
+            $('#searchDataForm :input').each(function (index, obj) {
+                var $obj = $(obj);
+                $obj.val('');
+            });
+        }
+
+        function getSKID() {
+            var params = {};
+            var companyId = getQueryString("companyId");
+            params = zkm_getHtmlFormJsons("jinengzuAddForm");
+            params.checkUsersAdd = checkUsersAdd;
+            var companyId = getQueryString("companyId");
+            if (companyId != undefined && companyId != "") {
+                params.idbid = companyId;
+            } else {
+                params.isCookieDBId = "true";//使用Cookie中的数据源
+            }
+            var GetSkillGroupInfo = "/" + PROJECT + "/" + MODULES + "/SkillGroupInfo" + "/" + "getGroup.action";
+            ajaxFunction(GetSkillGroupInfo, params, true, function (ajaxData) {
+                try {
+                    $("#jinengzuEditForm select[name=skType]").empty();
+                    $("#jinengzuAddForm datalist[name = add_list]").empty();
+                    if (ajaxData.success) {
+                        skTypeDic = ajaxData.data;
+                        for (var i = 0; i < ajaxData.data.length; i++) {
+
+                            $("#jinengzuEditForm select[name=skType]").append("<option value=" + ajaxData.data[i].skType + ">" + ajaxData.data[i].skType + "</option>");
+
+                            $("#jinengzuAddForm datalist[name = add_list]").append("<option value=" + ajaxData.data[i].skType + ">" + ajaxData.data[i].skType + "</option>");
+                        }
+                    }
+                } catch (e) {
+
+                }
+            })
+        }
+
+        function initOrderFormValidate() {
+            jQuery.validator.addMethod("chinese", function(value, element) {
+                var chinese = /^[\u4e00-\u9fa5]+$/;
+                return !(this.optional(element) || (chinese.test(value)));
+            }, "只能输入中文");
+
+
+            $("#searchDataForm").validate({
+                //错误信息处理方法
+                errorPlacement: function (error, element) {
+                    //if(element.)
+                    element.addClass('error');
+                    var errorInfo = error.html();
+                    element.tooltip('destroy') ;
+                    element.tooltip({
+                        trigger: "manual",
+                        title: errorInfo,
+                        placement: "left"
+                    });
+                    element.tooltip("show");
+                },
+                //成功信息处理方法
+                success: function ($e, dom) {
+                    var element = $(dom);
+                    element.tooltip('hide');
+                    element.removeClass('error');
+                }
+            });
+            $("#jinengzuEditForm").validate({
+                rules: {
+                    skType: {
+                        required: true,
+                        maxlength: 30
+                    },
+                    skName: {
+                        required: true,
+                        maxlength: 30
+                    },
+                    skId: {
+                        required: true,
+                        maxlength: 30,
+                        chinese:$("#jinengzuEditForm input[name=skName]").val()
+                    }
+                },
+                messages: {
+                    skType: {
+                        required: "技能组类别不能为空"
+                    },
+                    skName: {
+                        required: "技能组名称不能为空"
+                        
+                    },
+                    skId: {
+                        required: "技能组标识不能为空",
+                        chinese:"技能组标识不能为汉字"
+                    }
+                },errorPlacement : function(error, element) {
+                    //if(element.)
+                    element.addClass('error');
+                    element.tooltip('destroy') ;
+                    var errorInfo = error[0].innerHTML;
+                    element.tooltip({
+                        trigger : "manual",
+                        title : errorInfo,
+                        placement : "left"
+                    });
+                    element.tooltip("show");
+                },
+                //成功信息处理方法
+                success : function($e, dom) {
+                    var element = $(dom);
+                    element.tooltip('hide');
+                    element.removeClass('error');
+
+                },
+
+                debug:true
+            });
+            $("#jinengzuAddForm").validate({
+                focusCleanup: true,
+                rules: {
+                    skType: {
+                        required: true,
+                        maxlength: 30
+                    },
+                    skName: {
+                        required: true,
+                        maxlength: 30,
+                        
+                    },
+                    skId: {
+                        required: true,
+                        maxlength: 30,
+                        chinese:$("#jinengzuEditForm input[name=skName]").val()
+                    }
+                },
+                messages: {
+                    skType: {
+                        required: "技能组类别不能为空"
+                    },
+                    skName: {
+                        required: "技能组名称不能为空",
+                        chinese:"技能组名称不能为汉字"
+                    },
+                    skId: {
+                        required: "技能组标识不能为空",
+                        chinese:"技能组标识不能为汉字"
+                    }
+                },errorPlacement : function(error, element) {
+                    //if(element.)
+                    element.addClass('error');
+                    element.tooltip('destroy') ;
+                    var errorInfo = error[0].innerHTML;
+                    element.tooltip({
+                        trigger : "manual",
+                        title : errorInfo,
+                        placement : "left"
+                    });
+                    element.tooltip("show");
+                },
+                //成功信息处理方法
+                success : function($e, dom) {
+                    var element = $(dom);
+                    element.tooltip('hide');
+                    element.removeClass('error');
+
+                }
+        });
+        }
+    </script>
+</head>
+<body>
+
+<!-- 容器 -->
+<div class="z_container" style="max-width: 100%;min-width: 1000px;">
+    <!-- datatable部分 包含筛选项 -->
+
+    <div class="head">
+        <!-- dataTable筛选项部分 -->
+        <div class="widget-box collapsible">
+            <div class="widget-title">
+                <span class="icon"> <i class="icon-search"></i> </span>
+                <h5>
+                    配置项搜索
+                </h5>
+
+                <div class="buttons">
+                    <button class="btn btn-mini"
+                            onclick="	jQuery.fx.off = false;$('#collapseOne').slideToggle(200);">
+                        <i class="icon-retweet"></i>展开/关闭
+                    </button>
+                </div>
+            </div>
+            <div class="collapse in" id="collapseOne">
+                <!--TODO 里面写查询项表单布局 -->
+                <div class="widget-content container">
+
+                    <form action="" id="searchDataForm" class="form-horizontal">
+                        <div class="row" style="margin-left: -130px;">
+                            <div class="span4 offset1" style="margin-left: 10px; ">
+                                <div class="control-group ">
+                                    <label class="control-label ">
+                                        技能组类别:
+                                    </label>
+
+                                    <div class="controls  ">
+                                        <div class="input-append">
+                                            <input type="text" class="" id="skType" name="skType"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4 " style=" margin-left: -10px;">
+                                <div class="control-group ">
+                                    <label class="control-label ">
+                                        技能组名称:
+                                    </label>
+
+                                    <div class="controls  ">
+                                        <div class="input-append">
+                                            <input type="text" class="" id="skName" name="skName"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4 ">
+                                <div class="control-group ">
+                                    <label class="control-label ">
+                                        技能组标识:
+                                    </label>
+
+                                    <div class="controls  ">
+                                        <div class="input-append">
+                                            <input type="text" class="" id="skId" name="skId  "/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--                  <div class="row-fluid zing_row">
+                                              <div class="span4 zing_span4">
+                                                  <div class="control-group zing_control-group">
+                                                      <label class="control-label zing_control-label">
+                                                          修改时间 从:
+                                                      </label>
+
+                                                      <div class="controls  zing_controls">
+                                                          <div class="input-append">
+                                                              <input type="text" class="zing_input_span4" id="generateTimetimebegin"
+                                                                     name="generateTimetimebegin" data-sType="moreThan"
+                                                                     onclick="WdatePicker({el:'generateTimetimebegin',dateFmt:'yyyy-MM-dd HH:mm:ss'})"/>
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                              <div class="span4 zing_span4">
+                                                  <div class="control-group zing_control-group">
+                                                      <label class="control-label zing_control-label">
+                                                          到:
+                                                      </label>
+
+                                                      <div class="controls  zing_controls">
+                                                          <div class="input-append">
+                                                              <input type="text" class="zing_input_span4" id="generateTimetimeend"
+                                                                     name="generateTimetimeend" data-sType="moreThan"
+                                                                     onclick="WdatePicker({el:'generateTimetimeend',dateFmt:'yyyy-MM-dd HH:mm:ss'})"/>
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                          </div> -->
+                    </form>
+                    <center>
+                        <button type="button" id="btn_search" class="btn" onclick="tableSearch()">
+                            <i class="icon-search"></i> 搜索
+                        </button>
+                        <button type="button" id="btn_clean" class="btn" onclick="cleanSearchForm()">
+                            <i class="icon-remove"></i> 清空
+                        </button>
+                    </center>
+                </div>
+            </div>
+        </div>
+        <!-- dataTable 部分 -->
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"> <i class="icon-th"></i> </span>
+                <h5>
+                    信息
+                </h5>
+                <!--TODO 里面可加一些按钮 -->
+                <div class="buttons">
+                    <a class="btn btn-mini" onclick="refresh()" href="javascript:;;"><i class="icon-refresh"></i> 刷
+                        新</a>
+                </div>
+            </div>
+            <div class="widget-content nopadding">
+                <!-- 提示栏 -->
+                <div class="alert alert-error" id="errorDiv" style="display: none;">
+                </div>
+                <div class="alert alert-success" id="successDiv" style="display: none;">
+
+                </div>
+                <table id="jinengzu1Grid" class="table table-striped table-hover dt-responsive">
+                </table>
+            </div>
+        </div>
+        <div class="foot ">
+            <div class="widget-box " style="margin-top: 0px">
+                <div class="navbar-inner" style="padding-top: 10px">
+                    <button class="btn btn-primary" onclick="openAdd()">
+                        添 加
+                    </button>
+                    &nbsp;
+                    	<button type="button" class="btn btn-danger" onclick="doDelete()">
+							删 除
+						</button>
+						
+                </div>
+                <div id="jinengzuEdit" class="widget-content container" style="display: none">
+                    <form id="jinengzuEditForm" class="form-horizontal ">
+                        <input type="hidden" id="id" name="id">
+
+                        <div class="row" style="margin-left: -130px">
+                            <div class="span4 offset1" style="margin-left: -20px;">
+                                <div class="control-group ">
+                                    <label class="control-label ">
+                                        技能组类别:
+                                    </label>
+
+                                    <div class="controls  ">
+                                        <div class="input-append">
+                                            <select type="text" class="" list="edit_list" id="skType"
+                                                    name="skType"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="span4 offset1" style="margin-left: -10px;">
+                                <div class="control-group ">
+                                    <label class="control-label ">
+                                        技能组名称:
+                                    </label>
+
+                                    <div class="controls  ">
+                                        <div class="input-append">
+                                            <input type="text" class="" id="skName" name="skName"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4 offset1" style="margin-left: 10px;">
+                                <div class="control-group ">
+                                    <label class="control-label ">
+                                        技能组标识:
+                                    </label>
+
+                                    <div class="controls  ">
+                                        <div class="input-append">
+                                            <input type="text" class="zing_input_span4" id="skId" name="skId" readonly/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                    </form>
+                    <center>
+                        <button class="btn btn-primary" type="button" onclick="editOrg()">
+                            设置人员信息
+                        </button>
+                        <button class="btn btn-primary" type="button" onclick="doEdit()">
+                            确认修改
+                        </button>
+                    </center>
+
+                </div>
+                <div id="jinengzuAdd" class="widget-content container" style="display: none">
+                    <form id="jinengzuAddForm" class="form-horizontal ">
+                        <input type="hidden" name="id">
+
+                        <div class="row" style="margin-left: -130px">
+                            <div class="span4 offset1" style="margin-left: -20px;">
+                                <div class="control-group ">
+                                    <label class="control-label ">
+                                        技能组类别:
+                                    </label>
+
+                                    <div class="controls  ">
+                                        <div class="input-append">
+                                            <input type="text" class="" list="add_list" id="skType"
+                                                   name="skType"/>
+                                        </div>
+                                    </div>
+                                    <datalist id="add_list" name="add_list">
+                                    </datalist>
+                                </div>
+                            </div>
+
+                            <div class="span4 offset1" style="margin-left: -10px;">
+                                <div class="control-group ">
+                                    <label class="control-label ">
+                                        技能组名称:
+                                    </label>
+
+                                    <div class="controls  ">
+                                        <div class="input-append">
+                                            <input type="text" id="skName" name="skName"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4 offset1" style="margin-left: 10px;">
+                                <div class="control-group ">
+                                    <label class="control-label ">
+                                        技能组标识:
+                                    </label>
+
+                                    <div class="controls ">
+                                        <div class="input-append">
+                                            <input type="text" id="skId" name="skId"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                    <center>
+                        <button class="btn btn-primary" type="button" onclick="addOrg()">
+                            设置人员信息
+                        </button>
+                        <button class="btn btn-primary" type="button" onclick="doAdd()">
+                            确认添加
+                        </button>
+                    </center>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

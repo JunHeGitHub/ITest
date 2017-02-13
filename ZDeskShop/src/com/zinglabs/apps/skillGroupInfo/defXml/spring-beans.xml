@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+    <bean id="skillGroupInfoSqlSession" class="com.zinglabs.base.core.springSupport.DbidSqlsession" singleton="false">
+        <property name="namespance" value="com.zinglabs.apps.skillGroupInfo" ></property>
+        <property name="dbid" value="WXSDK"></property>
+    </bean>
+
+    <bean id="skillGroupInfoService" name="skillGroupInfoService"
+          class="com.zinglabs.apps.skillGroupInfo.service.IM_SkillGroupInfoService"></bean>
+</beans>

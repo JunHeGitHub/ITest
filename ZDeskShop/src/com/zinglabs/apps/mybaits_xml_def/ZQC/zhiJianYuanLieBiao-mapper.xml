@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.zinglabs.apps.mybaits_xml_def.ZQC">
+
+	<select id= "zhiJianYuanLieBiao_initData" resultType="java.util.Map" parameterType="java.util.HashMap">
+    	select * from suSecurityUser
+    </select >
+    
+    <select id= "zhiJianYuanLieBiao_search" resultType="java.util.Map" parameterType="java.util.HashMap">
+    	select * from suSecurityUser
+    	where ${searchItems} and loginName in ${loginName}
+    </select >
+    
+	 <!-- 查询description为质检员，复检员，质检组长的id -->  
+    <select id= "getSuSecurityRole_id" resultType="java.util.Map" parameterType="java.util.HashMap">
+    	select id from suSecurityRole
+    	where description in ${searchItems}
+    </select >
+    
+   <!-- 根据description为质检员，复检员，质检组长的id 查询SuSecurityUserRole的loginName -->  
+    <select id= "getSuSecurityUserRole_loginName" resultType="java.util.Map" parameterType="java.util.HashMap">
+    	select loginName from suSecurityUserRole
+    	where roleId in ${searchItems}
+    </select >
+</mapper>

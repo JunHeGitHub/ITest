@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<title>页面功能授权</title>
+
+		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+		<meta http-equiv="description" content="this is my page">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<link rel="stylesheet" href="../../css/bootstrap.min.css" type="text/css"></link>
+		<link rel="stylesheet" href="../../css/bootstrap-responsive.min.css"   type="text/css"></link>
+		<script type="text/javascript" src="../../js/jquery.js"></script>
+		<script type="text/javascript" src="../../js/bootstrap.js"></script>
+		<script type="text/javascript" src="../../js/common_utils.js"></script>
+		<script type="text/javascript" src="../../js/appCommonUtil.js"></script>
+		<script type="text/javascript">
+ var roleCode="";
+ var tab_type="";
+
+/**
+  导航切换
+**/
+function navigate(obj,src,type){
+    var  tabMenu=$(obj).parent();
+    $(tabMenu).siblings().each(function(){
+       $(this).removeClass("active");
+    });
+    $(tabMenu).addClass("active");
+    $('#content').attr('src',src);
+    tab_type=type;
+    
+}
+
+function  getRoleCodeAndType(){ 
+    return {
+      "roleCode":roleCode,
+      "type":tab_type
+    }
+}
+
+		</script>
+
+	</head>
+
+	<body>
+	  <!-- 面板 -->
+		
+					
+					    <div>
+					         <div class="navbar">
+						           <ul class="nav">
+										  <li>
+									         <a href="javascript:void(0)" onclick="navigate(this,'orgScope.html','menu')">组织机构</a>
+										  </li>
+										  <li><a href="javascript:void(0)" onclick="navigate(this,'roleScope.html','base')" >角色</a></li>
+									</ul>
+							  </div>
+                       
+					    </div>
+					  
+						<br/>
+						   
+					    <div >
+						    <iframe id="content" src="" frameborder="0" style="width:100%;height:800px"  scrolling=auto></iframe>
+						</div>
+						
+	</body>
+</html>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.zinglabs.apps.suPermission">
+	<select id="searchSuSecurityPermission" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT * from suSecurityPermission WHERE 1=1
+		<include refid="selectID"/>			 
+	</select>
+	<sql id="selectID">
+		<if test="id != null and id != ''"> AND id like #{id}</if>
+		<if test="code != null and code != ''">AND code like #{code}</if> 
+		<if test="name != null and name != ''">AND name like #{name}</if>
+		<if test="typeName != null and typeName != '' and typeName != '--请选择--'">AND typeName like #{typeName}</if>
+		<if test="modleId != null and modleId != ''">AND modleId like #{modleId}</if>
+		<if test="modleName != null and modleName != ''">AND modleName like #{modleName}</if>
+		<if test="funId != null and funId != ''">AND funId like #{funId}</if>
+		<if test="funName != null and funName != ''">AND funName like #{funName}</if>
+	</sql>
+	<!-- 
+	验证权限码
+	<select id="checkSuSecurityPermission" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT * from suSecurityPermission WHERE 1=1
+			<include refid="check"/>		 
+	</select>
+	<sql id="check">
+		<if test="code != null and code != ''">AND code like #{code}</if> 
+	</sql>
+	 -->				
+     <delete  id="deleteSuSecurityPermission" parameterType="java.util.HashMap">
+	   delete from suSecurityPermission where id in
+	   <foreach item="item" index="index" collection="map" open="(" separator="," close=")">
+       ${item}
+       </foreach>
+
+	</delete>
+    <update id="SuSecurityPermission_update" parameterType="java.util.HashMap">
+   		update suSecurityPermission set name=#{name},typeName=#{typeName},modleId=#{modleId},modleName=#{modleName},funId=#{funId},funName=#{funName},alias1=#{alias1}  where id=#{id}
+   </update>
+   
+   <insert id="SuSecurityPermission_insert" parameterType="java.util.HashMap">
+   		insert into suSecurityPermission(id,name,typeName,modleId,modleName,funId,funName,alias1) values(#{id},#{name},#{typeName},#{modleId},#{modleName},#{funId},#{funName},#{alias1})
+   </insert>
+</mapper>

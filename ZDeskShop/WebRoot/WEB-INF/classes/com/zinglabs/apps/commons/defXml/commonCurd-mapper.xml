@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.zinglabs.apps.commons.pojo">
+	<select id="getList" resultType="java.util.Map" parameterType="java.util.HashMap">
+		select * from ${table}
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<foreach collection="appFrameSelectfields" index="index" item="item" separator=" and "> 
+				<if test="appFrameSelectvalues[item] !=null and appFrameSelectvalues[item] !='' ">
+            		${item}=#{${item}}
+            	</if>
+        	</foreach>
+		</trim>
+		<if test="orderBy !=null and orderBy!=''">
+				order by ${orderBy}
+		</if>
+			<if test="limit !=inull and limit!=''">
+				limit ${limit}
+		</if>
+	</select>
+	
+	
+    <update id="update" parameterType="java.util.HashMap">
+    	update ${table}
+    	<trim prefix="SET" suffixOverrides=",">
+    		<foreach collection="appFrameUpdatefields" index="index" item="item" separator=","> 
+    			<if test="appFrameUpdatevalues[item] !=null and appFrameUpdatevalues[item] !=''">
+            		${item}=#{${item}}
+            	</if>
+        	</foreach>
+   		</trim>
+   		where ${primaryKey}=#{primaryKeyValue}
+    </update>
+    
+    <insert id="insert" parameterType="java.util.HashMap">
+    	insert into ${table}
+    	(
+    		<foreach item="item" index="key" collection="appFrameInsertfields" separator=",">
+    			${item}
+    		</foreach>
+    	)VALUES(
+    		<foreach item="item" index="key" collection="appFrameInsertvalues" separator=",">
+    			#{item}
+    		</foreach> 
+    	)
+    </insert>
+    <delete id="del" parameterType="java.util.HashMap">
+    	delete from ${table} where ${primaryKey}=#{primaryKeyValue}
+    </delete>
+    <select id="count" resultType="Integer" parameterType="java.util.HashMap">
+    	select count(*) from ${table}
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<foreach collection="appFrameSelectfields" index="index" item="item" separator=" and "> 
+				<if test="appFrameSelectvalues[item] !=null and appFrameSelectvalues[item] !='' ">
+            		${item}=#{${item}}
+            	</if>
+        	</foreach>
+		</trim>
+    </select>
+   
+</mapper>

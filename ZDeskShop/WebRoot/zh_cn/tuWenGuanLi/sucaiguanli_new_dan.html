@@ -1,0 +1,294 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<title>素材管理</title>
+		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+		<meta http-equiv="description" content="this is my page">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+		<link rel="stylesheet" href="../../css/bootstrap.min.css"
+			type="text/css"></link>
+		<link rel="stylesheet" href="../../css/bootstrap-responsive.min.css"
+			type="text/css" />
+			
+		<script type="text/javascript" src="../../js/jquery.js"></script>
+		<script type="text/javascript" src="../../js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="sucaiguanli_update.js"></script>
+		<script type="text/javascript" charset="utf-8" src="../../js/ueditor/ueditor.config.js"></script>
+		<script type="text/javascript" charset="utf-8" src="../../js/ueditor/ueditor.all.js"> </script>
+		<!--建议手动加在语言，避免在ie下有时因为加载语言失败导致编辑器加载失败-->
+		<!--这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文-->
+		<script type="text/javascript" charset="utf-8"
+			src="../../js/ueditor/lang/zh-cn/zh-cn.js"></script>
+		<link rel="stylesheet" href="../../js/ueditor/themes/default/css/ueditor.css" />
+		<script type="text/javascript" src="../../js/appCommonUtil.js"></script>
+		<script type="text/javascript" src="../../js/appCommonCurdUtils_new.js"></script>
+		<script type="text/javascript" src="../../js/common_validation.js"></script>
+		<script type="text/javascript" src="../../js/common_utils.js"></script>
+		<style type="text/css">
+body {
+	font-size: 14px;
+	font-family: Arial, '微软雅黑', sans-serif;
+}
+
+a,textarea,button,input,ul,li,div,span,td {
+	font-size: 14px;
+	font-family: Arial, '微软雅黑', sans-serif;
+	-webkit-appearance: none;
+}
+</style>
+<script type="text/javascript">
+		var xiugaitupianId;
+		var uuid={};
+		var imageName="";
+		var imageUrl="";
+		var coverPhysicalPath="";
+		var uploadImageName="";
+		var parentId;
+		var myEditorImage; var d;  
+         $(document).ready(function() {
+         getGroup();
+         	 var editor = UE.getEditor("editor",{toolbars:[['Paragraph','RowSpacing','FontFamily','FontSize', 'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify','bold', 'italic', 'underline', 'fontborder', 'strikethrough', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'insertimage']],autoHeightEnabled:false,autoFloatEnabled: false, initialFrameWidth:440 });
+	         myEditorImage= UE.getEditor("myEditorImage");
+		        	 myEditorImage.ready(function(){
+			        //myEditorImage.setDisabled();             
+			        myEditorImage.hide();//隐藏UE框体              
+			        myEditorImage.addListener('beforeInsertImage',function(t, arg){
+			         if(arg.length!=1){
+				        zinglabs.alert('请上传一张图片');
+				        return;
+				        }
+			        var tableFormw = {};
+			        var son={};
+			        var eq={};
+			        eq.uploadImageName="uploadImageName";
+			        son.uploadImageName=arg[0].alt;
+					tableFormw.tableName = "pictureLibrary";
+					tableFormw.isPagination=false;
+					tableFormw.columnValues=son;
+					tableFormw.equal=eq;
+					commonSelect(tableFormw, false, function (data) {
+						if (data.data != null) {
+							var imgsrc = data.data[0].imagePhysicalPath; 
+				        imageName=data.data[0].imageName;
+				        uploadImageName=data.data[0].uploadImageName;
+				        imageUrl=data.data[0].imageUrl;
+				        coverPhysicalPath=imgsrc;
+				        var attr2 = document.getElementsByTagName('form') ; //获取当前formid
+				        var fromId2=attr2[0].getAttribute("id");
+				        var Img_Div2 = fromId2.substr(fromId2.indexOf("tableForm")+9, fromId2.length);
+				        document.getElementById("img_Article_Img"+Img_Div2+"").style.visibility="visible";
+		        		$("#img_Article_Img"+Img_Div2+"").attr("src", imageUrl);
+						}
+					});
+				        /*var imgsrc = arg[0].src; 
+				        imageName=imgsrc.substr(imgsrc.indexOf("image")+33, imgsrc.length);
+				        uploadImageName=imgsrc.substr(imgsrc.indexOf("image")+17, imgsrc.length);
+				        imageUrl=imgsrc.substr(imgsrc.indexOf("/"+PRJ_PATH), imgsrc.length);
+				        coverPhysicalPath=imgsrc;
+				        alert("imageName:"+imageName+"uploadImageName:"+uploadImageName+"imageUrl:"+imageUrl+"coverPhysicalPath:"+coverPhysicalPath);
+				        var attr2 = document.getElementsByTagName('form') ; //获取当前formid
+				        var fromId2=attr2[0].getAttribute("id");
+				        var Img_Div2 = fromId2.substr(fromId2.indexOf("tableForm")+9, fromId2.length);
+				        document.getElementById("img_Article_Img"+Img_Div2+"").style.visibility="visible";
+		        		$("#img_Article_Img"+Img_Div2+"").attr("src", imageUrl);  */ 
+		         	});
+		          }); 
+	         getUUID({}, true ,function(data){
+		         var u=data.data;
+		         for(var l=0;l<10;l++){
+		          uuid[l]=u[l];
+		         }
+		         parentId=uuid['0'];
+	         });
+	         $("#title").change(function(){
+	         var attr3 = document.getElementsByTagName('form') ; //获取当前formid
+	         var fromId3=attr3[0].getAttribute("id");
+	         var Img_Div3 = fromId3.substr(fromId3.indexOf("tableForm")+9, fromId3.length); 
+	         change(Img_Div3);
+	         });
+	         
+	         $("#abstract").change(function(){
+	         var attr4 = document.getElementsByTagName('form') ; //获取当前formid
+	         var fromId4=attr4[0].getAttribute("id");
+	         var Img_Div4 = fromId4.substr(fromId4.indexOf("tableForm")+9, fromId4.length); 
+	         change1(Img_Div4);
+	         });
+         });
+          function upImage(){          
+			d = myEditorImage.getDialog("insertimage");     
+		    d.render();
+			d.open(); 
+		}  
+</script>
+
+	</head>
+	<body>
+		
+			<table class="table table-bordered table-condensed" style="padding:0;margin:0;">
+				<tbody>
+
+					<tr>
+						<td id="td_add" style="width: 380px;" >
+							<div id="Img_Div0"
+								style="width: 380px; height: 250px;  border:1px solid #F5F5F5; border-radius:12px;background-color: #F5F5F5;margin-left:10px;margin-right:1px ">
+								<img id="img_Article_Img0" alt="等待您的上传" src="" style="margin-top: 5px;border:1px solid #F5F5F5;background-color: #F5F5F5;width: 300px; height: 180px;visibility: hidden;margin-left:38px;margin-right:20px"/>
+								<div style="width: 300px; height: 25px; white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top: 5px;margin-left:40px;border-radius:8px;background-color:#CCCCCC;" id="biaoti0"></div>
+								<div id="zhaiyao0" style="margin-top: 5px;height:25px;margin-left:40px;width:300px; white-space:nowrap;border-radius:8px;overflow:hidden;text-overflow:ellipsis;background-color:#CCCCCC;"></div>
+								<!-- <textarea id="zhaiyao0" name="zhaiyao"
+										style="border-style:none;width: 260px; height: 30px;" ></textarea> -->
+							</div>
+							
+							
+
+						</td>
+						<td style="width: 380px;">
+						<form action="" id="tableForm0">
+							<table class="table table-bordered table-condensed">
+								<tbody>
+									<tr >
+										<td>
+											标题
+										</td>
+									</tr>
+									<tr >
+										<td>
+											<input type="text" id="title" name="title" class="input"
+												style="padding: 0; margin: 0; background-color: #F5F5F5; width: 100%; height: 30px" >
+										</td>
+									</tr>
+									<tr >
+										<td>
+											作者（选填）
+										</td>
+
+									</tr>
+									<tr >
+
+										<td>
+											<input type="text" id="autor" name="autor" class="input"
+												style="padding: 0; margin: 0; background-color: #F5F5F5; width: 100%; height: 30px">
+										</td>
+									</tr>
+									
+									<tr >
+										<td>
+											封面（大图片建议尺寸：900像素 * 500像素）
+										</td>
+									</tr>
+									<tr >
+										<td>
+											<div id="myEditorImage" style="display: none"></div>
+											<input type="button" onclick="upImage(); "
+												class="btn" value="上传图片" />
+											&nbsp; &nbsp; &nbsp; &nbsp;
+											
+										</td>
+									</tr>
+									<tr >
+										<td>
+											<input type="checkbox" id="coverToTextContent" name="coverToTextContent" value="1" style="-webkit-appearance:checkbox;margin:0;">
+											封面图片显示在正文中
+										</td>
+									</tr>
+									<tr >
+										<td>
+											摘要
+										</td>
+									</tr>
+									<tr >
+										<td>
+											<textarea id="abstract" name="abstract"
+												style="padding: 0; margin: 0; background-color: #F5F5F5; width: 100%; height: 40px" ></textarea>
+										</td>
+									</tr>
+									<tr >
+										<td>
+											正文
+										</td>
+									</tr>
+									<tr >
+										<td>
+											<div>
+												<script id="editor" type="text/plain" style="height: 200px;"></script>
+											</div>
+										</td>
+									</tr>
+									<tr >
+										<td>
+											添加原文链接
+										</td>
+									</tr>
+									<tr >
+										<td>
+											<input type="text" id="originalLink" name="originalLink" class="input"
+												style="padding: 0; margin: 0; background-color: #F5F5F5; width: 100%; height: 30px">
+										</td>
+									</tr>
+									<tr >
+										<td>
+											所属类别
+										</td>
+									</tr>
+									<tr >
+										<td>
+											<select name="Category" id="Category"
+												style="padding: 0; margin: 0; background-color: #F5F5F5; width: 100%;" onchange="selectContentClass()">
+												<option value="0">--------请选择所属类别--------</option>
+											</select>
+										</td>
+									</tr>
+									<tr >
+										<td>
+											内容分类
+										</td>
+									</tr>
+									<tr >
+										<td>
+										<!-- 
+										 <input type="text" id="contentClass" name="contentClass" class="input"
+												style="padding: 0; margin: 0; background-color: #F5F5F5; width: 100%; height: 30px">
+										 -->
+										 <select name="contentClass" id="contentClass"
+												style="padding: 0; margin: 0; background-color: #F5F5F5; width: 100%; height: 30px" >
+												<option value='0'>--------请选择内容分类--------</option>
+											</select>
+										</td>
+									</tr>
+									<!--  <tr >
+										<td>
+											图文外链类型
+										</td>
+									</tr>
+									<tr >
+										<td>
+											<select name="chainType" id="chainType"
+												style="padding: 0; margin: 0; background-color: #F5F5F5; width: 100%;">
+												
+											</select>
+										</td>
+									</tr>-->
+									<tr >
+										<td>
+											<input type="checkbox" id="isRelease" name="isRelease" value="已发布" checked="checked" style="-webkit-appearance:checkbox;margin:0;">
+											是否发布
+										</td>
+									</tr>
+
+								</tbody>
+							</table></form>
+							<input type="button" id="myEditorImagesss" onclick="baocun_dan(); "
+												class="btn " value="保存" style="margin-left: 220px"/>
+											&nbsp; &nbsp; &nbsp; &nbsp;
+											<!--  <input type="button" id="myEditorImages" onclick="fanhui();"
+												class="btn" value="返回" />-->
+						</td>
+					</tr>
+
+				</tbody>
+			</table>
+		
+	</body>
+</html>
+

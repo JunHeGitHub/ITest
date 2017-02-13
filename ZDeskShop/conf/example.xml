@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><DataWindow BaseComponent="window" ComponentType="QuickEdit" canEdit="false" canExcel="true" chartType="linechart" dataType="xml" dbID="ZShifts_local" dynamicGrouping="true" height="auto" root="rows" title="技能组话务情况" type="" url="/ZMonitor_/XmlDBAction.do" width="915">
+<!-- 
+	注：所有属性一律区分大小写
+	配置变化：
+	DataWindow　属性说明：
+				root：服务器与客户端交互的文档使用的节点名称。
+				url: 客户端向服务器发送请求的路径
+				width: 代码生成工具，生成窗口的初始宽度。
+				dataType：数据格式
+				dbID：config配置文件中标签targetDBInfo\database的ID
+				isComet：是否推数据窗口
+				chartType:图表类型
+	attributes\attribute　属性说明：
+				isSeach:是否查询字段
+				extend：1111，四个1对应增删查改。为０则不允许
+				fullName：数据所在数据库中的表名
+				comboType：Ext下拉对象描述，内容为目前为一个数据标识
+				dbType:数据类型
+				attrName：字段名称
+				isPk：是否主键
+				index：Ext grid　位置描述
+				xtype：ext　Form对象
+				settings：字段渲染及验证的json描述　
+						　现包含两部分属性：验证描述：validator；渲染描述：renderer
+						　格式：settings="'validator':[{fn:...,fp:[{pv:...,pt:...},...]},...],
+										 'renderer':[{fn:...,fp:[{pv:...,pt:...},...]},...]"
+						  说明：fn：JS方法注册名称（须实现方法，并且在src\jsRegister.properties下注册。这里是注册名称即等号左侧的字符串）
+						  　　　fp: 参数[根据方法实际实现，可选]
+						  	　 pv：参数的值
+						  	 　pt：参数值的类型[可选，默认为字符串类型] 值包括 string、regex(正则式类型)、int
+
+						  例：
+						  	　　验证：有参：
+						  				'validator':[{fn:'regexField',fp:[pv:'\d*',pt'regex']}] //数字验证
+						  			无参：
+						  				'validator':[{fn:'fieldNotNull'}] //非空验证
+						  		渲染：有参：
+						  				'renderer':[{fn:'renderLogicString',fp:[{pv:'regex'},{pv:'[2]+',pt:'regex'},{pv:'color-user-moreThan'}]
+						  				//字符逻辑渲染，参数１：regex　表达式验证　参数２：满足正则式[２]+　参数３：满足的渲染为 color-user-moreThan css
+						  		验证+渲染：
+						  				'validator':[{fn:'fieldNotNull'}],
+										'renderer':[{fn:'renderLogicDate',fp:[{pv:'&lt;'},{pv:'2011/5/1'},{pv:'color-user-lessThan'}]},{fn:'renderLogicDate',fp:[{pv:'&gt;'},{pv:'2011/7/1'},{pv:'color-user-moreThan'}]}]
+										
+										注：&lt;　为<号,这里的符号<、>、>=、<=、均以&lt;、&gt;、&lt;=、&gt;=　代替
+										
+						注：示例所述 fn 均在src\jsRegister.properties有注册，
+						　　注册中参数以 param开头的变量均为主动参数（主动声明，传入的参数），其它为被动参数（固定的参数）
+						    具体JS执行方法在WebRoot\js\judgeJs.js中。
+ -->
+<headers maxLevel="1">
+		<header attrIndex="1" hasSub="no" level="1"/>
+		<header attrIndex="2" hasSub="no" level="1"/>
+		<header attrIndex="3" hasSub="no" level="1"/>
+		<header attrIndex="4" hasSub="no" level="1"/>
+		<header attrIndex="5" hasSub="no" level="1"/>
+		<header attrIndex="6" hasSub="no" level="1"/>
+
+	</headers>
+	<attributes>
+		<attribute attrName="id" comboType="" dbType="int" extend="1111" fieldLen="" fieldType="1" fullName="VT_SkillGroupHour" index="1" isPk="false" isSeach="false" timeFormat="" title="标识" xtype="textfield"/>
+		<attribute attrName="workDate" comboType="" dbType="DATETIME" extend="0001" fieldLen="100" fieldType="3" fullName="VT_SkillGroupHour" index="2" isPk="false" isSeach="true" settings="    'validator':[{fn:'fieldNotNull'}],    'renderer':[{fn:'renderLogicDate',fp:[{pv:'&lt;'},{pv:'2011/5/1'},{pv:'color-user-lessThan'}]},{fn:'renderLogicDate',fp:[{pv:'&gt;'},{pv:'2011/7/1'},{pv:'color-user-moreThan'}]}]    " timeFormat="Y-m-d H:i:s" title="时段" xtype="datefield"/>
+		<attribute attrName="groupID" comboType="skill" dbType="CHAR" extend="0001" fieldLen="100" fieldType="3" fullName="VT_SkillGroupHour" index="3" isPk="false" isSeach="true" settings="    'renderer':[{fn:'renderLogicString',fp:[{pv:'regex'},{pv:'[2]+',pt:'regex'},{pv:'color-user-moreThan'}]}]    " timeFormat="" title="技能组" xtype="combo"/>
+		<attribute attrName="phoneDensity" comboType="" dbType="int" extend="" fieldLen="100" fieldType="3" fullName="VT_SkillGroupHour" index="4" isPk="false" isSeach="false" timeFormat="" title="最大并发量" xtype="textfield"/>
+		<attribute attrName="callSkExtCount" comboType="" dbType="int" extend="" fieldLen="100" fieldType="3" fullName="VT_SkillGroupHour" index="5" isPk="false" isSeach="false" timeFormat="" title="呼入量" xtype="textfield"/>
+		<attribute attrName="ShortAbandCount" comboType="" dbType="int" extend="" fieldLen="100" fieldType="3" fullName="VT_SkillGroupHour" index="6" isPk="false" isSeach="false" timeFormat="" title="短时放弃量" xtype="textfield"/>
+	</attributes>
+
+	<x>
+		<ele eleName="workDate"/>
+	</x>
+	<y>
+		<ele color="0x15428B" eleName="phoneDensity"/>
+		<ele color="0x99BBE8" eleName="callSkExtCount"/>
+
+	</y>
+</DataWindow>

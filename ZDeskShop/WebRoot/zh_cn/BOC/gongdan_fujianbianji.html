@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title></title>
+		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+		<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
+		<meta http-equiv="description" content="this is my page">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<link rel="stylesheet" href="../../css/bootstrap.css" type="text/css"></link>
+		<link rel="stylesheet"
+			href="../../js/dataTables/css/jquery.dataTables.css" type="text/css"></link>
+		<link rel="stylesheet" href="../../js/dataTables/css/DT_bootstrap.css"
+			type="text/css"></link>
+		<!-- 工具 -->
+		<link rel="stylesheet"
+			href="../../js/dataTables/css/dataTables.tableTools.min.css"
+			type="text/css"></link>
+		<!-- 动态列CSS -->
+		<link rel="stylesheet" href="../../js/dataTables/css/font-awesome.css"></link>
+		<link rel="stylesheet"
+			href="../../js/dataTables/css/dataTables.colVis.min.css"
+			type="text/css"></link>
+		<!--时间控件-->
+		<link rel="stylesheet"
+			href="../../js/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css"
+			type="text/css"></link>
+
+		<script type="text/javascript" src="../../js/jquery.js"></script>
+		<script type="text/javascript" src="../../js/bootstrap.js"></script>
+		<script type="text/javascript" src="../../js/golbal_params.js"></script>
+		<script type="text/javascript" src="../../js/appCommonUtil.js"></script>
+		<script type="text/javascript" src="../../js/common_utils.js"></script>
+		<script type="text/javascript"
+			src="../../js/appCommonCurdUtils_new.js"></script>
+		<style type="text/css">
+.form-horizontal .control-label {
+	float: left;
+	width: 60px;
+	text-align: right;
+	padding-left: 0px !important;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
+.form-horizontal .controls {
+	padding: 5px 0px;
+	line-height: 5px;
+	width: 200px !important;
+	margin-left: 0px !important;
+	float: left;
+	padding-bottom: 2px;
+	padding-top: 0px;
+}
+
+.form-horizontal .control-group {
+	margin-bottom: 2px !important;
+}
+
+form {
+	margin-bottom: 0px !important;
+}
+
+.row {
+	margin-left: 0px !important;
+}
+
+[class *='span'] {
+	margin-left: 0px !important;
+}
+
+/*工单整体区域*/
+.orderDiv {
+	padding-left: 2px;
+	border: 1px solid #33AECC;
+	border-collapse: separate;
+	border-left-width: 1px;
+	border-right-width: 1px;
+	border-right-color: #33AECC;
+	cellspacing: 1px;
+	cellpadding: 1px;
+	width: 600px;
+	min-height: 800px;
+	padding-bottom: 2px;
+}
+
+H6 {
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+</style>
+		<script type="text/javascript">
+var pwin = window.parent ;
+$(document).ready(function(){
+	$("#id").val(pwin.fjData.id) ;
+	if(pwin.fjData.fileName!=undefined){
+		$("#fileName").val(pwin.fjData.fileName) ;
+	}
+	if(pwin.fjData.fileText!=undefined){
+		$("#fileText").val(pwin.fjData.fileText) ;
+	}
+}) ;
+
+function update(){
+	var param = {} ;
+	var params = {};
+	params.tableName='UploadSave';
+	params.primarykey="id";
+	var json = {} ;
+	json.id=$("#id").val() ;
+	json.fileName = $("#fileName").val() ;
+	json.fileText = $("#fileText").val() ;
+	params.columnValues=json;
+	commonUpdate(params,true,function(data){});	 	
+	//删除后，查询一次
+	pwin.fujianSearch() ;
+	pwin.closefujianEditDialog() ;
+}
+function closethis(){
+	pwin.closefujianEditDialog() ;
+}
+</script>
+	</head>
+	<body>
+		<form class="form-horizontal" style="margin-left: 0px">
+			<div class="row">
+				<div class="span4">
+					<div class="control-group ">
+						<label class="control-label">
+							<span style="color: red;">*</span>附件id:
+						</label>
+						<div class="controls">
+							<input type="text" style="width: 155px" id="id" disabled
+								name="id" />
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="span4">
+					<div class="control-group ">
+						<label class="control-label">
+							附件名称:
+						</label>
+						<div class="controls ">
+							<input type="text" style="width: 155px" id="fileName"
+								name="fileName" />
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="span4">
+					<div class="control-group ">
+						<label class="control-label">
+							附件注释:
+						</label>
+						<div class="controls ">
+							<textarea rows="5" class="form-control" style="width: 300px"
+								cols="6" id="fileText" name="fileText"></textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div style="text-align:center">
+					<button onclick="update()" style="" class="btn">
+						修 改
+					</button>
+					<button onclick="closethis()" style="" class="btn">
+						关 闭
+					</button>
+				</div>
+			</div>
+		</form>
+	</body>
+</html>

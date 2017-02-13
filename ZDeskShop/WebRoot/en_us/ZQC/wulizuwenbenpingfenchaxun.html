@@ -1,0 +1,373 @@
+<!DOCTYPE  HTML><html lang="en"><head>
+		<title>物理组文本评分查询</title>
+
+		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+		<meta http-equiv="description" content="this is my page">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<link rel="stylesheet" href="../../css/bootstrap.css" type="text/css">
+		<link rel="stylesheet" href="../../js/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" type="text/css">
+		<link rel="stylesheet" href="../../js/dataTables/css/jquery.dataTables.css" type="text/css">
+
+		<!-- 工具 -->
+		<link rel="stylesheet" href="../../js/dataTables/css/dataTables.tableTools.min.css" type="text/css">
+		<!-- bootstrap 与 datatable结合 -->
+		<link rel="stylesheet" href="../../js/dataTables/css/DT_bootstrap.css" type="text/css">
+		<link rel="stylesheet" href="../../js/dataTables/css/font-awesome.css">
+		<link rel="stylesheet" href="../../js/dataTables/css/Z_DataTalbeCheckBox.css">
+		<link rel="stylesheet" href="../../js/dataTables/css/dataTables.colVis.min.css" type="text/css">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<link rel="stylesheet" href="../../js/artdialog/ui-dialog.css" type="text/css">
+		
+		
+		
+	<script type="text/javascript" src="../../js/jquery.js"></script>
+<script type="text/javascript" src="../../js/bootstrap.js"></script>
+<script type="text/javascript" src="../../js/bootstrap-datetimepicker/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="../../js/bootstrap-datetimepicker/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript" src="../../js/common_utils.js"></script>
+<script type="text/javascript" src="../../js/dataTables/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="../../js/dataTables/js/dataTables.colReorder.js"></script>
+<script type="text/javascript" src="../../js/dataTables/js/dataTables.colVis.js"></script>
+<script type="text/javascript" src="../../js/dataTables/js/dataTables.tableTools.min.js"></script>
+<script type="text/javascript" src="../../js/dataTables/js/DT_bootstrap.js"></script>
+<script type="text/javascript" src="../../js/golbal_params.js"></script>
+<script type="text/javascript" src="../../js/appCommonUtil.js"></script>
+<script type="text/javascript" src="../../js/appCommonCurdUtils.js"></script>
+<script type="text/javascript" src="../../js/html5.js"></script>
+<script language="javascript" src="../../js/artdialog/dialog-plus.js"></script>
+<script type="text/javascript" src="ZQC_common.js"></script>
+<script type="text/javascript" src="wulizuwenbenpingfenchaxun.js"></script>
+<script type="text/javascript">
+		$(document).ready(function() {
+        //加载物理组---动态写入select   
+			var data=doSearch();
+			$('#wenbeninfo').dataTable({
+				//data:data,//数据赋值
+			    dom: 'TRlfrtip',				
+				bProcessing : true, //是否启用正在加载中...
+		        bPaginate: true, //翻页功能
+				bLengthChange: false, //改变每页显示数据数量
+				bFilter: false, //过滤功能
+				bSort: true, //排序功能		       
+				bInfo: true,//页脚信息
+				bAutoWidth: false, //自动宽度
+				sPaginationType: "bootstrap",//分页样式
+			    scrollCollapse: true,
+				sScrollX:"100%",
+		        "aaSorting":[[1,'asc']],
+				"bScrollCollapse": true,
+				columns: [
+					{ title:"<center><input type='checkbox' id='selectall' onclick='toggleChecks(this);' ></input></center>",data: null, defaultContent: '', orderable: false,width:10},
+					/**title 表头  data json 对应key **/
+{title:"id",visible:"false",width:"150",data:"id"},
+{title:"Recording start time",width:"150",data:"begin_time"},
+{title:"Service type",width:"150",data:"business_type"},
+{title:"Telephone extension number",width:"150",data:"phone_number"},
+{title:"Calling number",width:"150",data:"caller_number"},
+{title:"Called number",width:"150",data:"call_number"},
+{title:"Grading state",width:"150",data:"score_state"},
+{title:"State of the data",width:"150",data:"data_state"},
+{title:"Grading criteria",width:"150",data:"grade_name"},
+{title:"Text duration",width:"150",data:"record_length"},
+{title:"Score",width:"150",data:"pfx_total"},
+{title:"Service inspector",width:"150",data:"owner"},
+{title:"Assessment start time",width:"150",data:"generate_time_state"},
+{title:"Recording file name",visible:"false",width:"150",data:"file_name"}
+		        ],
+		        oLanguage: {
+					"sLengthMenu": "每页显示 _MENU_条",
+					"sZeroRecords": "没有找到符合条件的数据",
+					"sProcessing": "数据正在加载，请稍后...",
+					"sInfo": "当前第 _START_ - _END_ 条　共计 _TOTAL_ 条",
+					"sInfoEmpty": "没有记录",
+					"sInfoFiltered": "(从 _MAX_ 条记录中过滤)",
+					"sSearch": "搜索：",
+					"oPaginate": {
+					"sFirst": "首页",
+					"sPrevious": "前一页",
+					"sNext": "后一页",
+					"sLast": "尾页"
+				    }
+		        }, 
+		        tableTools: {
+		            //single 单选 multi 多选  os 可以按ctrl 选择		            
+		            //回调 单选
+		            fnRowSelected: function ( nodes ) {
+		               var index=nodes[0]._DT_RowIndex;	
+		               var data = table.row(index).data();
+		               //	$("#updateFormDiv").slideDown(300);	
+		               initForm(data);
+		              //scroll2data("updateForm");
+		            },
+		            sRowSelect:'multi',
+		            "aButtons": []
+		        }
+		    });		    
+			var table= $('#wenbeninfo').DataTable();		    
+		    $('#wenbeninfo tbody').dblclick('click',function(e){
+		    	//scroll2data("updateFormDiv");		    	
+			});			    			 
+		    //自定义列插件绑定
+		    var colvis = new $.fn.dataTable.ColVis(table,{ buttonText: 'Customize display column',exclude: [ 0 ,1] });
+		    $(colvis.button()).insertBefore('#cols'); 		    		    		    
+		});		
+		
+		
+							
+			
+			
+			</script>
+</head><body style="overflow: auto;">
+		<!-- 头部导航条 -->
+		<!-- 数据表格展示模块 开始 -->
+		<div class="row-fluid" style="margin-top: -16px;">
+			<div class="widget-box">
+				<div class="widget-title" style="height: 40px; line-height: 40px; overflow: hidden;">
+					<span class="icon" style="float: left; padding: 0px 10px;">
+						<i class="icon-search"></i> </span>
+							&nbsp;&nbsp;&nbsp;每页显示条数：
+						<select name="pageSize" id="pageSize" style="width: 80px; margin-bottom: 0px;" onchange="setPageNum('wenbeninfo','pageSize')">
+							<option selected value="10">
+								10
+							</option>
+							<option value="30">
+								30
+							</option>
+							<option value="50">
+								50
+							</option>
+							<option value="100">
+								100
+							</option>
+						</select>
+					<div class="buttons" style="margin-top: 0px;" id="cols">
+						<button type="button" class="btn" onclick="showSearchItems('searchItems');">Expand/close the search term</button>
+					</div>
+				</div>
+			
+			</div>
+			<div id="searchItems" class="widget-content row" style="margin: 0 auto; text-align: center; width: 99%; border-left: 1px solid #ccc; border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; margin-top: -18px; margin-bottom: 18px; display: none;">
+				<form action="" id="searchDataForm">
+					<table id="wenbenData" style="margin: auto; width: 100%;">
+						<tbody><tr>
+							<td style="text-align: right;">Recording start time:</td><td>
+							</td><td style="text-align: left;">
+								<div class="input-append date" style="margin-bottom: 0px;" data-picker-position="bottom-left" format-type="yyyy-MM-dd hh:mm:ss" data-link-field="begin_time_DFTB" data-provide="datetimepicker-inline">
+									<input type="text" style="width: 178px" id="begin_time_DFTB" name="begin_time_DFTB" data-column="begin_time">
+									<span class="add-on"><i class="icon-th"></i> </span>
+								</div>
+								<i style="color: #FF0033;">*</i>
+							</td>
+							<td style="text-align: right;">To:</td><td>
+							</td><td style="text-align: left;">
+								<div class="input-append date" style="margin-bottom: 0px;" data-picker-position="bottom-left" format-type="yyyy-MM-dd hh:mm:ss" data-link-field="begin_time_DFTE" data-provide="datetimepicker-inline">
+									<input type="text" style="width: 178px" id="begin_time_DFTE" name="begin_time_DFTE" data-column="begin_time">
+									<span class="add-on"><i class="icon-th"></i> </span>
+								</div>
+								<i style="color: #FF0033;">*</i>
+							</td>
+							<td style="text-align: right;">Service type:</td><td>
+							</td><td style="text-align: left;">
+								<select type="text" id="business_type" name="business_type" style="margin-bottom: 0px;"></select>
+							</td>
+						</tr>
+						<tr>
+							
+							<td style="text-align: right;">Telephone extension number:</td><td>
+							</td><td style="text-align: left;">
+								<input type="text" id="phone_number" name="phone_number" style="margin-bottom: 0px">
+							</td>
+							<td style="text-align: right;">Service inspector:</td><td>
+							</td><td style="text-align: left;">
+									<input type="text" id="owner" name="owner" style="margin-bottom: 0px">
+							</td>
+							<td style="text-align: right;">Called number:</td><td>
+							</td><td style="text-align: left;">
+								<input type="text" id="call_number" name="call_number" style="margin-bottom: 0px">
+							</td>
+						</tr>
+						<tr>
+							<td style="text-align: right;">State of the data:</td><td>
+							</td><td style="text-align: left;">
+								<select type="text" id="data_state" name="data_state" style="margin-bottom: 0px;"></select>
+							</td>
+							<td style="text-align: right;">Grading criteria:</td><td>
+							</td><td style="text-align: left;">
+								<select type="text" id="grade_name" name="grade_name" style="margin-bottom: 0px;"></select>
+							</td>
+							<td style="text-align: right;">Calling number:</td><td>
+							</td><td style="text-align: left;">
+								<input type="text" id="caller_number" name="caller_number" style="margin-bottom: 0px">
+							</td>
+						</tr>
+						
+						<tr>
+							<td style="text-align: right;">文本时长大于(s):</td><td>
+							</td><td style="text-align: left;">
+								<input type="text" id="record_length_min" name="record_length_min" style="margin-bottom: 0px">
+							</td>
+							<td style="text-align: right;">文本时长小于(s):</td><td>
+							</td><td style="text-align: left;">
+								<input type="text" id="record_length_max" name="record_length_max" style="margin-bottom: 0px">
+							</td>
+						</tr>
+						<tr>
+							<td style="text-align: right;">分数大于(s):</td><td>
+							</td><td style="text-align: left;">
+								<input type="text" id="pfx_total_min" name="pfx_total_min" style="margin-bottom: 0px">
+							</td>
+							<td style="text-align: right;">分数小于(s):</td><td>
+							</td><td style="text-align: left;">
+								<input type="text" id="pfx_total_max" name="pfx_total_max" style="margin-bottom: 0px">
+							</td>
+						</tr>
+					</tbody></table>
+				</form>
+				<button type="button" id="btn_search" class="btn" onclick="tableSearch();">
+					<i class="icon-tag"></i>Search</button>
+				<button type="button" id="btn_search" class="btn" onclick="chongzhi('searchDataForm');">
+						<i class="icon-repeat"></i>Reset</button>
+			</div>
+		
+			<!-- 搜索项模块 结束 -->
+			<!-- 数据表格展示模块 开始 -->
+			<div style="margin-top: -15px; position: relative;">
+				<!-- class 或 = display -->
+				<table style="width: 100%;" class="table table-striped table-bordered nowrap" id="wenbeninfo" cellspacing="0"></table>
+			</div>
+		
+		<!-- 数据表格展示模块 结束 -->
+
+
+		<!-- 此地放可以放置table等 -->
+
+
+		<!-- 功能按钮模块 开始 -->
+		<div class="widget-box collapsible" style="margin-top: -15px;">
+			<div class="widget-title" style="height: 40px; line-height: 40px; overflow: hidden;">
+				<span class="icon" style="float: left; padding: 0px 10px;"><i class="icon-cog"></i> </span> &nbsp;&nbsp;&nbsp;
+				<!--  <button href="#1" type="button" id="btn_add" class="btn"
+					onclick="chaKanWenBenNeiRong();">
+					<i class="icon-search"></i> 查看文本详细内容
+				</button>-->
+				<button href="#1" type="button" id="btn_add" class="btn" onclick="selectData('/ZDesk/zh_cn/ZQC/theScore.html')">
+					<i class="icon-search"></i>看各项评分/文本内容</button>
+			</div>
+		</div>
+
+		<div id="updateFormDiv" class="widget-content row" style="display: none; margin: 0 auto; text-align: center; width: 99%; border-left: 1px solid #ccc; border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; margin-top: -18px; margin-bottom: 18px;">
+				<form class="form-horizontal" id="updateForm">
+					<input type="hidden" id="id" name="id" placeholder="id">
+					<table id="updateData" style="margin: auto; width: 100%;">
+						<tbody><tr>
+							<td style="text-align: left; display: none;">
+								<input type="text" id="wenbenid" name="id" readonly style="margin-bottom: 0px">
+							</td>
+							<td style="width: 100px; text-align: right;">Recording start time:</td><td>
+							</td><td style="text-align: left;">
+								<input type="text" id="begin_time" name="begin_time" readonly style="margin-bottom: 0px">
+							</td>
+							<td style="width: 100px; text-align: right;">Text duration:</td><td>
+							</td><td style="text-align: left;">
+								<input type="text" id="record_length" name="record_length" readonly style="margin-bottom: 0px">
+							</td>
+							<td style="width: 100px; text-align: right;">Calling number:</td><td>
+							</td><td style="text-align: left;">
+								<input type="text" id="caller_number" name="caller_number" readonly style="margin-bottom: 0px">
+							</td>
+						</tr>
+						<tr>
+							<td style="width: 100px; text-align: right;">Called number:</td><td>
+							</td><td style="text-align: left;">
+								<input type="text" id="call_number" name="call_number" readonly style="margin-bottom: 0px">
+							</td>
+							<td style="width: 100px; text-align: right;">Service type:</td><td>
+							</td><td style="text-align: left;">
+								<input type="text" id="business_type" name="business_type" readonly style="margin-bottom: 0px">
+							</td>
+							<td style="width: 100px; text-align: right;">Grading state:</td><td>
+							</td><td style="text-align: left;">
+								<input type="text" id="score_state" name="score_state" readonly style="margin-bottom: 0px">
+							</td>
+						</tr>
+						<tr>
+							<td style="width: 100px; text-align: right;">Service inspector:</td><td>
+							</td><td style="text-align: left;">
+								<input type="text" id="owner" name="owner" readonly style="margin-bottom: 0px">
+							</td>
+							<td style="width: 100px; text-align: right;">Recording file name:</td><td>
+							</td><td style="text-align: left;">
+								<input type="text" id="file_name" name="file_name" readonly style="margin-bottom: 0px">
+							</td>
+							<td style="width: 100px; text-align: right;">Grading criteria:</td><td>
+							</td><td style="text-align: left;">
+								<input type="text" id="pingfenzhibiao" name="grade_name" readonly style="margin-bottom: 0px">
+							</td>
+						</tr>
+						<tr>
+							<td style="width: 100px; text-align: right;">Customer satisfaction:</td><td>
+							</td><td style="text-align: left;">
+								<input type="text" id="client_satisfy" name="client_satisfy" readonly style="margin-bottom: 0px">
+							</td>
+							<td style="width: 100px; text-align: right;">IP:</td><td>
+							</td><td style="text-align: left;">
+								<input type="text" id="ip_adresse" name="ip_adresse" readonly style="margin-bottom: 0px">
+							</td>
+							<td style="width: 100px; text-align: right;">Call repeat times:</td><td>
+							</td><td style="text-align: left;">
+								<input type="text" id="repeter_numero" name="repeter_numero" readonly style="margin-bottom: 0px">
+							</td>
+						</tr>
+						<tr>
+							<td style="width: 100px; text-align: right;">Score:</td><td>
+							</td><td style="text-align: left;">
+								<input type="text" id="pfx_total" name="pfx_total" readonly style="margin-bottom: 0px">
+							</td>
+							<td style="width: 100px; text-align: right;">Download:</td><td>
+							</td><td style="text-align: left;">
+								<input type="text" id="file_location" name="file_location" readonly style="margin-bottom: 0px">
+							</td>
+							<td style="width: 100px; text-align: right;">Assessment start time:</td><td>
+							</td><td style="text-align: left;">
+								<input type="text" id="generate_time_state" readonly name="generate_time_state" style="margin-bottom: 0px">
+							</td>
+						</tr>
+						<tr>
+							<td style="width: 100px; text-align: right;">Telephone extension number:</td><td>
+							</td><td style="text-align: left;">
+								<input type="text" id="fenjihao" name="phone_number" readonly style="margin-bottom: 0px">
+							</td>
+							<td style="width: 100px; text-align: right;">State of the data:</td><td>
+							</td><td style="text-align: left;">
+								<input type="text" id="shujuzhuangtai" readonly name="data_state" style="margin-bottom: 0px">
+							</td>
+							<td style="width: 100px; text-align: right;">Group:</td><td>
+							</td><td style="text-align: left;">
+								<input type="text" readonly name="alias2" style="margin-bottom: 0px">
+							</td>
+						</tr>
+					</tbody></table>
+				</form>
+			</div>
+		<div id="scoreInfo">
+
+		</div>
+		<div id="roleWin">
+			<iframe src="" style="border: 0; width: 95%; height: 95%" class="hide"></iframe>
+		</div>
+	
+</div></body></html>

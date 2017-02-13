@@ -1,0 +1,826 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!--
+    Validation Rules for the Struts Example Web Application
+
+<<<<<<< validation.xml
+    $Id: validation.xml,v 1.1 2012-04-09 05:33:43 lichuan Exp $
+=======
+    $Id: validation.xml,v 1.1 2012-04-09 05:33:43 lichuan Exp $
+>>>>>>> 1.2
+-->
+
+<form-validation>
+ <global>
+  <constant>
+    <constant-name>validSeparator</constant-name>
+    <constant-value>[^]0-9+*\'/%!@#();[|{}-]</constant-value>
+  </constant>
+ </global>
+
+  <!-- ========== Default Language Form Definitions ===================== -->
+  <formset>
+	<!-- ContractHeader -->
+	<form name="ContractHeaderForm">
+		<field property="contractNo" depends="required">
+		    <arg0 key="Puma.ContractHeader.ContractId"/>
+	    </field> 
+		<field property="customerId" depends="required">
+		    <arg0 key="puma.customer.id"/>
+	    </field> 
+		<field property="contractName" depends="required">
+		    <arg0 key="Puma.ContractHeader.ContractName"/>
+	    </field>
+		<field property="oprType" depends="required">
+		    <arg0 key="Puma.ContractHeader.OprType"/>
+	    </field>
+		<field property="priority" depends="required">
+		    <arg0 key="Puma.ContractHeader.Priority"/>
+	    </field>
+		<field property="transportType" depends="required">
+		    <arg0 key="Puma.ContractHeader.TransportType"/>
+	    </field>
+		<field property="calcFeeMode" depends="required">
+		    <arg0 key="Puma.ContractHeader.CalcFeeMode"/>
+	    </field>
+		<field property="balanceMode" depends="required">
+		    <arg0 key="Puma.ContractHeader.BalanceMode"/>
+	    </field>		
+	</form>
+	<!--enumeration-->
+
+	<form name="EnumerationForm">
+		<field property="enumId" depends="required">
+		    <arg0 key="puma.customer.id"/>
+	    </field> 
+		<field property="sequenceId" depends="required">
+		    <arg0 key="puma.customer.id"/>
+	    </field> 
+	</form>
+	<!--customer-->
+	<form name="CustomerForm">
+      <field property="customerNo" depends="required">
+        <arg0 key="puma.customer.id"/>
+      </field> 
+	  <field property="customerName" depends="required">
+        <arg0 key="puma.customer.name"/>
+      </field> 
+	  <field property="shortName" depends="required">
+        <arg0 key="puma.customer.shortName"/>
+      </field> 
+	  <field property="address" depends="required">
+        <arg0 key="puma.customer.addr"/>
+      </field>
+	  <field property="fax" depends="required">
+        <arg0 key="puma.customer.fax"/>
+      </field>
+	  <field property="telecom" depends="required">
+        <arg0 key="puma.customer.tele"/>
+      </field>
+	  <field property="oprMan" depends="required">
+        <arg0 key="puma.customer.oprman"/>
+      </field>
+	  <field property="contactMan" depends="required">
+        <arg0 key="puma.customer.linkman"/>
+      </field>
+	</form>
+    <!--driver-->
+    <form name="DriverForm">
+      <field property="staffId" depends="required">
+        <arg0 key="Puma.Driver.DriverId"/>
+      </field>    
+      <field property="name" depends="required">
+        <arg0 key="Puma.Driver.DriverName"/>
+      </field>    
+      <field property="gender" depends="required">
+        <arg0 key="Puma.Driver.DriverSex"/>
+      </field>    
+      <field property="idCardNumber" depends="required">
+        <arg0 key="Puma.Driver.CardId"/>
+      </field>   
+      <field property="orgId" depends="required">
+        <arg0 key="Puma.Car.adscription_unit"/>
+      </field>           
+      <field property="driverLicenseType" depends="required">
+        <arg0 key="Puma.Driver.LT"/>
+      </field>          
+      <field property="driveGrade" depends="required">
+        <arg0 key="Puma.Driver.DriveGrade"/>
+      </field>  
+      <field property="mobileTelCom" depends="required">
+        <arg0 key="Puma.Driver.MoveTel"/>
+      </field>      
+      <field property="teleCom" depends="required">
+        <arg0 key="Puma.Driver.DriverTel"/>
+      </field>          
+      <field property="address" depends="required">
+        <arg0 key="Puma.Driver.DriverAddress"/>
+      </field>      
+      <field property="postalCode" depends="required">
+        <arg0 key="Puma.Driver.PostId"/>
+      </field>      	  
+      <field property="driverCost" depends="required">
+        <arg0 key="Puma.Driver.DriverCost"/>
+      </field>
+    </form>
+
+    <form name="CmForm">
+	  <field property="licenseValidityPeriod" depends="required">
+        <arg0   key="Puma.Driver.IAP"/>
+      </field>
+	  <field property="issueLicenseDate" depends="required">
+        <arg0   key="Puma.Driver.ILD"/>
+      </field>
+	  <field property="licenseValidityPeriod" depends="date">
+        <arg0   key="Puma.Driver.IAP"/>
+      </field>
+	  <field property="issueLicenseDate" depends="date">
+        <arg0   key="Puma.Driver.ILD"/>
+      </field>
+    </form>
+    <form name="OmanageForm">
+       <field property="unitName" depends="required">
+        <arg0   key="Puma.Driver.UName"/>
+      </field>
+	  <field property="operationTypeId" depends="required">
+        <arg0   key="Puma.Driver.OpTypeId"/>
+      </field>
+	  <field property="operationTypeName" depends="required">
+        <arg0   key="Puma.Driver.OpTypeName"/>
+      </field>
+    </form>
+    <form name="OtcForm">
+      <field property="operationTypeId" depends="required">
+        <arg0   key="Puma.Driver.OpTypeName"/>
+      </field>
+	  <field property="configScheme" depends="required">
+        <arg0   key="Puma.Driver.CSh"/>
+      </field>
+	  <field property="configProportion" depends="required">
+        <arg0   key="Puma.Driver.Cpop"/>
+      </field>
+	  <field property="configProportion" depends="integer">
+        <arg0   key="Puma.Driver.Cpop"/>
+      </field>
+    </form>
+    <form name="AsForm">
+       <field property="unit" depends="required">
+        <arg0   key="Puma.Driver.DriverUnit"/>
+       </field>
+	   <field property="operationTypeId" depends="required">
+        <arg0   key="Puma.Driver.OpTypeName"/>
+       </field>
+	   <field property="carType" depends="required">
+        <arg0   key="puma.Driver.CT"/>
+       </field>
+	   <field property="priceUnit" depends="required">
+        <arg0   key="puma.Driver.PU"/>
+       </field>
+	   <field property="checkStandard" depends="required">
+        <arg0   key="puma.Driver.Check_Unit"/>
+       </field>
+	</form>
+	<!--car-->
+	<form name="carForm">
+       <!--notnull-->
+	   <field property="carLicenseNo" depends="required">
+        <arg0   key="Puma.Car.carLicenseNo"/>
+       </field>
+       <field property="carRegisterLetter" depends="required">
+        <arg0   key="Puma.Car.carRegisterLetter"/>
+       </field>
+	   <field property="carSerialNumber" depends="required">
+        <arg0   key="Puma.Car.carSerialNumber"/>
+       </field>
+	   <field property="carLicenseDateStr" depends="required">
+        <arg0   key="Puma.Car.carLicenseDate"/>
+       </field>
+	   <field property="manufacturer" depends="required">
+        <arg0   key="Puma.Car.manufacturer"/>
+       </field>
+	   <field property="shelfNo" depends="required">
+        <arg0   key="Puma.Car.shelfNo"/>
+       </field>
+	   <field property="shelfNoLocation" depends="required">
+        <arg0   key="Puma.Car.shelfNoLocation"/>
+       </field>
+	   <field property="engineNo" depends="required">
+        <arg0   key="Puma.Car.engineNo"/>
+       </field>
+	   <field property="engineNoLocation" depends="required">
+        <arg0   key="Puma.Car.engineNoLocation"/>
+       </field>
+	   <field property="engineModel" depends="required">
+        <arg0   key="Puma.Car.engineModel"/>
+       </field>
+	   <field property="engineVentQuantity" depends="required">
+        <arg0   key="Puma.Car.engineVentQuantity"/>
+       </field>
+       <field property="enginePower" depends="required">
+        <arg0   key="Puma.Car.enginePower"/>
+       </field>
+       <field property="gearBoxModel" depends="required">
+        <arg0   key="Puma.Car.gearBoxModel"/>
+       </field>
+       <field property="axleModel" depends="required">
+        <arg0   key="Puma.Car.axleModel"/>
+       </field>
+       <field property="armorplateSpringNo" depends="required">
+        <arg0   key="Puma.Car.armorplateSpringNo"/>
+       </field>
+       <field property="shaftDistance" depends="required">
+        <arg0   key="Puma.Car.shaftDistance"/>
+       </field>
+       <field property="shaftNumber" depends="required">
+        <arg0   key="Puma.Car.shaftNumber"/>
+       </field>
+       <field property="tyreSpec" depends="required">
+        <arg0   key="Puma.Car.tyreSpec"/>
+       </field>
+       <field property="tyreNumber" depends="required">
+        <arg0   key="Puma.Car.tyreNumber"/>
+       </field>
+        <field property="totalMass" depends="required">
+        <arg0   key="Puma.Car.totalMass"/>
+       </field>
+       <field property="ratingLoad" depends="required">
+        <arg0   key="Puma.Car.ratingLoad"/>
+       </field>
+       <field property="otherMass" depends="required">
+        <arg0   key="Puma.Car.otherMass"/>
+       </field>
+       <field property="ratingPersons" depends="required">
+        <arg0   key="Puma.Car.ratingPersons"/>
+       </field>
+       <field property="cabPersons" depends="required">
+        <arg0   key="Puma.Car.cabPersons"/>
+       </field>
+       <field property="ratingDraught" depends="required">
+        <arg0   key="Puma.Car.ratingDraught"/>
+       </field>
+	   <field property="boxFloorHeight" depends="required">
+        <arg0   key="Puma.Car.boxFloorHeight"/>
+       </field>
+	   <field property="carLength" depends="required">
+        <arg0   key="Puma.Car.carLength"/>
+       </field>
+	   <field property="boxLength" depends="required">
+        <arg0   key="Puma.Car.boxLength"/>
+       </field>
+	   <field property="carWidth" depends="required">
+        <arg0   key="Puma.Car.carWidth"/>
+       </field>
+	   <field property="boxWidth" depends="required">
+        <arg0   key="Puma.Car.boxWidth"/>
+       </field>
+       <field property="carHeight" depends="required">
+        <arg0   key="Puma.Car.carHeight"/>
+       </field>
+       <field property="boxHeight" depends="required">
+        <arg0   key="Puma.Car.boxHeight"/>
+       </field>
+       <field property="initialValue" depends="required">
+        <arg0   key="Puma.Car.initialValue"/>
+       </field>
+       <field property="netValue" depends="required">
+        <arg0   key="Puma.Car.netValue"/>
+       </field>
+       <field property="workingLinenceNo" depends="required">
+        <arg0   key="Puma.Car.workingLinenceNo"/>
+       </field>
+       <field property="carOwner" depends="required">
+        <arg0   key="Puma.Car.carOwner"/>
+       </field>
+
+       <field property="orgId" depends="required">
+        <arg0   key="Puma.Car.orgId"/>
+       </field>
+       <field property="carLicenseType" depends="required">
+        <arg0   key="Puma.Car.carLicenseType"/>
+       </field>
+       <field property="carType" depends="required">
+        <arg0   key="Puma.Car.carType"/>
+       </field>
+       <field property="bodyEquipmentGroup" depends="required">
+        <arg0   key="Puma.Car.bodyEquipmentGroup"/>
+       </field>
+       <field property="carGrade" depends="required">
+        <arg0   key="Puma.Car.carGrade"/>
+       </field>
+       <field property="carBrand" depends="required">
+        <arg0   key="Puma.Car.carBrand"/>
+       </field>
+       <field property="manufactureCountry" depends="required">
+        <arg0   key="Puma.Car.manufactureCountry"/>
+       </field>
+       <field property="carModel" depends="required">
+        <arg0   key="Puma.Car.carModel"/>
+       </field>
+       <field property="turningLocation" depends="required">
+        <arg0   key="Puma.Car.turningLocation"/>
+       </field>
+       <field property="eldingKind" depends="required">
+        <arg0   key="Puma.Car.eldingKind"/>
+       </field>
+       <field property="propertyRightKind" depends="required">
+        <arg0   key="Puma.Car.propertyRightKind"/>
+       </field>
+       <field property="carInitLength" depends="required">
+        <arg0   key="Puma.Car.widthAndHeight"/>
+       </field>
+       <field property="boxInitLength" depends="required">
+        <arg0   key="Puma.Car.widthAndHeight"/>
+       </field>
+       <field property="carInitWidth" depends="required">
+        <arg0   key="Puma.Car.widthAndHeight"/>
+       </field>
+       <field property="boxInitWidth" depends="required">
+        <arg0   key="Puma.Car.widthAndHeight"/>
+       </field>
+       <field property="carInitHeight" depends="required">
+        <arg0   key="Puma.Car.widthAndHeight"/>
+       </field>
+       <field property="boxInitHeight" depends="required">
+        <arg0   key="Puma.Car.widthAndHeight"/>
+       </field>
+       <field property="businessKind" depends="required">
+        <arg0   key="Puma.Car.businessKind"/>
+       </field>
+    </form>
+    <form name="RepairForm">
+       <field property="heavyRepairInterval" depends="required">
+        <arg0   key="Puma.Car.heavy_repair_interval"/>
+       </field>
+       <field property="frepairInterval" depends="required">
+        <arg0   key="Puma.Car.frepair_interval"/>
+       </field>
+       <field property="frepairDays" depends="required">
+        <arg0   key="Puma.Car.frepair_days"/>
+       </field>
+       <field property="srepairInterval" depends="required">
+        <arg0   key="Puma.Car.srepair_interval"/>
+       </field>
+       <field property="srepairDays" depends="required">
+        <arg0   key="Puma.Car.srepair_days"/>
+       </field>
+	   <!--integer-->
+       <field property="heavyRepairInterval" depends="integer">
+        <arg0   key="Puma.Car.heavy_repair_interval"/>
+       </field>
+       <field property="frepairInterval" depends="integer">
+        <arg0   key="Puma.Car.frepair_interval"/>
+       </field>
+       <field property="frepairDays" depends="integer">
+        <arg0   key="Puma.Car.frepair_days"/>
+       </field>
+       <field property="srepairInterval" depends="integer">
+        <arg0   key="Puma.Car.srepair_interval"/>
+       </field>
+       <field property="srepairDays" depends="integer">
+        <arg0   key="Puma.Car.srepair_days"/>
+       </field>
+     </form>
+     <form name="Repair_mForm">
+       <field property="carId" depends="required">
+        <arg0   key="Puma.Car.carid"/>
+       </field>
+       <field property="repairType" depends="required">
+        <arg0   key="Puma.Car.repair_type"/>
+       </field>
+       <field property="repairDate" depends="required">
+        <arg0   key="Puma.Car.repair_date"/>
+       </field>
+       <field property="completeDate" depends="required">
+        <arg0   key="Puma.Car.complete_date"/>
+       </field>
+       <field property="repairUnit" depends="required">
+        <arg0   key="Puma.Car.repair_unit"/>
+       </field>
+       <field property="proposer" depends="required">
+        <arg0   key="Puma.Car.proposer"/>
+       </field>
+       <field property="checkPerson" depends="required">
+        <arg0   key="Puma.Car.check_person"/>
+       </field>
+       <field property="repairFee" depends="required">
+        <arg0   key="Puma.Car.repair_fee"/>
+       </field>
+       <field property="tyreFee" depends="required">
+        <arg0   key="Puma.Car.tyre_fee"/>
+       </field>
+       <field property="datumFee" depends="required">
+        <arg0   key="Puma.Car.datum_fee"/>
+       </field>
+	   <!--date-->
+       <field property="repairDate" depends="date">
+        <arg0   key="Puma.Car.repair_date"/>
+       </field>
+       <field property="completeDate" depends="date">
+        <arg0   key="Puma.Car.complete_date"/>
+       </field>
+	   <!--float-->
+       <field property="repairFee" depends="float">
+        <arg0   key="Puma.Car.repair_fee"/>
+       </field>
+       <field property="tyreFee" depends="float">
+        <arg0   key="Puma.Car.tyre_fee"/>
+       </field>
+       <field property="datumFee" depends="float">
+        <arg0   key="Puma.Car.datum_fee"/>
+       </field>
+    </form>
+    <form name="ChangeForm">
+      <field property="changeDate" depends="required">
+       <arg0   key="Puma.Car.change_date"/>
+      </field>
+      <field property="changeContent" depends="required">
+       <arg0   key="Puma.Car.change_content"/>
+      </field>
+      <field property="changeManufacturer" depends="required">
+       <arg0   key="Puma.Car.change_manufacturer"/>
+      </field>
+      <field property="changeFee" depends="required">
+       <arg0   key="Puma.Car.change_fee"/>
+      </field>
+	  <!--date-->
+      <field property="changeDate" depends="date">
+       <arg0   key="Puma.Car.change_date"/>
+      </field>
+	  <!--float-->
+      <field property="changeFee" depends="float">
+       <arg0   key="Puma.Car.change_fee"/>
+      </field>
+	</form>
+    <form name="CsForm">
+       <field property="carId" depends="required">
+        <arg0   key="Puma.Car.carid"/>
+       </field>
+	   <field property="csDate" depends="required">
+        <arg0   key="Puma.Car.cs_date"/>
+       </field>
+	   <field property="csNumber" depends="required">
+        <arg0   key="Puma.Car.cs_number"/>
+       </field>
+	   <!--date-->
+       <field property="csDate" depends="date">
+        <arg0   key="Puma.Car.cs_date"/>
+       </field>
+	</form>
+    <form name="SmForm">
+       <field property="nowState" depends="required">
+        <arg0   key="Puma.Car.now_state"/>
+       </field>
+       <field property="driverId" depends="required">
+        <arg0   key="Puma.Driver.DriverId"/>
+       </field>
+       <field property="nowLocation" depends="required">
+        <arg0   key="Puma.Car.now_location"/>
+       </field>
+	   <field property="carLoad" depends="required">
+        <arg0   key="Puma.Car.car_load"/>
+       </field>
+	   <field property="cubage" depends="required">
+        <arg0   key="Puma.Car.cubage"/>
+       </field>
+	   <field property="carNo" depends="required">
+        <arg0   key="Puma.Car.car_no"/>
+       </field>
+	   <field property="udate" depends="required">
+        <arg0   key="Puma.Car.u_date"/>
+       </field>
+	   <!--date-->
+       <field property="udate" depends="date">
+        <arg0   key="Puma.Car.u_date"/>
+       </field>
+	   <!--float-->
+       <field property="carLoad" depends="float">
+        <arg0   key="Puma.Car.car_load"/>
+       </field>
+       <field property="cubage" depends="float">
+        <arg0   key="Puma.Car.cubage"/>
+       </field>
+    </form>
+    <form name="EtForm">
+       <field property="eldingExpendStandard" depends="required">
+        <arg0   key="Puma.Car.elding_expend_standard"/>
+       </field>
+       <field property="tyreExpendStandard" depends="required">
+        <arg0   key="Puma.Car.tyre_expend_standard"/>
+       </field>
+       <field property="materialExpendStandard" depends="required">
+        <arg0   key="Puma.Car.material_expend_standard"/>
+       </field>
+	   <!--float-->
+       <field property="eldingExpendStandard" depends="float">
+        <arg0   key="Puma.Car.elding_expend_standard"/>
+       </field>
+       <field property="tyreExpendStandard" depends="float">
+        <arg0   key="Puma.Car.tyre_expend_standard"/>
+       </field>
+       <field property="materialExpendStandard" depends="float">
+        <arg0   key="Puma.Car.material_expend_standard"/>
+       </field>
+    </form>
+    <form name="BrForm">
+       <field property="attemperInterval" depends="required">
+        <arg0   key="Puma.Car.attemper_interval"/>
+       </field>
+       <field property="carryCargoNum" depends="required">
+        <arg0   key="Puma.Car.carry_cargo_num"/>
+       </field>
+       <field property="turnover" depends="required">
+        <arg0   key="Puma.Car.turnover"/>
+       </field>
+       <field property="driverId" depends="required">
+        <arg0   key="Puma.Driver.DriverId"/>
+       </field>
+       <field property="carRoadId" depends="required">
+        <arg0   key="Puma.Car.car_road_id"/>
+       </field>
+       <field property="actualInterval" depends="required">
+        <arg0   key="Puma.Car.actual_interval"/>
+       </field>
+       <field property="eldingExpend" depends="required">
+        <arg0   key="Puma.Car.elding_expend"/>
+       </field>
+       <field property="carTerminus" depends="required">
+        <arg0   key="Puma.Car.car_terminus"/>
+       </field>
+	   <!--float-->
+       <field property="attemperInterval" depends="float">
+        <arg0   key="Puma.Car.attemper_interval"/>
+       </field>
+       <field property="carryCargoNum" depends="float">
+        <arg0   key="Puma.Car.carry_cargo_num"/>
+       </field>
+       <field property="turnover" depends="float">
+        <arg0   key="Puma.Car.turnover"/>
+       </field>
+       <field property="actualInterval" depends="float">
+        <arg0   key="Puma.Car.actual_interval"/>
+       </field>
+       <field property="eldingExpend" depends="float">
+        <arg0   key="Puma.Car.elding_expend"/>
+       </field>
+    </form>
+
+    <form name="dcForm">
+      <field property="dcNo" depends="required">
+        <arg0   key="Spider.DC.Id"/>
+      </field>
+      <field property="dcName" depends="required">
+        <arg0   key="Spider.DC.Name"/>
+      </field>
+      <!-- integer ??? -->
+      <field property="postCode" depends="integer">
+        <arg0   key="Spider.DC.Postcode"/>
+      </field>
+      <field property="teleNum" depends="integer">
+        <arg0   key="Spider.DC.Telenum"/>
+      </field>
+    </form>
+
+		<!--jiamu.wang.2003-04-06 begin for area management-->
+    <form name="areaForm">
+      <field property="geoId" depends="required">
+        <arg0   key="Spider.Area.Id"/>
+      </field>
+    </form>
+		<!--jiamu.wang.2003-04-06 end for area management-->
+		<!--jiamu.wang.2003-04-08 begin for address management-->
+    <form name="orgForm">
+      <field property="address" depends="required">
+        <arg0   key="Spider.Org.Address"/>
+      </field>
+      <field property="post" depends="integer">
+        <arg0   key="Spider.Org.Post"/>
+      </field>
+    </form>
+		<!--jiamu.wang.2003-04-08 end for address management-->
+
+		<!--super.wang.2003-04-06 begin for user management-->
+    <form name="userForm">
+      <field property="firstName" depends="required">
+        <arg0   key="Spider.User.FirstName"/>
+      </field>
+      <field property="birthDate" depends="date">
+        <arg0   key="Spider.User.BirthDate"/>
+      </field>
+      <field property="email" depends="email">
+        <arg0   key="Spider.User.Email"/>
+      </field>
+      <field property="disabledDateTime" depends="date">
+        <arg0   key="Spider.User.DisabledDateTime"/>
+      </field>
+    </form>
+
+    <form name="securityGroupForm">
+      <field property="securityGroupId" depends="required">
+        <arg0   key="Spider.SECG.groupId"/>
+      </field>
+    </form>
+	  <form name="RepairRecordForm">
+         <field property="csRepairType" depends="required">
+         	     <arg0 key="Puma.Car.repairType"/>
+         </field>
+         <field property="csBeginDate" depends="required">
+         	     <arg0 key="Puma.Car.beginDate"/>
+         </field>
+         <field property="csEndDate" depends="required">
+         	     <arg0 key="Puma.Car.endDate"/>
+         </field>
+         <field property="csProposer" depends="required">
+         	     <arg0 key="Puma.Car.proposer"/>
+         </field>
+         <field property="csRepairMan" depends="required">
+         	     <arg0 key="Puma.Car.repairMan"/>
+         </field>
+         <field property="csCheckMan" depends="required">
+         	     <arg0 key="Puma.Car.checkMan"/>
+         </field>
+         <field property="csAcceptMan" depends="required">
+         	     <arg0 key="Puma.Car.acceptMan"/>
+         </field>
+         <field property="csMaintainFee" depends="required">
+         	     <arg0 key="Puma.Car.maintainFee"/>
+         </field>
+         <field property="csMaterialFee" depends="required">
+         	     <arg0 key="Puma.Car.materialFee"/>
+         </field>
+         <field property="csRepairCorp" depends="required">
+         	     <arg0 key="Puma.Car.repairCorp"/>
+         </field>
+         <field property="csState" depends="required">
+         	     <arg0 key="Puma.Car.repair.state"/>
+         </field>
+         <field property="csMaintainFee" depends="float">
+         	     <arg0 key="Puma.Car.maintainFee"/>
+         </field>
+         <field property="csMaterialFee" depends="float">
+         	     <arg0 key="Puma.Car.materialFee"/>
+         </field>
+	  </form>
+	  <form name="addMaintainRecordForm">
+         <field property="csBeginDate" depends="required">
+         	     <arg0 key="Puma.Car.csBeginDate"/>
+         </field>
+         <field property="csEndDate" depends="required">
+         	     <arg0 key="Puma.Car.endDate"/>
+         </field>
+         <field property="csMaintainCorp" depends="required">
+         	     <arg0 key="Puma.Car.csMaintainCorp"/>
+         </field>
+	  </form>
+	  <form name="MaintainRecordForm">
+         <field property="csBeginDate" depends="required">
+         	     <arg0 key="Puma.Car.csBeginDate"/>
+         </field>
+         <field property="csEndDate" depends="required">
+         	     <arg0 key="Puma.Car.endDate"/>
+         </field>
+         <field property="csProposer" depends="required">
+         	     <arg0 key="Puma.Car.proposer"/>
+         </field>
+         <field property="csMaintainMan" depends="required">
+         	     <arg0 key="Puma.Car.repairMan"/>
+         </field>
+         <field property="csCheckMan" depends="required">
+         	     <arg0 key="Puma.Car.checkMan"/>
+         </field>
+         <field property="csAcceptMan" depends="required">
+         	     <arg0 key="Puma.Car.acceptMan"/>
+         </field>
+         <field property="csRepairFee" depends="required">
+         	     <arg0 key="Puma.Car.csRepairFee"/>
+         </field>
+         <field property="csMaterialFee" depends="required">
+         	     <arg0 key="Puma.Car.materialFee"/>
+         </field>
+         <field property="csMaintainCorp" depends="required">
+         	     <arg0 key="Puma.Car.csMaintainCorp"/>
+         </field>
+         <field property="csState" depends="required">
+         	     <arg0 key="Puma.Car.csState"/>
+         </field>
+         <field property="csRepairFee" depends="float">
+         	     <arg0 key="Puma.Car.csRepairFee"/>
+         </field>
+         <field property="csMaterialFee" depends="float">
+         	     <arg0 key="Puma.Car.materialFee"/>
+         </field>
+	  </form>
+	  
+	  
+	  <form name="productForm">
+         <field property="productId" depends="required">
+         	     <arg0 key="Puma.mmt.ProductId"/>
+         </field>
+         <field property="productName" depends="required">
+         	     <arg0 key="Puma.mmt.ProductName"/>
+         </field>
+		 <field property="categoryId" depends="required">
+         	     <arg0 key="Puma.mmt.ProductType"/>
+         </field>
+		 <field property="uom" depends="required">
+         	     <arg0 key="Puma.mmt.UOM"/>
+         </field>
+		 <field property="packageType" depends="required">
+         	     <arg0 key="Puma.mmt.PackageType"/>
+         </field>
+		 <field property="productLevel" depends="required">
+         	     <arg0 key="Puma.mmt.ProductLevel"/>
+         </field>
+		 <field property="feeModel" depends="required">
+         	     <arg0 key="Puma.mmt.FeeType"/>
+         </field>
+		 <field property="weight" depends="float">
+         	     <arg0 key="Puma.mmt.Weight"/>
+         </field>
+		 <field property="productLength" depends="float">
+         	     <arg0 key="Puma.mmt.LengthWidthHeigth"/>
+         </field>
+		 <field property="productWidth" depends="float">
+         	     <arg0 key="Puma.mmt.LengthWidthHeigth"/>
+         </field>
+		 <field property="productHeight" depends="float">
+         	     <arg0 key="Puma.mmt.LengthWidthHeigth"/>
+         </field>
+		 <field property="volume" depends="float">
+         	     <arg0 key="Puma.mmt.Volume"/>
+         </field>
+	  </form>
+	  <form name="transStoreForm">
+         <field property="transStoreName" depends="required">
+         	     <arg0 key="Puma.mmt.TransStoreName"/>
+         </field>
+         <field property="address" depends="required">
+         	     <arg0 key="label.Address"/>
+         </field>
+         <field property="telecom" depends="required">
+         	     <arg0 key="label.Telephone"/>
+         </field>
+	  </form>
+	  <form name="transportCorpForm">
+         <field property="corpNo" depends="required">
+         	     <arg0 key="Puma.mmt.CorpNo"/>
+         </field>
+		 <field property="corpName" depends="required">
+         	     <arg0 key="Puma.mmt.CorpName"/>
+         </field>
+		 <field property="address" depends="required">
+         	     <arg0 key="label.Address"/>
+         </field>
+         <field property="teleCom" depends="required">
+         	     <arg0 key="label.Telephone"/>
+         </field>
+		 <field property="postalCode" depends="required">
+         	     <arg0 key="label.PostalCode"/>
+         </field>
+		 <field property="contactMan" depends="required">
+         	     <arg0 key="label.ContactMan"/>
+         </field>
+	  </form>
+	  
+	  <!--////////////////////////////-->
+	  	  <form name="ParameterForm">
+         <field property="prefixNum" depends="required">
+         	     <arg0 key="rwwfsfsff"/>
+         </field>
+         <field property="csEndDate" depends="required">
+         	     <arg0 key="Puma.Car.endDate"/>
+         </field>
+         <field property="csProposer" depends="required">
+         	     <arg0 key="Puma.Car.proposer"/>
+         </field>
+         <field property="csMaintainMan" depends="required">
+         	     <arg0 key="Puma.Car.repairMan"/>
+         </field>
+         <field property="csCheckMan" depends="required">
+         	     <arg0 key="Puma.Car.checkMan"/>
+         </field>
+         <field property="csAcceptMan" depends="required">
+         	     <arg0 key="Puma.Car.acceptMan"/>
+         </field>
+         <field property="csRepairFee" depends="required">
+         	     <arg0 key="Puma.Car.csRepairFee"/>
+         </field>
+         <field property="csMaterialFee" depends="required">
+         	     <arg0 key="Puma.Car.materialFee"/>
+         </field>
+         <field property="csMaintainCorp" depends="required">
+         	     <arg0 key="Puma.Car.csMaintainCorp"/>
+         </field>
+         <field property="csState" depends="required">
+         	     <arg0 key="Puma.Car.csState"/>
+         </field>
+         <field property="csRepairFee" depends="float">
+         	     <arg0 key="Puma.Car.csRepairFee"/>
+         </field>
+         <field property="csMaterialFee" depends="float">
+         	     <arg0 key="Puma.Car.materialFee"/>
+         </field>
+	  </form>
+	  
+  </formset>
+
+</form-validation>

@@ -1,0 +1,76 @@
+﻿
+
+
+/*科e互联特效基本框架CSS结束，应用特效时，以上样式可删除*/
+.main_visual {
+	height: 500px;
+	border-top: 0px solid #d7d7d7;
+	
+	position: relative;
+}
+
+.main_image {
+	height: 500px;
+	widht:100%;
+	overflow: hidden;
+	position: relative;
+}
+
+.main_image ul {
+	width: 9999px;
+	height: 500px;
+	overflow: hidden;
+	position: absolute;
+	top: 0;
+	left: 0
+}
+
+.main_image li {
+	float: left;
+	width: 100%;
+	height: 422px;
+}
+
+img {
+	width:100%;
+	height:550px;
+
+}
+
+/*
+.main_image li span {
+	display: block;
+	width: 100%;
+	height: 422px
+}*/
+
+.main_image li a {
+	display: block;
+	width: 100%;
+	height: 422px
+}
+
+div.flicking_con {
+	position: absolute;
+	top: 420px;
+	left: 50%;
+	z-index: 999;
+	width: 300px;
+	height: 21px;
+	margin: 0 0 0 -50px;
+}
+
+div.flicking_con a {
+	float: left;
+	width: 21px;
+	height: 21px;
+	margin: 0;
+	padding: 0;
+	background: url('../images/btn_main_img.png') 0 0 no-repeat;
+	display: block;
+	text-indent: -1000px
+}
+
+div.flicking_con a.on {
+	background-position: 0 -21px
+}

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.zinglabs.apps.fileDownload">
+	<!-- 根据数据id查询已上传文件信息 -->
+	<select id="searchFileToDownload" resultType="java.util.Map">
+		select us.* from FileDataMapper fd,UploadSave us
+		where fd.fileId = us.id
+		<if test="dataId != null and dataId != ''">
+				and fd.dataId = ${dataId}
+		</if>
+	</select>
+</mapper>

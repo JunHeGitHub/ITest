@@ -1,0 +1,272 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta name="viewport"
+			content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+		
+		<title>商品评价</title>
+		
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<link href="../css/base.css" type="text/css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/demo.css" />
+		<link href="../css/star.css" type="text/css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../../css/iscroll.css" />
+			
+		
+		<link rel="stylesheet" type="text/css" href="../css/myCenter.css" />
+		 <link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css"/>
+		 <link rel="stylesheet" href="../css/bootstrap-switch.css" type="text/css"/>
+		
+		<script type="text/javascript" src="../../../js/iscroll-master/build/iscroll-probe.js"></script>
+		
+		<script type="text/javascript" src="../../../js/jquery.js"></script>
+		<script type="text/javascript" src="../../../js/common_utils.js"></script>
+		<script type="text/javascript" src="../../../js/appCommonUtil.js"></script>
+		<script type="text/javascript" src="../../../js/appCommonCurdUtils_new.js"></script>
+		
+	    
+	    <script src="../js/js/highlight.js"></script>
+	    <script src="../js//bootstrap-switch.js"></script>
+	    <script src="../js/js/main.js"></script>
+		<script type="text/javascript" src="../js/pingjia.js"></script>
+		
+		
+		<style>
+		 #hd_back:before{ 
+		    content:"";
+		    width:15px;
+		    height:15px;
+		    position:absolute;
+		    top:10px;
+		    left:10px;
+		    border-bottom:1px solid #afafae;
+		    border-right:1px solid #afafae;
+		    -webkit-transform: rotate(135deg);
+		    -moz-transform: rotate(135deg);
+		    -o-transform: rotate(135deg);
+		    transform: rotate(135deg);
+		}
+		 
+		#hd_back:after{
+		    right:0;
+		}
+	</style>
+		
+		
+		
+		
+		
+		<script type="text/javascript">
+			var url = window.location.href; //获取当前页面的url
+			var len= url.length;//获取url的长度
+			var param = url.split("?");
+			var newsids=param[1].split("=");//对获得的参数字符串按照“=”进行分割 
+			var orderId=newsids[1];//得到参数值 
+			var paramsName=newsids[0];//得到参数名字 
+			
+			 var myScroll,pullUpEl, pullUpOffset;
+			 var assesData = {};  
+			 var arrayObj = new Array(); 
+			 function loaded () {
+				myScroll = new IScroll('#wrapper', { useTransition: true });
+			}
+		
+			$(function(){
+				loadPro();
+				// loaded();
+				//loadGoodsData(); 
+				
+				//提交评价
+				$("#submitData").on('click',function(){
+					submitData();
+				});
+				
+			})
+			
+			function loadGoodsData(options){
+				var params ={};
+				params.orderId = orderId,
+				params.offset= 0;
+				params.rows = 10; 
+				params.buyersUser = 1;
+				
+				ajaxFunction('/' + PRJ_PATH + '/ZKM/OD/getOrderInPhones.action',     
+						 params, true, function(data){
+					if(data.success){
+						data = data.data;
+						loadDiv(data,options);
+					}
+				});
+			}
+			
+			function loadDiv(data,options){
+				var str = "";
+				for(var i =0; i <data.data.length; i++){
+					for(var j = 0; j <data.data[i].subset.length;j++ ){
+					$("#showGoods").append("<div class='quiz_content'>"+ 
+					   		"<div style='float:left;'><img src='"+data.data[i].subset[j].goodsImgs.split(",")[0]+"'  style='width:80px;height:80px;'/></div>"+ 
+					   		"<div style='float:left;'>"+  
+							"	<form action='' id='' method='post'>"+
+								"	<div class='goods-comm' >"+ 
+										"<div class='goods-comm-stars' style='padding-top:20px;'>"+ 
+										"	<span class='star_l'>&nbsp;&nbsp;&nbsp;&nbsp;满意度：</span>"+ 
+										"	<div id='rate-comm-"+data.data[i].subset[j].id+"' class='rate-comm'></div>"+    
+										"</div>"+
+									"</div>"+
+								"</form>"+
+					   		"</div>"+
+						"</div>"+
+						"<div id='abc-"+data.data[i].subset[j].id+"' style='display:none;'>"+ 
+						"	<textarea placeholder='说说你和这件小物的故事吧' id = 'content-"+data.data[i].subset[j].groupId+"'   style='width:95%;height:70px;margin:5px;'></textarea>"+
+						"	<button  onclick=hideDiv('"+data.data[i].subset[j].id+"','"+data.data[i].subset[j].goodsId+"','"+data.data[i].subset[j].groupId+"')  >提交评价</button>"+
+						"</div>");
+						
+						if(data.data[i].subset.length - 1 != j){
+							// $("#showGoods").append("<div><hr style=' width:100%; margin :2 0; display:inline-block' /></div>");
+						}
+						
+						
+						 $("#rate-comm-"+data.data[i].subset[j].id).rater(options);    
+						// console.log($("#rate-comm-"+data.data[i].subset[j].id));  
+					}
+				
+				}
+			}
+			
+			
+			
+			
+		
+			// 隐藏输入评论框，并保存值
+			function hideDiv(divId,goodsId,groupId){
+				$("#abc-"+divId).css('display','none');
+				
+				for(var i = 0; i<arrayObj.length;i++){
+					if(arrayObj[i].goodsId == goodsId){
+						arrayObj[i].content = $("#content-"+goodsId).val();
+						arrayObj[i].goodLevel = $(".rater-star-result-"+divId).html();
+						return;
+					}
+				}
+				
+				var obj = {};
+				obj.goodsId = goodsId; 
+				obj.groupId = groupId;
+				obj.content = $("#content-"+goodsId).val();
+				obj.goodLevel = $(".rater-star-result-"+divId).html();
+				
+				 arrayObj.push(obj); 
+			}
+		
+			function submitData(){
+				
+				if(arrayObj.length < 1){
+					alert("请输入评价"); 
+					return;
+				}
+				
+				for(var i  = 0; i <arrayObj.length;i++){
+								
+					if(BIsNullVal($(".rater-star-result-send").html()) && !isNaN($(".rater-star-result-send").html())){ 
+						$(".rater-star-result-send").html("请评分"); 
+						return;
+					}		
+					if(BIsNullVal($(".rater-star-result-service").html()) && !isNaN($(".rater-star-result-service").html())){
+						$(".rater-star-result-service").html("请评分");  
+						return;
+					}
+					if(BIsNullVal($(".rater-star-result-express").html()) && !isNaN($(".rater-star-result-express").html())){
+						$(".rater-star-result-express").html("请评分");  
+						return;
+					}	
+					arrayObj[i].sendLevel = $(".rater-star-result-send").html();
+					arrayObj[i].serviceLevel = $(".rater-star-result-service").html();
+					arrayObj[i].expressLevel = $(".rater-star-result-express").html();
+					arrayObj[i].userId = "1";
+					arrayObj[i].userName ="英立讯"; 
+					if($("#switch-state").bootstrapSwitch('state') == true){
+						arrayObj[i].showOrNot = "1"; // 匿名评价
+					}else{
+						arrayObj[i].showOrNot = "0"; //正常评价
+					}
+			
+				}
+				
+				var params = JSON.stringify(arrayObj);
+				
+				// alert($("#switch-state").bootstrapSwitch('state'));  
+				
+				console.log(params);
+				
+				// return;
+				ajaxFunction('/' + PRJ_PATH + '/ZKM/Category/addPingJia.action',     
+						 params, true, function(data){
+					if(data.success){
+						 // data = data.data;
+						console.log(data);
+						alert("感谢您的评价"); 
+						location = "orderList.html?keyCode=00"; 
+					}
+				});
+				
+			}
+			
+			
+			//=======非空判断； 
+			function BIsNullVal(value) {  
+			    return typeof(value)=="undefined" || value==null ||  (typeof(value)=='string' &&(value=="undefined" || value=='' || value=='null' )) ||  (typeof(value)=='boolean' &&value==false  );
+			};
+			
+		</script>
+		
+  </head>
+  
+  <body style="background:white;overflow:visible;overflow-y:visible;">
+  		 <div id="top" style="border-bottom:1px solid #DDDDDD;">
+			<a id="hd_back"  href="javascript:void(0);"  onclick="javascript:history.go(-1);"></a>
+			<span  style="padding-left:18px;margin-top: -10px;position: absolute;color:#afafae;"
+				onclick="javascript:history.go(-1);"
+			>返回</span>
+			<div style="margin:-8px;"><p style="text-align:center;maigin-top:3px;color: black;font-size:18px;">商品评价</p></div>
+		</div>
+  		 
+		<!--  <div id="wrapper">
+			<div id="scroller" >   
+				<div id="showGoods" style="padding-top:50px;"></div>--> 
+				<div id="showGoods"></div>
+				 <div class="quiz_content">
+					<form action="" id="" method="post">
+						<div class="goods-comm">
+							<div class="goods-comm-stars">
+								<span class="star_l">服务态度：</span>
+								<div id="rate-comm-service" class="rate-comm"></div>
+							</div>
+						</div>
+						<div class="goods-comm">
+							<div class="goods-comm-stars">
+								<span class="star_l">物流速度：</span>
+								<div id="rate-comm-express" class="rate-comm"></div>
+							</div>
+						</div>
+						<div class="goods-comm">
+						<div class="goods-comm-stars">
+								<span class="star_l">发货速度：</span>
+								<div id="rate-comm-send" class="rate-comm"></div>
+							</div>
+						</div>
+					 <div  class="switch">
+			            <p>
+			              匿名评价：<input id="switch-state" type="checkbox" checked data-animate="true">
+			            </p>
+			          </div>
+					</form>
+					<div id="submitData" style="height:40px;widht:48%;background:red;text-align:center;padding-left:0px;">
+						<p style="padding-top:10px;color:white;">确定</p>
+					</div>
+				</div>
+			 <!-- </div></div>  -->
+  </body>
+</html>

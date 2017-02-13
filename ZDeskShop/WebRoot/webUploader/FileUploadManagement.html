@@ -1,0 +1,480 @@
+<!DOCTYPE  HTML>
+<html lang="en">
+	<head>
+		<title>文件上传管理页</title>
+
+		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3" />
+		<meta http-equiv="description" content="this is my page" />
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css"></link>
+	    <link rel="stylesheet" href="../css/bootstrap-responsive.min.css" type="text/css"></link>
+		<link rel="stylesheet" href="../js/dataTables/css/jquery.dataTables.css" type="text/css"></link>
+		<!-- bootstrap 与 datatable结合 -->
+		<link rel="stylesheet" href="../js/dataTables/css/DT_bootstrap.css" type="text/css"></link>
+		<!-- 工具 -->
+		<link rel="stylesheet" href="../js/dataTables/css/dataTables.tableTools.min.css" type="text/css"></link>
+		<!-- 动态列CSS -->
+		<link rel="stylesheet" href="../demo/unicorn.main.css" type="text/css"></link>
+	    <link rel="stylesheet" href="../js/dataTables/css/font-awesome.css"></link>
+		<link rel="stylesheet" href="../js/dataTables/css/dataTables.colVis.min.css" type="text/css"></link>
+		<script type="text/javascript" src="../js/jquery.js"></script>
+		<script type="text/javascript" src="../js/bootstrap.js"></script>
+		<script type="text/javascript" src="../js/dataTables/js/jquery.dataTables.js"></script>
+		<script type="text/javascript" src="../js/dataTables/js/dataTables.colReorder.js"></script>
+		<script type="text/javascript" src="../js/dataTables/js/dataTables.colVis.js"></script>
+		<script type="text/javascript" src="../js/dataTables/js/dataTables.tableTools.min.js"></script>
+		<script type="text/javascript" src="../js/dataTables/js/DT_bootstrap.js"></script>
+		<script type="text/javascript" src="../js/common_utils.js"></script>
+		<script type="text/javascript" src="../js/appCommonCurdUtils_new.js"></script>
+		<script type="text/javascript" src="../js/appCommonUtil.js"></script>
+<style type="text/css" class="init">
+	#test td.red {
+		font-weight: bold;
+		color: red;
+	}
+
+    #test tr td:first-child {
+        text-align: center;
+    }
+  /* fa-square-o */
+    #test tr td:first-child:before {
+        content: "\f096"; 
+        font-family: FontAwesome;
+    }
+ 
+    #test tr.active td:first-child:before {
+        content: "\f046"; /* fa-check-square-o */
+    } 
+</style>
+		<script type="text/javascript">
+
+
+$(document).ready(function() {
+   var data=doSearch(); 
+
+	 
+  $('#test').dataTable({
+        //滚动条 
+        //scrollY: 500,
+       //scrollX: false,
+        bPaginate: true, //翻页功能
+		bLengthChange: false, //改变每页显示数据数量
+		bFilter: true, //过滤功能
+		bSort: true, //排序功能
+		bInfo: true,//页脚信息
+		bAutoWidth: false, //自动宽度
+		sPaginationType: "bootstrap",//分页样式
+		//"sDom":"<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>" ,
+		//数据赋值
+		data:data,
+	   // dom: 'Rlfrtip',
+	    dom: 'TRlrtip',
+	   // dom: 'T<"clear">lfrtip',
+	    //自定义列插件
+       // colVis: {
+       //    order: 'alpha',
+       //    buttonText: "自定义显示列"
+       // },
+        order: [ 1, 'asc' ],
+		columns: [
+		 /*{ "title": 
+		   "<input type='checkbox' id='selectall' onclick='toggleChecks(this);' ></input>",
+		    "mDataProp": null, 
+		    "sWidth": "20px", 
+		    "sDefaultContent": "<input type='checkbox' class='case' onChange='setSelect()' ></input>",
+		     "bSortable": false 
+	
+		     },*/
+			{ title:"<input type='checkbox' id='selectall' onclick='toggleChecks(this);' ></input>",data: null, defaultContent: '', orderable: false },
+			{ 
+			  title:"id" ,
+			  data: 'id',
+			  visible: false,
+			  searchable: false
+			},
+			/**title 表头  data json 对应key **/
+	        {"title":"文件名称" ,data: 'fileName'},
+	        {"title":"新文件名称",data:'newFileName',visible:false},
+	        {"title":"类型",data:'fileType' },
+	        {"title": "存储路径",data: 'savePath' },
+	        {"title": "文件大小",data: 'fileSize' },
+	        {"title": "文件状态",data: 'state'},
+	        {"title": "上传时间",data: 'uploadTime',visible:false},
+	        { //自定义列
+	          title:"操作",
+			  //"sName": "cz",
+			  "sClass": "center",
+			  "bSearchable": false,
+			  "bStorable": false
+			 }
+        ],
+        //列 行高亮显示
+        //createdRow: function ( row, data, index ) {
+           // if ( data[5].replace(/[\$,]/g, '') * 1 > 4000 ) {
+               // alert("123");
+                //$('td', row).eq(2).addClass('red');
+           // }
+        //} ,
+        //列筛选等属性 样式 可以与columns属性合并
+        columnDefs: [ {
+		     "targets": -1,
+		     "defaultContent": "<button class='btn'>下载</button>",
+		      data:null
+	          } ,
+	          {
+                // The `data` parameter refers to the data for the cell (defined by the
+                // `data` option, which defaults to the column being worked with, in
+                // this case `data: 0`.
+                render: function ( data, type, row ) {
+                	if(data==1){
+                		return '未删除';
+                	}else{
+                		return '已删除';
+                	}
+                },
+                "targets": 7
+            }
+	    
+	    ],
+        oLanguage: {
+			"sLengthMenu": "每页显示 _MENU_条",
+			"sZeroRecords": "没有找到符合条件的数据",
+			"sProcessing": "&lt;imgsrc=’./loading.gif’ /&gt;",
+			"sInfo": "当前第 _START_ - _END_ 条　共计 _TOTAL_ 条",
+			"sInfoEmpty": "木有记录",
+			"sInfoFiltered": "(从 _MAX_ 条记录中过滤)",
+			"sSearch": "搜索：",
+			"oPaginate": {
+			"sFirst": "首页",
+			"sPrevious": "前一页",
+			"sNext": "后一页",
+			"sLast": "尾页"
+		    }
+        }, tableTools: {
+          //single 单选 multi 多选  os 可以按ctrl 选择
+           // sRowSelect:'multi',
+           //回调 单选
+            fnRowSelected: function ( nodes ) {
+               var index=nodes[0]._DT_RowIndex;	
+               var data = table.row(index).data();
+               initForm(data);
+               //alert(JSON.stringify(data));
+            },
+             sRowSelect:'os',
+            //sRowSelector:'td:first-child',
+            aButtons:     [ /*{
+                "sExtends":    "select_all",
+                "sButtonText": "选择全部",
+                "target":      "#select"
+              } , 'select_none' */]
+        }
+        
+        
+    }); 
+     //绑定事件 on
+     var table= $('#test').DataTable();
+	 $('#test tbody').on( 'click', 'button', function (obj) {
+	    var data = table.row( $(this).parents('tr') ).data();
+	    if(data.state==0){
+	    	zinglabs.alert("文件已被删除，不能进行下载操作");
+	    }else{
+	    	var file = data.savePath;
+	    	var name = data.fileName;
+	    	commonDownload(file,name);
+	    }
+        //alert(JSON.stringify(data));
+	} );
+	 
+	
+    //工具栏与bootstarp 结合
+   // var tt = new $.fn.dataTable.TableTools(table);
+  //  $(tt.fnContainer()).insertBefore('#tools');
+    
+  //筛选绑定
+   /* $('#shaixuan').on( 'keyup', function () {
+       table.search( this.value ).draw();
+    
+    });*/
+    //自定义列插件绑定
+       
+     var colvis = new $.fn.dataTable.ColVis(table,{ buttonText: '自定义显示列',exclude: [ 0 ,1] });
+     $( colvis.button()).insertBefore('#cols');  
+});
+
+function tableSearch(){
+    var table=$('#test').DataTable();
+    var value=$("#shaixuan").val();
+    table.search(value).draw(true);
+}
+function doSearch(){
+	 var params = {};
+	 params.tableName='UploadSave';
+	 params.isPagination=false;
+	 var rdata={};
+	 commonSelect(params,false,function(data){
+	 	rdata = data.data;
+	 });
+     return rdata;
+
+}
+//打开文件上传
+function openUpload(){
+	var params ={};
+	params.maxSize=10;//10M
+	params.relativeKey='relativePath';
+	params.reFillFn='doTest';
+	params.isShowDialog = true;
+	useWebUploader("showDiv",params);
+	$("#updateForm").addClass("hide");
+}
+
+//打开简单文件上传
+function openSimpleUpload(){
+	var params ={};
+	params.maxSize=10;//10M
+	params.relativeKey='relativePath';
+	params.reFillFn='doTest';
+	params.isMultiple = false;
+	params.isSimplePage=true;
+	params.frameHeight="100px";
+	useWebUploader("showDiv",params);
+	$("#updateForm").addClass("hide");
+}
+//保存修改文件
+function doSave(){
+	var $form = $("#updateForm");
+	var id = $form.find(":input[id='id']").val()
+	var fileName = $form.find(":input[id='fileName']").val();
+	var fileType = $form.find(":input[id='fileType']").val();
+	var state = $form.find(":input[id='state']").val();
+	if(state==0){
+		zinglabs.alert("记录已被删除，不能进行修改");
+		return;
+	}
+	var params = {};
+	if(fileName.lastIndexOf('.')==-1){
+		fileName=fileName+'.'+fileType;
+	}
+	if(fileType!=fileName.substr(fileName.lastIndexOf('.'),fileName.length)){
+		fileName=fileName.substr(0,fileName.lastIndexOf('.'))+'.'+fileType;
+	}
+	params.tableName='UploadSave';
+	params.columnValues={"id":id,"fileName":fileName};
+	params.primarykey="id";
+	commonUpdate(params,false,function(data){
+		if(data.success){
+			refreshData();
+			zinglabs.alert("文件信息保存成功");
+		}else{
+			zinglabs.alert(data.mgs);
+		}
+	});
+}
+//获取选中行
+function fnGetSelected(){
+    //注意DataTable大写 或者 $('#test').dataTable().api();
+     var table=$('#test').DataTable();
+ //   var data =table.column().data();
+    //获取选中行 通过dataTable查找
+     var cell=table.rows(".active").data();
+    //通过table TableTools插件 查找
+     var tt = new $.fn.dataTable.TableTools(table);
+     var selectData=tt.fnGetSelectedData();
+     if(selectData.length==0){
+     	zinglabs.alert("请选择要执行删除操作的记录");
+     }else{
+	    zinglabs.confirm("确认删除吗",function(){
+			for(var i in selectData){
+	     	 	var id = selectData[i].id;
+	     	 	var state = selectData[i].state;
+			    var params = {};
+			     	params.tableName='UploadSave';
+			     	params.primarykey="id";
+			     	params.columnValues={"id":id,"state":0};
+			     	commonUpdate(params,false,function(data){});
+		     }
+		     refreshData();
+		     zinglabs.alert("删除成功");
+		 });
+     }    
+    //alert( JSON.stringify(selectData) );
+    //console.log( JSON.stringify(selectData));
+}
+//全选
+ function toggleChecks(obj){
+       var table=$('#test').DataTable();
+       var tableTools = new $.fn.dataTable.TableTools(table);
+       var ischeck=$("#selectall").is(':checked');
+       if(ischeck){
+         tableTools.fnSelectAll();
+       }else{
+         tableTools.fnSelectNone();
+       }
+      
+    }
+    
+	function initForm(data){
+				$("#updateForm,#saveSpan").removeClass("hide");
+				$("#showDiv").children().remove();
+				var cfs=$("#updateForm input[name],textarea[name]");
+				for(var i=0;i<cfs.length;i++){
+					var e=cfs[i];					
+					var v=data[e.name];
+					if(v==undefined || v==null){
+						v='';
+					}
+					$(e).val(v);
+				}
+   }
+//每页显示条数
+function setPageNum(obj){
+  var table=$('#test').DataTable();
+  table.page.len(obj.value).draw();
+  //alert(obj.value);
+}
+//刷新
+function refresh(){
+	 clearForm("updateForm");
+     var table=$('#test').DataTable();
+     //清空筛选
+     table.search("").draw();
+     $("#shaixuan").val('');
+     //清空数据
+     table.clear().draw();
+     //重新加载数据
+     var data=doSearch(); 
+     table.rows.add(data).draw(true);
+
+}
+//刷新并重置页面
+function refreshData(){
+	$("#updateForm").removeClass("hide");
+	$("#showDiv iframe").contents().find("body").empty();
+	refresh();
+}
+function test(){
+  var data=zkm_getHtmlFormJsons("updateForm");
+  alert( JSON.stringify(data) );
+}
+//清空表单
+function clearForm(formName){
+  var cfs=$("#"+formName+" input[name],#"+formName+" select[name] ");
+  cfs.val('');
+  $("#"+formName+" textarea").val('');
+}
+function doTest(data){
+	refresh();
+	//zinglabs.alert(JSON.stringify(data));
+}
+
+    </script>
+</head>
+	<body>
+	<div class="widget-box collapsible">
+		<div class="widget-title">
+	       <span class="icon">
+				<i class="icon-search"></i>
+			</span>
+			<h5>文件管理</h5>
+			<div class="collapse in" id="collapseOne"></div>
+			<div id="cols"></div>				
+		<!-- class 或 = display -->
+		<table width="1000" class="table table-striped table-bordered"
+			id="test" cellspacing="0">
+
+		</table>
+		<div class="widget-box collapsible">
+			<div class="widget-title"
+				style="height: 40px; line-height: 40px; overflow: hidden;">
+				<span class="icon" style="float: left; padding: 0px 10px;">
+					<i class="icon-cog"></i>
+				</span>&nbsp;&nbsp;&nbsp;
+				<a class="btn" onclick="openUpload()"><i class="icon-arrow-up"></i>上传文件</a>
+				<a class="btn" onclick="openSimpleUpload()"><i class="icon-arrow-up"></i>简单上传文件</a>
+				<button id="btn_suSecurityUser_shanchuyonghu" type="button" class="btn" onclick="fnGetSelected()">
+					<i class="icon-remove"></i>删除
+				</button>
+				<button id="btn_suSecurityUser_shuaxin" type="button" class="btn" onclick="refreshData()">
+					<i class="icon-refresh"></i>刷新
+				</button>
+				<span id="saveSpan" class="hide">
+					<button id="saveBtn" type="button" class="btn" onclick="doSave()">
+						<i class="icon-ok"></i>保存
+					</button>
+				</span>
+				<a href="/ZDesk/webUploader/searchDownload.html" class="btn">searchFileToDownload方法使用demo</a>
+			</div>
+		</div>
+		<div id="showDiv" align="center"></div>
+    	<form class="form-horizontal" id="updateForm">
+    	<!-- 栅格布局 -->
+		<div id="update"  class="row" >
+			<input type="hidden" id="id" name="id">
+            <div class="span6">
+                   <div class="control-group">
+						<label class="control-label">
+							文件名称:
+						</label>
+						<div class="controls">
+							<input type="text" id=fileName name="fileName">
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label">
+							新文件夹名称:
+						</label>
+						<div class="controls">
+							<input type="text" id=newFileName name="newFileName" readonly="readonly">
+						</div>
+					</div>
+            </div>
+            <div class="span6">
+                   <div class="control-group">
+						<label class="control-label">
+							文件类型:
+						</label>
+						<div class="controls">
+							<input type="text" id=fileType name="fileType" readonly="readonly">
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label">
+							存储路径:
+						</label>
+						<div class="controls">
+							<input type="text" id=savePath name="savePath" readonly="readonly">
+						</div>
+					</div>
+            </div>
+            <div class="span6">
+                   <div class="control-group">
+						<label class="control-label">
+							文件大小:
+						</label>
+						<div class="controls">
+							<input type="text" id=fileSize name="fileSize" readonly="readonly">
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label">
+							文件状态:
+						</label>
+						<div class="controls">
+							<input type="text" id=state name="state" readonly="readonly">
+						</div>
+					</div>
+            </div>
+            <div class="span6">
+                   <div class="control-group">
+						<label class="control-label">
+							上传时间:
+						</label>
+						<div class="controls">
+							<input type="text" id="uploadTime" name="uploadTime" readonly="readonly">
+						</div>
+					</div>
+            </div>
+		  </div>
+	   </form>
+	</body>
+</html>

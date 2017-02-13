@@ -1,0 +1,354 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+		<title>商品列表</title>
+		<link href="../css/base.css"
+			type="text/css" rel="stylesheet" />
+		<link href="../js/mobile-website/style/v2/mobile.min.css"
+			type="text/css" rel="stylesheet" />
+		
+		<script type="text/javascript" src="../../../js/jquery.js"></script>
+		<script type="text/javascript" src="../../../js/golbal_params.js"></script>
+		<script type="text/javascript" src="../../../js/common_utils.js"></script>
+		
+		<style>
+		 #hd_back:before,#hd_back_none:before,#quickbuyback:before{
+		    content:"";
+		    width:15px;
+		    height:15px;
+		    position:absolute;
+		    top:10px;
+		    left:10px;
+		    border-bottom:1px solid #afafae;
+		    border-right:1px solid #afafae;
+		    -webkit-transform: rotate(135deg);
+		    -moz-transform: rotate(135deg);
+		    -o-transform: rotate(135deg);
+		    transform: rotate(135deg);
+		}
+		 
+		#hd_back:after,#hd_back_none:after,#quickbuyback:after{
+		    right:0;
+		}
+		
+		.up:after{
+			content: '';
+			display: inline-block;
+			margin-left: 4px;
+			width: 12px;
+			height: 15px;
+			background:
+				url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAeCAYAAADZ7LXbAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6NDZGQkYzODdGNzM5MTFFMTlBODVDNjBFMzdBMTY2ODIiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NDZGQkYzODhGNzM5MTFFMTlBODVDNjBFMzdBMTY2ODIiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo0NkZCRjM4NUY3MzkxMUUxOUE4NUM2MEUzN0ExNjY4MiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo0NkZCRjM4NkY3MzkxMUUxOUE4NUM2MEUzN0ExNjY4MiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PooBtysAAAJuSURBVHjavJZbTxNREMdnoSy92G53abfUCwqRb2FMjIkxMTFGQ4zGGCJBUR5MURN98sn4omjVtLIUiUSEBz+A3wU1gkSklG5vUEqh6wxuidJue3ZbnOSfs5M9m9+Zc2ZmD6dpGrDYlU+HaeBRA6i3KLYP0VpYJ5ZKJR41E3S7IjiOozgUsMjGAuib7aR5H7tE4WK3KABGP7CYylAkN1ki4upt16VpuRWHmS5J6DsieKC4tQ18mw3m1TT8UNMxFlBNyIUpHwGmj3Z4Lx8S3FAobu2+c/BtsKBmYCGZGkf3Vi2QIeT8pEiAqWM+8WrQ64H8ZrFijqudh0WMaD6h1gRVhZyLCQR41+2XrgcQkCtsGkbrtrfDEoK+ryQVdIeqgSogZxU3ZdxEj9zR78ctymwU6iaG12GH5VQGvsVXx9C9vRf0D+RM1MnhEOsJ+G74MAI1v8Ga4SA5HZDAiL4uJypAu5DTb+wEGDve6R+URA+sruXBrPldzh3Ql18rVKx3yqAdyKkwT4BIb1AeEiUPxHPrYNUCB1yQTKZhbikeRXeYQNzJ0VYCvO49KA+78QziuTVo1GQEZdNZmPv5B8SdeMY9xoe7sH8W4VgbJC7GMoUZ0oi1wH8wm6Io+w9BPUU9tPAtdcssw7znBHmkw+5bWKBYD4B6Uj6TB6gXTd6l0fLC/z74EVS4SQBa8D2j7ApR9TcBMFIrhTW9+qMWAS/3AozqRNMbm2IBEDJTjJr+l5toFFCv4gk0iJq0skVm2koZ9N7gfVgHaI32rm39avqhCiDEcrljbZAE6kfN6v4rVkC5NYAJ0DXUZ7qPmblw/xZgAM/T+tefMNqrAAAAAElFTkSuQmCC)
+				no-repeat;
+			overflow: hidden;
+			background-size: contain;
+			vertical-align: middle;
+		}
+		
+		.down:after{
+			content: '';
+			display: inline-block;
+			margin-left: 4px;
+			width: 12px;
+			height: 15px;
+			background:
+				url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAeCAYAAADZ7LXbAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6NTMxMTNDQzJGNzM5MTFFMUFCNEVCOEE2ODRBMDM5QjIiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NTMxMTNDQzNGNzM5MTFFMUFCNEVCOEE2ODRBMDM5QjIiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo1MzExM0NDMEY3MzkxMUUxQUI0RUI4QTY4NEEwMzlCMiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo1MzExM0NDMUY3MzkxMUUxQUI0RUI4QTY4NEEwMzlCMiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PodJbq0AAAI/SURBVHjavJZdSxRRGMfPmRaJnZmdZtlMzBe86HNEBBIEXiSiiWSm6wsStbYXXgVeeRG+lumaVohmhN77ZYJQxPJl192Z3StnpufRo9A4u/PMuvaHP+ecmfPMb8774alUigVQFbgXvAB2qEFSQMA6+CP4E5hXGhICfwM/EWVszSIVRIHcEIBW1/M+KkgiANbAbUXeIyjlB5J8ACvgdp8fifuBpBKAz+BO4pjFxYzjVAg+WwI/Y8HUD573ArkhXEzP56w8DXiBJBcA+/YFu5oGxFribggXL+KsMhoEz52DQiLzXryopIZEOoyQt2IWZVjl1QFOI2RM+NrEHcdh1y2J/QeFqBU7N+vLhzzdqBuHdLSM2BOwQag3cTom7T9q393V1OS9WJRJnHYWYZxVYjx/HmXYbtaYgGzyYuDbvtdM3lHCiSYtwjgR5FXPhu/9Os6x32Z+EopvLs2u1rXq6WpFftWoa/Sz1QXYBsC+mZ+C4ojnwFuWndjLGtKJZb1sAFAQ4c/uAODALPwD8FwnLV90bMRcTJGH6qIaGbCbybFDMz8NxQRpMT5e0hC0EFXk/lofEMbvASBdBFByxT9aVE/PFl0J99YU6TqM/QNdlDELRQG+20rzfBhBy7dUuee2C4RxB9CC7FkLRkpd9nz3rocfbuJ5v6ypcndMgDDm6AwwI1rgXHmDfDBThaCvEVXu0vUISwPAMGiAQLvw/akQglZlJdyRNwuzkH9NvQ+TN0jbti1IuoycuSXuY+Qz4q8AAwBIeNa5e/7YLAAAAABJRU5ErkJggg==)
+				no-repeat;
+			overflow: hidden;
+			background-size: contain;
+			vertical-align: middle;
+		
+		}
+		
+		.tabV2  li{
+			background:white;
+		}
+		
+		.artc_nav a{
+			padding-top: 6px;
+			height: 35px;
+			background:white;
+		}
+		
+		.artc_nav .cur {
+			top:0px;
+			color:#FF5511 ;
+		 }		
+		.artc_nav .cur a:before{
+			content: ' ';
+			position: absolute;
+			background: #FF5511 ;
+			display: block;
+			height: 2px;
+			margin:0 3px; 
+			width: 25%;
+		}
+		
+		
+	</style>
+		
+		
+	<script>
+		var url = window.location.href; //获取当前页面的url
+			var len= url.length;//获取url的长度
+			var param = url.split("?");
+			var newsids=param[1].split("=");//对获得的参数字符串按照“=”进行分割
+			var newsname=newsids[0];//得到参数名字 
+			var newsid=newsids[1];//得到参数值
+	
+		var count  = 1;
+		var params ={};
+			params.selectByCate = newsid;
+			params.flag = "detail";
+			params.saleNumber = "sale"; // 执行子查询销售数量；
+		
+		$(function(){
+			
+			loadGoodsByCateGory(params);
+		});
+				
+		function loadGoodsByCateGory(params){ 
+			// var params = {};
+			params.rows = 3;
+			params.offset = parseInt((count - 1) * params.rows); 
+			ajaxFunction("/" + parent.PRJ_PATH + "/" + "ZKM" + "/goodsManager/selectMainGoods.action", params, false, function (data) {
+				var str = "";
+				if (data && data.data) {
+				// 	console.log(data);
+					for (var i = 0; i < data.data.length; i++) {
+						
+						str += "<dl><dt><a href='javascript:void(0);' onclick=repost('"+data.data[i].id+"');> " +
+								"<img class='lazy'  src='" + data.data[i].goodsImgs.split(",")[0] + "' /> </a>" + 
+								"</dt><dd><a href='javascript:void(0);' onclick=repost('"+data.data[i].id+"');>"+
+								"<h4>" + data.data[i].goodsTitle + "</h4><p class='promTags'></p><p class='price'>"+
+								"<strong>&yen;" + data.data[i].goodsSalePrice + "</strong>"; 
+								//如果没有市场价，不显示
+								//if(!BIsNullVal(data.data[i].goodsShowPrice) && data.data[i].goodsShowPrice != 0){
+									// str+=	"<del>&yen;" + data.data[i].goodsShowPrice + "</del>"; 
+									 str+=	"<span style='color:#afafae;'>" + data.data[i].saleTotal + "人已购买</span>"; 
+								//}
+								str +="</p></a>" +  
+								// "<a class='cartBtn'  href='#' >+</a>" + 
+								//"<div class='ins'><p></p><a href='#' class='goBuy'></a>" + 
+								//"<a href='#'></a></div>"+
+								"</dd></dl>";
+					}
+					$("#allGoods").append(str);
+					// 加载更多 显示和隐藏
+					if((parseInt(params.offset) + parseInt(params.rows)) >= data.total){
+						$("#loadMore").css("display","none");
+					}else{
+						$("#loadMore").css("display","block");
+					}
+				}
+			});
+		}
+		
+		//点击加载更多
+		function loadMoreGoods(){
+			count++;
+			loadGoodsByCateGory(params); 
+		}
+		
+		
+		//跳转至详情
+		function repost(data){
+		  location="detail.html?groupId="+data;
+		}
+	
+		//切换时刷新
+		function load(dv){
+			count = 1;
+			$("#allGoods").html(''); // 切换时清空内容
+			// params = {};
+			params.orderBy = "";
+			if(!$(dv).hasClass("cur")){
+				$("#str a").removeClass("cur up down"); //清空所有样式
+				$(dv).addClass("cur up"); //给选中的标签添加样式
+			}else{
+				if($(dv).hasClass("up")){
+					$(dv).removeClass("up");
+					$(dv).addClass("down");
+				}
+				else{ 
+					$(dv).removeClass("down");
+					$(dv).addClass("up");
+				}
+			}
+			
+			if($(dv).hasClass("gprice")){
+				if($(dv).hasClass("up")){ // 价格排序
+					params.orderBy = "goodsSalePrice asc";
+				}else{
+					params.orderBy = "goodsSalePrice desc";
+				}
+			}else if($(dv).hasClass("count")){ // 销售数量排序
+				if($(dv).hasClass("up")){
+					params.orderBy = "saleTotal asc";	
+				}else{
+					params.orderBy = "saleTotal desc"; 
+				}
+			}else if($(dv).hasClass("say")){ // 评价排序
+				
+			}else{
+				if($(dv).hasClass("up")){ // 默认时间排序
+					params.orderBy = "createDate asc";	
+				}else{
+					params.orderBy = "createDate desc";
+				}
+			}
+			
+			//params.selectByCate = newsid;
+			//params.flag = "mainGoods";
+			
+			loadGoodsByCateGory(params);
+			
+		}
+	
+		function BIsNullVal(value) {  
+		    return typeof(value)=="undefined" || value==null ||  (typeof(value)=='string' &&(value=="undefined" || value=='' || value=='null' )) ||  (typeof(value)=='boolean' &&value==false  );
+		};
+	
+	</script>
+	</head>
+
+	<body>
+		<div id="top" style="border-bottom:1px solid #DDDDDD;">
+			<a id="hd_back"  href="javascript:void(0);"  onclick="javascript:history.go(-1);"></a>
+			<span  style="padding-left:18px;margin-top: -10px;position: absolute;color:#afafae;"
+				onclick="javascript:history.go(-1);"
+			>返回</span>
+			<div class="site-nav">
+				<ul class="fix">
+					<li class="home">
+						<a href="index.html">首页</a>
+					</li>
+					<li class="mysn">
+						<a href="javascript:void(0);" onclick="location='userCenter.html'">我的云贝</a>
+					</li>
+					<li class="mycart">
+						<a href="javascript:void(0);" onclick="location='demo.html'">购物车</a>
+					</li>
+					<li class="allcate">
+						<a href="javascript:void(0);" onclick="location='childFenlei.html'">商品分类</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="artc_nav"  style="border-bottom:1px solid #DDDDDD;">
+			<nav id="str">
+				<a href="javascript:void(0);" id="hot" onclick="load(this)"	 class="cur hot down">新品</a>
+				<a href="javascript:void(0);" id="gprice" onclick="load(this)"  class="gprice">价格</a>
+				<a href="javascript:void(0);" id="count" onclick="load(this)"	class="count">销量</a>
+				<a href="javascript:void(0);" id="say" onclick="load(this)"	class="say">评价</a>
+			</nav>
+		</div>
+		<div class="wrap proList goodsList">
+			<div id="allGoods"></div>
+			<div id="loadMore" style="display:block;">
+				<p style="text-align:center;font-size:16px;" onclick="loadMoreGoods();">更多....</p>
+			</div>
+		</div>
+
+			<!-- 
+   	<dl  >
+        <dt>
+	        <a href="../../product/9577339//@tracker_u=">
+           		<img class="lazy"  src="http://d6.yihaodianimg.com/N01/M02/87/87/CgQCrlHs5dGAF4ioAANgW9EoZm860301_115x115.jpg" alt=""/>
+           	</a>
+        </dt>
+       	<dd>
+	        <a href="../../product/9577339//@tracker_u=">
+                <h4>Walch/威露士 袋装洗衣液薰衣草香 2kg 加量装</h4>
+                <p class="promTags">
+	        		<span class="decre">减</span><span class="gift">赠</span><!--<span class="decre">换购</span>-- >
+	             	</p>
+                <p class="price">
+                    <strong>&yen;25.9</strong>
+                    <del>&yen;37.6</del></p>
+            </a>
+            
+        	<a class="cartBtn"  href="javascript:addcart('10810909','1','');" >+</a>
+		            <div class="ins">
+		                <p></p>
+		                <a href="javascript:commonStatistics('','buttonPosition','goshopping','');" class="goBuy">继续购物</a>
+		                <a href="javascript:commonStatistics('','buttonPosition','gotocart','../../cart');">去购物车结算</a>
+		            </div>
+		        </dd>
+    </dl>  -->
+
+
+		<!-- 
+		<div class="pageListNav mt">
+			<span> <select id="selPage" onChange="javascript:turnPage();">
+					<option value="../6638_1_1/@name=" selected="selected">
+						1/51
+					</option>
+					<option value="../6638_2_1/@name=">
+						2/51
+					</option>
+					<option value="../6638_3_1/@name=">
+						3/51
+					</option>
+					<option value="../6638_4_1/@name=">
+						4/51
+					</option>
+					<option value="../6638_5_1/@name=">
+						5/51
+					</option>
+					<option value="../6638_6_1/@name=">
+						6/51
+					</option>
+				</select> </span>
+			<a
+				href="javascript:commonStatistics('','buttonPosition','nextpage','../6638_2_1/@name=');">下一页</a>
+		</div>
+		 
+		<div class="footer">
+			<br />
+			<div class="in">
+				<div class="footSearch">
+					<form method="get" action="/mw/search" name="searchForm"
+						id="searchForm_id">
+						<input name="keyword" type="text" id="keywordfoot" />
+						<button type="button" onClick="return check()"></button>
+					</form>
+				</div>
+				<a
+					href="javascript:commonStatistics('','linkPosition','backhome','../../index/1');"
+					class="homeBtn"><span></span>
+				</a>
+				<a
+					href="javascript:commonStatistics('','linkPosition','backhead','');"
+					class="gotop"> <span></span>
+					<p>
+						回顶部
+					</p> </a>
+			</div>
+		</div>-->
+
+	<!-- 	<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write("<div style='display:none'>"+ unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Ff31531fca780ed5666345856c7edbf91' type='text/javascript'%3E%3C/script%3E")+"</div>");
+</script> 
+		<script type="text/javascript"
+			src="../js/mobile-website/js/zepto.min.js@v=20131212"></script>
+
+		<script type="text/javascript"
+			src="../js/mobile-website/js/v2_tracker_top.js@v=20131212"></script>
+
+
+		<script type="text/javascript"
+			src="../js/mobile-website/js/v3/cart.js"></script>-->
+
+	</body>
+</html>

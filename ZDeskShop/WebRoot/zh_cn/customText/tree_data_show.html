@@ -1,0 +1,394 @@
+<!DOCTYPE  HTML>
+<html lang="en">
+	<head>
+		<title>自定义信息管理页面</title>
+
+		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3" />
+		<meta http-equiv="description" content="this is my page" />
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="../../css/bootstrap.min.css" type="text/css"></link>
+		<link rel="stylesheet"
+			href="../../js/dataTables/css/jquery.dataTables.css" type="text/css"></link>
+		<!-- bootstrap 与 datatable结合 -->
+		<link rel="stylesheet" href="../../js/dataTables/css/DT_bootstrap.css"
+			type="text/css"></link>
+		<!-- 工具 -->
+		<link rel="stylesheet"
+			href="../../js/dataTables/css/dataTables.tableTools.min.css"
+			type="text/css"></link>
+		<!-- 动态列CSS -->
+		<link rel="stylesheet" href="../../demo/unicorn.main.css" type="text/css"></link>
+		<link rel="stylesheet" href="../../js/dataTables/css/font-awesome.css"></link>
+		<link rel="stylesheet"
+			href="../js/dataTables/css/dataTables.colVis.min.css" type="text/css"></link>
+		<script type="text/javascript" src="../../js/jquery.js"></script>
+		<script type="text/javascript" src="../../js/bootstrap.js"></script>
+		<script type="text/javascript"
+			src="../../js/dataTables/js/jquery.dataTables.js"></script>
+		<script type="text/javascript"
+			src="../../js/dataTables/js/dataTables.colReorder.js"></script>
+		<script type="text/javascript"
+			src="../../js/dataTables/js/dataTables.colVis.js"></script>
+		<script type="text/javascript"
+			src="../../js/dataTables/js/dataTables.tableTools.min.js"></script>
+		<script type="text/javascript"
+			src="../../js/dataTables/js/DT_bootstrap.js"></script>
+		<script type="text/javascript" src="../../js/appCommonUtil.js"></script>
+		<script type="text/javascript" src="../../js/common_utils.js"></script>
+		<style type="text/css">
+#test tr td:first-child {
+	text-align: center;
+}
+
+/* fa-square-o */
+#test tr td:first-child:before {
+	content: "\f096";
+	font-family: FontAwesome;
+}
+
+#test tr.active td:first-child:before {
+	content: "\f046"; /* fa-check-square-o */
+}
+
+</style>
+<script type="text/javascript">
+$(document).ready(function() {
+  var data=doSearch(); 
+  $('#test').dataTable({
+        //滚动条 
+        //scrollY: 500,
+       //scrollX: false,
+        bPaginate: true, //翻页功能
+		bLengthChange: false, //改变每页显示数据数量
+		bFilter: true, //过滤功能
+		bSort: true, //排序功能
+		bInfo: true,//页脚信息
+		bAutoWidth: false, //自动宽度
+		sPaginationType: "bootstrap",//分页样式
+		//"sDom":"<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>" ,
+		//数据赋值
+		data:data,
+	   // dom: 'Rlfrtip',
+	    dom: 'TRlrtip',
+	   // dom: 'T<"clear">lfrtip',
+	    //自定义列插件
+       // colVis: {
+       //    order: 'alpha',
+       //    buttonText: "自定义显示列"
+       // },
+        order: [ 1, 'asc' ],
+		columns: [
+		 /*{ "title": 
+		   "<input type='checkbox' id='selectall' onclick='toggleChecks(this);' ></input>",
+		    "mDataProp": null, 
+		    "sWidth": "20px", 
+		    "sDefaultContent": "<input type='checkbox' class='case' onChange='setSelect()' ></input>",
+		     "bSortable": false 
+	
+		     },*/
+			{ title:"<input type='checkbox' id='selectall' onclick='toggleChecks(this);' ></input>",data: null, defaultContent: '', orderable: false,width:15},
+			{ 
+			  title:"id" ,
+			  data: 'id',
+			  visible: false,
+			  searchable: false
+			},
+			/**title 表头  data json 对应key **/
+	        {"title":"模板名称" ,data: 'name',className: "my_class" },
+	        {"title":"模板分类Id",data:'nodeId',visible:false},
+	        {"title":"模板分类",data:'text'},
+	        {"title":"模板类型",data:'templateType'},
+	        {"title":"模板文本总长度",data:'maxSize'}
+	        
+        ],
+        //列 行高亮显示
+        createdRow: function ( row, data, index ) {
+           // if ( data[5].replace(/[\$,]/g, '') * 1 > 4000 ) {
+               // alert("123");
+                //$('td', row).eq(2).addClass('red');
+           // }
+           
+           /*修改列*/
+           var v = $('td', row).eq(3).text();
+           if(v=='static'){
+    		  $('td', row).eq(3).text('静态');
+    	   }else if(v=='dynamic'){
+    		  $('td', row).eq(3).text('动态');
+    	   }
+        } ,
+        //列筛选等属性 样式 可以与columns属性合并
+        //columnDefs: [ {
+		     //"targets": -1,
+		     //"defaultContent": "<button>编辑</button>",
+		      //data:null
+	          //} ,
+	          //{
+                // The `data` parameter refers to the data for the cell (defined by the
+                // `data` option, which defaults to the column being worked with, in
+                // this case `data: 0`.
+                //render: function ( data, type, row ) {
+                    //return data +' (单元格格式化)';
+                //},
+                //"targets": 3
+            //}
+	    
+	    //],
+        oLanguage: {
+			"sLengthMenu": "每页显示 _MENU_条",
+			"sZeroRecords": "没有找到符合条件的数据",
+			"sProcessing": "&lt;imgsrc=’./loading.gif’ /&gt;",
+			"sInfo": "当前第 _START_ - _END_ 条　共计 _TOTAL_ 条",
+			"sInfoEmpty": "木有记录",
+			"sInfoFiltered": "(从 _MAX_ 条记录中过滤)",
+			"sSearch": "搜索：",
+			"oPaginate": {
+			"sFirst": "首页",
+			"sPrevious": "前一页",
+			"sNext": "后一页",
+			"sLast": "尾页"
+		    }
+        }, tableTools: {
+          //single 单选 multi 多选  os 可以按ctrl 选择
+           // sRowSelect:'multi',
+           //回调 单选
+            fnRowSelected: function ( nodes ) {
+               var index=nodes[0]._DT_RowIndex;	
+               var data = table.row(index).data();
+               //alert(JSON.stringify(data));
+            },
+             sRowSelect:'os',
+            //sRowSelector:'td:first-child',
+            aButtons:     [ /*{
+                "sExtends":    "select_all",
+                "sButtonText": "选择全部",
+                "target":      "#select"
+              } , 'select_none' */]
+        }
+    }); 
+     //绑定事件 on
+     var table= $('#test').DataTable();
+	 $('#test tbody').on( 'click','button', function (obj) {
+	    var data = table.row( $(this).parents('tr') ).data();
+        alert(JSON.stringify(data));
+	} );
+    //工具栏与bootstarp 结合
+   // var tt = new $.fn.dataTable.TableTools(table);
+  //  $(tt.fnContainer()).insertBefore('#tools');
+    
+  //筛选绑定
+    $('#shaixuan').on( 'keyup', function () {
+       table.search( this.value ).draw();
+    
+    });
+    //自定义列插件绑定
+     var colvis = new $.fn.dataTable.ColVis(table,{ buttonText: '自定义显示列',exclude: [ 0 ,1] });
+});
+function tableSearch(){
+    var table=$('#test').DataTable();
+    var value=$("#shaixuan").val();
+    table.search(value).draw(true);
+}
+
+function doSearch(){
+	var nodeId=getQueryString("nodeId");
+	var params = {};
+	params.beanName="treeDataFilterImpl";
+	params.tableName="CustomTextTemplate";
+	params.columnName="id,name,maxSize,templateType,nodeId,text";
+	params.where={"nodeId":nodeId};
+	var rdata=searchData(params);
+	return rdata;
+//查询nodeId查询树与数据关联表信息
+/*
+var url ="/" + "ZDesk" + "/" + "/ZKM/TreeDataMapper" + "/" + "getDataByNodeId.action";
+var params ={};
+params.nodeId=nodeId;
+var array = new Array();
+ajaxFunction(url,params,false,function(data){
+	//根据数据id查询数据信息
+	for(var i in data[nodeId]){
+		url="/" + "ZDesk" + "/" +"/ZKM/CustomText/getTemplateById.action";
+		params ={};
+		params.id=data[nodeId][i];
+		ajaxFunction(url,params,false,function(d){
+			//根据数据id查询树与数据关联表信息
+			url="/ZDesk/ZKM/TreeDataMapper/getDataByDataId.action";
+   			params ={}
+   			params.dataId=data[nodeId][i];
+   			ajaxFunction(url,params,false,function(v){
+   				d.rows[0].templateTypeId=v[d.rows[0].id];
+   				d.rows[0].templateTypeName='';
+   			});
+   			array.push(d.rows[0]);
+		});
+	}
+});
+return array;
+*/
+
+}
+//解绑--获取选中行
+function fnGetSelected(){
+    //注意DataTable大写 或者 $('#test').dataTable().api();
+     var table=$('#test').DataTable();
+ //   var data =table.column().data();
+    //获取选中行 通过dataTable查找
+     var cell=table.rows(".active").data();
+    //通过table TableTools插件 查找
+     var tt = new $.fn.dataTable.TableTools(table);
+     var selectData=tt.fnGetSelectedData();
+     if(selectData.length==0){
+     	zinglabs.alert("请选择要解绑的数据");
+     }else{
+     	unbundlingDataTest(selectData);
+     }
+    
+    //alert( JSON.stringify(selectData) );
+    //console.log( JSON.stringify(selectData));
+}
+
+//全选
+ function toggleChecks(obj){
+       var table=$('#test').DataTable();
+       var tableTools = new $.fn.dataTable.TableTools(table);
+       var ischeck=$("#selectall").is(':checked');
+       if(ischeck){
+         tableTools.fnSelectAll();
+       }else{
+         tableTools.fnSelectNone();
+       }
+    }
+//每页显示条数
+function setPageNum(obj){
+  var table=$('#test').DataTable();
+  table.page.len(obj.value).draw();
+  //alert(obj.value);
+}
+
+//刷新
+function refresh(){
+     var table=$('#test').DataTable();
+     
+     //清空筛选
+     table.search("").draw();
+     $("#shaixuan").val('');
+     //清空数据
+     table.clear().draw();
+     //重新加载数据
+     var data=doSearch(); 
+     table.rows.add(data).draw(true);
+
+}
+//绑定--获取选中行
+function dobundlingData(){
+    //注意DataTable大写 或者 $('#test').dataTable().api();
+     var table=$('#test').DataTable();
+ //   var data =table.column().data();
+    //获取选中行 通过dataTable查找
+     var cell=table.rows(".active").data();
+    //通过table TableTools插件 查找
+     var tt = new $.fn.dataTable.TableTools(table);
+     var selectData=tt.fnGetSelectedData();
+     if(selectData.length==0){
+     	zinglabs.alert("请选择要绑定的数据");
+     }else{
+     	bundlingDataTest(selectData);
+     }
+    
+    //alert( JSON.stringify(selectData) );
+    //console.log( JSON.stringify(selectData));
+}
+//绑定
+function bundlingDataTest(selectData){
+	var nodeId=getQueryString("nodeId");
+	var dataIdStr="";
+	for(var i in selectData){
+		dataIdStr+=selectData[i].id+",";
+	}
+	dataIdStr = dataIdStr.substr(0,dataIdStr.length-1);
+	var params = {};
+	params.beanName="treeDataFilterImpl";
+	params.nodeIdList=nodeId;
+	params.dataIdList=dataIdStr;
+	var flag=bundlingData(params);
+	if(flag){
+		zinglabs.alert("数据绑定成功");
+		refresh();
+	}else{
+		zinglabs.alert("数据绑定失败");
+	}
+}
+
+//解绑
+function unbundlingDataTest(selectData){
+	var nodeId=getQueryString("nodeId");
+	var dataIdStr="";
+	for(var i in selectData){
+		dataIdStr+=selectData[i].id+",";
+	}
+	dataIdStr = dataIdStr.substr(0,dataIdStr.length-1);
+	var params = {};
+	params.beanName="treeDataFilterImpl";
+	params.nodeIdList=nodeId;
+	params.dataIdList=dataIdStr;
+	var flag=unbundlingData(params);
+	if(flag){
+		zinglabs.alert("数据解绑成功");
+		refresh();
+	}else{
+		zinglabs.alert("数据解绑失败");
+	}
+}
+</script>
+	</head>
+	<body>
+		<!-- 头 -->
+		<div class="widget-box collapsible">
+			<div class="widget-title"
+				style="height: 40px; line-height: 40px; overflow: hidden;" id="t">
+				<span class="icon" style="float: left; padding: 0px 10px;"> <i
+					class="icon-search"></i> </span>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+				<input id="shaixuan" name="shaixuan" type="text" maxlength="500"
+					class="input-medium search-query" value="" />
+				&nbsp;&nbsp;&nbsp;
+				<!--  <button id="btn_suSecurityUser_sousuo" type="button" class="btn" onclick="tableSearch();">
+					<i class="icon-search"></i> 搜 索
+				</button>-->
+				&nbsp;&nbsp;&nbsp;每页显示条数：
+				<select name="pageSize" id="pageSize"
+					style="width: 80px; margin-bottom: 0px;"
+					onchange="setPageNum(this)">
+					<option selected="selected" value="10">
+						10
+					</option>
+					<option value="30">
+						30
+					</option>
+					<option value="50">
+						50
+					</option>
+					<option value="100">
+						100
+					</option>
+					<option value="-1">
+						全部
+					</option>
+				</select>
+				<div id="cols"></div>
+			</div>
+		</div>
+		<!-- class 或 = display -->
+		<table width="100%" class="table table-striped table-bordered"
+			id="test" cellspacing="0">
+		</table>
+			<div class="widget-box collapsible">
+			<div class="widget-title"
+				style="height: 40px; line-height: 40px; overflow: hidden;">
+				<span class="icon" style="float: left; padding: 0px 10px;"> <i
+					class="icon-cog"></i> </span>&nbsp;&nbsp;&nbsp;
+					<button class="btn btn-info" onclick="dobundlingData()">绑定</button>
+					<button class="btn btn-info" onclick="fnGetSelected()">解绑</button>
+			</div>
+		</div>
+	</body>
+</html>

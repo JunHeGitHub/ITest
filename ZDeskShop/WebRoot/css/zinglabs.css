@@ -1,0 +1,198 @@
+@CHARSET "UTF-8";
+
+/**屏幕800到1024 的样式 **/
+@media screen (min-width:800px) and (max-width:1280px) {
+       width:1050px;
+       
+}
+
+
+/**容器*/
+.z_container {
+	/**在1280*1024分辨率下我们工作区域 1050像素**/
+	min-width:1050px;
+	overflow: auto;
+	padding: 10px;
+}
+
+/**容器头部--> 这里我去放dataTables 包含筛选项部分*/
+.z_container head {
+	
+}
+
+/**容器尾部--> 这里我去放表单部分*/
+.z_container foot {
+	
+}
+
+.widget-box {
+	background: 0px 0px rgb(249, 249, 249);
+	border-bottom: 1px solid #ccc;
+	clear: both;
+	margin-top: 16px;
+	margin-bottom: 16px;
+	border-top-color: rgb(205, 205, 205);
+	border-right-color: rgb(205, 205, 205);
+	border-left-color: rgb(205, 205, 205);
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-left-width: 1px;
+	border-top-style: solid;
+	border-right-style: solid;
+	border-left-style: solid;
+	position: relative;
+	width: 100%;
+}
+
+.widget-title {
+	height: 36px;
+	border-bottom-color: rgb(205, 205, 205);
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	background-image: -ms-linear-gradient(rgb(253, 253, 253) 0%,
+		rgb(234, 234, 234) 100% );
+	background-color: rgb(239, 239, 239);
+}
+
+.widget-content {
+	padding: 12px 15px;
+	border-bottom-color: rgb(205, 205, 205);
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+/*表单布局 控制行的属性*/
+.zing_row {
+   
+}
+/***
+ 说明  zing_span1  只是bootstrap的辅助类
+    防止样式控制不住  只适用上中下结构的页面
+
+**/
+.zing_span1 {
+	/**width: 90%;**/
+	margin-top: -20px;
+}
+.zing_span2 {
+	/**width: 45% !important;**/
+	margin-top: -20px;
+}
+.zing_span3 {
+	/*width: 30% !important;
+	控制行间距*/
+	margin-top: -20px;
+}
+.zing_span4 {
+	margin-top: -20px;
+}
+.zing_span5 {
+   margin-top: -20px;
+}
+.zing_span6 {
+   margin-top: -20px;
+}
+.zing_span7 {
+   margin-top: -20px;
+}
+.zing_span8 {
+   margin-top: -20px;
+}
+.zing_span9 {
+   margin-top: -20px;
+}
+.zing_span10 {
+   margin-top: -20px;
+}
+.zing_span11 {
+   margin-top: -20px;
+}
+.zing_span12 {
+   margin-top: -20px;
+}
+
+
+/** 表单标签属性**/
+.zing_label {
+	width: 90px !important;
+}
+
+.zing_controls {
+	/*控制标签和表单的距离*/
+	margin-left: 0px !important;
+	padding-left: 0px !important;;
+}
+
+/*表单输入框属性*/
+.zing_input {
+	width: 120px;
+}
+
+/**最大的input**/
+.zing_maxinput {
+	width: 130px;
+}
+
+/*使用两列的input*/
+.zing_mininput {
+	width: 45%;
+}
+
+.zing_midinput {
+	width: 60%;
+}
+
+.zing_input_append_icon {
+	width: 96px;
+}
+
+/*占 最大的textarea 试用于只有一列的情况 */
+.zing_maxtextarea {
+	width: 90%;
+}
+
+/*占 试用与有俩列的情况*/
+.zing_midtextarea {
+	width: 60%;
+}
+
+/*3列的使用此*/
+.zing_mintextarea {
+	
+}
+
+/*本属性针对Ueditor 建议
+  ueditor 属性进行如下设置  并且占用整行 用zing_span1 包裹
+    
+   initialFrameWidth :"90%",//设置编辑器宽度
+   initialFrameHeight:"100%",//设置编辑器高度
+   
+**/
+.zing_editor {
+	width: 80%;
+	/*为了不遮住左边的lable 应保持跟zing_label 属性width 一致*/
+	margin-left: 125px;
+}
+/**
+  表单属性 bootstrap 辅助类
+  预留防止以后出现样式问题无法控制
+**/
+.zing_form-horizontal{
+
+
+}
+.zing_control-group{
+
+
+}
+
+/*datatable属性  */
+table.dataTable th,table.dataTable td {
+	white-space: nowrap;
+	max-width: 180px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+

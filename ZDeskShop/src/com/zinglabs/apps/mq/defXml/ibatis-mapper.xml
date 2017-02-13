@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper       
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"       
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.zinglabs.apps.mq">
+	<insert id="insertMq" parameterType="java.util.HashMap">
+		INSERT INTO gd_ret_msg (
+			idcode,
+			type,
+			serialNo,
+			HandleDept,
+			HANDLER,
+			HandleTime,
+			ChangeTime,
+			HandleResult,
+			ApproveLog,
+			STATUS,
+			UrgencyType,
+			state,
+			mgs
+		)
+		VALUES(
+			#{idcode},
+			#{type},
+			#{serialNo},
+			#{HandleDept},
+			#{Handler},
+			#{HandleTime},
+			#{ChangeTime},
+			#{HandleResult},
+			#{ApproveLog},
+			#{Status},
+			#{UrgencyType},
+			#{state},
+			#{mgs}
+		)
+	</insert>
+
+
+
+</mapper>

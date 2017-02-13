@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.4" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID">
+	<display-name>ZDeskR</display-name>
+	<context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            classpath*:appConf/applicationContext.xml,
+            classpath*:appConf/spring-aopConfig.xml,
+            classpath*:com/zinglabs/apps/**/defXml/*-beans.xml
+        </param-value>
+    </context-param>
+	<listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    
+	<!--<servlet>-->
+		 <!--&lt;!&ndash; Standard Action Servlet Configuration (with debugging) &ndash;&gt;-->
+		<!--<servlet-name>action</servlet-name>-->
+		<!--<servlet-class>org.apache.struts.action.ActionServlet</servlet-class>-->
+		<!--<init-param>-->
+			<!--<param-name>config</param-name>-->
+			<!--<param-value>/WEB-INF/config/struts-config.xml</param-value>-->
+		<!--</init-param>-->
+		<!--&lt;!&ndash;  init-param>-->
+			<!--<param-name>debug</param-name>-->
+			<!--<param-value>2</param-value>-->
+		<!--</init-param>-->
+		<!--<init-param>-->
+			<!--<param-name>detail</param-name>-->
+			<!--<param-value>2</param-value>-->
+		<!--</init-param>-->
+		<!--&ndash;&gt;-->
+		<!--<load-on-startup>1</load-on-startup>-->
+	<!--</servlet>-->
+	<servlet>
+		<servlet-name>remoteCall</servlet-name>
+        <servlet-class>com.caucho.hessian.server.HessianServlet</servlet-class>
+        <init-param>
+        	<param-name>service-class</param-name>
+        	<param-value>com.zinglabs.remote.HessianServer</param-value>
+        </init-param>
+	</servlet>
+	
+    <servlet>
+        <servlet-name>DBProc</servlet-name>
+        <servlet-class>com.zinglabs.servlet.DBProcServlet</servlet-class>
+
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+	<servlet>
+		<servlet-name>ConfCommand</servlet-name>
+		<servlet-class>com.zinglabs.servlet.ConfCommandServlet</servlet-class>
+		
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<!--<servlet>-->
+        <!---->
+	    <!--<servlet-name>controler</servlet-name>-->
+	    <!--<servlet-class>com.zinglabs.base.BaseServlet</servlet-class>-->
+	    <!--<init-param>-->
+	      <!--<param-name>config</param-name>-->
+	      <!--<param-value>/WEB-INF/config/struts-config.xml</param-value>-->
+	    <!--</init-param>-->
+        <!---->
+	    <!--<init-param>-->
+	      <!--<param-name>MSGProperties</param-name>-->
+	      <!--<param-value>/WEB-INF/config/MessageResource.properties</param-value>-->
+	    <!--</init-param>-->
+	    <!--<init-param>-->
+	      <!--<param-name>LICENCEProperties</param-name>-->
+	      <!--<param-value>/WEB-INF/config/zinglabs.properties</param-value>-->
+	    <!--</init-param>-->
+	     <!--<init-param>-->
+	      <!--<param-name>LogoProperties</param-name>-->
+	      <!--<param-value>/WEB-INF/config/LogoResource.properties</param-value>-->
+	    <!--</init-param>-->
+	    <!--<init-param>-->
+	      <!--<param-name>ApplicationResources</param-name>-->
+	      <!--<param-value>/WEB-INF/config/ApplicationResources.properties</param-value>-->
+	    <!--</init-param>-->
+   	 <!--<load-on-startup>2</load-on-startup>-->
+  <!--</servlet>-->
+  
+	<servlet>
+        <servlet-name>spring-mvc</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>  
+		     <param-name>namespace</param-name>  
+		     <param-value>/config/springMapping/**/</param-value>  
+	    </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+	<servlet>
+		<servlet-name>searcher</servlet-name>
+		<servlet-class>com.zinglabs.servlet.LuceneSearchServlet</servlet-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>fileUploadService</servlet-name>
+		<servlet-class>com.zinglabs.servlet.FileUploadServlet</servlet-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>fileDownloadService</servlet-name>
+		<servlet-class>com.zinglabs.servlet.FileDownLoadServlet</servlet-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>ZKMDocServlet</servlet-name>
+		<servlet-class>com.zinglabs.servlet.ZKMDocServlet</servlet-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>commonService</servlet-name>
+		<servlet-class>com.zinglabs.servlet.CommandService</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>senderService</servlet-name>
+		<servlet-class>com.zinglabs.servlet.SenderService</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>remoteCall</servlet-name>
+		<url-pattern>/remoteCall</url-pattern>
+    </servlet-mapping>
+	
+	<servlet-mapping>
+        <servlet-name>spring-mvc</servlet-name>
+        <url-pattern>*.action</url-pattern>
+    </servlet-mapping>
+	
+	<!--<servlet-mapping>-->
+		<!--<servlet-name>controler</servlet-name>-->
+		<!--<url-pattern>*.do</url-pattern>-->
+	<!--</servlet-mapping>-->
+	
+	<servlet-mapping>
+		<servlet-name>ZKMDocServlet</servlet-name>
+		<url-pattern>/ZKM/ZKMDocServlet</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>searcher</servlet-name>
+		<url-pattern>/ZKM/searcher</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>fileUploadService</servlet-name>
+		<url-pattern>/ZKM/fileUpload</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>fileDownloadService</servlet-name>
+		<url-pattern>/ZKM/fileDownload</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>senderService</servlet-name>
+		<url-pattern>/ZMonitor/senderService</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>commonService</servlet-name>
+		<url-pattern>/ZMonitor/commonService</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ConfCommand</servlet-name>
+		<url-pattern>/ZDesk/ConfCommand</url-pattern>
+	</servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>DBProc</servlet-name>
+        <url-pattern>/ZDesk/DBProc</url-pattern>
+    </servlet-mapping>
+
+
+  <!--<filter>-->
+	<!--<filter-name>Set Character Encoding</filter-name>-->
+	<!--<filter-class>com.zinglabs.util.SetCharacterEncodingFilter</filter-class>-->
+	<!--<init-param>-->
+	<!--<param-name>encoding</param-name>-->
+	<!--<param-value>utf-8</param-value>  -->
+	<!--</init-param>-->
+	<!--<init-param>-->
+	<!--<param-name>ignore</param-name>-->
+	<!--<param-value>true</param-value>-->
+	<!--</init-param>-->
+<!--</filter>-->
+<filter>
+<filter-name>encodingFilter</filter-name>
+	<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+	<init-param>
+		<param-name>encoding</param-name>
+		<param-value>UTF-8</param-value>
+	</init-param>
+</filter>
+<!--<filter-mapping>-->
+	<!--<filter-name>Set Character Encoding</filter-name>-->
+	<!--<servlet-name>controler</servlet-name>-->
+<!--</filter-mapping>-->
+<filter-mapping>
+	<filter-name>encodingFilter</filter-name>
+	<url-pattern>*.action</url-pattern>
+</filter-mapping>
+<welcome-file-list>
+	<welcome-file>index.html</welcome-file>
+	<welcome-file>index.htm</welcome-file>
+	<welcome-file>index.jsp</welcome-file>
+	<welcome-file>default.html</welcome-file>
+	<welcome-file>default.htm</welcome-file>
+	<welcome-file>default.jsp</welcome-file>
+</welcome-file-list>
+</web-app>

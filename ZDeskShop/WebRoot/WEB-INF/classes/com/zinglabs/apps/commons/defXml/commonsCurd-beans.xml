@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<bean id="zkmCommonsSqlSession" class="com.zinglabs.base.core.springSupport.DbidSqlsession" singleton="false">
+		<property name="dbid" value="ZDesk"></property>
+	</bean>
+	<bean id="zkmCommonsCurdService" name="zkmCommonsCurdService" class="com.zinglabs.apps.commons.ZKMCommonsCurdService"></bean>
+</beans>

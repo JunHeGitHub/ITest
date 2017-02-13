@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>订单详情</title>
+
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+
+<!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+<!-- <link rel="stylesheet" type="text/css" href="../css/checkOrder.css"> -->
+<link rel="stylesheet" type="text/css" href="../css/zzAlert.css">
+<link rel="stylesheet" type="text/css" href="../css/top.css">
+<link rel="stylesheet" type="text/css" href="../../../css/iscroll.css" />
+<script type="text/javascript"
+	src="../../../js/iscroll-master/build/iscroll-probe.js"></script>
+<script type="text/javascript" src="../js/zzAlert.js"></script>
+<script type="text/javascript" src="../../../js/jquery.js"></script>
+<script type="text/javascript" src="../../../js/common_utils.js"></script>
+<script type="text/javascript" src="../../../js/appCommonUtil.js"></script>
+<script type="text/javascript" src="../js/orderDetailsPhone.js"></script>
+<script type="text/javascript" src="../js/tool.js"></script>
+
+	<style>
+		 #hd_back:before,#hd_back_none:before,#quickbuyback:before{
+		    content:"";
+		    width:15px;
+		    height:15px;
+		    position:absolute;
+		    top:10px;
+		    left:10px;
+		    border-bottom:1px solid #afafae;
+		    border-right:1px solid #afafae;
+		    -webkit-transform: rotate(135deg);
+		    -moz-transform: rotate(135deg);
+		    -o-transform: rotate(135deg);
+		    transform: rotate(135deg);
+		}
+		 
+		#hd_back:after,#hd_back_none:after,#quickbuyback:after{
+		    right:0;
+		}
+	</style>
+
+</head>
+
+<body scroll="no">
+	<div class="wrap overflowHidden">
+		<!-- <div class="top">
+			<div class="back" onclick="zzBack();">返回</div>
+			<div>
+				<h1>确认订单</h1>
+			</div>
+		</div> -->
+		<div id="top" style="border-bottom:1px solid #DDDDDD;">
+			<a id="hd_back"  href="javascript:void(0);"  onclick="javascript:history.go(-1);"></a>	
+			<span  style="padding-left:18px;margin-top: -10px;position: absolute;color:#afafae;"
+				onclick="javascript:history.go(-1);"
+			>返回</span>
+			<div class="site-nav">
+				<ul class="fix">
+					<li class="home"><a href="index.html">首页</a></li>
+					<li class="mysn"><a href="javascript:void(0);"
+						onclick="location='userCenter.html'">我的云贝</a></li>
+					<li class="mycart"><a href="javascript:void(0);"
+						onclick="location='demo.html'">购物车</a></li>
+					<li class="allcate"><a href="javascript:void(0);"
+						onclick="location='childFenlei.html'">商品分类</a></li>
+				</ul>
+			</div>
+		</div>
+		
+		<div id="wrapper" class=" divFlotLeft" style="top:4%;">
+			<div id="scroller" class="divFlotLeft">
+				<div id="" class="container">
+					<div id="container" class="containerSon  f" >
+						<div class="site" style="padding-top:10px;">
+							<div class="siteImg divFlotLeft">
+								<img alt="" src="../images/didianxz.png">
+							</div>
+							<div class="siteTit divFlotLeft">
+								<strong class="siteTitText divFlotLeft"><div id="buyersName"
+										class="siteTitTextDiv2 divFlotLeft"></div></strong> <strong class="siteTitText1 divFlotLeft"
+									id="buyersPhone"> </strong>
+							</div>
+							<div class="siteText divFlotLeft">
+								<div class="stText divFlotLeft" id="buyersAddress"></div>
+								<div class="imgRjt divFlotLeft">
+									<img alt="" src="../images/yjt.png">
+								</div>
+							</div>
+						</div>
+						<div class="goodsMap divFlotLeft" id="goodsDiv">
+							<div class="orderDateils">
+								<div class="orderDateilsMap ">
+									<strong class="orderDateilStrong divFlotLeft overflowHidden">订单编号:</strong>
+									<div class="orderDateilStrongText divFlotLeft overflowHidden">
+										<span id="orderNumber"></span>
+									</div>
+
+									<strong class="orderDateilStrong divFlotLeft overflowHidden">订单状态:</strong>
+									<div class="orderDateilStrongText divFlotLeft overflowHidden">
+										<span id="orderState" class=""></span>
+									</div>
+
+									<strong class="orderDateilStrong divFlotLeft overflowHidden">下单时间:</strong>
+									<div class="orderDateilStrongText divFlotLeft overflowHidden">
+										<span id="orderTime" class=""></span>
+									</div>
+									<strong class="orderDateilStrong divFlotLeft overflowHidden">实际金额:</strong>
+									<div class="orderDateilStrongText divFlotLeft overflowHidden">
+										<span class="colorFFD5702 " id="orderPrice"></span>
+									</div>
+									<strong class="orderDateilStrong divFlotLeft overflowHidden">买家留言:</strong>
+									<div class="orderDateilStrongText divFlotLeft overflowHidden">
+										<span id="buyersMessage"></span>
+									</div>
+								</div>
+
+							</div>
+							<strong class="goodsTitle overflowHidden divFlotLeft">商品：</strong>
+
+							<!-- <div class="goodsText">
+						<div class="goodsImg">
+							<img alt="图片暂无"
+								src="../images/400038DE-9668-47BC-984F-FC1261731DFE.png">
+						</div>
+						<div class="goodsNamePrice">
+							<div class="goodsName overflowHidden">无偿捐助</div>
+							<div class="goodsPrice">
+								<span id="goodsPrice">12.00</span>￥
+							</div>
+						</div>
+						<div class="goodsPropNumber">
+							<div id="goodsProp-5" class="goodsProp overflowHidden">
+								捐助条件:100万 <br>---154-14654-5---154-14654-5---154-14654-5---154-14654-5---154-14654-5
+							</div>
+							<div class="goodsNumber">
+								x<span id="goodsNumber-5">10000000</span>
+							</div>
+						</div>
+					</div> -->
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</body>
+</html>

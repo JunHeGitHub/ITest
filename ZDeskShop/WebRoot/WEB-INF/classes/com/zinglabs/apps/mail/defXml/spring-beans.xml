@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="mailSqlSession" class="com.zinglabs.base.core.springSupport.DbidSqlsession" singleton="false">
+		<property name="namespance" value="com.zinglabs.apps.mail" ></property>
+		<property name="dbid" value="ZKM"></property>
+	</bean>
+	
+	<bean id="mailService" name="mailService" class="com.zinglabs.apps.mail.service.MailService"></bean>
+</beans>

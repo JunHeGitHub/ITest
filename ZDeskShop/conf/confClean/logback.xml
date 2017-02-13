@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<!-- property name="LOG_HOME" value="/mnt"/> -->
+	<property name="LOG_HOME" value="/mnt"/>
+
+
+	<appender name="ZDesk" class="ch.qos.logback.core.FileAppender">
+		<File>${LOG_HOME}/Clean.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<FileNamePattern>${LOG_HOME}/Clean.%i.log</FileNamePattern>
+			<MinIndex>1</MinIndex>
+			<MaxIndex>10</MaxIndex>
+		</rollingPolicy>
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<MaxFileSize>50MB</MaxFileSize>
+		</triggeringPolicy>
+		<Append>true</Append>
+		<Encoding>UTF-8</Encoding>
+		<BufferedIO>false</BufferedIO>
+		<ImmediateFlush>true</ImmediateFlush>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>
+				%date`_`%thread`_`%-5level`_`%logger{35}`_`%msg%n
+			</Pattern>
+		</layout>
+	</appender>
+	
+	
+	
+
+	<logger name="ZDesk" additivity="false" level="DEBUG">
+		<appender-ref ref="ZDesk" />
+	</logger>
+	
+	
+
+</configuration>

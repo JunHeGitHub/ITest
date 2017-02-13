@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<bean id="ActivitiCurdSqlSession" class="com.zinglabs.base.core.springSupport.DbidSqlsession" singleton="false">
+	<property name="namespance" value="com.zinglabs.apps.activitiCurd" ></property>
+	<property name="dbid" value="ZKM"></property>
+	</bean>
+	<bean id="ActivitiFormCurdService" name="ActivitiFormCurdService" class="com.zinglabs.apps.activitiCommon.service.ActivitiFormCurdService">
+	</bean>
+	<!--<bean id="from" name="From" class="com.zinglabs.apps.activitiCommon.testa"> </bean> -->
+	<bean id="InsertFormClass" name="InsertFormClass" class="com.zinglabs.apps.activitiCommon.form.insertForm">
+	</bean>
+	<bean id="UpdateFormClass" name="UpdateFormClass" class="com.zinglabs.apps.activitiCommon.form.updateForm">
+	</bean>
+	<bean id="SelectFormClass" name="SelectFormClass" class="com.zinglabs.apps.activitiCommon.form.selectForm">
+	</bean>
+	<bean id="MessageInsert" name="MessageInsert" class="com.zinglabs.apps.activitiCommon.form.MessageInsert">
+	</bean>
+	<bean id="MessageSelect" name="MessageSelect" class="com.zinglabs.apps.activitiCommon.form.MessageSelect">
+	</bean>
+	<bean id="MessageUpdate" name="MessageUpdate" class="com.zinglabs.apps.activitiCommon.form.MessageUpdate">
+	</bean>
+	<bean id="HQDBUpdate" name="HQDBUpdate" class="com.zinglabs.apps.activitiCommon.form.HQDBUpdate">
+	</bean>
+	<bean id="GongdanLingqu" name="GongdanLingqu" class="com.zinglabs.apps.activitiCommon.form.GongdanLingqu">
+	</bean>
+	<bean id="GongdanInsert" name="GongdanInsert" class="com.zinglabs.apps.activitiCommon.form.GongdanInsert">
+	</bean>
+	<bean id="GongdanSelect" name="GongdanSelect" class="com.zinglabs.apps.activitiCommon.form.GongdanSelect">
+	</bean>
+	<bean id="GongdanUpdate" name="GongdanUpdate" class="com.zinglabs.apps.activitiCommon.form.GongdanUpdate">
+	</bean>
+	<bean id="AnnounceInsert" name="AnnounceInsert" class="com.zinglabs.apps.activitiCommon.form.AnnounceInsert">
+	</bean>
+	<bean id="AnnounceSelect" name="AnnounceSelect" class="com.zinglabs.apps.activitiCommon.form.AnnounceSelect">
+	</bean>
+	<bean id="AnnounceUpdate" name="AnnounceUpdate" class="com.zinglabs.apps.activitiCommon.form.AnnounceUpdate">
+	</bean>
+	<bean id="AnnounceDelete" name="AnnounceDelete" class="com.zinglabs.apps.activitiCommon.form.AnnounceDelete">
+	</bean>
+	<bean id="WorksBaseInsert" name="WorksBaseInsert" class="com.zinglabs.apps.activitiCommon.form.WorksBaseInsert">
+	</bean>
+	<bean id="WorksBaseSelect" name="WorksBaseSelect" class="com.zinglabs.apps.activitiCommon.form.WorksBaseSelect">
+	</bean>
+	<bean id="WorksBaseUpdate" name="WorksBaseUpdate" class="com.zinglabs.apps.activitiCommon.form.WorksBaseUpdate">
+	</bean>
+</beans>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<!-- 数据库表test ibasis SqlSession 操作 -->
+	<bean id="activitiManagerSession" class="com.zinglabs.base.core.springSupport.DbidSqlsession" singleton="false">
+		<property name="namespance" value="com.zinglabs.apps.activitiManager.ibatisMap"></property>
+		<property name="dbid" value="ZKM"></property>
+	</bean>
+	
+	<bean id="activitiManagerService" name="activitiManagerService" class="com.zinglabs.apps.activitiManager.service.ActivitiManagerService" init-method="initActivitiParam" singleton="true">
+		
+	</bean>
+	
+</beans>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="Interview" name="某公司2012年实习生招聘流程" isExecutable="true">
+    <documentation>Place documentation for the 'Interview' process here.</documentation>
+    <startEvent id="start" name="实习生招聘启动"></startEvent>
+    <userTask id="bishi" name="笔试" activiti:candidateGroups="人力资源部"></userTask>
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="bishi"></sequenceFlow>
+    <userTask id="yimian" name="技术一面" activiti:candidateGroups="技术部"></userTask>
+    <sequenceFlow id="flow2" sourceRef="bishi" targetRef="yimian"></sequenceFlow>
+    <userTask id="ermian" name="技术二面" activiti:candidateGroups="技术部"></userTask>
+    <sequenceFlow id="flow3" sourceRef="yimian" targetRef="ermian"></sequenceFlow>
+    <userTask id="hrmian" name="HR面" activiti:candidateGroups="人力资源部"></userTask>
+    <sequenceFlow id="flow4" sourceRef="ermian" targetRef="hrmian"></sequenceFlow>
+    <userTask id="luyong" name="录用，发放Offer" activiti:candidateGroups="人力资源部"></userTask>
+    <sequenceFlow id="flow5" sourceRef="hrmian" targetRef="luyong"></sequenceFlow>
+    <endEvent id="end" name="实习生招聘结束"></endEvent>
+    <sequenceFlow id="flow6" sourceRef="luyong" targetRef="end"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Interview">
+    <bpmndi:BPMNPlane bpmnElement="Interview" id="BPMNPlane_Interview">
+      <bpmndi:BPMNShape bpmnElement="start" id="BPMNShape_start">
+        <omgdc:Bounds height="35.0" width="35.0" x="70.0" y="120.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="bishi" id="BPMNShape_bishi">
+        <omgdc:Bounds height="55.0" width="105.0" x="150.0" y="110.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="yimian" id="BPMNShape_yimian">
+        <omgdc:Bounds height="55.0" width="105.0" x="310.0" y="110.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ermian" id="BPMNShape_ermian">
+        <omgdc:Bounds height="55.0" width="105.0" x="470.0" y="110.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="hrmian" id="BPMNShape_hrmian">
+        <omgdc:Bounds height="55.0" width="105.0" x="630.0" y="110.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="luyong" id="BPMNShape_luyong">
+        <omgdc:Bounds height="55.0" width="105.0" x="790.0" y="110.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="end" id="BPMNShape_end">
+        <omgdc:Bounds height="35.0" width="35.0" x="950.0" y="120.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="105.0" y="137.0"></omgdi:waypoint>
+        <omgdi:waypoint x="150.0" y="137.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="255.0" y="137.0"></omgdi:waypoint>
+        <omgdi:waypoint x="310.0" y="137.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="415.0" y="137.0"></omgdi:waypoint>
+        <omgdi:waypoint x="470.0" y="137.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="575.0" y="137.0"></omgdi:waypoint>
+        <omgdi:waypoint x="630.0" y="137.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="735.0" y="137.0"></omgdi:waypoint>
+        <omgdi:waypoint x="790.0" y="137.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="895.0" y="137.0"></omgdi:waypoint>
+        <omgdi:waypoint x="950.0" y="137.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
