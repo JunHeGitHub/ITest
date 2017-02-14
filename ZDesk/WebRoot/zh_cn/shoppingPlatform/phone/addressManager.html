@@ -1,0 +1,549 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+	<head>
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+		
+		<title>收货地址管理</title>
+		
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		
+		<link rel="stylesheet" type="text/css" href="../../../css/iscroll.css" />
+		<link rel="stylesheet" type="text/css" href="../css/myCenter.css" />
+		<link rel="stylesheet" type="text/css" href="../css/top.css" />
+		
+		<script type="text/javascript" src="../../../js/iscroll-master/build/iscroll-probe.js"></script>
+		<script type="text/javascript" src="../../../js/jquery.js"></script>
+		<script type="text/javascript" src="../../../js/golbal_params.js"></script>
+		<script type="text/javascript" src="../../../js/common_utils.js"></script>
+		<script type="text/javascript" src="../js/area.js"></script>
+		
+		<style >
+			#bg{ 
+				display: none; 
+				position: absolute;  
+				left: 0%; 
+				top:0%; 
+				width: 100%; 
+				height: 100%; 
+				background-color: black; 
+				z-index:8889; 
+				-moz-opacity: 0.7; 
+				opacity:.70; 
+				filter: alpha(opacity=70);
+			}
+			
+			.selectText{
+				width:29% !important;
+			}
+		 
+			 #addWin{
+			 	display: none; 
+			 	position: absolute;  
+			 	bottom:0px;
+			 	top: 50%; 
+			 	/*left: 22%; */
+			 	width: 100%; 
+			 	height: 60%;
+			  /*	padding: 8px; */
+			  /*	border: 8px solid #E8E9F7; */
+			  	background-color: white; 
+			  	z-index:8890; 
+			  /*	overflow: auto;*/
+			  	}
+			
+			.inputdiv{
+				padding-top:5px;
+				
+			}
+			
+			td{
+				padding:5px !important;
+			}
+			.inputText{
+				height:30px;
+				border-radius:3px;
+				margin-left:10px;
+				width:100%;
+				border:1px solid #969696
+			}
+			.spanTitle{
+				padding:0 15px;
+				width:100px;
+				text-align:right;
+				width:30%;
+			}
+			
+			
+			 .divScroll{
+			     OVERFLOW:auto;
+			      scrollbar-face-color: #FFFFFF;
+			      scrollbar-shadow-color: #D2E5F4;
+			      scrollbar-highlight-color: #D2E5F4;
+			      scrollbar-3dlight-color: #FFFFFF;
+			      scrollbar-darkshadow-color: #FFFFFF;
+			      scrollbar-track-color: #FFFFFF; 
+			      scrollbar-arrow-color: #D2E5F4";
+			}
+			
+		#hd_back:before,#hd_back_none:before,#quickbuyback:before{
+		    content:"";
+		    width: 10px;
+		    height: 10px;
+		    margin-top: 2px;
+		    position:absolute;
+		    top:10px;
+		    left:10px;
+		    border-bottom:1px solid #afafae;
+		    border-right:1px solid #afafae;
+		    -webkit-transform: rotate(135deg);
+		    -moz-transform: rotate(135deg);
+		    -o-transform: rotate(135deg);
+		    transform: rotate(135deg);
+		}
+		 
+		#hd_back:after,#hd_back_none:after,#quickbuyback:after{
+		    right:0;
+		}
+			
+			
+			
+		</style>
+
+		<script type="text/javascript">
+			// 全局变量存编辑时数据
+			var globleData;
+			var count = 1;
+			 var myScroll,pullUpEl, pullUpOffset; 
+			
+			
+			function loaded () {
+				myScroll = new IScroll('#wrapper', { useTransition: false });
+			}
+			
+			$(function(){
+				// load All Address
+				count = 1;
+				loadAddress();
+				
+				//关闭window; 
+				$(".closeThis").on('click',function(){
+					$("#bg").css("display","none");
+ 					$("#addWin").fadeOut(200); 
+				});
+				
+				_init_area(); //加载全国城市列表
+				
+			});
+			
+			function loadAddress(){
+				var params = {};
+				params.userId = 1; // 目前默认用户id 为 1
+				
+				params.rows=2; // 显示数据条数
+				params.offset= Math.abs(parseInt((count - 1) * params.rows));
+				
+				ajaxFunction("/" +parent.PRJ_PATH + "/ZKM/Category/selectAddress.action", 
+					params, true, function(data) {
+					if(data.success){
+					//console.log(data);
+						 var dataStr = "";
+						 globleData = data;
+						 for(var i = 0; i <data.data.length;i++){
+						 	dataStr += 	"<div style='padding-top:10px;background:white;border-top:1px solid #DDDDDD;'><div style='height:100px;'>" +
+									    "<div style='margin: 0 auto;'>" + 
+											"<div style='text-align:left; float:left;padding-left:10px;'>" + 
+												data.data[i].consigneeName + "&nbsp;&nbsp;" + data.data[i].consigneePhone +
+											"</div>" +
+										"<div style='text-align:right;float:right;'>";
+										if(data.data[i].isDefaultAddress == 1){
+											dataStr += "<span style='color:red;'>默认地址</span>";
+										}
+										dataStr += "</div>"+ 
+										"</div>"+
+										"<br/>"+
+										"<div style=' margin: 0 auto;padding-top:5px;padding-left:10px;'>" 
+											+data.data[i].area + "" + data.data[i].address+
+										"</div>"+
+										"<br/>"+
+										// "<HR style='FILTER: alpha(opacity=100,finishopacity=0,style=3)' width=95%' color=#DDDDDD SIZE=3>"+ 
+										"<div style='width: 98%; margin: 0 auto;'>"+
+											"<div style=' float:left; '>";
+												if(data.data[i].isDefaultAddress == 1){
+													dataStr += "<input type='radio' name='default'  id='default' checked=checked onclick=clickRadio('"+data.data[i].id+"','"+data.data[i].isDefaultAddress+"');   />设为默认";
+												}else{
+													dataStr += "<input type='radio' name='default'  id='default' onclick=clickRadio('"+data.data[i].id+"','"+data.data[i].isDefaultAddress+"');  />设为默认";
+												}
+											dataStr += "</div>"+
+											"<div style=' float:right; '>"+
+												"<button style='width: 80px; height: 30px;-webkit-appearance: none; border:1px solid #CCC;background:white; ' onclick=edit('"+data.data[i].id+"') >编辑</button>&nbsp;"+   
+												"<button style='width: 80px; height: 30px;-webkit-appearance: none; border:1px solid #CCC;background:white; ' onclick=del('"+data.data[i].id+"') >删除</button>"+  
+											"</div>"+
+										"</div>"+
+									"</div>"+
+								"</div>"; 
+								/*if(data.data.length -1 != i){
+									//dataStr +="<HR style='FILTER: alpha(opacity=100,finishopacity=0,style=3)' width=80%' color=#987cb9 SIZE=3>"; 
+									dataStr +="<hr></hr>"; 
+								}*/
+								
+								
+						 }
+						
+						 $("#allAddress").append(dataStr); 
+						 //$("#allAddress").html(dataStr); 
+						//  $("#allGoods").before(dataStr); 
+						// 加载更多显示和隐藏
+						if((parseInt(params.offset) + parseInt(params.rows)) >= data.total){
+							$("#loadMore").css("display","none");
+						}else{
+							$("#loadMore").css("display","block");
+						}
+						
+						
+						if(count == 1){
+							loaded();
+						}else{
+							myScroll.refresh();
+						}
+					}	
+				});
+			}
+			
+			//加载更多数据
+			function loadMoreGoods(){
+				count++;
+				loadAddress();
+			}
+			
+			
+			
+			//每次点击时触发
+			function clickRadio(id,sel){
+				
+				//如果选择的已经是默认地址，则不操作
+				if(sel == "1" || sel == 1){
+					return;
+				}
+				var params = {}; 
+				params.id = id;
+				params.isDefaultAddress =  1;
+
+				ajaxFunction("/" +parent.PRJ_PATH + "/" + 'ZKM' + "/Category/updateAddress.action", 
+					params, true, function(data) {
+					if(data.success){
+						count = 1;
+						$("#allAddress").html('');
+						loadAddress();
+						alert(data.mgs);
+					}
+				});
+				
+			}
+			
+			// 编辑按钮；
+			function edit(id){
+				//编辑时通过传过来的ID去json 里面找对象。
+				var jsonData;
+				// console.log(globleData);
+				for(var i = 0; i<globleData.data.length;i++){
+					if(globleData.data[i].id == id){
+						jsonData = globleData.data[i];
+					}
+				}
+
+				$("#addressForm")[0].reset();
+				$("#bg").show();
+ 				$("#addWin").fadeIn(800);
+				 for(var p in jsonData){ 
+				 	// console.log(p);
+				 	
+				 	$("#"+p).val(jsonData[p]);
+				 	
+				 	if(p == "area"){
+		    			$("#s_province").val(jsonData[p].split("-")[0]);
+		    			change(1);
+		    			$("#s_city").val(jsonData[p].split("-")[1]);
+		    			change(2);
+		    			$("#s_county").val(jsonData[p].split("-")[2]);
+		    		}
+				 }
+			}
+			
+			function del(id){
+				if(window.confirm("确认删除该地址吗？")){  
+					var params ={};
+					params.id = id;
+					ajaxFunction("/" +parent.PRJ_PATH + "/" + 'ZKM' + "/Category/delAddress.action", 
+						params, true, function(data) {
+						if(data.success){
+							count = 1;
+							$("#allAddress").html('');
+							loadAddress();
+							alert(data.mgs);
+						}
+					});	
+				}
+			}
+		
+		
+			//打开添加窗口
+			function addAddress(){
+				$("#bg").css("display","block");
+				//清空form
+				$("#addressForm")[0].reset();
+				$("#address").val('');
+ 				$("#addWin").fadeIn(800);
+			}
+			
+			function closeWin(){
+				$("#addressForm")[0].reset(); 
+				$("#bg").css("display","none");
+ 				$("#addWin").fadeOut(200); 
+			}
+			
+			
+			// 新增地址操作
+			function submitAddress(){
+				
+				var params = {};
+
+				if(BIsNullVal($("#consigneeName").val())){
+					$("#consigneeName").attr('placeholder','请填写收货人姓名'); 
+				  	 $("#consigneeName").val('');
+				  	 return;
+				}
+				if(BIsNullVal($("#consigneePhone").val())){
+					$("#consigneePhone").attr('placeholder','请输入11位手机号'); 
+				  	 $("#consigneePhone").val('');
+				  	 return;
+				}
+				
+				var area = $("#s_province").val()+ "-" + $("#s_city").val()+"-" + $("#s_county").val();
+				if(BIsNullVal(area)){ 
+					$("#area").attr('placeholder','请填写所在区域');  
+				  	$("#area").val('');
+				  	return;
+				}
+				
+				if(BIsNullVal($("#address").val())){  
+					$("#address").attr('placeholder','请输入详细地址'); 
+				  	$("#address").val('');
+				  	return;
+				}
+				
+				
+				var url; 
+				//当id 不为空是修改，
+				if(!BIsNullVal($("#id").val())){
+					params.id= $("#id").val();
+					params.isDefaultAddress = $("#isDefaultAddress").val();
+					url="updateAddress.action";
+				}else{
+					url="addAddress.action";
+					//确定则设置为默认地址
+					if(window.confirm("是否将该地址设置为默认地址？")){   
+						params.isDefaultAddress = 1;
+					}else{
+						params.isDefaultAddress = 0;
+					}
+				}
+				
+				
+				
+				
+				params.userId = "1"; //用户id
+				params.consigneeName = $("#consigneeName").val(); //联系人 
+				params.consigneePhone = $("#consigneePhone").val(); //电话
+				params.area = area; // 地区
+				params.postCode = $("#postCode").val(); // 邮政编码
+				params.address = $("#address").val(); // 详细地址
+			// 	params.isDefaultAddress = 0; // 是否默认收货地址
+				params.street = 0; //街道
+				
+				
+				// alert(url);
+			 	// console.log(params);
+				
+			 	// return; 
+				ajaxFunction("/" +parent.PRJ_PATH + "/" + 'ZKM' + "/Category/"+url, 
+					params, true, function(data) {
+					if(data.success){
+						count = 1;
+						$("#allAddress").html('');
+						loadAddress();
+						alert(data.mgs);
+					}
+					closeWin(); // 关闭添加窗口
+				});
+			}
+			
+			//验证手机号
+			function validatePhone(phone){
+				 var reg = /[^0-9]/g;
+				  var len= phone.length;
+				  if (len != 11){
+				  	$("#consigneePhone").attr('placeholder','请输入11位手机号'); 
+				  	 $("#consigneePhone").val(''); 
+				  	return false;
+				  }
+				  if(reg.test(phone)){
+				  		$("#consigneePhone").attr('placeholder','手机号码必须是数字！');
+				  	 	$("#consigneePhone").val('');
+				  		return false;
+				  }else {
+				  	return true;
+				  }
+			} 
+			
+			//=======非空判断； 
+			function BIsNullVal(value) {  
+			    return typeof(value)=="undefined" || value==null ||  (typeof(value)=='string' &&(value=="undefined" || value=='' || value=='null' )) ||  (typeof(value)=='boolean' &&value==false  );
+			};
+			
+		</script>
+	</head>
+
+	<body style="background:#DDDDDD;">
+			<div id="top" style="border-bottom:1px solid #DDDDDD;">
+				<a id="hd_back"  href="javascript:void(0);"  onclick="javascript:history.go(-1);"></a>
+				<span  style="padding-left:18px;margin-top: -10px;position: absolute;color:#afafae;"
+					onclick="javascript:history.go(-1);"
+				>返回</span>
+				<div style="margin:-8px;"><p style="text-align:center;maigin-top:3px;color: black;font-size:18px;">收货地址管理</p></div>
+				<a href="javascript:void(0);" onclick="addAddress();" class="new-a-add" style="right:-1%;top:-15px;">
+					  <span style="width:48px;height:48px;font-size:24px;color:#afafae;">十</span>
+				</a>
+			</div>
+	
+	
+		<div id="wrapper" style="top:5%;">
+			<div id="scroller">
+				<div id="allAddress">
+				</div>
+				<div id="loadMore">
+					<p style="text-align:center;font-size:18px;padding: 10px;" onclick="loadMoreGoods();">更多....</p>
+				</div>
+				<!-- <div style="background:white;height:28px;">
+				<p style="text-align:center;font-size:16px;">北京英立讯科技有限公司</p>
+				</div> -->
+			</div>
+		</div>	
+		
+			<div id="bg"></div>
+			<div id="addWin" class="divScroll" style="height:auto;">
+				<div style="width:100%; text-align:right; margin: 5px -15px;">
+					<button class="closeThis" style="border-radius:30px;
+							border:1px solid black; background:white;width:24px;height:24px;">
+						<span style="font-size:18px;color:#444444;">x</span>	
+						</button>
+<!-- 					<span class="closeThis" style="float:right;border-radius:5px;"> -->
+<!-- 						<img src="../images/close.png" style="width:29px;height:31px;" > -->
+<!-- 					</span> -->
+				</div>
+
+<!-- 				<div style="padding-top:40px;"> -->
+			 <div>
+				<form id="addressForm">
+<!-- 					<div> -->
+<!-- 						<div>收货人姓名:</div> -->
+<!-- 						<div><input type="text" id="consigneeName" name="consigneeName"  required  class="inputText"  /></div> -->
+<!-- 					</div> -->
+					
+				
+					<table style="border-collapse:separate;">
+						<tr style="display:none;">
+							<td style="text-align:right;width: 20%;">序号:</td>
+							<td>
+								<input type="text" id="id" name="id"  class="inputText"  />
+							</td>
+						</tr>
+						<tr style="display:none;">
+							<td style="text-align:right;width: 20%;">默认地址:</td>
+							<td>
+								<input type="text" id="isDefaultAddress" name="isDefaultAddress"  class="inputText"  />
+							</td>
+						</tr>
+						<tr>
+							<td style="text-align:right;width: 20%;">收货人姓名:</td>
+							<td >
+								<input type="text" id="consigneeName" name="consigneeName"  required  class="inputText"  />
+							</td>
+						</tr>
+						<tr>
+							<td style="text-align:right;width: 20%;">手机号码:</td>
+							<td><input type="text" id="consigneePhone"
+								 name="consigneePhone"  class="inputText" 
+								 maxlength="11" 
+								 onblur="validatePhone(this.value);" />
+							</td>
+						</tr>
+						<tr style="margin:10 0;"> 
+							<td style="text-align:right;width: 20%;">所在地区:</td>
+							<td>
+								<select id="s_province" name="s_province" class="inputText selectText">
+								</select>
+								<select id="s_city" name="s_city" class="inputText selectText">
+								</select>
+								<select id="s_county" name="s_county" class="inputText selectText">
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td style="text-align:right;width: 20%;">邮政编码:</td>
+							<td>
+								<input type="text" id="postCode" name="postCode" class="inputText" maxlength="6"/>
+							</td>
+						</tr>
+						<tr>
+							<td style="text-align:right;width: 20%;">详细地址:</td>
+							<td>
+								<textarea style="height:70px;" class="inputText"
+										id="address" name="address"  onfocus="this.value=''">
+								</textarea>
+							</td>
+						</tr>
+					</table>
+				</form>
+				<br/>
+				</div>
+				<div class="inputdiv" style="text-align:center;">
+					<button onclick="submitAddress();" style="width: 85px; height: 30px;-webkit-appearance: none; border:1px solid #CCC;background:white;">
+							确定
+					</button>
+					<button onclick ="closeWin();" style="width: 85px; height: 30px;-webkit-appearance: none; border:1px solid #CCC;background:white;">
+							取消
+					</button>
+				</div>
+			</div>
+	</body>
+</html>
+<!--
+		
+					
+					
+					<!-- 
+					<div class="inputdiv">
+						<span class="spanTitle" style="padding-left:1px;" >收货人姓名:</span><input type="text" id="consigneeName" name="consigneeName"  class="inputText"  />
+					</div>
+					<div class="inputdiv"> 
+						<span class="spanTitle" >手机号码:</span>
+						<input type="text" id="consigneePhone"
+						 name="consigneePhone"  class="inputText" 
+						 maxlength="11"
+						 onblur="validatePhone(this.value);" />
+					</div>
+					<div class="inputdiv">
+						<span class="spanTitle">所在地区:</span><input type="text" id="area" name="area"  class="inputText" />
+					</div>
+					<div class="inputdiv">
+						<span class="spanTitle">邮政编码:</span><input type="text" id="postCode" name="postCode" class="inputText" />
+					</div>
+					<div class="inputdiv" style="dispaly:inline;">
+						<span class="spanTitle" style="width:30%; height:70px; margin-bottom:20px;">详细地址:</span>
+						<textarea style="border-radius:5px;width:205px;height:70px; padding-left:10px;" id="address" name="address"></textarea>
+					</div>
+					 -->

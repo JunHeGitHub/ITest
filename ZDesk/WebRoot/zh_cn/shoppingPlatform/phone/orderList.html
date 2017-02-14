@@ -1,0 +1,449 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+	<head>
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+		<title>订单中心</title>
+
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<link href="../css/base.css" type="text/css" rel="stylesheet" />
+		<link href="../js/mobile-website/style/v2/mobile.min.css"
+			type="text/css" rel="stylesheet" />
+		
+		<link rel="stylesheet" type="text/css" href="../css/myCenter.css" />
+		<link rel="stylesheet" type="text/css" href="../../../css/iscroll.css" />
+		<link rel="stylesheet" type="text/css" href="../css/orderList.css" />
+
+
+		<script type="text/javascript"
+			src="../../../js/iscroll-master/build/iscroll-probe.js"></script>
+		<script type="text/javascript" src="../../../js/jquery.js"></script>
+		<script type="text/javascript" src="../../../js/common_utils.js"></script>
+		<script type="text/javascript" src="../../../js/appCommonUtil.js"></script>
+		<script type="text/javascript"
+			src="../../../js/appCommonCurdUtils_new.js"></script>
+
+		<style>
+		 #hd_back:before{ 
+		    content:"";
+		    width: 10px;
+		    height: 10px;
+		    margin-top: 3px;
+		    position:absolute;
+		    top:10px;
+		    left:10px;
+		    border-bottom:1px solid #afafae;
+		    border-right:1px solid #afafae;
+		    -webkit-transform: rotate(135deg);
+		    -moz-transform: rotate(135deg);
+		    -o-transform: rotate(135deg);
+		    transform: rotate(135deg);
+		}
+		 
+		#hd_back:after{
+		    right:0;
+		}
+		
+		.firstLevel{
+			
+		}
+		
+		
+		
+		
+		
+	</style>
+
+
+<script type="text/javascript">
+	var url = window.location.href; //获取当前页面的url
+	var len = url.length;//获取url的长度
+	var param = url.split("?");
+	var newsids = param[1].split("=");//对获得的参数字符串按照“=”进行分割
+	var keyCode = newsids[1];//得到参数值
+	var paramsName = newsids[0];//得到参数名字 
+	// alert(paramsName)
+	var count = 1;
+	var params = {};
+	
+	var myScroll, pullUpEl, pullUpOffset;
+	/*
+	window.onload = function(){
+	pullDownOffset = 0;
+	   pullUpEl = document.getElementById('pullUp');	
+	   pullUpOffset = pullUpEl.offsetHeight;
+	   myScroll = new IScroll('#wrapper',{
+			useTransition:false, //是否使用CSS3的Transition属性，否则使用requestAnimationFram代替
+			//  scrollbars: true, // 是否显示默认滚动条
+			mouseWheel: true, // 是否监听鼠标滚轮事件。 
+			//resizePolling:60,//重新调整窗口大小时，重新计算IScroll的时间间隔
+			//interactiveScrollbars: true, // 用户是否可以拖动滚动条 
+			probeType:3 //与事件scroll有关，刷新频率，参数1，2，3 值越大刷新越频繁
+			//shrinkScrollbars: 'scale',//滚动超出滚动边界时，是否收缩滚动条。 
+		 //	fadeScrollbars: true //是否渐隐滚动条，关掉可以加速 
+		 });
+	}
+	
+	
+	// 刷新事件
+	 myScroll.on('refresh', function(){	
+	   if (pullUpEl.className.match('loading')) {
+		pullUpEl.className = '';
+		pullUpEl.querySelector('.pullUpLabel').innerHTML = 'Pull up to load more...';
+		 $("#pullUp").css("display","none"); 
+		 myScroll.refresh();
+	}
+	});
+	
+	
+	
+	 myScroll.on('scroll', function(){	
+	 	if (this.y < (this.maxScrollY - 5) && !pullUpEl.className.match('flip')) {
+	 	        $("#pullUp").css("display","block");
+			pullUpEl.className = 'flip';
+			pullUpEl.querySelector('.pullUpLabel').innerHTML = 'Release to refresh...';
+			this.maxScrollY = this.maxScrollY ;
+	//}else if (this.y > (this.maxScrollY + 5) && pullUpEl.className.match('flip'))  {
+		//	pullUpEl.className = '';
+		//	pullUpEl.querySelector('.pullUpLabel').innerHTML = 'Pull up to load more...';
+	
+	}
+	});
+	
+	
+	myScroll.on('scrollEnd', function(){
+	// /*console.log(myScroll);
+	//if(this.maxScrollY == this.y){
+	    //     loadMoreData(recordTuWenLeiBie);
+	     //    setTimeout(function () {	
+		//      myScroll.refresh();
+		//  }, 100);
+	//}
+	
+	if (pullUpEl.className.match('flip')) {
+		pullUpEl.className = 'loading';
+		pullUpEl.querySelector('.pullUpLabel').innerHTML = 'Loading...';				
+	    loadMoreData(recordTuWenLeiBie);
+	        setTimeout(function () {	
+		      myScroll.refresh();
+		 }, 100);
+	}
+	
+	});
+	 */
+
+	// var myScroll;
+	function loaded() {
+		myScroll = new IScroll('#wrapper', {
+			useTransition : true
+		});
+	}
+
+	$(function() {
+		count = 1;
+		if (keyCode != "00") {
+			params.orderState = keyCode;
+			
+			$(".tab a").removeClass("current"); //清空所有样式 
+			$("."+paramsName).addClass("current"); 
+		}
+		
+		loadData(params);
+	});
+
+
+	function loadData(params) {
+		// var params = {};
+		params.buyersUser = 1;
+		
+		params.rows= 3 ; // 显示数据条数
+		params.offset= parseInt((count - 1) * params.rows);
+
+		ajaxFunction('/' + PRJ_PATH + '/ZKM/OD/getOrderInPhones.action',params,true,function(data) {
+					if (data.success) {
+						data = data.data;
+						if(data.lengths >0){
+							$("#wrapper").css("display","block"); // 控制显示区域是否展示
+							$("#noOrder").css("display","none");
+							var str = "";
+							initDataByOrder(data)
+							
+						/*	for (var i = 0; i < data.data.length; i++) {
+								str += "<div style='padding-top:5px;'>"
+										+ "<div style='padding-top:5px;padding-left:5px; background:white;'>"
+										+ "<div style='height:20px;display:inline;'><div style='float:left;width:78%;'><span>订单编号:"
+										+ data.data[i].orderNumber + "</span></div> " +
+										"<div style='text-align:right;'><span style='color:red;padding-right:3px;'>" 
+										+data.data[i].keyValue+"</span></div></div>";
+										  //<span style='padding-left:20px;text-align:right;color:red;'>"+data.data[i].keyValue+"</span>  
+	
+								for (var j = 0; j < data.data[i].subset.length; j++) {
+									str += "<div style=' height:90px; border-top:1px solid #DDDDDD;'>"
+											+ "<div style='width:80px;height:80px;float:left;padding-top:1px;'>"
+											+ "<a href='detail.html?id="
+											+ data.data[i].subset[j].goodsId
+											+ "' ><img  src='"
+											+ data.data[i].subset[j].goodsImgs.split(",")[0]
+											+ "'    style='width:100%;height:100%;' /></a>"
+											+ "</div>"
+											+ "<div style='border:0px solid black;width:58%;height:100%;float:left;'>"
+											+ "<p style='padding-left:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"
+											+ data.data[i].subset[j].goodsTitle
+											+ "</p>"
+											+ "<p style='padding-left:5px; padding-top:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"
+											+ data.data[i].subset[j].goodsProp
+											+ "</p>"
+											+ "<p style='padding-left:5px;padding-top:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"
+											+ "价格:<span style='color:red;'>￥"
+											+ data.data[i].subset[j].price
+											+ "</span>  &nbsp;&nbsp; 数量:<span style='color:red;'> x"
+											+ data.data[i].subset[j].numbers
+											+ "</span>"
+											+ "</p>"
+											+ "</div>"
+											+ "</div>";
+								}
+								str += "<div style='height:32px;padding-top:2px;text-align:right;border-top:1px solid #DDDDDD;'>";
+								switch (data.data[i].orderState) {
+								case "05":
+									str += "<button style='width:65px;height:30px;-webkit-appearance: none;font-size:12px;border:1px solid #CCC; background:white;' onclick=location='pingjia.html?orderGroupNumber="
+											+ data.data[i].orderGroupNumber
+											+ "'>去评价</button>&nbsp;";
+									break;
+								case "01":
+									str += "<button style='width:65px;height:30px;-webkit-appearance: none;font-size:12px;border:1px solid #CCC;background:white; '>去付款</button>&nbsp;";
+									break;
+								case "02":
+								// 	str += "<button style='width:65px;height:30px;-webkit-appearance: none;font-size:12px;border:1px solid #CCC;background:white; '>提醒卖家发货</button>&nbsp;";
+									break;
+								case "04":
+									str += "<button style='width:65px;height:30px;-webkit-appearance: none;font-size:12px;border:1px solid #CCC;background:white; '>查看物流</button>&nbsp;"; 
+									str += "<button style='width:65px;height:30px;-webkit-appearance: none;font-size:12px;border:1px solid #CCC;background:white; '>确认收货</button>&nbsp;"; 
+									break;
+								}
+								str += "<button onclick='location=&apos;orderDetails.html?orderGroupNumber="
+										+ data.data[i].orderGroupNumber
+										+ "&userAccount="
+										+ data.data[i].buyersUser
+										+ "&apos;' style='width:65px;height:30px;-webkit-appearance: none;font-size:12px; border:1px solid #CCC;background:white;'>订单详情</button>&nbsp;";
+								str += "</div></div></div>";  
+							}*/
+						
+					// 	$("#allGoods").append(str);
+						//控制显示和隐藏加载更多
+						
+						if((parseInt(params.offset) + parseInt(params.rows)) >= data.lengths){
+							$("#loadMore").css("display","none");
+						}else{
+							$("#loadMore").css("display","block");
+						}
+						
+						if(count == 1){
+							loaded();
+						}else{
+							myScroll.refresh(); 
+						}
+						
+					}else{
+						$("#wrapper").css("display","none");
+						$("#noOrder").css("display","block");
+					}
+						
+					}
+
+				});
+		}
+			//加载更多数据
+			function loadMoreGoods(){
+			alert(111);
+				count++;
+				loadData(params);
+			}
+	
+		function loadGD(cs){
+			$("#allGoods").html(''); // 清空数据，重新加载
+			count = 1; // 切换重置分页计数器；
+			if(!$(cs).hasClass("current")){
+				$(".tab a").removeClass("current"); //清空所有样式 
+				$(cs).addClass("current"); 
+			}	
+			params = {} ;
+			if($(cs).hasClass("all")){
+				//全部订单
+			}else if($(cs).hasClass("nopay")){
+				//待付款
+				params.orderState = "01"; 
+			}else if($(cs).hasClass("nosend")){
+				//待发货
+				params.orderState = "02";
+			}else if($(cs).hasClass("noaccept")){
+				//待收货
+				params.orderState = "04"; 
+			}else if($(cs).hasClass("noscore")){
+				params.orderState = "08";
+			}
+			
+			loadData(params); 
+			
+		}
+	
+	
+		function initDataByOrder(data){
+		var str ="";
+			for (var i = 0; i < data.data.length; i++) {
+				str += "<div class='firstLevel'>"+
+						"<div class='topLevel'>"+
+						"<div class='topLevel-one'>"+
+							"<div class='topLevel-one-orderId'>"+
+							  "	<span>订单编号:"+ data.data[i].orderNumber +"</span>"+
+							"</div>"+
+							"<div class='topLevel-one-orderStatus'>"+
+								"<span class='topLevel-one-orderStatus-span'><strong>"+data.data[i].keyValue+"</strong></span>"+
+							"</div>"+
+						"</div>"+
+					"</div> ";
+					for (var j = 0; j < data.data[i].subset.length; j++) {
+						str += "<div class='goodShowDiv'>"+
+							"<div class='goodShowDiv-imgDiv'>"+
+							   "<div class='goodShowDiv-imgDiv-outDiv'>"+
+									"<img src='"+data.data[i].subset[j].goodsImgs.split(",")[0]+"' class='goodShowDiv-imgDiv-outDiv-imgCss' />"+
+							  " </div>"+
+							"</div>"+
+							"<div class='goodShowDiv-content'>"+
+								"<p><span style='font-size:12px;'>"+
+										data.data[i].subset[j].goodsTitle + 
+								"</span></p>"+
+								"<p class='goodShowDiv-goodType'>"+data.data[i].subset[j].goodsProp+"</p>"+
+							"</div>"+
+							"<div class='goodShowDiv-priceOrCountDiv'>"+
+								"<span class='goodShowDiv-priceOrCountDiv-priceAndCount'>&yen;"+data.data[i].subset[j].unitPrice+"</span><br/>"+
+								"<span class='goodShowDiv-priceOrCountDiv-priceAndCount'>x"+data.data[i].subset[j].numbers+"</span>"+
+							"</div>"+
+						"</div>";
+						
+						if(data.data[i].subset.length - 1 != j){
+						  str +=  "<hr style='border:2px solid white;'></hr>" ;
+						}
+						
+					}
+					
+					str += "<hr style='border:1px solid white;'></hr>"+
+					"<div class='orderTotal'>"+
+						"<p class='orderTotalDetail'>共"+data.data[i].subset.length+"件商品 合计&yen;"+data.data[i].orderPrice +"</p>"+
+					"</div>"; 
+					str += "<div class='buttonGroup'>";
+					switch (data.data[i].orderState) {
+								case "05":
+									str += "<button class='buttonGroupBtn' onclick=location='pingjia.html?orderGroupNumber="
+											+ data.data[i].orderGroupNumber
+											+ "'>去评价</button>&nbsp;";
+									break;
+								case "01":
+									str += "<button class='buttonGroupBtn'>去付款</button>&nbsp;";
+									break;
+								case "02":
+								// 	str += "<button class='buttonGroupBtn' >提醒卖家发货</button>&nbsp;";
+									break;
+								case "04":
+									str += "<button class='buttonGroupBtn'>查看物流</button>&nbsp;"; 
+									str += "<button class='buttonGroupBtn'>确认收货</button>&nbsp;"; 
+									break;
+								}
+								str += "<button onclick='location=&apos;orderDetails.html?orderGroupNumber="
+										+ data.data[i].orderGroupNumber
+										+ "&userAccount="
+										+ data.data[i].buyersUser
+										+ "&apos;' class='buttonGroupBtn'>订单详情</button>&nbsp;";
+								str += "</div></div>";  
+				}
+				
+				$("#allGoods").append(str);				
+			
+		}
+	
+	
+	
+</script>
+	</head>
+
+	<body style='background:gray;'>
+		<div id="top" style="border-bottom:1px solid #DDDDDD;">
+			<a id="hd_back"  href="javascript:void(0);"  onclick="javascript:history.go(-1);"></a>
+			<span  style="padding-left:18px;margin-top: -10px;position: absolute;color:#afafae;"
+				onclick="javascript:history.go(-1);"
+			>返回</span>
+			<div class="site-nav">
+				<ul class="fix">
+					<li class="home">
+						<a href="index.html">首页</a>
+					</li>
+					<li class="mysn">
+						<a href="javascript:void(0);" onclick="location='userCenter.html'">个人中心</a>
+					</li>
+					<li class="mycart">
+						<a href="javascript:void(0);" onclick="location='demo.html'">购物车</a>
+					</li>
+					<li class="allcate">
+						<a href="javascript:void(0);"
+							onclick="location='childFenlei.html'">商品分类</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div> 
+			<ul class="tab">
+				<li style="width:20%;padding-top:0px;background:white;">
+					<a class="item all current" onclick="loadGD(this);">全部</a>
+				</li>
+				<li style="width:20%;padding-top:0px;background:white;">
+					<a class="item nopay  " onclick="loadGD(this);" >待付款</a>
+				</li>
+				<li style="width:20%;padding-top:0px;background:white;">
+					<a class="item nosend" onclick="loadGD(this);" >待发货</a>
+				</li>
+				<li style="width:20%;padding-top:0px;background:white;">
+					<a class="item noaccept" onclick="loadGD(this);">待收货</a>
+				</li>
+				<li style="width:20%;padding-top:0px;background:white;">
+					<a class="item noscore" onclick="loadGD(this);">待评价</a>
+				</li>
+			</ul>
+		</div>
+		  
+		<div id="wrapper" style="top: 80px;">
+		  <div id="scroller">
+			<div id='divForButton' style="font-size:14px;">
+				<div id="allGoods" style="padding-top:5px;"> </div>
+			<div id="loadMore">
+				<p style="text-align: center; font-size: 18px;"
+						onclick="loadMoreGoods();">
+					更多...
+				</p></div>
+			
+			</div>
+			 
+		  </div>
+		</div>
+		
+					
+					
+					
+					<!-- 
+					 -->
+		
+		
+		<div id="noOrder" style='text-align:center;padding-top:50px;background:#DDDDDD; display:none;'>
+			<h1 style='font-size:16px;'>您还没有相关订单</h1>
+			<br/>
+			<p style='font-size:12px;'>可以去看看有那些想买的</p>
+			<br/>
+			<button style='width:100px;height:30px;-webkit-appearance: none;
+				font-size:12px;border:1px solid black;
+				background:#DDDDDD;border-radius:3px;'onclick="location='index.html'">随便逛逛</button>
+		</div>
+	</body>
+</html>
