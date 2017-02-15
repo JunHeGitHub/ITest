@@ -1,2 +1,0 @@
-1.新建一个activiti的库  编码选择utf-8，在activiti库中执行  activit.sql
-2.在securityDB中执行 activiti配置.sql  脚本
