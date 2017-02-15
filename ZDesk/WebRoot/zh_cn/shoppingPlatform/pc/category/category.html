@@ -746,8 +746,8 @@
 		   //添加属性时才给时间赋值
 		   if(window == "addPropWindow"){
 			    var s=fomateDate("YYYY-MM-dd hh:mm:ss",new Date());
-			    $("#createPerson").val(getUserInfo().loginName);
-			    //  $("#createPerson").val('admin');
+			    //$("#createPerson").val(getUserInfo().loginName);
+			      $("#createPerson").val('admin');
 			    $("#createDate").val(s);
 		    }
 		    
@@ -758,13 +758,12 @@
 		    
 		   var cValues=zkm_getHtmlFormJsons(""+form+"");  
 		    //主键的值
+		    cValues.id = "'"+cValues.id+"'";
 		    params.columnValues=cValues;
 		    params.tableName=tableName;
-		    
 		    // 如果为真 验证不通过 则停止不执行
 			
 			// console.log(params);
-			// return;
 			
 		    //如更改不是id 需定义 params.primarykey
 		    commonUpdate(params,true,function(data){

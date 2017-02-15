@@ -372,7 +372,8 @@ document.write("<script language=javascript src='/ZDesk/js/common_utils.js'></sc
                 accept: {
                     title: 'Images',
                     extensions: acceptExtensions,
-                    mimeTypes: 'image/*'
+                    //mimeTypes: 'image/*'
+                    mimeTypes:'image/gif,image/jpeg,image/png,image/jpg,image/bmp'
                 },
                 swf: '../../third-party/webuploader/Uploader.swf',
                 server: actionUrl,
@@ -723,7 +724,7 @@ document.write("<script language=javascript src='/ZDesk/js/common_utils.js'></sc
                     var responseText = (ret._raw || ret),
                         json = utils.str2json(responseText);
                     if (json.state == 'SUCCESS') {
-                    	    var params={};
+                    	   /* var params={};
                     	    var data_dingyi={};
                     	    data_dingyi.imageName=json.original;
                     	    data_dingyi.uploadImageName=json.title;
@@ -737,7 +738,7 @@ document.write("<script language=javascript src='/ZDesk/js/common_utils.js'></sc
 						    params. primarykeyType="uuid";
 						    //使用增
 						    window.parent.commonInsertOrUpdate(params,true,function(data){
-						    }); 
+						    }); */
                         _this.imageList.push(json);
                         $file.append('<span class="success"></span>');
                     } else {

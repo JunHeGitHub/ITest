@@ -124,6 +124,9 @@ div#rMenu li {
 .ui-popup{
 	z-index:999999999999 !important
 }
+#edui_fixedlayer{
+	z-index:1051 !important;
+}
 	</style>
 	
 
@@ -175,7 +178,7 @@ div#rMenu li {
 		upLoadImg.render("image_4"); 
 		
 		upLoadImg.ready(function(){ 
-       		 upLoadImg.hide();//隐藏UE框体              
+       		// upLoadImg.hide();//隐藏UE框体              
        		 upLoadImg.addListener('beforeInsertImage',function(t, arg){ 
        			 if(arg.length < 1){ 
        				 zinglabs.alert('请上传一张图片');
@@ -204,7 +207,7 @@ div#rMenu li {
 	 	
 	    initTree();  // 加载树； 
 	    	
-	    loadGoods()  //加载主商品列表
+	    loadGoods();  //加载主商品列表
 	    	
 	    	//商品详细表
 	   	 detailGoodsGrid = 	$('#detailGoods').DataTable({
@@ -804,11 +807,13 @@ div#rMenu li {
 		<!-- 页面隐藏内容 -->
 		
 		<!-- 添加商品表单 -->
-		<div id="addGoodsWindow" class='container-fluid modal hide' style="width:800px;height:480px;border:0px solid #5599FF;  left: 40%; overflow-x :auto;overflow-y :auto;"  data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" >
-			   
+		<div id="addGoodsWindow" class='container-fluid modal hide' style="width:800px;height:600px;border:0px solid #5599FF; left: 30%; margin-left:0; overflow-x :auto;overflow-y :auto;"  data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" >
+			   <!-- 
 			<button type="button" style="width:50px;height:15px;" class="close clearForm" data-dismiss="modal" 
 	               aria-hidden="true">X
 	        </button>
+			    -->
+	        <button i="close" class="ui-dialog-close close clearForm" title="cancel">×</button>
 			
 			 <div style="float:left; width:99%; overflow-x:hidden;border:0px solid black; padding-top:10px;"> 
 			      	 <form id="insertGoods"  role="form" >
